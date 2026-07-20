@@ -1,6 +1,6 @@
 # SIM Datacenter UI
 
-![Java](https://img.shields.io/badge/Java-17+-orange)
+![Java](https://img.shields.io/badge/Java-26+-orange)
 ![Processing](https://img.shields.io/badge/Processing-4.5.x-blue)
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 ![License](https://img.shields.io/badge/license-Apache--2.0-lightgrey)
@@ -25,7 +25,7 @@ tooltip examples.
 
 ## Requirements
 
-- JDK 17 or newer.
+- JDK 26 or newer.
 - Maven.
 - A desktop environment capable of running Processing.
 
