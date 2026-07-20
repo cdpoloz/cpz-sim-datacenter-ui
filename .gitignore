@@ -1,0 +1,50 @@
+########################
+# IntelliJ IDEA
+########################
+.idea/
+*.iml
+out/
+.kotlin
+
+########################
+# Java / Build outputs
+########################
+bin/
+dist/
+nbdist/
+nbbuild/
+
+########################
+# Eclipse
+########################
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+########################
+# NetBeans
+########################
+/nbproject/private/
+/.nb-gradle/
+
+########################
+# VS Code
+########################
+.vscode/
+
+########################
+# OS
+########################
+.DS_Store
+
+########################
+# Otros
+########################
+.codex
+*.log
+/build
+/target/

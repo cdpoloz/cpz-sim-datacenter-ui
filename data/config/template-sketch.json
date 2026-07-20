@@ -1,0 +1,324 @@
+{
+  "tooltipStyles": {
+    "dark": {
+      "backgroundColor": "#E61B1F26",
+      "textColor": "#FFFFFFFF",
+      "borderColor": "#668A94A6",
+      "font": "data/font/JetBrainsMono.ttf",
+      "textSize": 14.0,
+      "textPadding": 10.0,
+      "offset": 10.0,
+      "cornerRadius": 8.0,
+      "strokeWeight": 1.0
+    }
+  },
+  "controls": [
+    {
+      "type": "button",
+      "code": "btnTemplate",
+      "text": "btnTemplate",
+      "x": 150.0,
+      "y": 100.0,
+      "width": 100.0,
+      "height": 50.0,
+      "enabled": true,
+      "visible": true,
+      "tooltip": {
+        "text": "Tooltip over Button object",
+        "enabled": true,
+        "styleRef": "dark"
+      },
+      "style": {
+        "baseColor": "#3062DB",
+        "textColor": "#FFFFFF",
+        "strokeColor": "#FFFFFF",
+        "strokeWeight": 1.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.12,
+        "pressedBlendWithBlack": 0.25,
+        "font": "data/font/JetBrainsMono.ttf",
+        "textSize": 12.0
+      }
+    },
+    {
+      "type": "checkbox",
+      "code": "chkTemplate",
+      "checked": true,
+      "x": 725.0,
+      "y": 100.0,
+      "width": 30.0,
+      "height": 30.0,
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "boxColor": "#3062DB",
+        "boxHoverColor": "#4A7AEA",
+        "boxPressedColor": "#224DB8",
+        "checkColor": "#FFFFFF",
+        "borderColor": "#FFFFFF",
+        "borderWidth": 2.0,
+        "borderWidthHover": 4.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "checkInset": 0.20
+      }
+    },
+    {
+      "type": "dropdown",
+      "code": "ddTemplate",
+      "items": [
+        "Hermes",
+        "Afrodita",
+        "Ares",
+        "Zeus"
+      ],
+      "selectedIndex": 2,
+      "x": 1100.0,
+      "y": 300.0,
+      "width": 200.0,
+      "height": 48.0,
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseFillOverride": "#ECF2F8",
+        "listFillOverride": "#F5F8FC",
+        "textOverride": "#1C2C3E",
+        "borderOverride": "#48749C",
+        "focusedBorderOverride": "#2684D4",
+        "hoverItemOverlayOverride": "#302684D4",
+        "selectedItemOverlayOverride": "#482684D4",
+        "font": "data/font/JetBrainsMono.ttf",
+        "textSize": 14.0,
+        "itemHeight": 38.0,
+        "maxVisibleItems": 5
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indTemplate",
+      "x": 1220.0,
+      "y": 280.0,
+      "width": 40.0,
+      "height": 40.0,
+      "on": false,
+      "onColor": "#3062DB",
+      "offColor": "#464646",
+      "style": {
+        "strokeColor": "#FFFFFF",
+        "strokeWeight": 1.0
+      },
+      "tooltip": {
+        "text": "Shows if DropDown is expanded",
+        "enabled": true,
+        "styleRef": "dark"
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblTemplate",
+      "text": "lblTemplate",
+      "x": 300.0,
+      "y": 300.0,
+      "width": 1.0,
+      "height": 34.0,
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textSize": 16.0,
+        "font": "data/font/JetBrainsMono.ttf",
+        "textColor": "#EAF4FF",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblCustomArea",
+      "text": "Custom tooltip area",
+      "x": 750.0,
+      "y": 394.0,
+      "width": 200.0,
+      "height": 100.0,
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textSize": 12.0,
+        "font": "data/font/JetBrainsMono.ttf",
+        "textColor": "#EAF4FF",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "numericfield",
+      "code": "nfTemplate",
+      "text": "12.5",
+      "x": 1100.0,
+      "y": 200.0,
+      "width": 200.0,
+      "height": 48.0,
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "backgroundColor": "#ECF2F8",
+        "borderColor": "#48749C",
+        "textColor": "#1C2C3E",
+        "cursorColor": "#2684D4",
+        "selectionColor": "#B6D9F8",
+        "selectionTextColor": "#1C2C3E",
+        "font": "data/font/JetBrainsMono.ttf",
+        "textSize": 14.0
+      }
+    },
+    {
+      "type": "progressbar",
+      "code": "pbTemplate",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.075,
+        "y": 0.8,
+        "width": 0.5,
+        "height": 0.05
+      },
+      "value": 0.0,
+      "style": {
+        "trackColor": "#FF3A3A3A",
+        "fillColor": "#3062DB",
+        "strokeColor": "#FFDCDCDC",
+        "strokeWeight": 1.5,
+        "fillDirection": "left-to-right"
+      },
+      "tooltip": {
+        "text": "Simple ProgressBar",
+        "styleRef": "dark"
+      }
+    },
+    {
+      "type": "radiogroup",
+      "code": "rgTemplate",
+      "options": [
+        "Mercury",
+        "Venus",
+        "Mars",
+        "Jupiter"
+      ],
+      "selectedIndex": 0,
+      "x": 900.0,
+      "y": 175.0,
+      "width": 200.0,
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textOverride": "#F5F5F5",
+        "indicatorOverride": "#FFFFFF",
+        "hoveredBackgroundOverride": "#2C384A",
+        "pressedBackgroundOverride": "#202A38",
+        "selectedDotOverride": "#389FE8",
+        "itemHeight": 20.0,
+        "itemSpacing": 10.0,
+        "indicatorOuterDiameter": 18.0,
+        "indicatorInnerDiameter": 8.0,
+        "strokeWeight": 1.8,
+        "font": "data/font/JetBrainsMono.ttf",
+        "textSize": 14.0,
+        "cornerRadius": 8.0,
+        "disabledAlpha": 85
+      }
+    },
+    {
+      "type": "slider",
+      "code": "sldTemplate",
+      "min": 0.00,
+      "max": 1.0,
+      "step": 0.01,
+      "value": 0.1,
+      "x": 450.0,
+      "y": 100.0,
+      "width": 150.0,
+      "height": 20.0,
+      "orientation": "horizontal",
+      "snapMode": "always",
+      "enabled": true,
+      "visible": true,
+      "tooltip": {
+        "text": "Tooltip over Slider object",
+        "enabled": true,
+        "styleRef": "dark"
+      },
+      "style": {
+        "trackColor": "#3E4856",
+        "trackHoverColor": "#566274",
+        "trackPressedColor": "#2C3440",
+        "trackStrokeColor": "#DCDCDC",
+        "trackStrokeWeight": 1.5,
+        "trackStrokeWeightHover": 2.5,
+        "trackThickness": 10.0,
+        "activeTrackColor": "#389FE8",
+        "activeTrackHoverColor": "#62B8F4",
+        "activeTrackPressedColor": "#267CB8",
+        "thumbColor": "#FFFFFF",
+        "thumbHoverColor": "#C6EAFF",
+        "thumbPressedColor": "#AADCFF",
+        "thumbStrokeColor": "#204E78",
+        "thumbStrokeWeight": 0.5,
+        "thumbStrokeWeightHover": 1.5,
+        "thumbSize": 20.0,
+        "textColor": "#F5F5F5",
+        "disabledAlpha": 90,
+        "showValueText": false
+      }
+    },
+    {
+      "type": "textfield",
+      "code": "tfTemplate",
+      "text": "You can write here!",
+      "x": 1100.0,
+      "y": 100.0,
+      "width": 200.0,
+      "height": 48.0,
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "backgroundColor": "#ECF2F8",
+        "borderColor": "#48749C",
+        "textColor": "#1C2C3E",
+        "cursorColor": "#2684D4",
+        "selectionColor": "#B6D9F8",
+        "selectionTextColor": "#1C2C3E",
+        "font": "data/font/JetBrainsMono.ttf",
+        "textSize": 14.0
+      }
+    },
+    {
+      "type": "toggle",
+      "code": "tglTemplate",
+      "state": 0,
+      "totalStates": 3,
+      "x": 600.0,
+      "y": 300.0,
+      "width": 40.0,
+      "height": 40.0,
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "stateColors": [
+          "#464646",
+          "#E89B2C",
+          "#20BCB0"
+        ],
+        "strokeColor": "#FFFFFF",
+        "strokeWidth": 1.0,
+        "strokeWidthHover": 2.0,
+        "hoverBlendWithWhite": 0.18,
+        "pressedBlendWithBlack": 0.20,
+        "disabledAlpha": 70
+      }
+    }
+  ]
+}

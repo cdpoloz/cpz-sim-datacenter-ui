@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.cpz</groupId>
+    <artifactId>cpz-mvvm-processing-template</artifactId>
+    <version>0.1.0</version>
+    <packaging>jar</packaging>
+
+    <name>cpz-mvvm-processing-template</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>17</maven.compiler.release>
+        <processing.version>4.5.5</processing.version>
+        <cpz-utils.version>0.2.3</cpz-utils.version>
+        <cpz-mvvm-processing-controls.version>0.9.7</cpz-mvvm-processing-controls.version>
+        <jetbrains-annotations.version>26.0.2</jetbrains-annotations.version>
+    </properties>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.processing</groupId>
+            <artifactId>core</artifactId>
+            <version>${processing.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.cdpoloz</groupId>
+            <artifactId>cpz-mvvm-processing-controls</artifactId>
+            <version>${cpz-mvvm-processing-controls.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.cdpoloz</groupId>
+            <artifactId>cpz-utils</artifactId>
+            <version>${cpz-utils.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>${jetbrains-annotations.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

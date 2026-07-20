@@ -1,0 +1,30 @@
+{
+  "placement": "bottom-right",
+  "maxVisible": 4,
+  "defaultDurationMillis": 3000,
+  "severityDurations": {
+    "info": 3000,
+    "success": 3000,
+    "warning": 4500,
+    "error": 6000
+  },
+  "style": {
+    "backgroundColor": "#202020",
+    "textColor": "#FFFFFF",
+    "borderColor": "#404040",
+    "strokeWeight": 1.0,
+    "cornerRadius": 8.0,
+    "font": "data/font/JetBrainsMono.ttf",
+    "textSize": 14.0,
+    "textPadding": 12.0,
+    "gap": 8.0,
+    "margin": 24.0,
+    "width": 320.0,
+    "minHeight": 48.0,
+    "accentWidth": 5.0,
+    "infoAccentColor": "#3B82F6",
+    "successAccentColor": "#22C55E",
+    "warningAccentColor": "#F59E0B",
+    "errorAccentColor": "#EF4444"
+  }
+}
