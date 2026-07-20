@@ -1,4 +1,4 @@
-# CPZ MVVM Processing Template
+# SIM Datacenter UI
 
 ![Java](https://img.shields.io/badge/Java-17+-orange)
 ![Processing](https://img.shields.io/badge/Processing-4.5.x-blue)
@@ -6,7 +6,7 @@
 ![License](https://img.shields.io/badge/license-Apache--2.0-lightgrey)
 [![GitHub](https://img.shields.io/badge/GitHub-cdpoloz-181717?logo=github)](https://github.com/cdpoloz)
 
-`cpz-mvvm-processing-template` is a Maven-based Processing desktop template
+`sim-datacenter-ui` is a Maven-based Processing desktop template
 that shows how to consume `cpz-mvvm-processing-controls` from application code.
 
 The template keeps the application side explicit:
