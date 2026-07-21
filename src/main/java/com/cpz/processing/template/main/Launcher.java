@@ -50,7 +50,8 @@ public class Launcher {
             System.exit(1);
         }
         // Run the main program.
-        PApplet.main(TemplateSketch.class);
+        //PApplet.main(TemplateSketch.class);
+        PApplet.main(Sketch.class);
     }
 
 }

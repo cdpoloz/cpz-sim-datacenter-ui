@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.cpz</groupId>
-    <artifactId>cpz-mvvm-processing-template</artifactId>
+    <artifactId>cpz-sim-datacenter-ui</artifactId>
     <version>0.1.0</version>
     <packaging>jar</packaging>
 
-    <name>cpz-mvvm-processing-template</name>
+    <name>cpz-sim-datacenter-ui</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,6 +17,9 @@
         <processing.version>4.5.5</processing.version>
         <cpz-utils.version>0.2.3</cpz-utils.version>
         <cpz-mvvm-processing-controls.version>0.9.7</cpz-mvvm-processing-controls.version>
+        <cpz-sim-foundation.version>0.1.0-alpha.1</cpz-sim-foundation.version>
+        <cpz-sim-runtime.version>0.1.0-alpha.1</cpz-sim-runtime.version>
+        <cpz-sim-datacenter.version>0.1.0-alpha.1</cpz-sim-datacenter.version>
         <jetbrains-annotations.version>26.0.2</jetbrains-annotations.version>
     </properties>
 
@@ -48,6 +51,21 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>${jetbrains-annotations.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cpz.sim.foundation</groupId>
+            <artifactId>cpz-sim-foundation</artifactId>
+            <version>${cpz-sim-foundation.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cpz.sim.runtime</groupId>
+            <artifactId>cpz-sim-runtime</artifactId>
+            <version>${cpz-sim-runtime.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cpz.sim.datacenter</groupId>
+            <artifactId>cpz-sim-datacenter</artifactId>
+            <version>${cpz-sim-datacenter.version}</version>
         </dependency>
     </dependencies>
 

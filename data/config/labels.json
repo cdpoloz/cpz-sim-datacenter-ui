@@ -1,0 +1,179 @@
+{
+  "controls": [
+    {
+      "type": "label",
+      "code": "lblRackElegidoSlot",
+      "text": "SLOT",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7919742188,
+        "y": 0.1423489426,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01074185616
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblRackElegidoTemperatura",
+      "text": "TEMP",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8207494792,
+        "y": 0.1423489426,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01074185616
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblRackElegidoCarga",
+      "text": "LOAD",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8586247396,
+        "y": 0.1423489426,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01074185616
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblRackElegidoPotencia",
+      "text": "POWER",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8944302083,
+        "y": 0.1423489426,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01074185616
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblRackElegidoStatus",
+      "text": "STATUS",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.93038125,
+        "y": 0.1423489426,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01074185616
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlot01",
+      "text": "S01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7930585938,
+        "y": 0.1690281974,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotTemperatura01",
+      "text": "S01-Temp",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8268445313,
+        "y": 0.1690281974,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    }
+  ]
+}
