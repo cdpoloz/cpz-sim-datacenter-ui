@@ -1,4 +1,4 @@
-# SIM Datacenter UI
+# CPZ SIM Datacenter UI
 
 ![Java](https://img.shields.io/badge/Java-26+-orange)
 ![Processing](https://img.shields.io/badge/Processing-4.5.x-blue)
