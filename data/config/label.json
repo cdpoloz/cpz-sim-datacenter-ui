@@ -2,11 +2,60 @@
   "controls": [
     {
       "type": "label",
+      "code": "lblRackElegido",
+      "text": "SELECTED RACK",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7239091146,
+        "y": 0.09302618328,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01409869084
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },{
+      "type": "label",
+      "code": "lblRackElegidoValor",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8063835938,
+        "y": 0.09330110775,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01309164149
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#5cb4c6",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
       "code": "lblRackElegidoSlot",
       "text": "SLOT",
       "bounds": {
         "mode": "relative",
-        "x": 0.7919742188,
+        "x": 0.7980789063,
         "y": 0.1423489426,
         "width": 0.0005035246727,
         "height": 0.01074185616
@@ -20,7 +69,7 @@
       "style": {
         "textColor": "#f2ebe7",
         "lineSpacingMultiplier": 1.0,
-        "alignX": "start",
+        "alignX": "center",
         "alignY": "top",
         "disabledAlpha": 80
       }
@@ -31,7 +80,7 @@
       "text": "TEMP",
       "bounds": {
         "mode": "relative",
-        "x": 0.8207494792,
+        "x": 0.8268445313,
         "y": 0.1423489426,
         "width": 0.0005035246727,
         "height": 0.01074185616
@@ -45,7 +94,7 @@
       "style": {
         "textColor": "#f2ebe7",
         "lineSpacingMultiplier": 1.0,
-        "alignX": "start",
+        "alignX": "center",
         "alignY": "top",
         "disabledAlpha": 80
       }
@@ -56,7 +105,7 @@
       "text": "LOAD",
       "bounds": {
         "mode": "relative",
-        "x": 0.8586247396,
+        "x": 0.8645247396,
         "y": 0.1423489426,
         "width": 0.0005035246727,
         "height": 0.01074185616
@@ -70,7 +119,7 @@
       "style": {
         "textColor": "#f2ebe7",
         "lineSpacingMultiplier": 1.0,
-        "alignX": "start",
+        "alignX": "center",
         "alignY": "top",
         "disabledAlpha": 80
       }
@@ -81,7 +130,7 @@
       "text": "POWER",
       "bounds": {
         "mode": "relative",
-        "x": 0.8944302083,
+        "x": 0.9021278646,
         "y": 0.1423489426,
         "width": 0.0005035246727,
         "height": 0.01074185616
@@ -95,7 +144,7 @@
       "style": {
         "textColor": "#f2ebe7",
         "lineSpacingMultiplier": 1.0,
-        "alignX": "start",
+        "alignX": "center",
         "alignY": "top",
         "disabledAlpha": 80
       }
@@ -1319,6 +1368,156 @@
       "visible": true,
       "style": {
         "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblRackTemperaturaPromedio",
+      "text": "RACK TEMP",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7535114583,
+        "y": 0.5888882175,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblRackTemperaturaPromedioValor",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7535114583,
+        "y": 0.6074622356,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01309164149
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblRackCargaPromedio",
+      "text": "RACK LOAD",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8353473958,
+        "y": 0.5888882175,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblRackCargaPromedioValor",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8353473958,
+        "y": 0.6074622356,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01309164149
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#5cb4c6",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblRackPotenciaAcumulada",
+      "text": "RACK POWER",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9171830729,
+        "y": 0.5888882175,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblRackPotenciaAcumuladaValor",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9078916667,
+        "y": 0.6074622356,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01309164149
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#5cb4c6",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
         "alignY": "top",

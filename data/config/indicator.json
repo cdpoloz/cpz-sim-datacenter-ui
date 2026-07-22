@@ -1,0 +1,1988 @@
+{
+  "controls": [
+    {
+      "type": "indicator",
+      "code": "indSlot01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7171466146,
+        "y": 0.1694798590,
+        "width": 0.1132321249,
+        "height": 0.04429859013
+      },
+      "on": false,
+      "onColor": "#FFFFFF",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlot01.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlot02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7171466146,
+        "y": 0.1979929507,
+        "width": 0.1132321249,
+        "height": 0.04042346425
+      },
+      "on": false,
+      "onColor": "#FFFFFF",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlot02.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlot03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7171466146,
+        "y": 0.2256812689,
+        "width": 0.1132321249,
+        "height": 0.03737411883
+      },
+      "on": false,
+      "onColor": "#FFFFFF",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlot03.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlot04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7171466146,
+        "y": 0.2550140987,
+        "width": 0.1132321249,
+        "height": 0.03267875126
+      },
+      "on": false,
+      "onColor": "#FFFFFF",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlot04.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlot05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7171466146,
+        "y": 0.2835261833,
+        "width": 0.1132321249,
+        "height": 0.02880412890
+      },
+      "on": false,
+      "onColor": "#FFFFFF",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlot05.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlot06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7171466146,
+        "y": 0.3113323263,
+        "width": 0.1132321249,
+        "height": 0.02768580060
+      },
+      "on": false,
+      "onColor": "#FFFFFF",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlot06.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlot07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7171466146,
+        "y": 0.3366158107,
+        "width": 0.1132321249,
+        "height": 0.03098539778
+      },
+      "on": false,
+      "onColor": "#FFFFFF",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlot07.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlot08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7171466146,
+        "y": 0.3618932528,
+        "width": 0.1132321249,
+        "height": 0.03429103726
+      },
+      "on": false,
+      "onColor": "#FFFFFF",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlot08.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlot09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7171466146,
+        "y": 0.3871817724,
+        "width": 0.1132321249,
+        "height": 0.03758459215
+      },
+      "on": false,
+      "onColor": "#FFFFFF",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlot09.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlot10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7171466146,
+        "y": 0.4124551863,
+        "width": 0.1132321249,
+        "height": 0.04089375629
+      },
+      "on": false,
+      "onColor": "#FFFFFF",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlot10.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlot11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7171466146,
+        "y": 0.4377477341,
+        "width": 0.1132321249,
+        "height": 0.04418429003
+      },
+      "on": false,
+      "onColor": "#FFFFFF",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlot11.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlot12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7171466146,
+        "y": 0.4624249748,
+        "width": 0.1132321249,
+        "height": 0.04808862034
+      },
+      "on": false,
+      "onColor": "#FFFFFF",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlot12.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA01-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.1729456193,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA02-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.2006686808,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA03-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.2289909366,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA04-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.2583207452,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA05-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.2866440081,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA06-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.3149672709,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA07-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.3432890232,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA08-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.3716122860,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA09-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.3999355488,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA10-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.4282573011,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA11-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.4565805639,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA12-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.4849033233,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA01-2",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9493992188,
+        "y": 0.1698439074,
+        "width": 0.007552870091,
+        "height": 0.007552870091
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA02-2",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9493992188,
+        "y": 0.2025861027,
+        "width": 0.007552870091,
+        "height": 0.007552870091
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA03-2",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9493992188,
+        "y": 0.2353282981,
+        "width": 0.007552870091,
+        "height": 0.007552870091
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA04-2",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9493992188,
+        "y": 0.2680704935,
+        "width": 0.007552870091,
+        "height": 0.007552870091
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA05-2",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9493992188,
+        "y": 0.3008126888,
+        "width": 0.007552870091,
+        "height": 0.007552870091
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA06-2",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9493992188,
+        "y": 0.3335548842,
+        "width": 0.007552870091,
+        "height": 0.007552870091
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA07-2",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9493992188,
+        "y": 0.3662975831,
+        "width": 0.007552870091,
+        "height": 0.007552870091
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA08-2",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9493992188,
+        "y": 0.3990397784,
+        "width": 0.007552870091,
+        "height": 0.007552870091
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA09-2",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9493992188,
+        "y": 0.4317819738,
+        "width": 0.007552870091,
+        "height": 0.007552870091
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA10-2",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9493992188,
+        "y": 0.4645241692,
+        "width": 0.007552870091,
+        "height": 0.007552870091
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA11-2",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9493992188,
+        "y": 0.4972663646,
+        "width": 0.007552870091,
+        "height": 0.007552870091
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA12-2",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9493992188,
+        "y": 0.5300085599,
+        "width": 0.007552870091,
+        "height": 0.007552870091
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOk01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.1655639476,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff77c19a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOk.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOk02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.1983061430,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff77c19a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOk.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOk03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.2310483384,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff77c19a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOk.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOk04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.2637905337,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff77c19a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOk.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOk05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.2965327291,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff77c19a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOk.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOk06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.3292749245,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff77c19a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOk.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOk07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.3620176234,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff77c19a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOk.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOk08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.3947593152,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff77c19a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOk.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOk09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.4275020141,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff77c19a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOk.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOk10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.4602442095,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff77c19a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOk.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOk11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.4929864048,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff77c19a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOk.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOk12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.5257286002,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff77c19a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOk.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotAlerta01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.1665760322,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotAlerta02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.1993056395,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotAlerta03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.2320543807,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotAlerta04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.2647965760,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotAlerta05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.2975387714,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotAlerta06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.3302809668,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotAlerta07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.3630231621,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotAlerta08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.3957653575,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotAlerta09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.4285075529,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotAlerta10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.4612497482,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotAlerta11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.4939919436,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotAlerta12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.5267346425,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOffline01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.1655639476,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#7a9dbe",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOffline02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.1983061430,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#7a9dbe",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOffline03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.2310483384,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#7a9dbe",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOffline04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.2637905337,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#7a9dbe",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOffline05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.2965327291,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#7a9dbe",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOffline06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.3292749245,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#7a9dbe",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOffline07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.3620176234,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#7a9dbe",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOffline08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.3947593152,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#7a9dbe",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOffline09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.4275020141,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#7a9dbe",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOffline10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.4602442095,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#7a9dbe",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOffline11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.4929864048,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#7a9dbe",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotOffline12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.5257286002,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#7a9dbe",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotVacio01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.1655639476,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#2e3c4a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotVacio02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.1983061430,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#2e3c4a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotVacio03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.2310483384,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#2e3c4a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotVacio04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.2637905337,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#2e3c4a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotVacio05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.2965327291,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#2e3c4a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotVacio06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.3292749245,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#2e3c4a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotVacio07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.3620176234,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#2e3c4a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotVacio08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.3947593152,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#2e3c4a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotVacio09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.4275020141,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#2e3c4a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotVacio10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.4602442095,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#2e3c4a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotVacio11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.4929864048,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#2e3c4a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotVacio12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9357005208,
+        "y": 0.5257286002,
+        "width": 0.01611278953,
+        "height": 0.01611278953
+      },
+      "on": false,
+      "onColor": "#2e3c4a",
+      "offColor": "#0077c19a",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+
+
+
+
+    {
+      "type": "indicator",
+      "code": "indRackElegidoPotenciaBarra1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9262768229,
+        "y": 0.6092834844,
+        "width": 0.006294058409,
+        "height": 0.006294058409
+      },
+      "on": false,
+      "onColor": "#FFFFFF",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indElementoBarra.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoPotenciaBarra2",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9301583333,
+        "y": 0.6092834844,
+        "width": 0.006294058409,
+        "height": 0.006294058409
+      },
+      "on": false,
+      "onColor": "#FFFFFF",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indElementoBarra.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoPotenciaBarra3",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9340398438,
+        "y": 0.6092834844,
+        "width": 0.006294058409,
+        "height": 0.006294058409
+      },
+      "on": false,
+      "onColor": "#FFFFFF",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indElementoBarra.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoPotenciaBarra4",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9379210938,
+        "y": 0.6092834844,
+        "width": 0.006294058409,
+        "height": 0.006294058409
+      },
+      "on": false,
+      "onColor": "#FFFFFF",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indElementoBarra.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoPotenciaBarra5",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9418023438,
+        "y": 0.6092834844,
+        "width": 0.006294058409,
+        "height": 0.006294058409
+      },
+      "on": false,
+      "onColor": "#FFFFFF",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indElementoBarra.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoPotenciaBarra6",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9456838542,
+        "y": 0.6092834844,
+        "width": 0.006294058409,
+        "height": 0.006294058409
+      },
+      "on": false,
+      "onColor": "#FFFFFF",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indElementoBarra.svg"
+        }
+      }
+    }
+  ]
+}
