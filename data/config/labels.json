@@ -131,7 +131,7 @@
       "text": "S01",
       "bounds": {
         "mode": "relative",
-        "x": 0.7930585938,
+        "x": 0.7980789063,
         "y": 0.1690281974,
         "width": 0.0005035246727,
         "height": 0.01208459215
@@ -145,7 +145,7 @@
       "style": {
         "textColor": "#f2ebe7",
         "lineSpacingMultiplier": 1.0,
-        "alignX": "start",
+        "alignX": "center",
         "alignY": "top",
         "disabledAlpha": 80
       }
@@ -153,11 +153,1161 @@
     {
       "type": "label",
       "code": "lblSlotTemperatura01",
-      "text": "S01-Temp",
+      "text": "--",
       "bounds": {
         "mode": "relative",
         "x": 0.8268445313,
         "y": 0.1690281974,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotCarga01",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8645247396,
+        "y": 0.1690281974,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotPotencia01",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9021278646,
+        "y": 0.1690281974,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlot02",
+      "text": "S02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7980789063,
+        "y": 0.2017703927,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotTemperatura02",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8268445313,
+        "y": 0.2017703927,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotCarga02",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8645247396,
+        "y": 0.2017703927,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotPotencia02",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9021278646,
+        "y": 0.2017703927,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlot03",
+      "text": "S03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7980789063,
+        "y": 0.2345125881,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotTemperatura03",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8268445313,
+        "y": 0.2345125881,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotCarga03",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8645247396,
+        "y": 0.2345125881,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotPotencia03",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9021278646,
+        "y": 0.2345125881,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlot04",
+      "text": "S04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7980789063,
+        "y": 0.2672547835,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotTemperatura04",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8268445313,
+        "y": 0.2672547835,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotCarga04",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8645247396,
+        "y": 0.2672547835,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotPotencia04",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9021278646,
+        "y": 0.2672547835,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlot05",
+      "text": "S05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7980789063,
+        "y": 0.2999969789,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotTemperatura05",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8268445313,
+        "y": 0.2999969789,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotCarga05",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8645247396,
+        "y": 0.2999969789,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotPotencia05",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9021278646,
+        "y": 0.2999969789,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlot06",
+      "text": "S06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7980789063,
+        "y": 0.3327391742,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotTemperatura06",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8268445313,
+        "y": 0.3327391742,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotCarga06",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8645247396,
+        "y": 0.3327391742,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#5cb4c6",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotPotencia06",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9021278646,
+        "y": 0.3327391742,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlot07",
+      "text": "S07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7980789063,
+        "y": 0.3654813696,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotTemperatura07",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8268445313,
+        "y": 0.3654813696,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotCarga07",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8645247396,
+        "y": 0.3654813696,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotPotencia07",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9021278646,
+        "y": 0.3654813696,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlot08",
+      "text": "S08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7980789063,
+        "y": 0.3982235650,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotTemperatura08",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8268445313,
+        "y": 0.3982235650,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotCarga08",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8645247396,
+        "y": 0.3982235650,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#5cb4c6",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotPotencia08",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9021278646,
+        "y": 0.3982235650,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlot09",
+      "text": "S09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7980789063,
+        "y": 0.4309657603,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotTemperatura09",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8268445313,
+        "y": 0.4309657603,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotCarga09",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8645247396,
+        "y": 0.4309657603,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotPotencia09",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9021278646,
+        "y": 0.4309657603,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlot10",
+      "text": "S10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7980789063,
+        "y": 0.4637079557,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotTemperatura10",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8268445313,
+        "y": 0.4637079557,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotCarga10",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8645247396,
+        "y": 0.4637079557,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotPotencia10",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9021278646,
+        "y": 0.4637079557,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlot11",
+      "text": "S11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7980789063,
+        "y": 0.4964501511,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotTemperatura11",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8268445313,
+        "y": 0.4964501511,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotCarga11",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8645247396,
+        "y": 0.4964501511,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotPotencia11",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9021278646,
+        "y": 0.4964501511,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlot12",
+      "text": "S12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7980789063,
+        "y": 0.5291923464,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotTemperatura12",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8268445313,
+        "y": 0.5291923464,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotCarga12",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8645247396,
+        "y": 0.5291923464,
+        "width": 0.0005035246727,
+        "height": 0.01208459215
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSlotPotencia12",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9021278646,
+        "y": 0.5291923464,
         "width": 0.0005035246727,
         "height": 0.01208459215
       },

@@ -6,12 +6,8 @@ import com.cpz.processing.controls.controls.indicator.Indicator;
 import com.cpz.processing.controls.controls.label.Label;
 import com.cpz.processing.controls.core.input.InputManager;
 import com.cpz.processing.controls.core.overlay.OverlayManager;
-import com.cpz.processing.controls.core.overlay.notification.NotificationManager;
-import com.cpz.processing.controls.core.overlay.notification.config.NotificationConfigLoader;
 import com.cpz.processing.controls.input.ProcessingKeyboardAdapter;
-import com.cpz.utils.color.Colors;
 import processing.core.PApplet;
-import processing.core.PFont;
 import processing.core.PImage;
 import processing.opengl.PJOGL;
 
@@ -35,8 +31,8 @@ public class Sketch extends PApplet {
     private Map<String, Indicator> indicators;
     private Map<String, Label> labels;
 
-    private float f;
-    private PImage fondo, overlay;
+    private PImage fondo, overlayEstatico;
+    private boolean showOverlayEstatico;
 
     public void settings() {
         LOG.info("Starting settings");
@@ -64,19 +60,19 @@ public class Sketch extends PApplet {
         Map<String, Control> controles = loader.load(labelsConfigPath);
         labels = new HashMap<>();
         controles.values().stream().filter(c -> c instanceof Label).forEach(lbl -> labels.put(lbl.getCode(), (Label) lbl));
-
         // font
         textFont(createFont("data"+ File.separator + "font" + File.separator + "JetBrainsMono.ttf", 56, true));
         // imágenes
         fondo = loadImage("data" + File.separator + "img" + File.separator + "ui_fondo.png");
-        overlay = loadImage("data" + File.separator + "img" + File.separator + "ui_overlay.png");
+        overlayEstatico = loadImage("data" + File.separator + "img" + File.separator + "ui_overlay.png");
+        // debug
+        showOverlayEstatico = true;
     }
 
     public void draw() {
-
         dibujarFondo();
         labels.values().forEach(Label::draw);
-        dibujarOverlay();
+        if (showOverlayEstatico) dibujarOverlayEstatico();
     }
 
     private void dibujarFondo() {
@@ -86,11 +82,16 @@ public class Sketch extends PApplet {
         popStyle();
     }
 
-    private void dibujarOverlay() {
+    private void dibujarOverlayEstatico() {
         pushStyle();
         imageMode(CORNER);
-        image(overlay, 0, 0, width, height);
+        image(overlayEstatico, 0, 0, width, height);
         popStyle();
+    }
+
+    @Override
+    public void keyReleased() {
+        if (key == 'e') showOverlayEstatico = !showOverlayEstatico;
     }
 
 }
