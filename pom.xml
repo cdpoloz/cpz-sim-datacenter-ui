@@ -16,11 +16,12 @@
         <maven.compiler.release>26</maven.compiler.release>
         <processing.version>4.5.5</processing.version>
         <cpz-utils.version>0.2.3</cpz-utils.version>
-        <cpz-mvvm-processing-controls.version>0.9.9</cpz-mvvm-processing-controls.version>
+        <cpz-mvvm-processing-controls.version>0.9.10</cpz-mvvm-processing-controls.version>
         <cpz-sim-foundation.version>0.1.0-alpha.1</cpz-sim-foundation.version>
         <cpz-sim-runtime.version>0.1.0-alpha.1</cpz-sim-runtime.version>
         <cpz-sim-datacenter.version>0.1.0-alpha.1</cpz-sim-datacenter.version>
         <jetbrains-annotations.version>26.0.2</jetbrains-annotations.version>
+        <jackson.version>2.21.4</jackson.version>
     </properties>
 
     <licenses>
@@ -66,6 +67,11 @@
             <groupId>com.cpz.sim.datacenter</groupId>
             <artifactId>cpz-sim-datacenter</artifactId>
             <version>${cpz-sim-datacenter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
     </dependencies>
 

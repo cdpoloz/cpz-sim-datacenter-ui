@@ -742,7 +742,7 @@
       "enabled": true,
       "visible": true,
       "style": {
-        "textColor": "#5cb4c6",
+        "textColor": "#f2ebe7",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
         "alignY": "top",
@@ -942,7 +942,7 @@
       "enabled": true,
       "visible": true,
       "style": {
-        "textColor": "#5cb4c6",
+        "textColor": "#f2ebe7",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
         "alignY": "top",

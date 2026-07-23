@@ -6,7 +6,20 @@
         "code": "R01",
         "column": "C01",
         "row": "R01",
-        "slotCount": 12
+        "slots": [
+          "S01",
+          "S02",
+          "S03",
+          "S04",
+          "S05",
+          "S06",
+          "S07",
+          "S08",
+          "S09",
+          "S10",
+          "S11",
+          "S12"
+        ]
       }
     ]
   },
@@ -45,7 +58,7 @@
       "rackCode": "R01",
       "slot": "S03",
       "modelCode": "SRV-DEMO-001",
-      "status": "ALERT",
+      "status": "OK",
       "workloadFactor": 1.2
     },
     {
@@ -64,21 +77,21 @@
     },
     {
       "rackCode": "R01",
-      "slot": "S06",
+      "slot": "S09",
       "modelCode": "SRV-STORAGE-001",
       "status": "OK",
       "workloadFactor": 0.9
     },
     {
       "rackCode": "R01",
-      "slot": "S07",
+      "slot": "S11",
       "modelCode": "SRV-STORAGE-001",
-      "status": "ALERT",
+      "status": "OK",
       "workloadFactor": 0.8
     },
     {
       "rackCode": "R01",
-      "slot": "S08",
+      "slot": "S12",
       "modelCode": "SRV-STORAGE-001",
       "status": "OFFLINE",
       "workloadFactor": 1.4
