@@ -12,14 +12,11 @@ import com.cpz.sim.datacenter.config.json.JsonDatacenterConfigLoader;
 import com.cpz.sim.datacenter.factory.DatacenterFactory;
 import com.cpz.sim.datacenter.factory.TemperatureSystemOptionsFactory;
 import com.cpz.sim.datacenter.factory.WorkloadFactorProviderFactory;
+import com.cpz.sim.datacenter.health.HealthThreshold;
+import com.cpz.sim.datacenter.health.ServerHealthOptions;
 import com.cpz.sim.datacenter.model.*;
-import com.cpz.sim.datacenter.snapshot.EnergyConsumptionSnapshot;
-import com.cpz.sim.datacenter.snapshot.EnergyConsumptionSnapshotProvider;
-import com.cpz.sim.datacenter.snapshot.ServerEnergySnapshot;
-import com.cpz.sim.datacenter.system.EnergyConsumptionSystem;
-import com.cpz.sim.datacenter.system.PowerConsumptionSystem;
-import com.cpz.sim.datacenter.system.TemperatureSystem;
-import com.cpz.sim.datacenter.system.WorkloadSystem;
+import com.cpz.sim.datacenter.snapshot.*;
+import com.cpz.sim.datacenter.system.*;
 import com.cpz.sim.datacenter.temperature.SimpleServerTemperatureModel;
 import com.cpz.sim.datacenter.temperature.TemperatureSystemOptions;
 import com.cpz.sim.datacenter.workload.NoiseWorkloadSource;
@@ -71,6 +68,9 @@ public class Sketch extends PApplet {
     private EnergyConsumptionSnapshotProvider energySnapshotProvider;
     private Datacenter datacenter;
     private EnergyConsumptionSnapshot energySnapshot;
+    private ServerHealthSystem healthSystem;
+    private HealthSnapshotProvider healthSnapshotProvider;
+    private HealthSnapshot healthSnapshot;
     private String columnaElegida, rackElegido;
     private Map<String, Rack> racks;
 
@@ -137,15 +137,26 @@ public class Sketch extends PApplet {
         // engine
         engine = new SimulationEngine(clock);
         // sistemas
-        EnergyConsumptionSystem energySystem = new EnergyConsumptionSystem(datacenter);
+        energySystem = new EnergyConsumptionSystem(datacenter);
         TemperatureSystemOptions temperatureOptions = new TemperatureSystemOptionsFactory().create(definition);
         TemperatureSystem temperatureSystem = new TemperatureSystem(datacenter, temperatureOptions, new SimpleServerTemperatureModel());
+        HealthThreshold utilizationThreshold = new HealthThreshold(
+                Double.parseDouble(PROPS.getProperty("simulation.health.utilization.alert-threshold")),
+                Double.parseDouble(PROPS.getProperty("simulation.health.utilization.recovery-threshold"))
+        );
+        HealthThreshold temperatureThreshold = new HealthThreshold(
+                Double.parseDouble(PROPS.getProperty("simulation.health.temperature.alert-threshold-celsius")),
+                Double.parseDouble(PROPS.getProperty("simulation.health.temperature.recovery-threshold-celsius"))
+        );
+        healthSystem = new ServerHealthSystem(datacenter, temperatureSystem, new ServerHealthOptions(utilizationThreshold, temperatureThreshold));
         engine.register(new WorkloadSystem(datacenter, workloadSource));
         engine.register(new PowerConsumptionSystem(datacenter));
         engine.register(temperatureSystem);
+        engine.register(healthSystem);
         engine.register(energySystem);
         // snapshots
         energySnapshotProvider = new EnergyConsumptionSnapshotProvider(datacenter, energySystem);
+        healthSnapshotProvider = new HealthSnapshotProvider(datacenter, healthSystem, temperatureSystem);
         // timers
         timerSimulacion = new Timer();
         timerSimulacion.setPeriodMillis(1000);
@@ -187,7 +198,7 @@ public class Sketch extends PApplet {
     private void updateSnapshots() {
         if (!updateSnapshots) return;
         energySnapshot = energySnapshotProvider.snapshot(engine.currentTick());
-        //printEnergySnapshot(energySnapshot);
+        healthSnapshot = healthSnapshotProvider.snapshot(engine.currentTick());
         updateSnapshots = false;
         updateUI = true;
     }
@@ -202,8 +213,9 @@ public class Sketch extends PApplet {
     private void updateRackElegido() {
         Rack rack = obtenerRackElegido();
         Map<ServerLocation, ServerEnergySnapshot> energiaPorUbicacion = obtenerEnergiaPorUbicacion();
-        int racksInstalados = 0;
-        float cargaTotal = 0;
+        Map<ServerLocation, ServerHealthSnapshot> saludPorUbicacion = obtenerSaludPorUbicacion();
+        int servidoresInstalados = 0;
+        double cargaTotal = 0;
         float potenciaAcumulada = 0;
         for (String slot : rack.getSlotCodes()) {
             ServerLocation location = new ServerLocation(columnaElegida, new RackCode(rackElegido), slot);
@@ -214,7 +226,6 @@ public class Sketch extends PApplet {
             Indicator indSlotOffline = indicators.get("indSlotOffline" + slot.replace("S", ""));
             Indicator indSlotStatusOk = indicators.get("indSlotOk" + slot.replace("S", ""));
             Indicator indSlotStatusAlerta = indicators.get("indSlotAlerta" + slot.replace("S", ""));
-            float limiteCargaAlerta = Float.parseFloat(PROPS.getProperty("simulation.server.load-alert-threshold"));
             if (installedServer.isEmpty()) {
                 lblSlotCarga.setTextColor(COLOR_LABEL_BLANCO);
                 lblSlotCarga.setText("--");
@@ -230,18 +241,24 @@ public class Sketch extends PApplet {
                 lblSlotPotencia.setText(String.format("%.2fkW", energia.currentPowerWatts() / 1000));
                 cargaTotal += energia.utilization();
                 potenciaAcumulada += energia.currentPowerWatts();
-                racksInstalados++;
+                servidoresInstalados++;
                 indSlotVacio.setOn(false);
-                boolean bOffline = installedServer.get().getStatus() == HardwareStatus.OFFLINE;
-                boolean bAlerta = installedServer.get().getUtilization() >= limiteCargaAlerta; // TEMPORAL - HAY QUE MODIFICAR BACKEND
-                indSlotOffline.setOn(bOffline);
-                indSlotStatusOk.setOn(!bOffline && !bAlerta);
-                indSlotStatusAlerta.setOn(!bOffline && bAlerta);
+                indSlotOffline.setOn(false);
+                indSlotStatusOk.setOn(false);
+                indSlotStatusAlerta.setOn(false);
+                ServerHealthSnapshot salud = saludPorUbicacion.get(location);
+                if (salud == null) throw new IllegalStateException("No existe snapshot de salud para el servidor: " + location);
+                HardwareStatus status = salud.status();
+                switch (status) {
+                    case OFFLINE -> indSlotOffline.setOn(true);
+                    case OK -> indSlotStatusOk.setOn(true);
+                    case ALERT -> indSlotStatusAlerta.setOn(true);
+                }
             }
-            float cargaPromedio = cargaTotal / racksInstalados;
-            labels.get("lblRackCargaPromedioValor").setText(String.format("%.0f%%", cargaPromedio * 100));
-            labels.get("lblRackPotenciaAcumuladaValor").setText(String.format("%.2fkW", potenciaAcumulada / 1000));
         }
+        double cargaPromedio = cargaTotal / servidoresInstalados;
+        labels.get("lblRackCargaPromedioValor").setText(String.format("%.0f%%", cargaPromedio * 100));
+        labels.get("lblRackPotenciaAcumuladaValor").setText(String.format("%.2fkW", potenciaAcumulada / 1000));
     }
 
     private Rack obtenerRackElegido() {
@@ -252,6 +269,19 @@ public class Sketch extends PApplet {
 
     private Map<ServerLocation, ServerEnergySnapshot> obtenerEnergiaPorUbicacion() {
         return energySnapshot.servers()
+                .stream()
+                .collect(Collectors.toMap(
+                        server -> new ServerLocation(
+                                server.column(),
+                                server.rackCode(),
+                                server.slot()
+                        ),
+                        Function.identity()
+                ));
+    }
+
+    private Map<ServerLocation, ServerHealthSnapshot> obtenerSaludPorUbicacion() {
+        return healthSnapshot.servers()
                 .stream()
                 .collect(Collectors.toMap(
                         server -> new ServerLocation(
