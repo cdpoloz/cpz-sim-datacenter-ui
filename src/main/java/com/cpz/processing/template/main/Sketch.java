@@ -35,10 +35,7 @@ import processing.opengl.PJOGL;
 import java.io.File;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -55,7 +52,7 @@ public class Sketch extends PApplet {
     private OverlayManager overlayManager;
     private ProcessingKeyboardAdapter processingKeyboardAdapter;
     private Map<String, Control> controls;
-    private Map<String, Indicator> indicators;
+    private Map<String, Indicator> indicadores, indicadoresSlotIA, indicadoresAlerta;
     private Map<String, Label> labels;
 
     private PImage fondo, overlayEstatico;
@@ -73,6 +70,7 @@ public class Sketch extends PApplet {
     private HealthSnapshot healthSnapshot;
     private String columnaElegida, rackElegido;
     private Map<String, Rack> racks;
+    private float potenciaIdleTotalRackElegido, potenciaMaximaTotalRackElegido;
 
     public void settings() {
         LOG.info("Starting settings");
@@ -100,10 +98,18 @@ public class Sketch extends PApplet {
         controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "label.json");
         labels = new HashMap<>();
         controles.values().stream().filter(c -> c instanceof Label).forEach(lbl -> labels.put(lbl.getCode(), (Label) lbl));
-        // indicators
-        controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicator.json");
-        indicators = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicators.put(ind.getCode(), (Indicator) ind));
+        // indicadores
+        controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadores.json");
+        indicadores = new HashMap<>();
+        controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadores.put(ind.getCode(), (Indicator) ind));
+        // indicadoresSlotIA
+        controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresSlotIA.json");
+        indicadoresSlotIA = new HashMap<>();
+        controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadoresSlotIA.put(ind.getCode(), (Indicator) ind));
+        // indicadoresAlerta
+        controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresAlerta.json");
+        indicadoresAlerta = new HashMap<>();
+        controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadoresAlerta.put(ind.getCode(), (Indicator) ind));
         // font
         textFont(createFont("data" + File.separator + "font" + File.separator + "JetBrainsMono.ttf", 56, true));
         // imágenes
@@ -165,6 +171,20 @@ public class Sketch extends PApplet {
         showOverlayEstatico = true;
         columnaElegida = "C01";
         rackElegido = "R01";
+        calcularLimitesPotenciaRackElegido();
+    }
+
+    private void calcularLimitesPotenciaRackElegido() {
+        potenciaIdleTotalRackElegido = 0;
+        potenciaMaximaTotalRackElegido = 0;
+        Rack rack = obtenerRackElegido();
+        for (String slot : rack.getSlotCodes()) {
+            ServerLocation location = new ServerLocation(columnaElegida, new RackCode(rackElegido), slot);
+            Optional<Server> installedServer = datacenter.getServer(location);
+            if (installedServer.isEmpty()) continue;
+            potenciaIdleTotalRackElegido += installedServer.get().getConfig().idlePowerWatts();
+            potenciaMaximaTotalRackElegido += installedServer.get().getConfig().maxPowerWatts();
+        }
     }
 
     public void draw() {
@@ -172,25 +192,19 @@ public class Sketch extends PApplet {
         updateClock();
         updateSnapshots();
         updateControles();
-
         overlayManager.getActiveOverlays().forEach(entry -> entry.getRender().run());
         //draw
         dibujarFondo();
+        indicadoresAlerta.values().forEach(Indicator::draw);
         labels.values().forEach(Label::draw);
-        /*
-        se debe asegurar que los indSlotIAXX se dibujen siempre por encima de los indSlotXX, para
-        ello los filtramos de la lista general y luego dibujamos encima solamente los indSlotIAXX
-        */
-        indicators.values().stream().filter(ind -> !ind.getCode().contains("IA")).forEach(Indicator::draw);
-        indicators.values().stream().filter(ind -> ind.getCode().contains("IA")).forEach(Indicator::draw);
+        indicadores.values().forEach(Indicator::draw);
+        indicadoresSlotIA.values().forEach(Indicator::draw);
         if (showOverlayEstatico) dibujarOverlayEstatico();
-
     }
 
     private void updateClock() {
         if (timerSimulacion == null || engine == null) return;
         if (!timerSimulacion.pollPeriodPulse()) return;
-        //SimulationTick tick = engine.step();
         engine.step();
         updateSnapshots = true;
     }
@@ -206,11 +220,12 @@ public class Sketch extends PApplet {
 
     private void updateControles() {
         if (!updateUI) return;
-        updateRackElegido();
+        updatePanelRackElegido();
         updateUI = false;
     }
 
-    private void updateRackElegido() {
+    private void updatePanelRackElegido() {
+        labels.get("lblRackElegidoValor").setText(columnaElegida + "-" + rackElegido);
         Rack rack = obtenerRackElegido();
         Map<ServerLocation, ServerEnergySnapshot> energiaPorUbicacion = obtenerEnergiaPorUbicacion();
         Map<ServerLocation, ServerHealthSnapshot> saludPorUbicacion = obtenerSaludPorUbicacion();
@@ -222,18 +237,15 @@ public class Sketch extends PApplet {
             Optional<Server> installedServer = datacenter.getServer(location);
             Label lblSlotCarga = labels.get("lblSlotCarga" + slot.replace("S", ""));
             Label lblSlotPotencia = labels.get("lblSlotPotencia" + slot.replace("S", ""));
-            Indicator indSlotVacio = indicators.get("indSlotVacio" + slot.replace("S", ""));
-            Indicator indSlotOffline = indicators.get("indSlotOffline" + slot.replace("S", ""));
-            Indicator indSlotStatusOk = indicators.get("indSlotOk" + slot.replace("S", ""));
-            Indicator indSlotStatusAlerta = indicators.get("indSlotAlerta" + slot.replace("S", ""));
+            Indicator indSlotVacio = indicadores.get("indSlotVacio" + slot.replace("S", ""));
+            Indicator indSlotOffline = indicadores.get("indSlotOffline" + slot.replace("S", ""));
+            Indicator indSlotStatusOk = indicadores.get("indSlotOk" + slot.replace("S", ""));
+            Indicator indSlotStatusAlerta = indicadores.get("indSlotAlerta" + slot.replace("S", ""));
+            Indicator indAlerta = indicadoresAlerta.get("indAlerta" + slot.replace("S", ""));
+            Indicator indSlotIA1 = indicadoresSlotIA.get("indSlotIA" + slot.replace("S", "") + "-1");
+            Indicator indSlotIA2 = indicadores.get("indSlotIA" + slot.replace("S", "") + "-2");
             if (installedServer.isEmpty()) {
-                lblSlotCarga.setTextColor(COLOR_LABEL_BLANCO);
-                lblSlotCarga.setText("--");
-                lblSlotPotencia.setText("--");
-                indSlotVacio.setOn(true);
-                indSlotOffline.setOn(false);
-                indSlotStatusOk.setOn(false);
-                indSlotStatusAlerta.setOn(false);
+                mostrarServidorOffline(lblSlotCarga, lblSlotPotencia, indSlotVacio, indSlotOffline, indSlotStatusOk, indSlotStatusAlerta, indAlerta, indSlotIA1, indSlotIA2);
             } else {
                 ServerEnergySnapshot energia = energiaPorUbicacion.get(location);
                 lblSlotCarga.setTextColor(COLOR_LABEL_AZUL);
@@ -245,26 +257,72 @@ public class Sketch extends PApplet {
                 indSlotVacio.setOn(false);
                 indSlotOffline.setOn(false);
                 indSlotStatusOk.setOn(false);
+                indAlerta.setOn(false);
                 indSlotStatusAlerta.setOn(false);
+                indSlotIA2.setOn(false);
                 ServerHealthSnapshot salud = saludPorUbicacion.get(location);
                 if (salud == null) throw new IllegalStateException("No existe snapshot de salud para el servidor: " + location);
                 HardwareStatus status = salud.status();
                 switch (status) {
                     case OFFLINE -> indSlotOffline.setOn(true);
                     case OK -> indSlotStatusOk.setOn(true);
-                    case ALERT -> indSlotStatusAlerta.setOn(true);
+                    case ALERT -> {
+                        indAlerta.setOn(true);
+                        indSlotStatusAlerta.setOn(true);
+                    }
                 }
+                boolean serverIA = installedServer.get().getRole() == ServerRole.AI;
+                indSlotIA1.setOn(serverIA);
+                indSlotIA2.setOn(serverIA);
             }
         }
         double cargaPromedio = cargaTotal / servidoresInstalados;
         labels.get("lblRackCargaPromedioValor").setText(String.format("%.0f%%", cargaPromedio * 100));
         labels.get("lblRackPotenciaAcumuladaValor").setText(String.format("%.2fkW", potenciaAcumulada / 1000));
+        actualizarBarra("RackElegidoPotencia", potenciaAcumulada, potenciaIdleTotalRackElegido, potenciaMaximaTotalRackElegido);
+    }
+
+    private void mostrarServidorOffline(
+            Label lblSlotCarga,
+            Label lblSlotPotencia,
+            Indicator indSlotVacio,
+            Indicator indSlotOffline,
+            Indicator indSlotStatusOk,
+            Indicator indSlotStatusAlerta,
+            Indicator indAlerta,
+            Indicator indSlotIA1,
+            Indicator indSlotIA2
+    ) {
+        Objects.requireNonNull(lblSlotCarga);
+        Objects.requireNonNull(lblSlotPotencia);
+        Objects.requireNonNull(indSlotVacio);
+        Objects.requireNonNull(indSlotOffline);
+        Objects.requireNonNull(indSlotStatusOk);
+        Objects.requireNonNull(indSlotStatusAlerta);
+        Objects.requireNonNull(indAlerta);
+        Objects.requireNonNull(indSlotIA1);
+        Objects.requireNonNull(indSlotIA2);
+        lblSlotCarga.setTextColor(COLOR_LABEL_BLANCO);
+        lblSlotCarga.setText("--");
+        lblSlotPotencia.setText("--");
+        indSlotVacio.setOn(true);
+        indSlotOffline.setOn(false);
+        indSlotStatusOk.setOn(false);
+        indSlotStatusAlerta.setOn(false);
+        indAlerta.setOn(false);
+        indSlotIA1.setOn(false);
+        indSlotIA2.setOn(false);
+    }
+
+    private void actualizarBarra(String tipo, float valor, float valorMin, float valorMax) {
+        if (tipo == null || tipo.isEmpty()) return;
+        String llave = "indBarra" + tipo;
+        int iMax = (int) map(valor, valorMin, valorMax, 1, 6);
+        for (int i = 0; i < 6; i++) indicadores.get(llave + (i + 1)).setOn(i < iMax);
     }
 
     private Rack obtenerRackElegido() {
-        return datacenter
-                .findRack(columnaElegida, rackElegido)
-                .orElseThrow(() -> new IllegalStateException("Rack no encontrado: " + columnaElegida + "-" + rackElegido));
+        return datacenter.findRack(columnaElegida, rackElegido).orElseThrow(() -> new IllegalStateException("Rack no encontrado: " + columnaElegida + "-" + rackElegido));
     }
 
     private Map<ServerLocation, ServerEnergySnapshot> obtenerEnergiaPorUbicacion() {
@@ -310,14 +368,7 @@ public class Sketch extends PApplet {
     @Override
     public void keyReleased() {
         if (key == 'e') showOverlayEstatico = !showOverlayEstatico;
-        else if (key == 'd') {
-            Indicator ind;
-            for (int i = 0; i < 12; i++) {
-                String s = "indSlotVacio" + String.format("%02d", i + 1);
-                ind = indicators.get(s);
-                //if (ind != null) ind.setOn(!ind.isOn());
-            }
-        } else if (keyCode == BARRA_ESPACIADORA) {
+        else if (keyCode == BARRA_ESPACIADORA) {
             if (timerSimulacion.isRunning()) timerSimulacion.stop();
             else timerSimulacion.start();
         }
@@ -333,7 +384,6 @@ public class Sketch extends PApplet {
                 snapshot.consumedEnergyKWh(),
                 snapshot.serverCount()
         );
-
         snapshot.servers().forEach(server ->
                 System.out.printf(
                         Locale.US,

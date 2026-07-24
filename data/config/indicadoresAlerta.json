@@ -1,0 +1,268 @@
+{
+  "controls": [
+    {
+      "type": "indicator",
+      "code": "indAlerta01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7877901042,
+        "y": 0.1590181269,
+        "width": 0.3311581067,
+        "height": 0.02920443102
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indAlertaTop.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indAlerta02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7877901042,
+        "y": 0.1917603223,
+        "width": 0.3311581067,
+        "height": 0.02920443102
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indAlertaMid.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indAlerta03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7877901042,
+        "y": 0.2245025176,
+        "width": 0.3311581067,
+        "height": 0.02920443102
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indAlertaMid.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indAlerta04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7877901042,
+        "y": 0.2572447130,
+        "width": 0.3311581067,
+        "height": 0.02920443102
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indAlertaMid.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indAlerta05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7877901042,
+        "y": 0.2899869084,
+        "width": 0.3311581067,
+        "height": 0.02920443102
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indAlertaMid.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indAlerta06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7877901042,
+        "y": 0.3227291037,
+        "width": 0.3311581067,
+        "height": 0.02920443102
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indAlertaMid.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indAlerta07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7877901042,
+        "y": 0.3554718026,
+        "width": 0.3311581067,
+        "height": 0.02920443102
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indAlertaMid.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indAlerta08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7877901042,
+        "y": 0.3882139980,
+        "width": 0.3311581067,
+        "height": 0.02920443102
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indAlertaMid.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indAlerta09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7877901042,
+        "y": 0.4209561934,
+        "width": 0.3311581067,
+        "height": 0.02920443102
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indAlertaMid.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indAlerta10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7877901042,
+        "y": 0.4536983887,
+        "width": 0.3311581067,
+        "height": 0.02920443102
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indAlertaMid.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indAlerta11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7877901042,
+        "y": 0.4864405841,
+        "width": 0.3311581067,
+        "height": 0.02920443102
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indAlertaMid.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indAlerta12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7877901042,
+        "y": 0.5191827795,
+        "width": 0.3311581067,
+        "height": 0.02920443102
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indAlertaBottom.png"
+        }
+      }
+    }
+  ]
+}

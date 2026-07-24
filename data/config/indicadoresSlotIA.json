@@ -1,0 +1,268 @@
+{
+  "controls": [
+    {
+      "type": "indicator",
+      "code": "indSlotIA01-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.1729456193,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA02-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.2006686808,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA03-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.2289909366,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA04-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.2583207452,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA05-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.2866440081,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA06-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.3149672709,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA07-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.3432890232,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA08-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.3716122860,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA09-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.3999355488,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA10-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.4282573011,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA11-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.4565805639,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSlotIA12-1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7417619792,
+        "y": 0.4849033233,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#40f2ebe7",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    }
+  ]
+}
