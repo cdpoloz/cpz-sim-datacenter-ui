@@ -7,12 +7,16 @@ import com.cpz.processing.controls.controls.label.Label;
 import com.cpz.processing.controls.core.input.InputManager;
 import com.cpz.processing.controls.core.overlay.OverlayManager;
 import com.cpz.processing.controls.input.ProcessingKeyboardAdapter;
+import com.cpz.processing.template.config.HotAisleConfiguration;
+import com.cpz.processing.template.config.HotAisleConfigurationLoader;
+import com.cpz.processing.template.config.HotAisleDefinition;
 import com.cpz.sim.datacenter.config.definition.DatacenterDefinition;
 import com.cpz.sim.datacenter.config.json.JsonDatacenterConfigLoader;
 import com.cpz.sim.datacenter.factory.DatacenterFactory;
 import com.cpz.sim.datacenter.factory.TemperatureSystemOptionsFactory;
 import com.cpz.sim.datacenter.factory.WorkloadFactorProviderFactory;
 import com.cpz.sim.datacenter.health.HealthThreshold;
+import com.cpz.sim.datacenter.health.ServerAlertReason;
 import com.cpz.sim.datacenter.health.ServerHealthOptions;
 import com.cpz.sim.datacenter.model.*;
 import com.cpz.sim.datacenter.snapshot.*;
@@ -25,6 +29,7 @@ import com.cpz.sim.datacenter.workload.ServerWorkloadFactorProvider;
 import com.cpz.sim.datacenter.workload.WorkloadSource;
 import com.cpz.sim.foundation.engine.SimulationEngine;
 import com.cpz.sim.foundation.time.SimulationClock;
+import com.cpz.utils.color.Colors;
 import com.cpz.utils.noise.FractalNoise;
 import com.cpz.utils.noise.PerlinNoise;
 import com.cpz.utils.time.Timer;
@@ -33,6 +38,7 @@ import processing.core.PImage;
 import processing.opengl.PJOGL;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
@@ -68,9 +74,16 @@ public class Sketch extends PApplet {
     private ServerHealthSystem healthSystem;
     private HealthSnapshotProvider healthSnapshotProvider;
     private HealthSnapshot healthSnapshot;
+    private TemperatureSystem temperatureSystem;
+    private TemperatureSnapshotProvider temperatureSnapshotProvider;
+    private TemperatureSnapshot temperatureSnapshot;
     private String columnaElegida, rackElegido;
+    private HotAisleConfiguration hotAisleConfiguration;
     private Map<String, Rack> racks;
     private float potenciaIdleTotalRackElegido, potenciaMaximaTotalRackElegido;
+    private float minServerTemperatureCelsius;
+    private float maxServerTemperatureCelsius;
+    private HotAisleDefinition pasilloCalienteElegido;
 
     public void settings() {
         LOG.info("Starting settings");
@@ -115,9 +128,8 @@ public class Sketch extends PApplet {
         // imágenes
         fondo = loadImage("data" + File.separator + "img" + File.separator + "ui_fondo.png");
         overlayEstatico = loadImage("data" + File.separator + "img" + File.separator + "ui_overlay.png");
-
         // datacenter
-        Path configPath = Path.of("data/config/datacenter-test.json");
+        Path configPath = Path.of("data/config/datacenter-test-complete.json");
         DatacenterDefinition definition = new JsonDatacenterConfigLoader().load(configPath);
         datacenter = new DatacenterFactory().create(definition);
         racks = new HashMap<>();
@@ -145,7 +157,7 @@ public class Sketch extends PApplet {
         // sistemas
         energySystem = new EnergyConsumptionSystem(datacenter);
         TemperatureSystemOptions temperatureOptions = new TemperatureSystemOptionsFactory().create(definition);
-        TemperatureSystem temperatureSystem = new TemperatureSystem(datacenter, temperatureOptions, new SimpleServerTemperatureModel());
+        temperatureSystem = new TemperatureSystem(datacenter, temperatureOptions, new SimpleServerTemperatureModel());
         HealthThreshold utilizationThreshold = new HealthThreshold(
                 Double.parseDouble(PROPS.getProperty("simulation.health.utilization.alert-threshold")),
                 Double.parseDouble(PROPS.getProperty("simulation.health.utilization.recovery-threshold"))
@@ -162,16 +174,50 @@ public class Sketch extends PApplet {
         engine.register(energySystem);
         // snapshots
         energySnapshotProvider = new EnergyConsumptionSnapshotProvider(datacenter, energySystem);
+        temperatureSnapshotProvider = new TemperatureSnapshotProvider(datacenter, temperatureSystem, temperatureOptions);
         healthSnapshotProvider = new HealthSnapshotProvider(datacenter, healthSystem, temperatureSystem);
+        // pasillos calientes
+        Path configurationPath = Path.of(dataPath("config" + File.separator + "hot-aisle-mapping.json"));
+        HotAisleConfigurationLoader loader = new HotAisleConfigurationLoader();
+        try {
+            hotAisleConfiguration = loader.load(configurationPath);
+            initializeHotAisleMapping(hotAisleConfiguration);
+            Map<String, HotAisleDefinition> hotAisleByColumn = new HashMap<>();
+            for (HotAisleDefinition hotAisle : hotAisleConfiguration.hotAisles()) {
+                for (String column : hotAisle.columns()) {
+                    HotAisleDefinition previous = hotAisleByColumn.put(column, hotAisle);
+                    if (previous != null) throw new IllegalArgumentException("Column assigned to multiple hot aisles: " + column);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         // timers
         timerSimulacion = new Timer();
-        timerSimulacion.setPeriodMillis(1000);
+        timerSimulacion.setPeriodMillis(100);
         timerSimulacion.start();
-        // debug
-        showOverlayEstatico = true;
+        // valores iniciales
         columnaElegida = "C01";
         rackElegido = "R01";
+        obtenerPasilloCalienteElegido();
         calcularLimitesPotenciaRackElegido();
+        calculateTemperatureRange(datacenter, temperatureOptions);
+        // debug
+        showOverlayEstatico = true;
+    }
+
+    private final Map<String, HotAisleDefinition> hotAisleByColumn =
+            new HashMap<>();
+
+    private void initializeHotAisleMapping(HotAisleConfiguration configuration) {
+        hotAisleByColumn.clear();
+        for (HotAisleDefinition hotAisle : configuration.hotAisles()) {
+            for (String column : hotAisle.columns()) {
+                HotAisleDefinition previous = hotAisleByColumn.put(column, hotAisle);
+                if (previous != null)
+                    throw new IllegalArgumentException("Column '%s' is assigned to hot aisles '%s' and '%s'".formatted(column, previous.code(), hotAisle.code()));
+            }
+        }
     }
 
     private void calcularLimitesPotenciaRackElegido() {
@@ -185,6 +231,21 @@ public class Sketch extends PApplet {
             potenciaIdleTotalRackElegido += installedServer.get().getConfig().idlePowerWatts();
             potenciaMaximaTotalRackElegido += installedServer.get().getConfig().maxPowerWatts();
         }
+    }
+
+    private void calculateTemperatureRange(Datacenter datacenter, TemperatureSystemOptions temperatureOptions) {
+        double ambientTemperature = temperatureOptions.ambientTemperatureCelsius();
+        double globalHeatDissipation = temperatureOptions.heatDissipationWattsPerCelsius();
+        double highestEquilibriumTemperature = ambientTemperature;
+        for (Server server : datacenter.getServers()) {
+            ServerConfig config = server.getConfig();
+            ServerThermalProperties thermalProperties = config.thermalProperties();
+            double heatDissipation = thermalProperties != null ? thermalProperties.heatDissipationWattsPerCelsius() : globalHeatDissipation;
+            double equilibriumTemperature = ambientTemperature + config.maxPowerWatts() / heatDissipation;
+            highestEquilibriumTemperature = Math.max(highestEquilibriumTemperature, equilibriumTemperature);
+        }
+        minServerTemperatureCelsius = (float) ambientTemperature;
+        maxServerTemperatureCelsius = (float) Math.ceil(highestEquilibriumTemperature);
     }
 
     public void draw() {
@@ -212,6 +273,7 @@ public class Sketch extends PApplet {
     private void updateSnapshots() {
         if (!updateSnapshots) return;
         energySnapshot = energySnapshotProvider.snapshot(engine.currentTick());
+        temperatureSnapshot = temperatureSnapshotProvider.snapshot(engine.currentTick());
         healthSnapshot = healthSnapshotProvider.snapshot(engine.currentTick());
         updateSnapshots = false;
         updateUI = true;
@@ -221,6 +283,7 @@ public class Sketch extends PApplet {
     private void updateControles() {
         if (!updateUI) return;
         updatePanelRackElegido();
+        updatePanelPasilloElegido();
         updateUI = false;
     }
 
@@ -228,15 +291,20 @@ public class Sketch extends PApplet {
         labels.get("lblRackElegidoValor").setText(columnaElegida + "-" + rackElegido);
         Rack rack = obtenerRackElegido();
         Map<ServerLocation, ServerEnergySnapshot> energiaPorUbicacion = obtenerEnergiaPorUbicacion();
+        Map<ServerLocation, ServerTemperatureSnapshot> temperaturaPorUbicacion = obtenerTemperaturaPorUbicacion();
         Map<ServerLocation, ServerHealthSnapshot> saludPorUbicacion = obtenerSaludPorUbicacion();
         int servidoresInstalados = 0;
+        int servidoresOnline = 0;
+        double temperaturaAcumulada = 0;
         double cargaTotal = 0;
         float potenciaAcumulada = 0;
         for (String slot : rack.getSlotCodes()) {
             ServerLocation location = new ServerLocation(columnaElegida, new RackCode(rackElegido), slot);
             Optional<Server> installedServer = datacenter.getServer(location);
+            Label lblSlotTemperatura = labels.get("lblSlotTemperatura" + slot.replace("S", ""));
             Label lblSlotCarga = labels.get("lblSlotCarga" + slot.replace("S", ""));
             Label lblSlotPotencia = labels.get("lblSlotPotencia" + slot.replace("S", ""));
+            Indicator indSlot = indicadores.get("indSlot" + slot.replace("S", ""));
             Indicator indSlotVacio = indicadores.get("indSlotVacio" + slot.replace("S", ""));
             Indicator indSlotOffline = indicadores.get("indSlotOffline" + slot.replace("S", ""));
             Indicator indSlotStatusOk = indicadores.get("indSlotOk" + slot.replace("S", ""));
@@ -245,12 +313,17 @@ public class Sketch extends PApplet {
             Indicator indSlotIA1 = indicadoresSlotIA.get("indSlotIA" + slot.replace("S", "") + "-1");
             Indicator indSlotIA2 = indicadores.get("indSlotIA" + slot.replace("S", "") + "-2");
             if (installedServer.isEmpty()) {
-                mostrarServidorOffline(lblSlotCarga, lblSlotPotencia, indSlotVacio, indSlotOffline, indSlotStatusOk, indSlotStatusAlerta, indAlerta, indSlotIA1, indSlotIA2);
+                mostrarSlotVacio(indSlot, lblSlotTemperatura, lblSlotCarga, lblSlotPotencia, indSlotVacio, indSlotOffline, indSlotStatusOk, indSlotStatusAlerta, indAlerta, indSlotIA1, indSlotIA2);
             } else {
+                ServerTemperatureSnapshot temperatura = temperaturaPorUbicacion.get(location);
+                if (temperatura == null) throw new IllegalStateException("No existe snapshot de temperatura para el servidor: " + location);
+                actualizarColorSlot(indSlot, (float) temperatura.temperatureCelsius());
+                lblSlotTemperatura.setText(String.format(PROPS.getProperty("number.format.temperature"), temperatura.temperatureCelsius()));
                 ServerEnergySnapshot energia = energiaPorUbicacion.get(location);
-                lblSlotCarga.setTextColor(COLOR_LABEL_AZUL);
-                lblSlotCarga.setText(String.format("%.0f%%", energia.utilization() * 100));
-                lblSlotPotencia.setText(String.format("%.2fkW", energia.currentPowerWatts() / 1000));
+                if (energia == null) throw new IllegalStateException("No existe snapshot de energía para el servidor: " + location);
+                lblSlotCarga.setText(String.format(PROPS.getProperty("number.format.percentage"), energia.utilization() * 100));
+                lblSlotPotencia.setText(String.format(PROPS.getProperty("number.format.power.kw"), energia.currentPowerWatts() / 1000));
+                temperaturaAcumulada += temperatura.temperatureCelsius();
                 cargaTotal += energia.utilization();
                 potenciaAcumulada += energia.currentPowerWatts();
                 servidoresInstalados++;
@@ -265,24 +338,44 @@ public class Sketch extends PApplet {
                 HardwareStatus status = salud.status();
                 switch (status) {
                     case OFFLINE -> indSlotOffline.setOn(true);
-                    case OK -> indSlotStatusOk.setOn(true);
+                    case OK -> {
+                        servidoresOnline++;
+                        indSlotStatusOk.setOn(true);
+                    }
                     case ALERT -> {
+                        servidoresOnline++;
                         indAlerta.setOn(true);
                         indSlotStatusAlerta.setOn(true);
                     }
                 }
+                boolean alertaPorCarga = salud.hasAlertReason(ServerAlertReason.HIGH_UTILIZATION);
+                lblSlotCarga.setTextColor(alertaPorCarga ? COLOR_LABEL_MAGENTA : COLOR_LABEL_AZUL);
+                boolean alertaPorTemperatura = salud.hasAlertReason(ServerAlertReason.HIGH_TEMPERATURE);
+                lblSlotTemperatura.setTextColor(alertaPorTemperatura ? COLOR_LABEL_MAGENTA : COLOR_LABEL_AMARILLO);
                 boolean serverIA = installedServer.get().getRole() == ServerRole.AI;
                 indSlotIA1.setOn(serverIA);
                 indSlotIA2.setOn(serverIA);
             }
         }
-        double cargaPromedio = cargaTotal / servidoresInstalados;
-        labels.get("lblRackCargaPromedioValor").setText(String.format("%.0f%%", cargaPromedio * 100));
-        labels.get("lblRackPotenciaAcumuladaValor").setText(String.format("%.2fkW", potenciaAcumulada / 1000));
+        double temperaturaPromedio = temperaturaAcumulada / servidoresInstalados;
+        double cargaPromedio = cargaTotal / servidoresOnline;
+        labels.get("lblRackTemperaturaPromedioValor").setTextColor(servidoresInstalados > 0 ? COLOR_LABEL_AMARILLO : COLOR_LABEL_BLANCO);
+        labels.get("lblRackTemperaturaPromedioValor").setText(servidoresInstalados > 0 ? String.format(PROPS.getProperty("number.format.temperature"), temperaturaPromedio) : "--");
+        labels.get("lblRackCargaPromedioValor").setText(String.format(PROPS.getProperty("number.format.percentage"), cargaPromedio * 100));
+        labels.get("lblRackPotenciaAcumuladaValor").setText(String.format(PROPS.getProperty("number.format.power.kw"), potenciaAcumulada / 1000));
         actualizarBarra("RackElegidoPotencia", potenciaAcumulada, potenciaIdleTotalRackElegido, potenciaMaximaTotalRackElegido);
     }
 
-    private void mostrarServidorOffline(
+    private void actualizarColorSlot(Indicator indSlot, float temperatura) {
+        float fColor = map(temperatura, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1);
+        int colorSlot = Colors.lerpColor(COLOR_TEMPERATURA_MINIMA, COLOR_TEMPERATURA_MAXIMA, fColor);
+        indSlot.setOnColor(colorSlot);
+        indSlot.setOn(true);
+    }
+
+    private void mostrarSlotVacio(
+            Indicator indSlot,
+            Label lblSlotTemperatura,
             Label lblSlotCarga,
             Label lblSlotPotencia,
             Indicator indSlotVacio,
@@ -293,6 +386,8 @@ public class Sketch extends PApplet {
             Indicator indSlotIA1,
             Indicator indSlotIA2
     ) {
+        Objects.requireNonNull(indSlot);
+        Objects.requireNonNull(lblSlotTemperatura);
         Objects.requireNonNull(lblSlotCarga);
         Objects.requireNonNull(lblSlotPotencia);
         Objects.requireNonNull(indSlotVacio);
@@ -302,9 +397,12 @@ public class Sketch extends PApplet {
         Objects.requireNonNull(indAlerta);
         Objects.requireNonNull(indSlotIA1);
         Objects.requireNonNull(indSlotIA2);
+        lblSlotTemperatura.setTextColor(COLOR_LABEL_BLANCO);
         lblSlotCarga.setTextColor(COLOR_LABEL_BLANCO);
+        lblSlotTemperatura.setText("--");
         lblSlotCarga.setText("--");
         lblSlotPotencia.setText("--");
+        indSlot.setOn(false);
         indSlotVacio.setOn(true);
         indSlotOffline.setOn(false);
         indSlotStatusOk.setOn(false);
@@ -325,8 +423,76 @@ public class Sketch extends PApplet {
         return datacenter.findRack(columnaElegida, rackElegido).orElseThrow(() -> new IllegalStateException("Rack no encontrado: " + columnaElegida + "-" + rackElegido));
     }
 
+    private void updatePanelPasilloElegido() {
+        pasilloCalienteElegido = obtenerPasilloCalienteElegido();
+        labels.get("lblPasilloElegidoValor").setText(pasilloCalienteElegido.displayName());
+        Map<ServerLocation, ServerEnergySnapshot> energiaPorUbicacion = obtenerEnergiaPorUbicacion();
+        Map<ServerLocation, ServerTemperatureSnapshot> temperaturaPorUbicacion = obtenerTemperaturaPorUbicacion();
+        List<Server> servidoresPasilloCaliente = datacenter
+                .getServers()
+                .stream()
+                .filter(server -> pasilloCalienteElegido.columns().contains(server.getLocation().column()))
+                .toList();
+        int servidoresOnline = 0;
+        int servidoresInstalados = 0;
+        float temperaturaPromedio = 0;
+        float temperaturaMaxima = minServerTemperatureCelsius;
+        float cargaPromedio = 0;
+        for (Server server : servidoresPasilloCaliente) {
+            ServerLocation location = server.getLocation();
+            ServerTemperatureSnapshot temperature = temperaturaPorUbicacion.get(location);
+            ServerEnergySnapshot energy = energiaPorUbicacion.get(location);
+            if (temperature == null || energy == null) continue;
+            float temperaturaServidor = (float) temperature.temperatureCelsius();
+            if (temperaturaServidor > temperaturaMaxima) temperaturaMaxima = temperaturaServidor;
+            temperaturaPromedio += (float) temperature.temperatureCelsius();
+            servidoresInstalados++;
+            if (server.getStatus() != HardwareStatus.OFFLINE) {
+                cargaPromedio += (float) energy.utilization();
+                servidoresOnline++;
+            }
+        }
+        temperaturaPromedio /= servidoresInstalados;
+        cargaPromedio /= servidoresOnline;
+        labels.get("lblPasilloElegidoTemperaturaPromedioValor").setText(String.format(PROPS.getProperty("number.format.temperature"), temperaturaPromedio));
+        //labels.get("lblPasilloElegidoTemperaturaMaximaValor").setText(String.format(PROPS.getProperty("number.format.temperature"), temperaturaMaxima));
+        // *** CONTINUAR AQUÍ ***
+        // AGREGAR LABELS A JSON Y CARGAR VALORES PROMEDIO
+        // **********************
+    }
+
+    private List<Server> obtenerServidoresEnPasilloCaliente(Datacenter datacenter, HotAisleDefinition hotAisle) {
+        List<Server> servers = new ArrayList<>();
+        for (String column : hotAisle.columns()) {
+            for (int row = 1; row <= 12; row++) {
+                String rackCode = "R%02d".formatted(row);
+                servers.addAll(datacenter.getServers(column, rackCode));
+            }
+        }
+        return List.copyOf(servers);
+    }
+
+    private HotAisleDefinition obtenerPasilloCalienteElegido() {
+        HotAisleDefinition hotAisle = hotAisleByColumn.get(columnaElegida);
+        if (hotAisle == null) throw new IllegalArgumentException("No hot aisle configured for column: " + columnaElegida);
+        return hotAisle;
+    }
+
     private Map<ServerLocation, ServerEnergySnapshot> obtenerEnergiaPorUbicacion() {
         return energySnapshot.servers()
+                .stream()
+                .collect(Collectors.toMap(
+                        server -> new ServerLocation(
+                                server.column(),
+                                server.rackCode(),
+                                server.slot()
+                        ),
+                        Function.identity()
+                ));
+    }
+
+    private Map<ServerLocation, ServerTemperatureSnapshot> obtenerTemperaturaPorUbicacion() {
+        return temperatureSnapshot.servers()
                 .stream()
                 .collect(Collectors.toMap(
                         server -> new ServerLocation(
@@ -367,35 +533,30 @@ public class Sketch extends PApplet {
 
     @Override
     public void keyReleased() {
-        if (key == 'e') showOverlayEstatico = !showOverlayEstatico;
-        else if (keyCode == BARRA_ESPACIADORA) {
-            if (timerSimulacion.isRunning()) timerSimulacion.stop();
-            else timerSimulacion.start();
-        }
+        if (key == 'm') showOverlayEstatico = !showOverlayEstatico;
+        else if (keyCode == BARRA_ESPACIADORA) timerSimulacion.toggle();
+        else if (keyCode == 49) columnaElegida = "C01";
+        else if (keyCode == 50) columnaElegida = "C02";
+        else if (keyCode == 51) columnaElegida = "C03";
+        else if (keyCode == 52) columnaElegida = "C04";
+        else if (keyCode == 53) columnaElegida = "C05";
+        else if (keyCode == 54) columnaElegida = "C06";
+        else if (keyCode == 55) columnaElegida = "C07";
+        else if (keyCode == 56) columnaElegida = "C08";
+
+        else if (keyCode == 81) rackElegido = "R01";
+        else if (keyCode == 87) rackElegido = "R02";
+        else if (keyCode == 69) rackElegido = "R03";
+        else if (keyCode == 82) rackElegido = "R04";
+        else if (keyCode == 84) rackElegido = "R05";
+        else if (keyCode == 89) rackElegido = "R06";
+        else if (keyCode == 85) rackElegido = "R07";
+        else if (keyCode == 73) rackElegido = "R08";
+        else if (keyCode == 79) rackElegido = "R09";
+        else if (keyCode == 80) rackElegido = "R10";
+        else if (keyCode == -431) rackElegido = "R11";
+        else if (keyCode == 43) rackElegido = "R12";
+        obtenerPasilloCalienteElegido();
     }
 
-    private void printEnergySnapshot(EnergyConsumptionSnapshot snapshot) {
-        System.out.printf(
-                Locale.US,
-                "Tick: %d | Simulated time: %.0f m | IT power: %.1f W | Energy: %.4f kWh | Servers: %d%n",
-                snapshot.tickIndex(),
-                snapshot.elapsedSeconds() / 60,
-                snapshot.totalItPowerWatts(),
-                snapshot.consumedEnergyKWh(),
-                snapshot.serverCount()
-        );
-        snapshot.servers().forEach(server ->
-                System.out.printf(
-                        Locale.US,
-                        "  %-4s | %-4s | %-7s | "
-                                + "Util: %6.2f %% | Power: %6.1f W | Status: %s%n",
-                        server.rackCode(),
-                        server.slot(),
-                        server.serverCode(),
-                        server.utilization() * 100.0f,
-                        server.currentPowerWatts(),
-                        server.status()
-                )
-        );
-    }
 }

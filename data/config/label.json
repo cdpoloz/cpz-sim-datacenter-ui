@@ -24,7 +24,8 @@
         "alignY": "top",
         "disabledAlpha": 80
       }
-    },{
+    },
+    {
       "type": "label",
       "code": "lblRackElegidoValor",
       "text": "--",
@@ -1518,6 +1519,56 @@
       "visible": true,
       "style": {
         "textColor": "#5cb4c6",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoValor",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5583476563,
+        "y": 0.09340382679,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01309164149
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#5cb4c6",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoTemperaturaPromedioValor",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4952635417,
+        "y": 0.1507950655,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.02114803625
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#00ffcc",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
         "alignY": "top",

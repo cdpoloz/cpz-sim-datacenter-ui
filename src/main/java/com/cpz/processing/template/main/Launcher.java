@@ -4,9 +4,8 @@ import com.cpz.processing.template.logging.Log;
 import com.cpz.processing.template.logging.LogMessage;
 import processing.core.PApplet;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -43,8 +42,8 @@ public class Launcher {
         }));
         // Properties.
         String propertiesPath = "data" + File.separator + "config.properties";
-        try (FileInputStream fis = new FileInputStream(propertiesPath)) {
-            PROPS.load(fis);
+        try (Reader reader = new InputStreamReader(new FileInputStream(propertiesPath), StandardCharsets.UTF_8)) {
+            PROPS.load(reader);
         } catch (IOException e) {
             LOG.severe(LogMessage.fileLoadError(propertiesPath));
             System.exit(1);

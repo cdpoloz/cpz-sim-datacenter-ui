@@ -1,0 +1,34 @@
+{
+  "hotAisles": [
+    {
+      "code": "HA01",
+      "displayName": "C01",
+      "columns": ["C01"],
+      "layout": "WALL"
+    },
+    {
+      "code": "HA02",
+      "displayName": "C02-C03",
+      "columns": ["C02", "C03"],
+      "layout": "SHARED"
+    },
+    {
+      "code": "HA03",
+      "displayName": "C04-C05",
+      "columns": ["C04", "C05"],
+      "layout": "SHARED"
+    },
+    {
+      "code": "HA04",
+      "displayName": "C06-C07",
+      "columns": ["C06", "C07"],
+      "layout": "SHARED"
+    },
+    {
+      "code": "HA05",
+      "displayName": "C08",
+      "columns": ["C08"],
+      "layout": "WALL"
+    }
+  ]
+}
