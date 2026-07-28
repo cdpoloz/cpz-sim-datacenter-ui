@@ -1,0 +1,48 @@
+{
+  "controls": [
+    {
+      "type": "indicator",
+      "code": "indPasilloNullIzq",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4795080729,
+        "y": 0.2040589124,
+        "width": 0.1227004028,
+        "height": 0.3277829809
+      },
+      "on": false,
+      "onColor": "#ff000000",
+      "offColor": "#00ffffff",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloNullIzq.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloNullDer",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5626260417,
+        "y": 0.2040589124,
+        "width": 0.1227004028,
+        "height": 0.3277829809
+      },
+      "on": false,
+      "onColor": "#ff000000",
+      "offColor": "#00ffffff",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloNullDer.png"
+        }
+      }
+    }
+  ]
+}

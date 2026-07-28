@@ -1,0 +1,532 @@
+{
+  "controls": [
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5097796875,
+        "y": 0.2042109768,
+        "width": 0.05134491440,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq01.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5080588542,
+        "y": 0.2303932528,
+        "width": 0.05342648540,
+        "height": 0.02659315206
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq02.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5080588542,
+        "y": 0.2569864048,
+        "width": 0.05342648540,
+        "height": 0.02659315206
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq03.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5063497396,
+        "y": 0.2833741188,
+        "width": 0.05548640483,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq04.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.50293125,
+        "y": 0.3097618328,
+        "width": 0.05960523666,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq05.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5012221354,
+        "y": 0.3361495468,
+        "width": 0.06166515609,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq06.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4995130208,
+        "y": 0.3625372608,
+        "width": 0.06372457200,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq07.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4978039063,
+        "y": 0.3889249748,
+        "width": 0.06578398792,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq08.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4960945313,
+        "y": 0.4153126888,
+        "width": 0.06784390735,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq09.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.494854167,
+        "y": 0.4417004028,
+        "width": 0.06990332326,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq10.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4926763021,
+        "y": 0.4680881168,
+        "width": 0.07196273917,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq11.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4909669271,
+        "y": 0.4944758308,
+        "width": 0.07402265861,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq12.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaDer01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5693533854,
+        "y": 0.2042109768,
+        "width": 0.05134491440,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer01.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaDer02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5699973958,
+        "y": 0.2303932528,
+        "width": 0.05342648540,
+        "height": 0.02659315206
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer02.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaDer03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5706414063,
+        "y": 0.2569864048,
+        "width": 0.05342648540,
+        "height": 0.02659315206
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer03.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaDer04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5712854167,
+        "y": 0.2833741188,
+        "width": 0.05548640483,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer04.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaDer05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5719294271,
+        "y": 0.3097618328,
+        "width": 0.05960523666,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer05.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaDer06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5725734375,
+        "y": 0.3361495468,
+        "width": 0.06166515609,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer06.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaDer07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5732174479,
+        "y": 0.3625372608,
+        "width": 0.06372457200,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer07.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaDer08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5738614583,
+        "y": 0.3889249748,
+        "width": 0.06578398792,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer08.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaDer09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5745054688,
+        "y": 0.4153126888,
+        "width": 0.06784390735,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer09.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaDer10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5751494792,
+        "y": 0.4417004028,
+        "width": 0.06990332326,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer10.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaDer11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5757934896,
+        "y": 0.4680881168,
+        "width": 0.07196273917,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer11.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoServidorTemperaturaMaximaDer12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5764375,
+        "y": 0.4944758308,
+        "width": 0.07402265861,
+        "height": 0.02638771400
+      },
+      "on": false,
+      "onColor": "#ff00ff00",
+      "offColor": "#00000000",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer12.png"
+        }
+      }
+    }
+  ]
+}

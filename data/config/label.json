@@ -218,7 +218,7 @@
       "enabled": true,
       "visible": true,
       "style": {
-        "textColor": "#f2ebe7",
+        "textColor": "#00ffcc",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
         "alignY": "top",
@@ -318,7 +318,7 @@
       "enabled": true,
       "visible": true,
       "style": {
-        "textColor": "#f2ebe7",
+        "textColor": "#00ffcc",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
         "alignY": "top",
@@ -418,7 +418,7 @@
       "enabled": true,
       "visible": true,
       "style": {
-        "textColor": "#f2ebe7",
+        "textColor": "#00ffcc",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
         "alignY": "top",
@@ -518,7 +518,7 @@
       "enabled": true,
       "visible": true,
       "style": {
-        "textColor": "#f2ebe7",
+        "textColor": "#00ffcc",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
         "alignY": "top",
@@ -618,7 +618,7 @@
       "enabled": true,
       "visible": true,
       "style": {
-        "textColor": "#f2ebe7",
+        "textColor": "#00ffcc",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
         "alignY": "top",
@@ -718,7 +718,7 @@
       "enabled": true,
       "visible": true,
       "style": {
-        "textColor": "#f2ebe7",
+        "textColor": "#00ffcc",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
         "alignY": "top",
@@ -818,7 +818,7 @@
       "enabled": true,
       "visible": true,
       "style": {
-        "textColor": "#f2ebe7",
+        "textColor": "#00ffcc",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
         "alignY": "top",
@@ -918,7 +918,7 @@
       "enabled": true,
       "visible": true,
       "style": {
-        "textColor": "#f2ebe7",
+        "textColor": "#00ffcc",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
         "alignY": "top",
@@ -1018,7 +1018,7 @@
       "enabled": true,
       "visible": true,
       "style": {
-        "textColor": "#f2ebe7",
+        "textColor": "#00ffcc",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
         "alignY": "top",
@@ -1118,7 +1118,7 @@
       "enabled": true,
       "visible": true,
       "style": {
-        "textColor": "#f2ebe7",
+        "textColor": "#00ffcc",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
         "alignY": "top",
@@ -1218,7 +1218,7 @@
       "enabled": true,
       "visible": true,
       "style": {
-        "textColor": "#f2ebe7",
+        "textColor": "#00ffcc",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
         "alignY": "top",
@@ -1318,7 +1318,7 @@
       "enabled": true,
       "visible": true,
       "style": {
-        "textColor": "#f2ebe7",
+        "textColor": "#00ffcc",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
         "alignY": "top",
@@ -1581,8 +1581,8 @@
       "text": "AVG SERVER TEMP",
       "bounds": {
         "mode": "relative",
-        "x": 0.4924971354,
-        "y": 0.1308308157,
+        "x": 0.4946338542,
+        "y": 0.1277114804,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -1606,8 +1606,8 @@
       "text": "--",
       "bounds": {
         "mode": "relative",
-        "x": 0.4924971354,
-        "y": 0.1507950655,
+        "x": 0.4946338542,
+        "y": 0.1500855992,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -1619,6 +1619,106 @@
       "visible": true,
       "style": {
         "textColor": "#00ffcc",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoTemperaturaMaxima",
+      "text": "MAX SERVER TEMP",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5717841146,
+        "y": 0.1277114804,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoTemperaturaMaximaValor",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5717841146,
+        "y": 0.1473761329,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.02114803625
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#ff0066",
+        "lineSpacingMultiplier": 1.5,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoCargaIT",
+      "text": "IT LOAD",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.6489341146,
+        "y": 0.1277114804,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoCargaITValor",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.6489341146,
+        "y": 0.1500855992,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.02114803625
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#5cb4c6",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
         "alignY": "top",
