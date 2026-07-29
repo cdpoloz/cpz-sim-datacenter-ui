@@ -1,0 +1,724 @@
+{
+  "controls": [
+    {
+      "type": "button",
+      "code": "btnRackElegidoIzq01",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5229263021,
+        "y": 0.2171530715,
+        "width": 0.05134491440,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoIzq01.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoIzq02",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5217440104,
+        "y": 0.2434380665,
+        "width": 0.05342648540,
+        "height": 0.02659315206
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoIzq02.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoIzq03",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5205674479,
+        "y": 0.2699284995,
+        "width": 0.05342648540,
+        "height": 0.02659315206
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoIzq03.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoIzq04",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5193908854,
+        "y": 0.2963162135,
+        "width": 0.05548640483,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoIzq04.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoIzq05",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5182140625,
+        "y": 0.3227039275,
+        "width": 0.05960523666,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoIzq05.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoIzq06",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5170375,
+        "y": 0.3490916415,
+        "width": 0.06166515609,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoIzq06.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoIzq07",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5158609375,
+        "y": 0.3754793555,
+        "width": 0.06372457200,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoIzq07.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoIzq08",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.514684375,
+        "y": 0.4018670695,
+        "width": 0.06578398792,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoIzq08.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoIzq09",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5135078125,
+        "y": 0.4282547835,
+        "width": 0.06784390735,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoIzq09.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoIzq10",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.51233125,
+        "y": 0.4546424975,
+        "width": 0.06990332326,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoIzq10.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoIzq11",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5111546875,
+        "y": 0.4810302115,
+        "width": 0.07196273917,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoIzq11.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoIzq12",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.509978125,
+        "y": 0.5074179255,
+        "width": 0.07402265861,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoIzq12.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoDer01",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5825,
+        "y": 0.2171530715,
+        "width": 0.05134491440,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoDer01.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoDer02",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5836825521,
+        "y": 0.2434380665,
+        "width": 0.05342648540,
+        "height": 0.02659315206
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoDer02.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoDer03",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5848591146,
+        "y": 0.2699284995,
+        "width": 0.05342648540,
+        "height": 0.02659315206
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoDer03.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoDer04",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5860356771,
+        "y": 0.2963162135,
+        "width": 0.05548640483,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoDer04.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoDer05",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5872122396,
+        "y": 0.3227039275,
+        "width": 0.05960523666,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoDer05.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoDer06",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5883888021,
+        "y": 0.3490916415,
+        "width": 0.06166515609,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoDer06.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoDer07",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5895653646,
+        "y": 0.3754793555,
+        "width": 0.06372457200,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoDer07.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoDer08",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5907421875,
+        "y": 0.4018670695,
+        "width": 0.06578398792,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoDer08.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoDer09",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.59191875,
+        "y": 0.4282547835,
+        "width": 0.06784390735,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoDer09.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoDer10",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5930953125,
+        "y": 0.4546424975,
+        "width": 0.06990332326,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoDer10.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoDer11",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.594271875,
+        "y": 0.4810302115,
+        "width": 0.07196273917,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoDer11.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnRackElegidoDer12",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5954484375,
+        "y": 0.5074179255,
+        "width": 0.07402265861,
+        "height": 0.02638771400
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#002df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnRackElegidoDer12.svg"
+        }
+      }
+    }
+  ]
+}

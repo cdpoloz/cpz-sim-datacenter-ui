@@ -1,0 +1,532 @@
+{
+  "controls": [
+    {
+      "type": "indicator",
+      "code": "indRackElegidoIzq01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5047958333,
+        "y": 0.1934003021,
+        "width": 0.07062487412,
+        "height": 0.04772004028
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoIzq01.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoIzq02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5029580729,
+        "y": 0.2193378651,
+        "width": 0.07317472306,
+        "height": 0.04872306143
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoIzq02.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoIzq03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5011627604,
+        "y": 0.2457195368,
+        "width": 0.07555891239,
+        "height": 0.04892094663
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoIzq03.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoIzq04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4993583333,
+        "y": 0.2718952669,
+        "width": 0.07798690836,
+        "height": 0.04934491440
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoIzq04.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoIzq05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4975453125,
+        "y": 0.2980689829,
+        "width": 0.07798690836,
+        "height": 0.04934491440
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoIzq05.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoIzq06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4955723958,
+        "y": 0.3239290030,
+        "width": 0.08336706949,
+        "height": 0.05055891239
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoIzq06.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoIzq07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4939369792,
+        "y": 0.3504214502,
+        "width": 0.08528398792,
+        "height": 0.05061883182
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoIzq07.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoIzq08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4921325521,
+        "y": 0.3765971803,
+        "width": 0.08771198389,
+        "height": 0.05104279960
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoIzq08.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoIzq09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.490328125,
+        "y": 0.4027729104,
+        "width": 0.09013997986,
+        "height": 0.05146676737
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoIzq09.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoIzq10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4885236979,
+        "y": 0.4289491440,
+        "width": 0.09256797583,
+        "height": 0.05189073515
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoIzq10.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoIzq11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4867192708,
+        "y": 0.4551248741,
+        "width": 0.09499597180,
+        "height": 0.05231470292
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoIzq11.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoIzq12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4849229167,
+        "y": 0.4813016113,
+        "width": 0.09741238671,
+        "height": 0.05273665660
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoIzq12.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoDer01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5643638021,
+        "y": 0.1934003021,
+        "width": 0.07062487412,
+        "height": 0.04772004028
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoDer01.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoDer02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5648830729,
+        "y": 0.2193378651,
+        "width": 0.07317472306,
+        "height": 0.04872306143
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoDer02.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoDer03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5654450521,
+        "y": 0.2457195368,
+        "width": 0.07555891239,
+        "height": 0.04892094663
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoDer03.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoDer04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.56599375,
+        "y": 0.2718952669,
+        "width": 0.07798690836,
+        "height": 0.04934491440
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoDer04.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoDer05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5665385417,
+        "y": 0.2980689829,
+        "width": 0.07798690836,
+        "height": 0.04934491440
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoDer05.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoDer06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5669973958,
+        "y": 0.3239290030,
+        "width": 0.08336706949,
+        "height": 0.05055891239
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoDer06.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoDer07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5676414063,
+        "y": 0.3504214502,
+        "width": 0.08528398792,
+        "height": 0.05061883182
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoDer07.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoDer08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5681901042,
+        "y": 0.3765971803,
+        "width": 0.08771198389,
+        "height": 0.05104279960
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoDer08.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoDer09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5687385417,
+        "y": 0.4027729104,
+        "width": 0.09013997986,
+        "height": 0.05146676737
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoDer09.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoDer10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5692872396,
+        "y": 0.4289491440,
+        "width": 0.09256797583,
+        "height": 0.05189073515
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoDer10.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoDer11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5698359375,
+        "y": 0.4551248741,
+        "width": 0.09499597180,
+        "height": 0.05231470292
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoDer11.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackElegidoDer12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5703825521,
+        "y": 0.4813016113,
+        "width": 0.09741238671,
+        "height": 0.05273665660
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#ff0066",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indRackElegidoDer12.png"
+        }
+      }
+    }
+  ]
+}

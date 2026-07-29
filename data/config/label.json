@@ -1724,6 +1724,531 @@
         "alignY": "top",
         "disabledAlpha": 80
       }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoFila01",
+      "text": "R01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4716736979,
+        "y": 0.2119687815,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoFila02",
+      "text": "R02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4716736979,
+        "y": 0.2385075529,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoFila03",
+      "text": "R03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4716736979,
+        "y": 0.2650458207,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoFila04",
+      "text": "R04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4716736979,
+        "y": 0.2915840886,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoFila05",
+      "text": "R05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4716736979,
+        "y": 0.3181228600,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoFila06",
+      "text": "R06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4716736979,
+        "y": 0.3446611279,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoFila07",
+      "text": "R07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4716736979,
+        "y": 0.3711993958,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoFila08",
+      "text": "R08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4716736979,
+        "y": 0.3977381672,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoFila09",
+      "text": "R09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4716736979,
+        "y": 0.4242885196,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoFila10",
+      "text": "R10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4716736979,
+        "y": 0.4508272910,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoFila11",
+      "text": "R11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4716736979,
+        "y": 0.4773655589,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoFila12",
+      "text": "R12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4716736979,
+        "y": 0.5036596173,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoPerfilTemperatura",
+      "text": "TEMP PROFILE",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.6574098958,
+        "y": 0.2111923464,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoFlujoAire",
+      "text": "AIRFLOW",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.6574098958,
+        "y": 0.5138111782,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoFlujoAireValor",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.6633882813,
+        "y": 0.5297230614,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01309164149
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#5cb4c6",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoEficienciaRefrigeracion",
+      "text": "COOLING EFFICIENCY",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4958518229,
+        "y": 0.5708595166,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoEficienciaRefrigeracionValor",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4958518229,
+        "y": 0.5915166163,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01309164149
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#5cb4c6",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoDeltaTemperatura",
+      "text": "ΔT IN/OUT",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5709057292,
+        "y": 0.5708595166,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoDeltaTemperaturaValor",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5709057292,
+        "y": 0.5915166163,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01309164149
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#5cb4c6",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoPresion",
+      "text": "PRESSURE",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.6476197917,
+        "y": 0.5708595166,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblPasilloElegidoPresionValor",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.6476197917,
+        "y": 0.5915166163,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01309164149
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#5cb4c6",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
     }
   ]
 }

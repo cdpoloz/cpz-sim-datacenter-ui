@@ -1715,6 +1715,72 @@
           "path": "data/img/ind/indElementoBarra.svg"
         }
       }
+    },
+    {
+      "type": "indicator",
+      "code": "indFlechasAireFrioIzq",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4795546875,
+        "y": 0.2140996979,
+        "width": 0.06009214502,
+        "height": 0.2966691843
+      },
+      "on": true,
+      "onColor": "#ff5cb4c6",
+      "offColor": "#005cb4c6",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indFlechasAireFrioIzq.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indFlechasAireFrioDer",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5950515625,
+        "y": 0.2140996979,
+        "width": 0.06009214502,
+        "height": 0.2966691843
+      },
+      "on": true,
+      "onColor": "#ff5cb4c6",
+      "offColor": "#005cb4c6",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indFlechasAireFrioDer.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoFlujoAire",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.6361682292,
+        "y": 0.5297401813,
+        "width": 0.01762336354,
+        "height": 0.01292396777
+      },
+      "on": true,
+      "onColor": "#5cb4c6",
+      "offColor": "#2e3c4a",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indPasilloElegidoFlujoAire.svg"
+        }
+      }
     }
   ]
 }
