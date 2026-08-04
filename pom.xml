@@ -14,9 +14,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>26</maven.compiler.release>
-        <processing.version>4.5.5</processing.version>
+        <processing.version>4.5.6</processing.version>
         <cpz-utils.version>0.2.4</cpz-utils.version>
-        <cpz-mvvm-processing-controls.version>0.9.10</cpz-mvvm-processing-controls.version>
+        <cpz-mvvm-processing-controls.version>0.9.12</cpz-mvvm-processing-controls.version>
         <cpz-sim-foundation.version>0.1.0-alpha.1</cpz-sim-foundation.version>
         <cpz-sim-runtime.version>0.1.0-alpha.1</cpz-sim-runtime.version>
         <cpz-sim-datacenter.version>0.1.0-alpha.1</cpz-sim-datacenter.version>
