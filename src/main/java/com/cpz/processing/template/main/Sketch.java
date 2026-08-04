@@ -216,17 +216,12 @@ public class Sketch extends PApplet {
         try {
             hotAisleConfiguration = loader.load(configurationPath);
             initializeHotAisleMapping(hotAisleConfiguration);
-            Map<String, HotAisleDefinition> hotAisleByColumn = new HashMap<>();
-            for (HotAisleDefinition hotAisle : hotAisleConfiguration.hotAisles()) {
-                for (String column : hotAisle.columns()) {
-                    HotAisleDefinition previous = hotAisleByColumn.put(column, hotAisle);
-                    if (previous != null)
-                        throw new IllegalArgumentException("Column assigned to multiple hot aisles: " + column);
-                }
-            }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("No se pudo cargar la configuración de pasillos calientes", e);
         }
+        // grupos operacionales
+        List<ServerGroupDefinition> operationalGroups = createOperationalGroups(hotAisleConfiguration);
+        operationalSnapshotProvider = new DatacenterOperationalSnapshotProvider(datacenter, operationalGroups);
         // timers
         timerSimulacion = new Timer();
         timerSimulacion.setPeriodMillis(100);
@@ -249,6 +244,24 @@ public class Sketch extends PApplet {
         formatoPresion = PROPS.getProperty("number.format.presion");
         // debug
         showOverlayEstatico = true;
+    }
+
+    private List<ServerGroupDefinition> createOperationalGroups(HotAisleConfiguration configuration) {
+        Objects.requireNonNull(configuration, "configuration must not be null");
+        return configuration
+                .hotAisles()
+                .stream()
+                .map(hotAisle -> {
+                    Set<ServerLocation> serverLocations = datacenter
+                            .getServers()
+                            .stream()
+                            .map(Server::getLocation)
+                            .filter(location -> hotAisle.columns().contains(location.column()))
+                            .collect(Collectors.toUnmodifiableSet()
+                            );
+                    return new ServerGroupDefinition(hotAisle.code(), serverLocations);
+                })
+                .toList();
     }
 
     private void btnClicked(String codigoBoton) {
@@ -505,44 +518,14 @@ public class Sketch extends PApplet {
         indicadores.get("indFlechasAireFrioDer").setOn(!pasilloExtremoDerechoElegido);
         HotAisleDefinition pasilloCalienteElegido = obtenerPasilloCalienteElegido();
         labels.get("lblPasilloElegidoValor").setText(pasilloCalienteElegido.displayName());
-        Map<ServerLocation, ServerEnergySnapshot> energiaPorUbicacion = obtenerEnergiaPorUbicacion();
-        Map<ServerLocation, ServerTemperatureSnapshot> temperaturaPorUbicacion = obtenerTemperaturaPorUbicacion();
-        List<Server> servidoresPasilloCaliente = datacenter
-                .getServers()
-                .stream()
-                .filter(server -> pasilloCalienteElegido.columns().contains(server.getLocation().column()))
-                .toList();
-        int servidoresInstalados = 0;
-        int servidoresOnline = 0;
-        double temperaturaAcumulada = 0.0;
-        double cargaAcumuladaOnline = 0.0;
-        double temperaturaMaxima = Double.NEGATIVE_INFINITY;
-        ServerLocation ubicacionTemperaturaMaxima = null;
-        for (Server server : servidoresPasilloCaliente) {
-            ServerLocation location = server.getLocation();
-            ServerTemperatureSnapshot temperatura = temperaturaPorUbicacion.get(location);
-            if (temperatura == null) throw new IllegalStateException("No existe snapshot de temperatura para el servidor: " + location);
-            ServerEnergySnapshot energia = energiaPorUbicacion.get(location);
-            if (energia == null) throw new IllegalStateException("No existe snapshot de energía para el servidor: " + location);
-            double temperaturaServidor = temperatura.temperatureCelsius();
-            temperaturaAcumulada += temperaturaServidor;
-            servidoresInstalados++;
-            if (temperaturaServidor > temperaturaMaxima) {
-                temperaturaMaxima = temperaturaServidor;
-                ubicacionTemperaturaMaxima = location;
-            }
-            if (energia.status() != HardwareStatus.OFFLINE) {
-                cargaAcumuladaOnline += energia.utilization();
-                servidoresOnline++;
-            }
-        }
-        double temperaturaPromedio = servidoresInstalados > 0 ? temperaturaAcumulada / servidoresInstalados : Double.NaN;
-        double cargaPromedio = servidoresOnline > 0 ? cargaAcumuladaOnline / servidoresOnline : Double.NaN;
+        ServerGroupOperationalSnapshot aisleSnapshot = operationalSnapshot
+                .findServerGroup(pasilloCalienteElegido.code())
+                .orElseThrow(() -> new IllegalStateException("No existe snapshot operacional para el pasillo: " + pasilloCalienteElegido.code()));
         Label lblTemperaturaPromedio = labels.get("lblPasilloElegidoTemperaturaPromedioValor");
         Label lblTemperaturaMaxima = labels.get("lblPasilloElegidoTemperaturaMaximaValor");
         Label lblCargaPromedio = labels.get("lblPasilloElegidoCargaITValor");
         indicadoresPasilloElegidoServidorTemperaturaMaxima.values().forEach(indicador -> indicador.setOn(false));
-        if (ubicacionTemperaturaMaxima == null) {
+        if (!aisleSnapshot.hasInstalledServers()) {
             lblTemperaturaPromedio.setTextColor(COLOR_LABEL_BLANCO);
             lblTemperaturaMaxima.setTextColor(COLOR_LABEL_BLANCO);
             lblTemperaturaPromedio.setText("--");
@@ -550,10 +533,21 @@ public class Sketch extends PApplet {
             lblCargaPromedio.setText("--");
             return;
         }
-        int colorTemperaturaPromedio = obtenerColorRangoTemperatura((float) temperaturaPromedio);
+        // Temperatura máxima: considera todos los servidores instalados
+        double temperaturaMaxima = aisleSnapshot.maximumTemperatureCelsius();
         int colorTemperaturaMaxima = obtenerColorRangoTemperatura((float) temperaturaMaxima);
-        lblTemperaturaPromedio.setTextColor(colorTemperaturaPromedio);
         lblTemperaturaMaxima.setTextColor(colorTemperaturaMaxima);
+        lblTemperaturaMaxima.setText(String.format(formatoTemperatura, temperaturaMaxima));
+        ServerLocation ubicacionTemperaturaMaxima = aisleSnapshot
+                .maximumTemperatureLocation()
+                .orElseThrow(() ->
+                        new IllegalStateException(
+                                "El pasillo tiene servidores instalados, "
+                                        + "pero no informa la ubicación "
+                                        + "de la temperatura máxima: "
+                                        + pasilloCalienteElegido.code()
+                        )
+                );
         String columnaTemperaturaMaxima = ubicacionTemperaturaMaxima.column();
         String ladoTemperaturaMaxima;
         if (columnaTemperaturaMaxima.equals(PROPS.getProperty("datacenter.first.column")))
@@ -567,13 +561,24 @@ public class Sketch extends PApplet {
         String numeroRack = ubicacionTemperaturaMaxima.rackCode().value().replace("R", "");
         String codigoIndicador = "indPasilloElegidoServidorTemperaturaMaxima" + ladoTemperaturaMaxima + numeroRack;
         Indicator indicadorTemperaturaMaxima = indicadoresPasilloElegidoServidorTemperaturaMaxima.get(codigoIndicador);
-        if (indicadorTemperaturaMaxima == null)
-            throw new IllegalStateException("No existe el indicador de temperatura máxima: " + codigoIndicador);
+        if (indicadorTemperaturaMaxima == null) throw new IllegalStateException("No existe el indicador de temperatura máxima: " + codigoIndicador);
         indicadorTemperaturaMaxima.setOnColor(colorTemperaturaMaxima);
         indicadorTemperaturaMaxima.setOn(true);
-        lblTemperaturaPromedio.setText(String.format(formatoTemperatura, temperaturaPromedio));
-        lblTemperaturaMaxima.setText(String.format(formatoTemperatura, temperaturaMaxima));
-        lblCargaPromedio.setText(servidoresOnline > 0 ? String.format(formatoPorcentaje, cargaPromedio * 100) : "--");
+        /*
+         * Los promedios consideran únicamente servidores online.
+         */
+        if (aisleSnapshot.hasOnlineServers()) {
+            double temperaturaPromedio = aisleSnapshot.averageOnlineTemperatureCelsius();
+            double cargaPromedio = aisleSnapshot.averageOnlineUtilization();
+            int colorTemperaturaPromedio = obtenerColorRangoTemperatura((float) temperaturaPromedio);
+            lblTemperaturaPromedio.setTextColor(colorTemperaturaPromedio);
+            lblTemperaturaPromedio.setText(String.format(formatoTemperatura, temperaturaPromedio));
+            lblCargaPromedio.setText(String.format(formatoPorcentaje, cargaPromedio * 100));
+        } else {
+            lblTemperaturaPromedio.setTextColor(COLOR_LABEL_BLANCO);
+            lblTemperaturaPromedio.setText("--");
+            lblCargaPromedio.setText("--");
+        }
     }
 
     private int obtenerColorRangoTemperatura(float temperatura) {
@@ -601,11 +606,7 @@ public class Sketch extends PApplet {
         return temperatureSnapshot.servers()
                 .stream()
                 .collect(Collectors.toMap(
-                        server -> new ServerLocation(
-                                server.column(),
-                                server.rackCode(),
-                                server.slot()
-                        ),
+                        server -> new ServerLocation(server.column(), server.rackCode(), server.slot()),
                         Function.identity()
                 ));
     }
@@ -614,11 +615,7 @@ public class Sketch extends PApplet {
         return healthSnapshot.servers()
                 .stream()
                 .collect(Collectors.toMap(
-                        server -> new ServerLocation(
-                                server.column(),
-                                server.rackCode(),
-                                server.slot()
-                        ),
+                        server -> new ServerLocation(server.column(), server.rackCode(), server.slot()),
                         Function.identity()
                 ));
     }
