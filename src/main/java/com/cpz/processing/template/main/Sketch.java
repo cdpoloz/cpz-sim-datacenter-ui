@@ -72,6 +72,8 @@ public class Sketch extends PApplet {
     private Timer timerSimulacion;
     private boolean updateSnapshots, updateUI;
     private SimulationEngine engine;
+    private DatacenterOperationalSnapshot operationalSnapshot;
+    private DatacenterOperationalSnapshotProvider operationalSnapshotProvider;
     private EnergyConsumptionSystem energySystem;
     private EnergyConsumptionSnapshotProvider energySnapshotProvider;
     private Datacenter datacenter;
@@ -88,6 +90,7 @@ public class Sketch extends PApplet {
     private float minServerTemperatureCelsius;
     private float maxServerTemperatureCelsius;
     private HotAisleDefinition pasilloCalienteSeleccionado;
+    private String formatoTemperatura, formatoPorcentaje, formatoPotenciaKw, formatoPotenciaMw, formatoVelocidad, formatoPresion;
 
     public void settings() {
         LOG.info("Starting settings");
@@ -206,6 +209,7 @@ public class Sketch extends PApplet {
         energySnapshotProvider = new EnergyConsumptionSnapshotProvider(datacenter, energySystem);
         temperatureSnapshotProvider = new TemperatureSnapshotProvider(datacenter, temperatureSystem, temperatureOptions);
         healthSnapshotProvider = new HealthSnapshotProvider(datacenter, healthSystem, temperatureSystem);
+        operationalSnapshotProvider = new DatacenterOperationalSnapshotProvider(datacenter);
         // pasillos calientes
         Path configurationPath = Path.of(dataPath("config" + File.separator + "hot-aisle-mapping.json"));
         HotAisleConfigurationLoader loader = new HotAisleConfigurationLoader();
@@ -237,6 +241,12 @@ public class Sketch extends PApplet {
         updateUI = true;
         updateSnapshots = true;
         updateSnapshots();
+        formatoPorcentaje = PROPS.getProperty("number.format.percentage");
+        formatoTemperatura = PROPS.getProperty("number.format.temperature");
+        formatoPotenciaKw = PROPS.getProperty("number.format.power.kw");
+        formatoPotenciaMw = PROPS.getProperty("number.format.power.mw");
+        formatoVelocidad = PROPS.getProperty("number.format.velocidad");
+        formatoPresion = PROPS.getProperty("number.format.presion");
         // debug
         showOverlayEstatico = true;
     }
@@ -329,6 +339,7 @@ public class Sketch extends PApplet {
         energySnapshot = energySnapshotProvider.snapshot(engine.currentTick());
         temperatureSnapshot = temperatureSnapshotProvider.snapshot(engine.currentTick());
         healthSnapshot = healthSnapshotProvider.snapshot(engine.currentTick());
+        operationalSnapshot = operationalSnapshotProvider.snapshot(energySnapshot, temperatureSnapshot, healthSnapshot);
         updateSnapshots = false;
         updateUI = true;
     }
@@ -341,39 +352,33 @@ public class Sketch extends PApplet {
     }
 
     private void updatePanelRackElegido() {
-        // *************************************************************************************************************
-        // *** CONTINUAR AQUÍ ******************************************************************************************
-        // *** PROBAR LOS NUEVOS DATOS AGREGADOS A LO SNAPSHOTS DEL BACKEND
-        // *************************************************************************************************************
         labels.get("lblRackElegidoValor").setText(columnaElegida + "-" + rackElegido);
         Rack rack = obtenerRackElegido();
+        RackLocation rackLocation = new RackLocation(columnaElegida, new RackCode(rackElegido));
+        RackOperationalSnapshot rackSnapshot = operationalSnapshot
+                .findRack(rackLocation)
+                .orElseThrow(() -> new IllegalStateException("No existe snapshot operacional para el rack: " + rackLocation.code()
+                ));
         Map<ServerLocation, ServerEnergySnapshot> energiaPorUbicacion = obtenerEnergiaPorUbicacion();
         Map<ServerLocation, ServerTemperatureSnapshot> temperaturaPorUbicacion = obtenerTemperaturaPorUbicacion();
         Map<ServerLocation, ServerHealthSnapshot> saludPorUbicacion = obtenerSaludPorUbicacion();
-        int servidoresInstalados = 0;
-        int servidoresOnline = 0;
-        double temperaturaAcumuladaOnline = 0.0;
-        double cargaAcumuladaOnline = 0.0;
-        double potenciaIdleAcumulada = 0;
-        double potenciaMaximaAcumulada = 0;
-        double potenciaActualAcumulada = 0;
         for (String slot : rack.getSlotCodes()) {
+            String numeroSlot = slot.replace("S", "");
             ServerLocation location = new ServerLocation(columnaElegida, new RackCode(rackElegido), slot);
             Optional<Server> installedServer = datacenter.getServer(location);
-            Label lblSlotTemperatura = labels.get("lblSlotTemperatura" + slot.replace("S", ""));
-            Label lblSlotCarga = labels.get("lblSlotCarga" + slot.replace("S", ""));
-            Label lblSlotPotencia = labels.get("lblSlotPotencia" + slot.replace("S", ""));
-            Indicator indSlot = indicadores.get("indSlot" + slot.replace("S", ""));
-            Indicator indSlotVacio = indicadores.get("indSlotVacio" + slot.replace("S", ""));
-            Indicator indSlotOffline = indicadores.get("indSlotOffline" + slot.replace("S", ""));
-            Indicator indSlotStatusOk = indicadores.get("indSlotOk" + slot.replace("S", ""));
-            Indicator indSlotStatusAlerta = indicadores.get("indSlotAlerta" + slot.replace("S", ""));
-            Indicator indAlerta = indicadoresAlerta.get("indAlerta" + slot.replace("S", ""));
-            Indicator indSlotIA1 = indicadoresSlotIA.get("indSlotIA" + slot.replace("S", "") + "-1");
-            Indicator indSlotIA2 = indicadores.get("indSlotIA" + slot.replace("S", "") + "-2");
+            Label lblSlotTemperatura = labels.get("lblSlotTemperatura" + numeroSlot);
+            Label lblSlotCarga = labels.get("lblSlotCarga" + numeroSlot);
+            Label lblSlotPotencia = labels.get("lblSlotPotencia" + numeroSlot);
+            Indicator indSlot = indicadores.get("indSlot" + numeroSlot);
+            Indicator indSlotVacio = indicadores.get("indSlotVacio" + numeroSlot);
+            Indicator indSlotOffline = indicadores.get("indSlotOffline" + numeroSlot);
+            Indicator indSlotStatusOk = indicadores.get("indSlotOk" + numeroSlot);
+            Indicator indSlotStatusAlerta = indicadores.get("indSlotAlerta" + numeroSlot);
+            Indicator indAlerta = indicadoresAlerta.get("indAlerta" + numeroSlot);
+            Indicator indSlotIA1 = indicadoresSlotIA.get("indSlotIA" + numeroSlot + "-1");
+            Indicator indSlotIA2 = indicadores.get("indSlotIA" + numeroSlot + "-2");
             if (installedServer.isEmpty()) {
-                mostrarSlotVacio(
-                        indSlot,
+                mostrarSlotVacio(indSlot,
                         lblSlotTemperatura,
                         lblSlotCarga,
                         lblSlotPotencia,
@@ -385,60 +390,45 @@ public class Sketch extends PApplet {
                         indSlotIA1,
                         indSlotIA2
                 );
-            } else {
-                // se actualiza el valor de la temperatura (viene del snapshot)
-                ServerTemperatureSnapshot temperatura = temperaturaPorUbicacion.get(location);
-                if (temperatura == null)
-                    throw new IllegalStateException("No existe snapshot de temperatura para el servidor: " + location);
-                actualizarColorSlot(indSlot, (float) temperatura.temperatureCelsius());
-                lblSlotTemperatura.setText(String.format(PROPS.getProperty("number.format.temperature"), temperatura.temperatureCelsius()));
-                // se actualiza el valor de la carga y potencia consumida (viene del snapshot)
-                ServerEnergySnapshot energia = energiaPorUbicacion.get(location);
-                if (energia == null)
-                    throw new IllegalStateException("No existe snapshot de energía para el servidor: " + location);
-                lblSlotCarga.setText(String.format(PROPS.getProperty("number.format.percentage"), energia.utilization() * 100));
-                lblSlotPotencia.setText(String.format(PROPS.getProperty("number.format.power.kw"), energia.currentPowerWatts() / 1000));
-                // se actualiza el estado de los indicadores Ok/Alerta
-                ServerHealthSnapshot salud = saludPorUbicacion.get(location);
-                if (salud == null)
-                    throw new IllegalStateException("No existe snapshot de salud para el servidor: " + location);
-                HardwareStatus status = salud.status();
-                indSlotStatusOk.setOn(status == HardwareStatus.OK);
-                indAlerta.setOn(status == HardwareStatus.ALERT);
-                indSlotStatusAlerta.setOn(status == HardwareStatus.ALERT);
-                // se actualiza el color de los labels por alertas
-                boolean alertaPorCarga = salud.hasAlertReason(ServerAlertReason.HIGH_UTILIZATION);
-                lblSlotCarga.setTextColor(alertaPorCarga ? COLOR_LABEL_MAGENTA : COLOR_LABEL_AZUL);
-                boolean alertaPorTemperatura = salud.hasAlertReason(ServerAlertReason.HIGH_TEMPERATURE);
-                actualizarColorLabelPorTemperatura(alertaPorTemperatura, lblSlotTemperatura, temperatura.temperatureCelsius());
-                // se acumulan los valores de las variables que se van a promediar
-                potenciaIdleAcumulada += energia.idlePowerWatts();
-                potenciaMaximaAcumulada += energia.maxPowerWatts();
-                potenciaActualAcumulada += energia.currentPowerWatts();
-                servidoresInstalados++;
-                if (status != HardwareStatus.OFFLINE) {
-                    servidoresOnline++;
-                    temperaturaAcumuladaOnline += temperatura.temperatureCelsius();
-                    cargaAcumuladaOnline += energia.utilization();
-                }
-                // *****************************************************************
-                // ******** PODRÍA INVOCARSE EN CADA CAMBIO DE RACK/COLUMNA ********
-                indSlotVacio.setOn(false);
-                indSlotOffline.setOn(status == HardwareStatus.OFFLINE);
-                boolean serverIA = installedServer.get().getRole() == ServerRole.AI;
-                indSlotIA1.setOn(serverIA);
-                indSlotIA2.setOn(serverIA);
-                // *****************************************************************
-                // *****************************************************************
+                continue;
             }
+            ServerTemperatureSnapshot temperatura = temperaturaPorUbicacion.get(location);
+            if (temperatura == null) throw new IllegalStateException("No existe snapshot de temperatura para el servidor: " + location);
+            ServerEnergySnapshot energia = energiaPorUbicacion.get(location);
+            if (energia == null) throw new IllegalStateException("No existe snapshot de energía para el servidor: " + location);
+            ServerHealthSnapshot salud = saludPorUbicacion.get(location);
+            if (salud == null) throw new IllegalStateException("No existe snapshot de salud para el servidor: " + location);
+            actualizarColorSlot(indSlot, (float) temperatura.temperatureCelsius());
+            lblSlotTemperatura.setText(String.format(formatoTemperatura, temperatura.temperatureCelsius()));
+            lblSlotCarga.setText(String.format(formatoPorcentaje, energia.utilization() * 100));
+            lblSlotPotencia.setText(String.format(formatoPotenciaKw, energia.currentPowerWatts() / 1000));
+            HardwareStatus status = salud.status();
+            indSlotStatusOk.setOn(status == HardwareStatus.OK);
+            indSlotStatusAlerta.setOn(status == HardwareStatus.ALERT);
+            indAlerta.setOn(status == HardwareStatus.ALERT);
+            boolean alertaPorCarga = salud.hasAlertReason(ServerAlertReason.HIGH_UTILIZATION);
+            lblSlotCarga.setTextColor(alertaPorCarga ? COLOR_LABEL_MAGENTA : COLOR_LABEL_AZUL);
+            boolean alertaPorTemperatura = salud.hasAlertReason(ServerAlertReason.HIGH_TEMPERATURE);
+            actualizarColorLabelPorTemperatura(alertaPorTemperatura, lblSlotTemperatura, temperatura.temperatureCelsius());
+            indSlotVacio.setOn(false);
+            indSlotOffline.setOn(status == HardwareStatus.OFFLINE);
+            boolean serverIA = installedServer.orElseThrow().getRole() == ServerRole.AI;
+            indSlotIA1.setOn(serverIA);
+            indSlotIA2.setOn(serverIA);
         }
-        double temperaturaPromedio = servidoresOnline > 0 ? temperaturaAcumuladaOnline / servidoresOnline: Double.NaN;
-        double cargaPromedio = servidoresOnline > 0 ? cargaAcumuladaOnline / servidoresOnline : Double.NaN;
-        labels.get("lblRackTemperaturaPromedioValor").setTextColor(servidoresInstalados > 0 ? COLOR_LABEL_AMARILLO : COLOR_LABEL_BLANCO);
-        labels.get("lblRackTemperaturaPromedioValor").setText(servidoresInstalados > 0 ? String.format(PROPS.getProperty("number.format.temperature"), temperaturaPromedio) : "--");
-        labels.get("lblRackCargaPromedioValor").setText(String.format(PROPS.getProperty("number.format.percentage"), cargaPromedio * 100));
-        labels.get("lblRackPotenciaAcumuladaValor").setText(String.format(PROPS.getProperty("number.format.power.kw"), potenciaActualAcumulada / 1000));
-        actualizarBarra("RackElegidoPotencia", potenciaActualAcumulada, potenciaIdleAcumulada, potenciaMaximaAcumulada);
+        Label lblTemperaturaPromedio = labels.get("lblRackTemperaturaPromedioValor");
+        Label lblCargaPromedio = labels.get("lblRackCargaPromedioValor");
+        if (rackSnapshot.hasOnlineServers()) {
+            lblTemperaturaPromedio.setTextColor(COLOR_LABEL_AMARILLO);
+            lblTemperaturaPromedio.setText(String.format(formatoTemperatura, rackSnapshot.averageOnlineTemperatureCelsius()));
+            lblCargaPromedio.setText(String.format(formatoPorcentaje, rackSnapshot.averageOnlineUtilization() * 100));
+        } else {
+            lblTemperaturaPromedio.setTextColor(COLOR_LABEL_BLANCO);
+            lblTemperaturaPromedio.setText("--");
+            lblCargaPromedio.setText("--");
+        }
+        labels.get("lblRackPotenciaAcumuladaValor").setText(String.format(formatoPotenciaKw, rackSnapshot.currentPowerWatts() / 1000));
+        actualizarBarra("RackElegidoPotencia", rackSnapshot.currentPowerWatts(), rackSnapshot.idlePowerWatts(), rackSnapshot.maxPowerWatts());
     }
 
     private void actualizarColorSlot(Indicator indSlot, float temperatura) {
@@ -498,7 +488,7 @@ public class Sketch extends PApplet {
     private void actualizarBarra(String tipo, double valor, double valorMin, double valorMax) {
         if (tipo == null || tipo.isEmpty()) return;
         String llave = "indBarra" + tipo;
-        int iMax = (int) map((float) valor,(float)  valorMin,(float)  valorMax, 1, 6);
+        int iMax = (int) map((float) valor, (float) valorMin, (float) valorMax, 1, 6);
         for (int i = 0; i < 6; i++) indicadores.get(llave + (i + 1)).setOn(i < iMax);
     }
 
@@ -507,18 +497,12 @@ public class Sketch extends PApplet {
     }
 
     private void updatePanelPasilloElegido() {
-        // *********************************************************************************
-        // **************** PODRÍA INVOCARSE EN CADA CAMBIO DE RACK/COLUMNA ****************
-        // si se elige al pasillo de los extremos se oscurece la columna que no es relevante
-        boolean pasilloExtremoIzquierdoElegido = columnaElegida.equals("C01");
-        boolean pasilloExtremoDerechoElegido = columnaElegida.equals("C08");
+        boolean pasilloExtremoIzquierdoElegido = columnaElegida.equals(PROPS.getProperty("datacenter.first.column"));
+        boolean pasilloExtremoDerechoElegido = columnaElegida.equals(PROPS.getProperty("datacenter.last.column"));
         indicadoresPasilloNull.get("indPasilloNullIzq").setOn(pasilloExtremoIzquierdoElegido);
         indicadores.get("indFlechasAireFrioIzq").setOn(!pasilloExtremoIzquierdoElegido);
         indicadoresPasilloNull.get("indPasilloNullDer").setOn(pasilloExtremoDerechoElegido);
         indicadores.get("indFlechasAireFrioDer").setOn(!pasilloExtremoDerechoElegido);
-        // *********************************************************************************
-        // *********************************************************************************
-        // se obtiene el pasillo elegido para extraer la lista de servidores de la(s) columna(s) involucradas
         HotAisleDefinition pasilloCalienteElegido = obtenerPasilloCalienteElegido();
         labels.get("lblPasilloElegidoValor").setText(pasilloCalienteElegido.displayName());
         Map<ServerLocation, ServerEnergySnapshot> energiaPorUbicacion = obtenerEnergiaPorUbicacion();
@@ -528,61 +512,68 @@ public class Sketch extends PApplet {
                 .stream()
                 .filter(server -> pasilloCalienteElegido.columns().contains(server.getLocation().column()))
                 .toList();
-        // se inicializan las variables para el cálculo de los promedios necesarios
-        int servidoresOnline = 0;
         int servidoresInstalados = 0;
-        float temperaturaPromedio = 0;
-        float temperaturaMaxima = minServerTemperatureCelsius;
-        float cargaPromedio = 0;
-        // se acumulan los valores a promediar y se busca la ubicación del servidor que está alcanzando la mayor temperatura,
-        // con esta ubicación se determina el código del indicador respectivo para actualizar su estado
-        String ladoServidorTemperaturaMaxima = "";
-        String rackServidorTemperaturaMaxima = "";
+        int servidoresOnline = 0;
+        double temperaturaAcumulada = 0.0;
+        double cargaAcumuladaOnline = 0.0;
+        double temperaturaMaxima = Double.NEGATIVE_INFINITY;
+        ServerLocation ubicacionTemperaturaMaxima = null;
         for (Server server : servidoresPasilloCaliente) {
             ServerLocation location = server.getLocation();
-            ServerTemperatureSnapshot temperature = temperaturaPorUbicacion.get(location);
-            ServerEnergySnapshot energy = energiaPorUbicacion.get(location);
-            if (temperature == null || energy == null) continue;
-            float temperaturaServidor = (float) temperature.temperatureCelsius();
+            ServerTemperatureSnapshot temperatura = temperaturaPorUbicacion.get(location);
+            if (temperatura == null) throw new IllegalStateException("No existe snapshot de temperatura para el servidor: " + location);
+            ServerEnergySnapshot energia = energiaPorUbicacion.get(location);
+            if (energia == null) throw new IllegalStateException("No existe snapshot de energía para el servidor: " + location);
+            double temperaturaServidor = temperatura.temperatureCelsius();
+            temperaturaAcumulada += temperaturaServidor;
+            servidoresInstalados++;
             if (temperaturaServidor > temperaturaMaxima) {
                 temperaturaMaxima = temperaturaServidor;
-                if (server.getLocation().column().equals(PROPS.getProperty("datacenter.first.column")))
-                    ladoServidorTemperaturaMaxima = "Der";
-                else if (server.getLocation().column().equals(PROPS.getProperty("datacenter.last.column")))
-                    ladoServidorTemperaturaMaxima = "Izq";
-                else {
-                    int n = Integer.parseInt(server.getLocation().column().replace("C", ""));
-                    if (n % 2 == 0) ladoServidorTemperaturaMaxima = "Izq";
-                    else ladoServidorTemperaturaMaxima = "Der";
-                }
-                rackServidorTemperaturaMaxima = server.getLocation().rackCode().value().replace("R", "");
+                ubicacionTemperaturaMaxima = location;
             }
-            temperaturaPromedio += (float) temperature.temperatureCelsius();
-            servidoresInstalados++;
-            if (server.getStatus() != HardwareStatus.OFFLINE) {
-                cargaPromedio += (float) energy.utilization();
+            if (energia.status() != HardwareStatus.OFFLINE) {
+                cargaAcumuladaOnline += energia.utilization();
                 servidoresOnline++;
             }
         }
-        // se actualiza el estado del indicador del servidor que está alcanzando la temperatura máxima
-        indicadoresPasilloElegidoServidorTemperaturaMaxima.values().forEach(ind -> ind.setOn(false));
-        String codigoIndicadorServidorTemperaturaMaxima = "indPasilloElegidoServidorTemperaturaMaxima" + ladoServidorTemperaturaMaxima + rackServidorTemperaturaMaxima;
-        Indicator indServidorTemperaturaMaxima = indicadoresPasilloElegidoServidorTemperaturaMaxima.get(codigoIndicadorServidorTemperaturaMaxima);
-        indServidorTemperaturaMaxima.setOn(true);
-        temperaturaPromedio /= servidoresInstalados;
-        cargaPromedio /= servidoresOnline;
-        // se actualizan los colores de los labels/indicadores necesarios
-        Label lblPasilloElegidoTemperaturaPromedioValor = labels.get("lblPasilloElegidoTemperaturaPromedioValor");
-        Label lblPasilloElegidoTemperaturaMaximaValor = labels.get("lblPasilloElegidoTemperaturaMaximaValor");
-        int colorRangoTemperaturaPromedio = obtenerColorRangoTemperatura(temperaturaPromedio);
-        lblPasilloElegidoTemperaturaPromedioValor.setTextColor(colorRangoTemperaturaPromedio);
-        int colorRangoTemperaturaMaxima = obtenerColorRangoTemperatura(temperaturaMaxima);
-        lblPasilloElegidoTemperaturaMaximaValor.setTextColor(colorRangoTemperaturaMaxima);
-        indServidorTemperaturaMaxima.setOnColor(colorRangoTemperaturaMaxima);
-        // se cargan los valores a mostrar en pantalla
-        lblPasilloElegidoTemperaturaPromedioValor.setText(String.format(PROPS.getProperty("number.format.temperature"), temperaturaPromedio));
-        lblPasilloElegidoTemperaturaMaximaValor.setText(String.format(PROPS.getProperty("number.format.temperature"), temperaturaMaxima));
-        labels.get("lblPasilloElegidoCargaITValor").setText(String.format(PROPS.getProperty("number.format.percentage"), cargaPromedio * 100));
+        double temperaturaPromedio = servidoresInstalados > 0 ? temperaturaAcumulada / servidoresInstalados : Double.NaN;
+        double cargaPromedio = servidoresOnline > 0 ? cargaAcumuladaOnline / servidoresOnline : Double.NaN;
+        Label lblTemperaturaPromedio = labels.get("lblPasilloElegidoTemperaturaPromedioValor");
+        Label lblTemperaturaMaxima = labels.get("lblPasilloElegidoTemperaturaMaximaValor");
+        Label lblCargaPromedio = labels.get("lblPasilloElegidoCargaITValor");
+        indicadoresPasilloElegidoServidorTemperaturaMaxima.values().forEach(indicador -> indicador.setOn(false));
+        if (ubicacionTemperaturaMaxima == null) {
+            lblTemperaturaPromedio.setTextColor(COLOR_LABEL_BLANCO);
+            lblTemperaturaMaxima.setTextColor(COLOR_LABEL_BLANCO);
+            lblTemperaturaPromedio.setText("--");
+            lblTemperaturaMaxima.setText("--");
+            lblCargaPromedio.setText("--");
+            return;
+        }
+        int colorTemperaturaPromedio = obtenerColorRangoTemperatura((float) temperaturaPromedio);
+        int colorTemperaturaMaxima = obtenerColorRangoTemperatura((float) temperaturaMaxima);
+        lblTemperaturaPromedio.setTextColor(colorTemperaturaPromedio);
+        lblTemperaturaMaxima.setTextColor(colorTemperaturaMaxima);
+        String columnaTemperaturaMaxima = ubicacionTemperaturaMaxima.column();
+        String ladoTemperaturaMaxima;
+        if (columnaTemperaturaMaxima.equals(PROPS.getProperty("datacenter.first.column")))
+            ladoTemperaturaMaxima = "Der";
+        else if (columnaTemperaturaMaxima.equals(PROPS.getProperty("datacenter.last.column")))
+            ladoTemperaturaMaxima = "Izq";
+        else {
+            int numeroColumna = Integer.parseInt(columnaTemperaturaMaxima.replace("C", ""));
+            ladoTemperaturaMaxima = numeroColumna % 2 == 0 ? "Izq" : "Der";
+        }
+        String numeroRack = ubicacionTemperaturaMaxima.rackCode().value().replace("R", "");
+        String codigoIndicador = "indPasilloElegidoServidorTemperaturaMaxima" + ladoTemperaturaMaxima + numeroRack;
+        Indicator indicadorTemperaturaMaxima = indicadoresPasilloElegidoServidorTemperaturaMaxima.get(codigoIndicador);
+        if (indicadorTemperaturaMaxima == null)
+            throw new IllegalStateException("No existe el indicador de temperatura máxima: " + codigoIndicador);
+        indicadorTemperaturaMaxima.setOnColor(colorTemperaturaMaxima);
+        indicadorTemperaturaMaxima.setOn(true);
+        lblTemperaturaPromedio.setText(String.format(formatoTemperatura, temperaturaPromedio));
+        lblTemperaturaMaxima.setText(String.format(formatoTemperatura, temperaturaMaxima));
+        lblCargaPromedio.setText(servidoresOnline > 0 ? String.format(formatoPorcentaje, cargaPromedio * 100) : "--");
     }
 
     private int obtenerColorRangoTemperatura(float temperatura) {
