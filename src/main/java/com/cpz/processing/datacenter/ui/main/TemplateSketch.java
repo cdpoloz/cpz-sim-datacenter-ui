@@ -1,4 +1,4 @@
-package com.cpz.processing.template.main;
+package com.cpz.processing.datacenter.ui.main;
 
 import com.cpz.processing.controls.controls.Control;
 import com.cpz.processing.controls.controls.button.Button;
@@ -21,8 +21,8 @@ import com.cpz.processing.controls.core.overlay.tooltip.input.TooltipInputLayer;
 import com.cpz.processing.controls.core.overlay.tooltip.util.TooltipOverlayController;
 import com.cpz.processing.controls.input.KeyboardState;
 import com.cpz.processing.controls.input.ProcessingKeyboardAdapter;
-import com.cpz.processing.template.config.TemplateSketchConfig;
-import com.cpz.processing.template.input.MainInputLayer;
+import com.cpz.processing.datacenter.ui.config.TemplateSketchConfig;
+import com.cpz.processing.datacenter.ui.input.MainInputLayer;
 import processing.core.PApplet;
 import processing.event.MouseEvent;
 

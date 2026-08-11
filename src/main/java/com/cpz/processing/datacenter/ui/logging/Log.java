@@ -1,6 +1,6 @@
-package com.cpz.processing.template.logging;
+package com.cpz.processing.datacenter.ui.logging;
 
-import com.cpz.processing.template.config.ConfigLog;
+import com.cpz.processing.datacenter.ui.config.ConfigLog;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

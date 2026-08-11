@@ -1,7 +1,7 @@
-package com.cpz.processing.template.config;
+package com.cpz.processing.datacenter.ui.config;
 
-import com.cpz.processing.template.logging.Log;
-import com.cpz.processing.template.logging.LogFormatter;
+import com.cpz.processing.datacenter.ui.logging.Log;
+import com.cpz.processing.datacenter.ui.logging.LogFormatter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

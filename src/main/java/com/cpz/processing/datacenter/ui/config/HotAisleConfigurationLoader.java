@@ -1,4 +1,4 @@
-package com.cpz.processing.template.config;
+package com.cpz.processing.datacenter.ui.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
