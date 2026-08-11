@@ -1,4 +1,4 @@
-package com.cpz.processing.datacenter.ui.logging;
+package com.cpz.sim.datacenter.ui.logging;
 
 import org.jetbrains.annotations.NotNull;
 

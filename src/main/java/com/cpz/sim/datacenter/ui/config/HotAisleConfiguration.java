@@ -1,4 +1,4 @@
-package com.cpz.processing.datacenter.ui.config;
+package com.cpz.sim.datacenter.ui.config;
 
 import java.util.List;
 import java.util.Objects;

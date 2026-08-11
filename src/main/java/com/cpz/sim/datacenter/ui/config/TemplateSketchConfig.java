@@ -1,4 +1,4 @@
-package com.cpz.processing.datacenter.ui.config;
+package com.cpz.sim.datacenter.ui.config;
 
 import com.cpz.processing.controls.controls.Control;
 import com.cpz.processing.controls.controls.button.Button;
@@ -18,15 +18,15 @@ import com.cpz.processing.controls.core.overlay.OverlayManager;
 import com.cpz.processing.controls.core.overlay.tooltip.TooltipArea;
 import com.cpz.processing.controls.core.overlay.tooltip.TooltipFactory;
 import com.cpz.processing.controls.core.overlay.tooltip.util.TooltipOverlayController;
-import com.cpz.processing.datacenter.ui.main.TemplateSketch;
+import com.cpz.sim.datacenter.ui.main.TemplateSketch;
 import processing.opengl.PJOGL;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.cpz.processing.datacenter.ui.main.Launcher.LOG;
-import static com.cpz.processing.datacenter.ui.main.Launcher.PROPS;
+import static com.cpz.sim.datacenter.ui.main.Launcher.LOG;
+import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
 import static processing.core.PConstants.P2D;
 
 /**

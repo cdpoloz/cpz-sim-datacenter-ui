@@ -1,4 +1,4 @@
-package com.cpz.processing.datacenter.ui.input;
+package com.cpz.sim.datacenter.ui.input;
 
 import com.cpz.processing.controls.core.input.DefaultInputLayer;
 import com.cpz.processing.controls.core.input.KeyboardEvent;

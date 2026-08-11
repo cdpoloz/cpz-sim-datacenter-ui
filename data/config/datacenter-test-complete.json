@@ -1834,7 +1834,9 @@
       "manufacturer": "CPZ",
       "model": "Demo Compute Server",
       "idlePowerWatts": 100,
-      "maxPowerWatts": 300
+      "maxPowerWatts": 300,
+      "thermalCapacityJoulesPerCelsius": 12000,
+      "heatDissipationWattsPerCelsius": 12
     },
     {
       "modelCode": "SRV-AI-001",
@@ -1850,7 +1852,9 @@
       "manufacturer": "CPZ",
       "model": "Demo Storage Server",
       "idlePowerWatts": 150,
-      "maxPowerWatts": 450
+      "maxPowerWatts": 450,
+      "thermalCapacityJoulesPerCelsius": 12000,
+      "heatDissipationWattsPerCelsius": 12
     }
   ],
   "servers": [

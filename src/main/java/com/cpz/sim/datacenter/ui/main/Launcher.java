@@ -1,7 +1,7 @@
-package com.cpz.processing.datacenter.ui.main;
+package com.cpz.sim.datacenter.ui.main;
 
-import com.cpz.processing.datacenter.ui.logging.Log;
-import com.cpz.processing.datacenter.ui.logging.LogMessage;
+import com.cpz.sim.datacenter.ui.logging.Log;
+import com.cpz.sim.datacenter.ui.logging.LogMessage;
 import processing.core.PApplet;
 
 import java.io.*;
