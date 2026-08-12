@@ -10216,5 +10216,220 @@
     "defaultInitialTemperatureCelsius": 30,
     "thermalCapacityJoulesPerCelsius": 5000,
     "heatDissipationWattsPerCelsius": 8
+  },
+  "cooling": {
+    "zones": [
+      {
+        "code": "ZONE-C01-C02-NEAR",
+        "columns": ["C01", "C02"],
+        "rackCodes": ["R06", "R07"]
+      },
+      {
+        "code": "ZONE-C01-C02-MIDDLE",
+        "columns": ["C01", "C02"],
+        "rackCodes": ["R04", "R05", "R08", "R09"]
+      },
+      {
+        "code": "ZONE-C01-C02-FAR",
+        "columns": ["C01", "C02"],
+        "rackCodes": ["R01", "R02", "R03", "R10", "R11", "R12"]
+      },
+      {
+        "code": "ZONE-C03-C04-NEAR",
+        "columns": ["C03", "C04"],
+        "rackCodes": ["R06", "R07"]
+      },
+      {
+        "code": "ZONE-C03-C04-MIDDLE",
+        "columns": ["C03", "C04"],
+        "rackCodes": ["R04", "R05", "R08", "R09"]
+      },
+      {
+        "code": "ZONE-C03-C04-FAR",
+        "columns": ["C03", "C04"],
+        "rackCodes": ["R01", "R02", "R03", "R10", "R11", "R12"]
+      },
+      {
+        "code": "ZONE-C05-C06-NEAR",
+        "columns": ["C05", "C06"],
+        "rackCodes": ["R06", "R07"]
+      },
+      {
+        "code": "ZONE-C05-C06-MIDDLE",
+        "columns": ["C05", "C06"],
+        "rackCodes": ["R04", "R05", "R08", "R09"]
+      },
+      {
+        "code": "ZONE-C05-C06-FAR",
+        "columns": ["C05", "C06"],
+        "rackCodes": ["R01", "R02", "R03", "R10", "R11", "R12"]
+      },
+      {
+        "code": "ZONE-C07-C08-NEAR",
+        "columns": ["C07", "C08"],
+        "rackCodes": ["R06", "R07"]
+      },
+      {
+        "code": "ZONE-C07-C08-MIDDLE",
+        "columns": ["C07", "C08"],
+        "rackCodes": ["R04", "R05", "R08", "R09"]
+      },
+      {
+        "code": "ZONE-C07-C08-FAR",
+        "columns": ["C07", "C08"],
+        "rackCodes": ["R01", "R02", "R03", "R10", "R11", "R12"]
+      }
+    ],
+    "supplyUnits": [
+      {
+        "code": "SUPPLY-C01-C02",
+        "ratedAirflowCubicMetersPerSecond": 8.0,
+        "ratedCoolingCapacityWatts": 100000.0,
+        "supplyAirTemperatureCelsius": 18.0,
+        "influences": [
+          {
+            "zoneCode": "ZONE-C01-C02-NEAR",
+            "weight": 0.50
+          },
+          {
+            "zoneCode": "ZONE-C01-C02-MIDDLE",
+            "weight": 0.30
+          },
+          {
+            "zoneCode": "ZONE-C01-C02-FAR",
+            "weight": 0.20
+          }
+        ],
+        "initiallyEnabled": false
+      },
+      {
+        "code": "SUPPLY-C03-C04",
+        "ratedAirflowCubicMetersPerSecond": 8.0,
+        "ratedCoolingCapacityWatts": 100000.0,
+        "supplyAirTemperatureCelsius": 18.0,
+        "influences": [
+          {
+            "zoneCode": "ZONE-C03-C04-NEAR",
+            "weight": 0.50
+          },
+          {
+            "zoneCode": "ZONE-C03-C04-MIDDLE",
+            "weight": 0.30
+          },
+          {
+            "zoneCode": "ZONE-C03-C04-FAR",
+            "weight": 0.20
+          }
+        ],
+        "initiallyEnabled": false
+      },
+      {
+        "code": "SUPPLY-C05-C06",
+        "ratedAirflowCubicMetersPerSecond": 8.0,
+        "ratedCoolingCapacityWatts": 100000.0,
+        "supplyAirTemperatureCelsius": 18.0,
+        "influences": [
+          {
+            "zoneCode": "ZONE-C05-C06-NEAR",
+            "weight": 0.50
+          },
+          {
+            "zoneCode": "ZONE-C05-C06-MIDDLE",
+            "weight": 0.30
+          },
+          {
+            "zoneCode": "ZONE-C05-C06-FAR",
+            "weight": 0.20
+          }
+        ],
+        "initiallyEnabled": false
+      },
+      {
+        "code": "SUPPLY-C07-C08",
+        "ratedAirflowCubicMetersPerSecond": 8.0,
+        "ratedCoolingCapacityWatts": 100000.0,
+        "supplyAirTemperatureCelsius": 18.0,
+        "influences": [
+          {
+            "zoneCode": "ZONE-C07-C08-NEAR",
+            "weight": 0.50
+          },
+          {
+            "zoneCode": "ZONE-C07-C08-MIDDLE",
+            "weight": 0.30
+          },
+          {
+            "zoneCode": "ZONE-C07-C08-FAR",
+            "weight": 0.20
+          }
+        ],
+        "initiallyEnabled": false
+      }
+    ],
+    "exhaustUnits": [
+      {
+        "code": "EXHAUST-C01-C02",
+        "ratedAirflowCubicMetersPerSecond": 8.0,
+        "influences": [
+          {
+            "zoneCode": "ZONE-C01-C02-NEAR",
+            "weight": 0.50
+          },
+          {
+            "zoneCode": "ZONE-C01-C02-MIDDLE",
+            "weight": 0.30
+          },
+          {
+            "zoneCode": "ZONE-C01-C02-FAR",
+            "weight": 0.20
+          }
+        ],
+        "initiallyEnabled": false
+      },
+      {
+        "code": "EXHAUST-C05-C06",
+        "ratedAirflowCubicMetersPerSecond": 8.0,
+        "influences": [
+          {
+            "zoneCode": "ZONE-C05-C06-NEAR",
+            "weight": 0.50
+          },
+          {
+            "zoneCode": "ZONE-C05-C06-MIDDLE",
+            "weight": 0.30
+          },
+          {
+            "zoneCode": "ZONE-C05-C06-FAR",
+            "weight": 0.20
+          }
+        ],
+        "initiallyEnabled": false
+      },
+      {
+        "code": "EXHAUST-C07-C08",
+        "ratedAirflowCubicMetersPerSecond": 8.0,
+        "influences": [
+          {
+            "zoneCode": "ZONE-C07-C08-NEAR",
+            "weight": 0.50
+          },
+          {
+            "zoneCode": "ZONE-C07-C08-MIDDLE",
+            "weight": 0.30
+          },
+          {
+            "zoneCode": "ZONE-C07-C08-FAR",
+            "weight": 0.20
+          }
+        ],
+        "initiallyEnabled": false
+      }
+    ],
+    "options": {
+      "airDensityKilogramsPerCubicMeter": 1.204,
+      "airSpecificHeatJoulesPerKilogramKelvin": 1005.0,
+      "initialInletAirTemperatureCelsius": 24.0,
+      "maximumRecirculationFraction": 0.95
+    }
   }
 }

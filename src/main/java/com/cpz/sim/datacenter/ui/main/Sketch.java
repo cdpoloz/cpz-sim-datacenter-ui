@@ -15,6 +15,11 @@ import com.cpz.sim.datacenter.ui.config.HotAisleDefinition;
 import com.cpz.sim.datacenter.ui.input.MainInputLayer;
 import com.cpz.sim.datacenter.config.definition.DatacenterDefinition;
 import com.cpz.sim.datacenter.config.json.JsonDatacenterConfigLoader;
+import com.cpz.sim.datacenter.cooling.CoolingConfiguration;
+import com.cpz.sim.datacenter.factory.CoolingConfigurationFactory;
+import com.cpz.sim.datacenter.cooling.CoolingSnapshotCoordinator;
+import com.cpz.sim.datacenter.cooling.DatacenterCoolingTickInputProvider;
+import com.cpz.sim.datacenter.temperature.CoolingSnapshotTemperatureReferenceProvider;
 import com.cpz.sim.datacenter.factory.DatacenterFactory;
 import com.cpz.sim.datacenter.factory.TemperatureSystemOptionsFactory;
 import com.cpz.sim.datacenter.factory.WorkloadFactorProviderFactory;
@@ -86,10 +91,16 @@ public class Sketch extends PApplet {
     private TemperatureSnapshot temperatureSnapshot;
     private String columnaElegida, rackElegido;
     private HotAisleConfiguration hotAisleConfiguration;
+    private HotAisleDefinition pasilloCalienteSeleccionado;
     private Map<String, Rack> racks;
     private float minServerTemperatureCelsius;
     private float maxServerTemperatureCelsius;
-    private HotAisleDefinition pasilloCalienteSeleccionado;
+    private CoolingConfiguration coolingConfiguration;
+    private CoolingSystem coolingSystem;
+    private CoolingSnapshotCoordinator coolingSnapshotCoordinator;
+    private CoolingSnapshotTemperatureReferenceProvider coolingTemperatureReferenceProvider;
+    private CoolingSnapshot coolingSnapshot;
+    private boolean logNextCoolingTick;
     private String formatoTemperatura, formatoPorcentaje, formatoPotenciaKw, formatoPotenciaMw, formatoVelocidad, formatoPresion;
 
     public void settings() {
@@ -165,6 +176,11 @@ public class Sketch extends PApplet {
         Path configPath = Path.of("data/config/datacenter-test-complete.json");
         DatacenterDefinition definition = new JsonDatacenterConfigLoader().load(configPath);
         datacenter = new DatacenterFactory().create(definition);
+        coolingConfiguration =
+                new CoolingConfigurationFactory()
+                        .create(definition, datacenter)
+                        .orElseThrow(() -> new IllegalStateException("La configuración del datacenter no contiene el bloque cooling"));
+        System.out.println("Cooling configuration loaded: " + coolingConfiguration.zones().size() + " zones, " + coolingConfiguration.units().size() + " units");
         racks = new HashMap<>();
         for (Rack r : datacenter.getRacks()) racks.put(r.getCode().value(), r);
         // workloads
@@ -189,8 +205,11 @@ public class Sketch extends PApplet {
         engine = new SimulationEngine(clock);
         // sistemas
         energySystem = new EnergyConsumptionSystem(datacenter);
+        coolingSystem = new CoolingSystem(coolingConfiguration);
+        coolingTemperatureReferenceProvider = new CoolingSnapshotTemperatureReferenceProvider(coolingConfiguration);
+        coolingSnapshotCoordinator = new CoolingSnapshotCoordinator(new DatacenterCoolingTickInputProvider(datacenter), coolingSystem, coolingTemperatureReferenceProvider);
         TemperatureSystemOptions temperatureOptions = new TemperatureSystemOptionsFactory().create(definition);
-        temperatureSystem = new TemperatureSystem(datacenter, temperatureOptions, new SimpleServerTemperatureModel());
+        temperatureSystem = new TemperatureSystem(datacenter, temperatureOptions, new SimpleServerTemperatureModel(), coolingTemperatureReferenceProvider);
         HealthThreshold utilizationThreshold = new HealthThreshold(
                 Double.parseDouble(PROPS.getProperty("simulation.health.utilization.alert-threshold")),
                 Double.parseDouble(PROPS.getProperty("simulation.health.utilization.recovery-threshold"))
@@ -202,6 +221,24 @@ public class Sketch extends PApplet {
         healthSystem = new ServerHealthSystem(datacenter, temperatureSystem, new ServerHealthOptions(utilizationThreshold, temperatureThreshold));
         engine.register(new WorkloadSystem(datacenter, workloadSource));
         engine.register(new PowerConsumptionSystem(datacenter));
+        //engine.register(tick -> coolingSnapshot = coolingSnapshotCoordinator.update(tick));
+
+        engine.register(tick -> {
+                    coolingSnapshot = coolingSnapshotCoordinator.update(tick);
+                    if (logNextCoolingTick) {
+                        System.out.println("Cooling tick "
+                                + coolingSnapshot.tickIndex()
+                                + ": generatedHeat="
+                                + coolingSnapshot.totalGeneratedHeatWatts()
+                                + " W, deficit="
+                                + coolingSnapshot.totalCoolingDeficitWatts()
+                                + " W"
+                        );
+                        logNextCoolingTick = false;
+                    }
+                }
+        );
+
         engine.register(temperatureSystem);
         engine.register(healthSystem);
         engine.register(energySystem);
@@ -224,7 +261,7 @@ public class Sketch extends PApplet {
         operationalSnapshotProvider = new DatacenterOperationalSnapshotProvider(datacenter, operationalGroups);
         // timers
         timerSimulacion = new Timer();
-        timerSimulacion.setPeriodMillis(100);
+        timerSimulacion.setPeriodMillis(1000);
         timerSimulacion.start();
         // valores iniciales
         columnaElegida = "C01";
@@ -233,6 +270,7 @@ public class Sketch extends PApplet {
         mostrarAuraRackSeleccionado();
         calculateTemperatureRange(datacenter, temperatureOptions);
         engine.step();
+        System.out.println("Cooling tick " + coolingSnapshot.tickIndex() + ": generatedHeat=" + coolingSnapshot.totalGeneratedHeatWatts() + " W, deficit=" + coolingSnapshot.totalCoolingDeficitWatts() + " W");
         updateUI = true;
         updateSnapshots = true;
         updateSnapshots();
@@ -668,7 +706,12 @@ public class Sketch extends PApplet {
     @Override
     public void keyReleased() {
         if (key == 'm') showOverlayEstatico = !showOverlayEstatico;
-        else if (keyCode == BARRA_ESPACIADORA) timerSimulacion.toggle();
+        else if (key == 's' || key == 'S') toggleSelectedSupplyUnit();
+        else if (key == 'x' || key == 'X') toggleSelectedExhaustUnit();
+        else if (keyCode == BARRA_ESPACIADORA) {
+            timerSimulacion.toggle();
+            if (!timerSimulacion.isRunning()) System.out.println(engine.currentTick());
+        }
         else if (keyCode == 49) columnaElegida = "C01";
         else if (keyCode == 50) columnaElegida = "C02";
         else if (keyCode == 51) columnaElegida = "C03";
@@ -698,6 +741,33 @@ public class Sketch extends PApplet {
         mostrarAuraRackSeleccionado();
         updateUI = true;
         // *****************************************************************
+    }
+
+    private void toggleSelectedSupplyUnit() {
+        toggleSelectedCoolingUnit("SUPPLY");
+    }
+
+    private void toggleSelectedExhaustUnit() {
+        toggleSelectedCoolingUnit("EXHAUST");
+    }
+
+    private void toggleSelectedCoolingUnit(String unitType) {
+        String unitCode = unitType + "-" + selectedCoolingColumnGroup();
+        boolean configured = coolingConfiguration.units().stream().anyMatch(unit -> unit.code().equals(unitCode));
+        if (!configured) {
+            System.out.println("Cooling unit is not configured: " + unitCode);
+            return;
+        }
+        boolean enabled = coolingSystem.toggle(unitCode);
+        System.out.println("Cooling unit " + unitCode + " is now " + (enabled ? "enabled" : "disabled"));
+        logNextCoolingTick = true;
+    }
+
+    private String selectedCoolingColumnGroup() {
+        int selectedColumn = Integer.parseInt(columnaElegida.substring(1));
+        int firstColumn = selectedColumn % 2 == 0 ? selectedColumn - 1 : selectedColumn;
+        int secondColumn = firstColumn + 1;
+        return "C%02d-C%02d".formatted(firstColumn, secondColumn);
     }
 
 }
