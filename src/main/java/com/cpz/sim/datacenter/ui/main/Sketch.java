@@ -5,6 +5,7 @@ import com.cpz.processing.controls.controls.button.Button;
 import com.cpz.processing.controls.controls.config.ControlConfigLoader;
 import com.cpz.processing.controls.controls.indicator.Indicator;
 import com.cpz.processing.controls.controls.label.Label;
+import com.cpz.processing.controls.controls.toggle.Toggle;
 import com.cpz.processing.controls.core.input.InputManager;
 import com.cpz.processing.controls.core.input.PointerEvent;
 import com.cpz.processing.controls.core.overlay.OverlayManager;
@@ -72,6 +73,7 @@ public class Sketch extends PApplet {
     private Map<String, Indicator> indicadoresPasilloElegidoServidorTemperaturaMaxima, indicadoresRackElegido, indicadoresPasilloNull;
     private Map<String, Button> botonesPasilloElegidoRacks;
     private Map<String, Label> labels;
+    private Map<String, Toggle> toggles;
     private PImage fondo, overlayEstatico, fondoPasilloElegido, fondoRackElegido;
     private boolean showOverlayEstatico;
     private Timer timerSimulacion;
@@ -162,6 +164,14 @@ public class Sketch extends PApplet {
             mainInputLayer.addPointerTarget(btn::handlePointerEvent);
             btn.setClickListener(() -> btnClicked(btn.getCode()));
         });
+        // toggles
+        controles = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "toggle.json");
+        toggles = new HashMap<>();
+        controles.values().stream().filter(c -> c instanceof Toggle).forEach(tgl -> toggles.put(tgl.getCode(), (Toggle) tgl));
+        toggles.values().forEach(tgl -> {
+            mainInputLayer.addPointerTarget(tgl::handlePointerEvent);
+            tgl.setChangeListener(estado -> tglClicked(tgl.getCode()));
+        });
         // registro de capas en inputLayer
         inputManager.registerLayer(mainInputLayer);
         //inputManager.registerLayer(new TooltipInputLayer(1000, tooltips));
@@ -180,7 +190,6 @@ public class Sketch extends PApplet {
                 new CoolingConfigurationFactory()
                         .create(definition, datacenter)
                         .orElseThrow(() -> new IllegalStateException("La configuración del datacenter no contiene el bloque cooling"));
-        System.out.println("Cooling configuration loaded: " + coolingConfiguration.zones().size() + " zones, " + coolingConfiguration.units().size() + " units");
         racks = new HashMap<>();
         for (Rack r : datacenter.getRacks()) racks.put(r.getCode().value(), r);
         // workloads
@@ -261,7 +270,7 @@ public class Sketch extends PApplet {
         operationalSnapshotProvider = new DatacenterOperationalSnapshotProvider(datacenter, operationalGroups);
         // timers
         timerSimulacion = new Timer();
-        timerSimulacion.setPeriodMillis(1000);
+        timerSimulacion.setPeriodMillis(500);
         timerSimulacion.start();
         // valores iniciales
         columnaElegida = "C01";
@@ -270,7 +279,6 @@ public class Sketch extends PApplet {
         mostrarAuraRackSeleccionado();
         calculateTemperatureRange(datacenter, temperatureOptions);
         engine.step();
-        System.out.println("Cooling tick " + coolingSnapshot.tickIndex() + ": generatedHeat=" + coolingSnapshot.totalGeneratedHeatWatts() + " W, deficit=" + coolingSnapshot.totalCoolingDeficitWatts() + " W");
         updateUI = true;
         updateSnapshots = true;
         updateSnapshots();
@@ -307,6 +315,25 @@ public class Sketch extends PApplet {
             actualizarRackSeleccionado(codigoBoton.replace("btnRackElegido", ""));
             updateUI = true;
         }
+    }
+
+    private void tglClicked(String codigoToggle) {
+        if (codigoToggle.toLowerCase().contains("ventilador") || codigoToggle.toLowerCase().contains("extractor"))
+            conmutarUnidadRefrigeracion(codigoToggle);
+    }
+
+    private void conmutarUnidadRefrigeracion(String tglCode) {
+        String unitType = "";
+        if (tglCode.contains("Ventilador")) unitType = "SUPPLY";
+        else if (tglCode.contains("Extractor")) unitType = "EXHAUST";
+        if (unitType.isEmpty()) return;
+        String unitCode = unitType
+                + "-"
+                + tglCode
+                .replace("tglSala", "")
+                .replace("Ventilador", "")
+                .replace("Extractor", "");
+        coolingSystem.toggle(unitCode);
     }
 
     private void actualizarRackSeleccionado(String rackClic) {
@@ -374,6 +401,7 @@ public class Sketch extends PApplet {
         indicadoresSlotIA.values().forEach(Indicator::draw);
         indicadoresPasilloNull.values().forEach(Indicator::draw);
         botonesPasilloElegidoRacks.values().forEach(Button::draw);
+        toggles.values().forEach(Toggle::draw);
         if (showOverlayEstatico) dibujarOverlayEstatico();
         overlayManager.getActiveOverlays().forEach(entry -> entry.getRender().run());
     }
@@ -708,10 +736,7 @@ public class Sketch extends PApplet {
         if (key == 'm') showOverlayEstatico = !showOverlayEstatico;
         else if (key == 's' || key == 'S') toggleSelectedSupplyUnit();
         else if (key == 'x' || key == 'X') toggleSelectedExhaustUnit();
-        else if (keyCode == BARRA_ESPACIADORA) {
-            timerSimulacion.toggle();
-            if (!timerSimulacion.isRunning()) System.out.println(engine.currentTick());
-        }
+        else if (keyCode == BARRA_ESPACIADORA) timerSimulacion.toggle();
         else if (keyCode == 49) columnaElegida = "C01";
         else if (keyCode == 50) columnaElegida = "C02";
         else if (keyCode == 51) columnaElegida = "C03";
