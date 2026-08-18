@@ -75,7 +75,7 @@ public class Sketch extends PApplet {
     private Map<String, Label> labels;
     private Map<String, Toggle> toggles;
     private PImage fondo, overlayEstatico, fondoPasilloElegido, fondoRackElegido;
-    private boolean showOverlayEstatico;
+    private boolean showOverlay;
     private Timer timerSimulacion;
     private boolean updateSnapshots, updateUI;
     private SimulationEngine engine;
@@ -95,8 +95,8 @@ public class Sketch extends PApplet {
     private HotAisleConfiguration hotAisleConfiguration;
     private HotAisleDefinition pasilloCalienteSeleccionado;
     private Map<String, Rack> racks;
-    private float minServerTemperatureCelsius;
-    private float maxServerTemperatureCelsius;
+    private float minServerTemperatureCelsius, maxServerTemperatureCelsius;
+    private List<Float> temperaturasPasilloCalienteSeleccionado;
     private CoolingConfiguration coolingConfiguration;
     private CoolingSystem coolingSystem;
     private CoolingSnapshotCoordinator coolingSnapshotCoordinator;
@@ -170,7 +170,7 @@ public class Sketch extends PApplet {
         controles.values().stream().filter(c -> c instanceof Toggle).forEach(tgl -> toggles.put(tgl.getCode(), (Toggle) tgl));
         toggles.values().forEach(tgl -> {
             mainInputLayer.addPointerTarget(tgl::handlePointerEvent);
-            tgl.setChangeListener(estado -> tglClicked(tgl.getCode()));
+            tgl.setChangeListener(estado -> tglClicked(tgl.getCode(), estado));
         });
         // registro de capas en inputLayer
         inputManager.registerLayer(mainInputLayer);
@@ -230,24 +230,7 @@ public class Sketch extends PApplet {
         healthSystem = new ServerHealthSystem(datacenter, temperatureSystem, new ServerHealthOptions(utilizationThreshold, temperatureThreshold));
         engine.register(new WorkloadSystem(datacenter, workloadSource));
         engine.register(new PowerConsumptionSystem(datacenter));
-        //engine.register(tick -> coolingSnapshot = coolingSnapshotCoordinator.update(tick));
-
-        engine.register(tick -> {
-                    coolingSnapshot = coolingSnapshotCoordinator.update(tick);
-                    if (logNextCoolingTick) {
-                        System.out.println("Cooling tick "
-                                + coolingSnapshot.tickIndex()
-                                + ": generatedHeat="
-                                + coolingSnapshot.totalGeneratedHeatWatts()
-                                + " W, deficit="
-                                + coolingSnapshot.totalCoolingDeficitWatts()
-                                + " W"
-                        );
-                        logNextCoolingTick = false;
-                    }
-                }
-        );
-
+        engine.register(tick -> coolingSnapshot = coolingSnapshotCoordinator.update(tick));
         engine.register(temperatureSystem);
         engine.register(healthSystem);
         engine.register(energySystem);
@@ -270,7 +253,7 @@ public class Sketch extends PApplet {
         operationalSnapshotProvider = new DatacenterOperationalSnapshotProvider(datacenter, operationalGroups);
         // timers
         timerSimulacion = new Timer();
-        timerSimulacion.setPeriodMillis(500);
+        timerSimulacion.setPeriodMillis(100);
         timerSimulacion.start();
         // valores iniciales
         columnaElegida = "C01";
@@ -289,7 +272,7 @@ public class Sketch extends PApplet {
         formatoVelocidad = PROPS.getProperty("number.format.velocidad");
         formatoPresion = PROPS.getProperty("number.format.presion");
         // debug
-        showOverlayEstatico = true;
+        showOverlay = true;
     }
 
     private List<ServerGroupDefinition> createOperationalGroups(HotAisleConfiguration configuration) {
@@ -317,12 +300,12 @@ public class Sketch extends PApplet {
         }
     }
 
-    private void tglClicked(String codigoToggle) {
+    private void tglClicked(String codigoToggle, int estado) {
         if (codigoToggle.toLowerCase().contains("ventilador") || codigoToggle.toLowerCase().contains("extractor"))
-            conmutarUnidadRefrigeracion(codigoToggle);
+            actualizarUnidadRefrigeracion(codigoToggle, estado == 1);
     }
 
-    private void conmutarUnidadRefrigeracion(String tglCode) {
+    private void actualizarUnidadRefrigeracion(String tglCode, boolean enabled) {
         String unitType = "";
         if (tglCode.contains("Ventilador")) unitType = "SUPPLY";
         else if (tglCode.contains("Extractor")) unitType = "EXHAUST";
@@ -333,7 +316,7 @@ public class Sketch extends PApplet {
                 .replace("tglSala", "")
                 .replace("Ventilador", "")
                 .replace("Extractor", "");
-        coolingSystem.toggle(unitCode);
+        coolingSystem.setEnabled(unitCode, enabled);
     }
 
     private void actualizarRackSeleccionado(String rackClic) {
@@ -393,17 +376,9 @@ public class Sketch extends PApplet {
         updateControles();
         //draw
         dibujarFondo();
-        indicadoresAlerta.values().forEach(Indicator::draw);
-        labels.values().forEach(Label::draw);
-        indicadores.values().forEach(Indicator::draw);
-        indicadoresPasilloElegidoServidorTemperaturaMaxima.values().forEach(Indicator::draw);
-        indicadoresRackElegido.values().forEach(Indicator::draw);
-        indicadoresSlotIA.values().forEach(Indicator::draw);
-        indicadoresPasilloNull.values().forEach(Indicator::draw);
-        botonesPasilloElegidoRacks.values().forEach(Button::draw);
-        toggles.values().forEach(Toggle::draw);
-        if (showOverlayEstatico) dibujarOverlayEstatico();
-        overlayManager.getActiveOverlays().forEach(entry -> entry.getRender().run());
+        dibujarControles();
+        dibujarGradienteTemperaturaEnPasilloElegido();
+        dibujarOverlay();
     }
 
     private void updateClock() {
@@ -582,11 +557,11 @@ public class Sketch extends PApplet {
         indicadores.get("indFlechasAireFrioIzq").setOn(!pasilloExtremoIzquierdoElegido);
         indicadoresPasilloNull.get("indPasilloNullDer").setOn(pasilloExtremoDerechoElegido);
         indicadores.get("indFlechasAireFrioDer").setOn(!pasilloExtremoDerechoElegido);
-        HotAisleDefinition pasilloCalienteElegido = obtenerPasilloCalienteElegido();
-        labels.get("lblPasilloElegidoValor").setText(pasilloCalienteElegido.displayName());
+        obtenerPasilloCalienteElegido();
+        labels.get("lblPasilloElegidoValor").setText(pasilloCalienteSeleccionado.displayName());
         ServerGroupOperationalSnapshot aisleSnapshot = operationalSnapshot
-                .findServerGroup(pasilloCalienteElegido.code())
-                .orElseThrow(() -> new IllegalStateException("No existe snapshot operacional para el pasillo: " + pasilloCalienteElegido.code()));
+                .findServerGroup(pasilloCalienteSeleccionado.code())
+                .orElseThrow(() -> new IllegalStateException("No existe snapshot operacional para el pasillo: " + pasilloCalienteSeleccionado.code()));
         Label lblTemperaturaPromedio = labels.get("lblPasilloElegidoTemperaturaPromedioValor");
         Label lblTemperaturaMaxima = labels.get("lblPasilloElegidoTemperaturaMaximaValor");
         Label lblCargaPromedio = labels.get("lblPasilloElegidoCargaITValor");
@@ -611,7 +586,7 @@ public class Sketch extends PApplet {
                                 "El pasillo tiene servidores instalados, "
                                         + "pero no informa la ubicación "
                                         + "de la temperatura máxima: "
-                                        + pasilloCalienteElegido.code()
+                                        + pasilloCalienteSeleccionado.code()
                         )
                 );
         String columnaTemperaturaMaxima = ubicacionTemperaturaMaxima.column();
@@ -645,6 +620,38 @@ public class Sketch extends PApplet {
             lblTemperaturaPromedio.setText("--");
             lblCargaPromedio.setText("--");
         }
+        // gradiente color pasillo caliente
+        temperaturasPasilloCalienteSeleccionado = new ArrayList<>();
+        List<String> rackCodes = obtenerRackCodesPasillo(pasilloCalienteSeleccionado);
+        for (String rackCode : rackCodes) {
+            float temperaturaPromedioRacks = 0;
+            for (String column : pasilloCalienteSeleccionado.columns()) {
+                RackLocation rackLocation = new RackLocation(column, new RackCode(rackCode));
+                RackOperationalSnapshot rackSnapshot = operationalSnapshot.findRack(rackLocation).orElseThrow();
+                temperaturaPromedioRacks += (float) rackSnapshot.averageOnlineTemperatureCelsius();
+            }
+            temperaturaPromedioRacks /= pasilloCalienteSeleccionado.columns().size();
+            temperaturasPasilloCalienteSeleccionado.add(temperaturaPromedioRacks);
+        }
+        float fColor = map(
+                temperaturasPasilloCalienteSeleccionado.getFirst(),
+                minServerTemperatureCelsius,
+                maxServerTemperatureCelsius,
+                0,
+                1);
+        int colorEfectoTemperatura = Colors.lerpColor(COLOR_TEMPERATURA_MEDIA, COLOR_TEMPERATURA_MAXIMA, fColor);
+        indicadores.get("indPasilloElegidoEfectoTemperatura").setOnColor(colorEfectoTemperatura);
+    }
+
+    private List<String> obtenerRackCodesPasillo(HotAisleDefinition pasillo) {
+        String columnaReferencia = pasillo.columns().getFirst();
+        return datacenter
+                .getRacks()
+                .stream()
+                .filter(rack -> rack.getLocation().column().equals(columnaReferencia))
+                .map(rack -> rack.getCode().value())
+                .sorted()
+                .toList();
     }
 
     private int obtenerColorRangoTemperatura(float temperatura) {
@@ -655,11 +662,9 @@ public class Sketch extends PApplet {
         else return COLOR_LABEL_VERDE;
     }
 
-    private HotAisleDefinition obtenerPasilloCalienteElegido() {
+    private void obtenerPasilloCalienteElegido() {
         pasilloCalienteSeleccionado = hotAisleByColumn.get(columnaElegida);
-        if (pasilloCalienteSeleccionado == null)
-            throw new IllegalArgumentException("No hot aisle configured for column: " + columnaElegida);
-        return pasilloCalienteSeleccionado;
+        if (pasilloCalienteSeleccionado == null) throw new IllegalArgumentException("No hot aisle configured for column: " + columnaElegida);
     }
 
     private Map<ServerLocation, ServerEnergySnapshot> obtenerEnergiaPorUbicacion() {
@@ -687,6 +692,7 @@ public class Sketch extends PApplet {
     }
 
     private void dibujarFondo() {
+        background(128);
         pushStyle();
         imageMode(CORNER);
         image(fondo, 0, 0, width, height);
@@ -695,11 +701,89 @@ public class Sketch extends PApplet {
         popStyle();
     }
 
-    private void dibujarOverlayEstatico() {
+    private void dibujarControles() {
+        indicadoresAlerta.values().forEach(Indicator::draw);
+        labels.values().forEach(Label::draw);
+        indicadores.values().forEach(Indicator::draw);
+        indicadoresPasilloElegidoServidorTemperaturaMaxima.values().forEach(Indicator::draw);
+        indicadoresRackElegido.values().forEach(Indicator::draw);
+        indicadoresSlotIA.values().forEach(Indicator::draw);
+        indicadoresPasilloNull.values().forEach(Indicator::draw);
+        botonesPasilloElegidoRacks.values().forEach(Button::draw);
+        toggles.values().forEach(Toggle::draw);
+    }
+
+    private void dibujarGradienteTemperaturaEnPasilloElegido() {
         pushStyle();
-        imageMode(CORNER);
-        image(overlayEstatico, 0, 0, width, height);
+        noFill();
+        strokeWeight(1);
+        float y = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.y")) * height;
+        float h = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.height")) * height;
+        float totalH = y + temperaturasPasilloCalienteSeleccionado.size() * h;
+        float x = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.x")) * width;
+        float minW = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.min.width")) * height;
+        float maxW = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.max.width")) * height;
+        float minY = y;
+        float maxY = y + h;
+        float temperatura = temperaturasPasilloCalienteSeleccionado.getFirst();
+        int color = Colors.lerpColor(
+                COLOR_TEMPERATURA_MEDIA,
+                COLOR_TEMPERATURA_MAXIMA,
+                map(temperatura, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1)
+        );
+        for (int j = (int) minY; j < (int) maxY; j++) {
+            float w = map(j, y, totalH, minW, maxW);
+            stroke(color);
+            line(x - w * 0.5f, j, x + w * 0.5f, j);
+        }
+        for (int i = 0; i < temperaturasPasilloCalienteSeleccionado.size() - 1; i++) {
+            temperatura = temperaturasPasilloCalienteSeleccionado.get(i);
+            float temperaturaSiguiente = temperaturasPasilloCalienteSeleccionado.get(i + 1);
+            minY = y + (i + 1) * h;
+            maxY = y + (i + 2) * h;
+            color = Colors.lerpColor(
+                    COLOR_TEMPERATURA_MEDIA,
+                    COLOR_TEMPERATURA_MAXIMA,
+                    map(temperatura, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1)
+            );
+            int colorSiguiente = Colors.lerpColor(
+                    COLOR_TEMPERATURA_MEDIA,
+                    COLOR_TEMPERATURA_MAXIMA,
+                    map(temperaturaSiguiente, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1)
+            );
+            for (int j = (int) minY; j < (int) maxY; j++) {
+                float w = map(j, y, totalH, minW, maxW);
+                float fColor = map(j, minY, maxY, 0, 1);
+                int colorLinea = Colors.lerpColor(color, colorSiguiente, fColor);
+                stroke(colorLinea);
+                line(x - w * 0.5f, j, x + w * 0.5f, j);
+            }
+        }
+        strokeWeight(Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.stroke.weigth")) * height);
+        stroke(COLOR_BORDE_GRADIENTE_TEMPERATURA);
+        line(
+                Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.x.00")) * width,
+                Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.y.00")) * height,
+                Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.x.03")) * width,
+                Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.y.03")) * height
+        );
+        line(
+                Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.x.01")) * width,
+                Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.y.01")) * height,
+                Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.x.02")) * width,
+                Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.y.02")) * height
+        );
         popStyle();
+    }
+
+    private void dibujarOverlay() {
+        if (showOverlay) {
+            pushStyle();
+            imageMode(CORNER);
+            image(overlayEstatico, 0, 0, width, height);
+            popStyle();
+        }
+        overlayManager.getActiveOverlays().forEach(entry -> entry.getRender().run());
     }
 
     // <editor-fold defaultstate="collapsed" desc="*** mouse events ***">
@@ -733,9 +817,7 @@ public class Sketch extends PApplet {
 
     @Override
     public void keyReleased() {
-        if (key == 'm') showOverlayEstatico = !showOverlayEstatico;
-        else if (key == 's' || key == 'S') toggleSelectedSupplyUnit();
-        else if (key == 'x' || key == 'X') toggleSelectedExhaustUnit();
+        if (key == 'm') showOverlay = !showOverlay;
         else if (keyCode == BARRA_ESPACIADORA) timerSimulacion.toggle();
         else if (keyCode == 49) columnaElegida = "C01";
         else if (keyCode == 50) columnaElegida = "C02";
@@ -766,33 +848,6 @@ public class Sketch extends PApplet {
         mostrarAuraRackSeleccionado();
         updateUI = true;
         // *****************************************************************
-    }
-
-    private void toggleSelectedSupplyUnit() {
-        toggleSelectedCoolingUnit("SUPPLY");
-    }
-
-    private void toggleSelectedExhaustUnit() {
-        toggleSelectedCoolingUnit("EXHAUST");
-    }
-
-    private void toggleSelectedCoolingUnit(String unitType) {
-        String unitCode = unitType + "-" + selectedCoolingColumnGroup();
-        boolean configured = coolingConfiguration.units().stream().anyMatch(unit -> unit.code().equals(unitCode));
-        if (!configured) {
-            System.out.println("Cooling unit is not configured: " + unitCode);
-            return;
-        }
-        boolean enabled = coolingSystem.toggle(unitCode);
-        System.out.println("Cooling unit " + unitCode + " is now " + (enabled ? "enabled" : "disabled"));
-        logNextCoolingTick = true;
-    }
-
-    private String selectedCoolingColumnGroup() {
-        int selectedColumn = Integer.parseInt(columnaElegida.substring(1));
-        int firstColumn = selectedColumn % 2 == 0 ? selectedColumn - 1 : selectedColumn;
-        int secondColumn = firstColumn + 1;
-        return "C%02d-C%02d".formatted(firstColumn, secondColumn);
     }
 
 }

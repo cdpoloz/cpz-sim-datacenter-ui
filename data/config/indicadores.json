@@ -1781,6 +1781,28 @@
           "path": "data/img/ind/indPasilloElegidoFlujoAire.svg"
         }
       }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoEfectoTemperatura",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.5362867188,
+        "y": 0.2042643505,
+        "width": 0.06384290030,
+        "height": 0.05664350453
+      },
+      "on": true,
+      "onColor": "#005cb4c6",
+      "offColor": "#002e3c4a",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoEfectoTemperatura.png"
+        }
+      }
     }
   ]
 }
