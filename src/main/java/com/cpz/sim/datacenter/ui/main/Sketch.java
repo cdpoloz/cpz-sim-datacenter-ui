@@ -10,6 +10,7 @@ import com.cpz.processing.controls.core.input.InputManager;
 import com.cpz.processing.controls.core.input.PointerEvent;
 import com.cpz.processing.controls.core.overlay.OverlayManager;
 import com.cpz.processing.controls.input.ProcessingKeyboardAdapter;
+import com.cpz.sim.datacenter.cooling.CoolingZoneDefinition;
 import com.cpz.sim.datacenter.ui.config.HotAisleConfiguration;
 import com.cpz.sim.datacenter.ui.config.HotAisleConfigurationLoader;
 import com.cpz.sim.datacenter.ui.config.HotAisleDefinition;
@@ -103,7 +104,7 @@ public class Sketch extends PApplet {
     private CoolingSnapshotTemperatureReferenceProvider coolingTemperatureReferenceProvider;
     private CoolingSnapshot coolingSnapshot;
     private boolean logNextCoolingTick;
-    private String formatoTemperatura, formatoPorcentaje, formatoPotenciaKw, formatoPotenciaMw, formatoVelocidad, formatoPresion;
+    private String formatoTemperatura, formatoPorcentaje, formatoPotenciaKw, formatoPotenciaMw, formatoVelocidad, formatoPresion, formatoFlujoAire;
 
     public void settings() {
         LOG.info("Starting settings");
@@ -253,7 +254,7 @@ public class Sketch extends PApplet {
         operationalSnapshotProvider = new DatacenterOperationalSnapshotProvider(datacenter, operationalGroups);
         // timers
         timerSimulacion = new Timer();
-        timerSimulacion.setPeriodMillis(100);
+        timerSimulacion.setPeriodMillis(500);
         timerSimulacion.start();
         // valores iniciales
         columnaElegida = "C01";
@@ -271,6 +272,7 @@ public class Sketch extends PApplet {
         formatoPotenciaMw = PROPS.getProperty("number.format.power.mw");
         formatoVelocidad = PROPS.getProperty("number.format.velocidad");
         formatoPresion = PROPS.getProperty("number.format.presion");
+        formatoFlujoAire = PROPS.getProperty("number.format.airflow");
         // debug
         showOverlay = true;
     }
@@ -559,6 +561,29 @@ public class Sketch extends PApplet {
         indicadores.get("indFlechasAireFrioDer").setOn(!pasilloExtremoDerechoElegido);
         obtenerPasilloCalienteElegido();
         labels.get("lblPasilloElegidoValor").setText(pasilloCalienteSeleccionado.displayName());
+        // datos adicionales
+        List<String> zoneCodesDelPasillo = obtenerCoolingZoneCodesPasillo(pasilloCalienteSeleccionado);
+        CoolingZoneGroupSnapshot coolingGroupSnapshot = coolingSnapshot.aggregateZones(pasilloCalienteSeleccionado.code(), zoneCodesDelPasillo);
+        double thermalCoverage = coolingGroupSnapshot.thermalCoverage();
+        labels.get("lblPasilloElegidoCoberturaTermicaValor").setText(String.format(formatoPorcentaje, thermalCoverage * 100.0));
+        double deltaTinOut = coolingGroupSnapshot.airTemperatureRiseCelsius();
+        labels.get("lblPasilloElegidoDeltaTemperaturaValor").setText(String.format(formatoTemperatura, deltaTinOut));
+        double recirculation = coolingGroupSnapshot.averageRecirculationFraction();
+        labels.get("lblPasilloElegidoRecirculacionValor").setText(String.format(formatoPorcentaje, recirculation * 100.0));
+        double supplyAirflow = zoneCodesDelPasillo.stream()
+                .map(coolingSnapshot::findZone)
+                .flatMap(Optional::stream)
+                .mapToDouble(CoolingZoneSnapshot::supplyAirflowCubicMetersPerSecond)
+                .sum();
+        double exhaustAirflow =
+                zoneCodesDelPasillo
+                        .stream()
+                        .map(coolingSnapshot::findZone)
+                        .flatMap(Optional::stream)
+                        .mapToDouble(CoolingZoneSnapshot::exhaustAirflowCubicMetersPerSecond)
+                        .sum();
+        labels.get("lblPasilloElegidoFlujoAireValor").setText(String.format(formatoFlujoAire, supplyAirflow, exhaustAirflow));
+        // servidores instalados
         ServerGroupOperationalSnapshot aisleSnapshot = operationalSnapshot
                 .findServerGroup(pasilloCalienteSeleccionado.code())
                 .orElseThrow(() -> new IllegalStateException("No existe snapshot operacional para el pasillo: " + pasilloCalienteSeleccionado.code()));
@@ -650,6 +675,17 @@ public class Sketch extends PApplet {
                 .stream()
                 .filter(rack -> rack.getLocation().column().equals(columnaReferencia))
                 .map(rack -> rack.getCode().value())
+                .sorted()
+                .toList();
+    }
+
+    private List<String> obtenerCoolingZoneCodesPasillo(HotAisleDefinition pasillo) {
+        Set<String> columnasPasillo = new HashSet<>(pasillo.columns());
+        return coolingConfiguration
+                .zones()
+                .stream()
+                .filter(zone -> zone.serverLocations().stream().anyMatch(location -> columnasPasillo.contains(location.column())))
+                .map(CoolingZoneDefinition::code)
                 .sorted()
                 .toList();
     }

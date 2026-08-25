@@ -1762,28 +1762,6 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoFlujoAire",
-      "bounds": {
-        "mode": "relative",
-        "x": 0.6361682292,
-        "y": 0.5297401813,
-        "width": 0.01762336354,
-        "height": 0.01292396777
-      },
-      "on": true,
-      "onColor": "#5cb4c6",
-      "offColor": "#2e3c4a",
-      "style": {
-        "strokeColor": "#2e3c4a",
-        "strokeWeight": 1.0,
-        "renderer": {
-          "type": "svg",
-          "path": "data/img/ind/indPasilloElegidoFlujoAire.svg"
-        }
-      }
-    },
-    {
-      "type": "indicator",
       "code": "indPasilloElegidoEfectoTemperatura",
       "bounds": {
         "mode": "relative",

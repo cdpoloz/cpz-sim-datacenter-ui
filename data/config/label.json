@@ -1582,7 +1582,7 @@
       "bounds": {
         "mode": "relative",
         "x": 0.4946338542,
-        "y": 0.1277114804,
+        "y": 0.1312789527,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -1607,7 +1607,7 @@
       "bounds": {
         "mode": "relative",
         "x": 0.4946338542,
-        "y": 0.1500855992,
+        "y": 0.1536424975,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -1632,7 +1632,7 @@
       "bounds": {
         "mode": "relative",
         "x": 0.5717841146,
-        "y": 0.1277114804,
+        "y": 0.1312789527,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -1657,7 +1657,7 @@
       "bounds": {
         "mode": "relative",
         "x": 0.5717841146,
-        "y": 0.1473761329,
+        "y": 0.1536424975,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -1682,7 +1682,7 @@
       "bounds": {
         "mode": "relative",
         "x": 0.6489341146,
-        "y": 0.1277114804,
+        "y": 0.1312789527,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -1707,7 +1707,7 @@
       "bounds": {
         "mode": "relative",
         "x": 0.6489341146,
-        "y": 0.1500855992,
+        "y": 0.1536424975,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -2031,7 +2031,7 @@
       "text": "TEMP PROFILE",
       "bounds": {
         "mode": "relative",
-        "x": 0.6574098958,
+        "x": 0.6620606771,
         "y": 0.2111923464,
         "width": 0.0005035246727,
         "height": 0.01074185616
@@ -2056,8 +2056,8 @@
       "text": "AIRFLOW",
       "bounds": {
         "mode": "relative",
-        "x": 0.6574098958,
-        "y": 0.5138111782,
+        "x": 0.6620606771,
+        "y": 0.5241052367,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -2081,14 +2081,14 @@
       "text": "--",
       "bounds": {
         "mode": "relative",
-        "x": 0.6633882813,
-        "y": 0.5297230614,
+        "x": 0.6620606771,
+        "y": 0.5423293051,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
       "textSize": {
         "mode": "relative",
-        "value": 0.01309164149
+        "value": 0.01057401813
       },
       "enabled": true,
       "visible": true,
@@ -2102,12 +2102,12 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoEficienciaRefrigeracion",
-      "text": "COOLING EFFICIENCY",
+      "code": "lblPasilloElegidoCoberturaTermica",
+      "text": "THERMAL COVERAGE",
       "bounds": {
         "mode": "relative",
-        "x": 0.4958518229,
-        "y": 0.5708595166,
+        "x": 0.4947002604,
+        "y": 0.5888640483,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -2127,12 +2127,12 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoEficienciaRefrigeracionValor",
+      "code": "lblPasilloElegidoCoberturaTermicaValor",
       "text": "--",
       "bounds": {
         "mode": "relative",
-        "x": 0.4958518229,
-        "y": 0.5915166163,
+        "x": 0.4947002604,
+        "y": 0.6074380665,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -2156,8 +2156,8 @@
       "text": "ΔT IN/OUT",
       "bounds": {
         "mode": "relative",
-        "x": 0.5709057292,
-        "y": 0.5708595166,
+        "x": 0.5717851563,
+        "y": 0.5888640483,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -2181,8 +2181,8 @@
       "text": "--",
       "bounds": {
         "mode": "relative",
-        "x": 0.5709057292,
-        "y": 0.5915166163,
+        "x": 0.5717851563,
+        "y": 0.6074380665,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -2202,12 +2202,12 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoPresion",
-      "text": "PRESSURE",
+      "code": "lblPasilloElegidoRecirculacion",
+      "text": "RECIRCULATION",
       "bounds": {
         "mode": "relative",
-        "x": 0.6476197917,
-        "y": 0.5708595166,
+        "x": 0.6488703125,
+        "y": 0.5888640483,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -2227,12 +2227,12 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoPresionValor",
+      "code": "lblPasilloElegidoRecirculacionValor",
       "text": "--",
       "bounds": {
         "mode": "relative",
-        "x": 0.6476197917,
-        "y": 0.5915166163,
+        "x": 0.6488703125,
+        "y": 0.6074380665,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },

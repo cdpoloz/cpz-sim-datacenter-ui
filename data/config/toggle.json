@@ -95,6 +95,37 @@
     },
     {
       "type": "toggle",
+      "code": "tglSalaExtractorC03-C04",
+      "state": 0,
+      "totalStates": 2,
+      "bounds": {
+        "mode": "relative",
+        "x": 0.1945419271,
+        "y": 0.1907009063,
+        "width": 0.02316213494,
+        "height": 0.02316213494
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "stateColors": [
+          "#800033",
+          "#ff0066"
+        ],
+        "strokeColor": "#FFFFFF",
+        "strokeWidth": 0.0,
+        "strokeWidthHover": 0.0,
+        "hoverBlendWithWhite": 0.18,
+        "pressedBlendWithBlack": 0.20,
+        "disabledAlpha": 70,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/tgl/tglVentilador.svg"
+        }
+      }
+    },
+    {
+      "type": "toggle",
       "code": "tglSalaVentiladorC05-C06",
       "state": 0,
       "totalStates": 2,
