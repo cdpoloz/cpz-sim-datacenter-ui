@@ -2249,6 +2249,856 @@
         "alignY": "top",
         "disabledAlpha": 80
       }
+    },
+    {
+      "type": "label",
+      "code": "lblSala",
+      "text": "DATACENTER MAP",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.04864557292,
+        "y": 0.09303323263,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01409869084
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSalaEscalaTemperatura",
+      "text": "TEMPERATURE",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.1175333333,
+        "y": 0.1423172205,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.009063444109
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSalaEscalaTemperatura01",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.1578947917,
+        "y": 0.1587809668,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.009063444109
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSalaEscalaTemperatura02",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.1952682292,
+        "y": 0.1587809668,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.009063444109
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSalaEscalaTemperatura03",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2326419271,
+        "y": 0.1587809668,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.009063444109
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSalaEscalaTemperatura04",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.270015625,
+        "y": 0.1587809668,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.009063444109
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSalaEscalaTemperatura05",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.3073893229,
+        "y": 0.1587809668,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.009063444109
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSalaEscalaTemperatura06",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.3447627604,
+        "y": 0.1587809668,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.009063444109
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblColumna01",
+      "text": "C01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.07743229167,
+        "y": 0.2060755287,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblColumna02",
+      "text": "C02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.1248757813,
+        "y": 0.2060755287,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblColumna03",
+      "text": "C03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.1723192708,
+        "y": 0.2060755287,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblColumna04",
+      "text": "C04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2197627604,
+        "y": 0.2060755287,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblColumna05",
+      "text": "C05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.26720625,
+        "y": 0.2060755287,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblColumna06",
+      "text": "C06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.3146497396,
+        "y": 0.2060755287,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblColumna07",
+      "text": "C07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.3620932292,
+        "y": 0.2060755287,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblColumna08",
+      "text": "C08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4095367188,
+        "y": 0.2060755287,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblFila01",
+      "text": "R01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.0381484375,
+        "y": 0.2320070493,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblFila02",
+      "text": "R02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.0381484375,
+        "y": 0.2585453172,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblFila03",
+      "text": "R03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.0381484375,
+        "y": 0.2850840886,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblFila04",
+      "text": "R04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.0381484375,
+        "y": 0.3116223565,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblFila05",
+      "text": "R05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.0381484375,
+        "y": 0.3381606244,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblFila06",
+      "text": "R06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.0381484375,
+        "y": 0.3646993958,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblFila07",
+      "text": "R07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.0381484375,
+        "y": 0.3912376636,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblFila08",
+      "text": "R08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.0381484375,
+        "y": 0.4177759315,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblFila09",
+      "text": "R09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.0381484375,
+        "y": 0.4443267875,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblFila10",
+      "text": "R10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.0381484375,
+        "y": 0.4708650554,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblFila11",
+      "text": "R11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.0381484375,
+        "y": 0.4974038268,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblFila12",
+      "text": "R12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.0381484375,
+        "y": 0.5236973817,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblVentilador",
+      "text": "SUPPLY UNIT",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.07055963542,
+        "y": 0.5984446123,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblExtractor",
+      "text": "EXHAUST UNIT",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.1452817708,
+        "y": 0.5984446123,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblHotspot",
+      "text": "HOTSPOT",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2206106771,
+        "y": 0.5984446123,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblIA",
+      "text": "AI SERVER",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2745867188,
+        "y": 0.5984446123,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblOffline",
+      "text": "OFFLINE",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.3409177083,
+        "y": 0.5984446123,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblVacio",
+      "text": "EMPTY",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.3995229167,
+        "y": 0.5984446123,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
     }
   ]
 }

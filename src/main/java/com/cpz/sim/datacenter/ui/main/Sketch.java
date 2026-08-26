@@ -72,10 +72,11 @@ public class Sketch extends PApplet {
     private Map<String, Control> controls;
     private Map<String, Indicator> indicadores, indicadoresSlotIA, indicadoresAlerta;
     private Map<String, Indicator> indicadoresPasilloElegidoServidorTemperaturaMaxima, indicadoresRackElegido, indicadoresPasilloNull;
+    private Map<String, Indicator> indicadoresPasilloElegido;
     private Map<String, Button> botonesPasilloElegidoRacks;
     private Map<String, Label> labels;
     private Map<String, Toggle> toggles;
-    private PImage fondo, overlayEstatico, fondoPasilloElegido, fondoRackElegido;
+    private PImage fondo, overlayEstatico, fondoPasilloElegido, fondoRackElegido, fondoSala;
     private boolean showOverlay;
     private Timer timerSimulacion;
     private boolean updateSnapshots, updateUI;
@@ -96,15 +97,14 @@ public class Sketch extends PApplet {
     private HotAisleConfiguration hotAisleConfiguration;
     private HotAisleDefinition pasilloCalienteSeleccionado;
     private Map<String, Rack> racks;
-    private float minServerTemperatureCelsius, maxServerTemperatureCelsius;
+    private float minServerTemperatureCelsius, maxServerTemperatureCelsius; //*******
     private List<Float> temperaturasPasilloCalienteSeleccionado;
     private CoolingConfiguration coolingConfiguration;
     private CoolingSystem coolingSystem;
     private CoolingSnapshotCoordinator coolingSnapshotCoordinator;
     private CoolingSnapshotTemperatureReferenceProvider coolingTemperatureReferenceProvider;
     private CoolingSnapshot coolingSnapshot;
-    private boolean logNextCoolingTick;
-    private String formatoTemperatura, formatoPorcentaje, formatoPotenciaKw, formatoPotenciaMw, formatoVelocidad, formatoPresion, formatoFlujoAire;
+    private String formatoTemperatura, formatoTemperaturaSimple, formatoPorcentaje, formatoPotenciaKw, formatoPotenciaMw, formatoVelocidad, formatoPresion, formatoFlujoAire;
 
     public void settings() {
         LOG.info("Starting settings");
@@ -153,6 +153,10 @@ public class Sketch extends PApplet {
         controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresRackElegido.json");
         indicadoresRackElegido = new HashMap<>();
         controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadoresRackElegido.put(ind.getCode(), (Indicator) ind));
+        // indicadoresPasilloElegido
+        controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresPasilloElegido.json");
+        indicadoresPasilloElegido = new HashMap<>();
+        controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadoresPasilloElegido.put(ind.getCode(), (Indicator) ind));
         // indicadoresPasilloElegidoServidorTemperaturaMaxima
         controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresPasilloElegidoServidorTemperaturaMaxima.json");
         indicadoresPasilloElegidoServidorTemperaturaMaxima = new HashMap<>();
@@ -177,14 +181,15 @@ public class Sketch extends PApplet {
         inputManager.registerLayer(mainInputLayer);
         //inputManager.registerLayer(new TooltipInputLayer(1000, tooltips));
         // font
-        textFont(createFont("data" + File.separator + "font" + File.separator + "JetBrainsMono.ttf", 56, true));
+        textFont(createFont("data" + File.separator + "font" + File.separator + "JetBrainsMono.ttf", 96, true));
         // imágenes
         fondo = loadImage("data" + File.separator + "img" + File.separator + "ui_fondo.png");
         fondoPasilloElegido = loadImage("data" + File.separator + "img" + File.separator + "ui_fondoPasilloElegido.png");
         fondoRackElegido = loadImage("data" + File.separator + "img" + File.separator + "ui_fondoRackElegido.png");
+        fondoSala = loadImage("data" + File.separator + "img" + File.separator + "ui_fondoSala.png");
         overlayEstatico = loadImage("data" + File.separator + "img" + File.separator + "ui_overlay.png");
         // datacenter
-        Path configPath = Path.of("data/config/datacenter-test-complete.json");
+        Path configPath = Path.of("data/config/datacenter-test-complete-rezoned.json");
         DatacenterDefinition definition = new JsonDatacenterConfigLoader().load(configPath);
         datacenter = new DatacenterFactory().create(definition);
         coolingConfiguration =
@@ -254,13 +259,14 @@ public class Sketch extends PApplet {
         operationalSnapshotProvider = new DatacenterOperationalSnapshotProvider(datacenter, operationalGroups);
         // timers
         timerSimulacion = new Timer();
-        timerSimulacion.setPeriodMillis(500);
+        timerSimulacion.setPeriodMillis(100);
         timerSimulacion.start();
         // valores iniciales
         columnaElegida = "C01";
         rackElegido = "R01";
         obtenerPasilloCalienteElegido();
         mostrarAuraRackSeleccionado();
+        mostrarAuraPasilloElegido();
         calculateTemperatureRange(datacenter, temperatureOptions);
         engine.step();
         updateUI = true;
@@ -268,11 +274,19 @@ public class Sketch extends PApplet {
         updateSnapshots();
         formatoPorcentaje = PROPS.getProperty("number.format.percentage");
         formatoTemperatura = PROPS.getProperty("number.format.temperature");
+        formatoTemperaturaSimple = PROPS.getProperty("number.format.temperature.simple");
         formatoPotenciaKw = PROPS.getProperty("number.format.power.kw");
         formatoPotenciaMw = PROPS.getProperty("number.format.power.mw");
         formatoVelocidad = PROPS.getProperty("number.format.velocidad");
         formatoPresion = PROPS.getProperty("number.format.presion");
         formatoFlujoAire = PROPS.getProperty("number.format.airflow");
+        labels.get("lblSalaEscalaTemperatura01").setText(String.format(formatoTemperaturaSimple, minServerTemperatureCelsius));
+        for (int i = 0; i < 5; i++) {
+            float temperatura = map(i, 0, 5, minServerTemperatureCelsius, maxServerTemperatureCelsius);
+            String codigoLblEscalaTemperatura = "lblSalaEscalaTemperatura0" + (i + 1);
+            labels.get(codigoLblEscalaTemperatura).setText(String.format(formatoTemperaturaSimple, temperatura));
+        }
+        labels.get("lblSalaEscalaTemperatura06").setText(String.format(formatoTemperaturaSimple, maxServerTemperatureCelsius));
         // debug
         showOverlay = true;
     }
@@ -345,6 +359,22 @@ public class Sketch extends PApplet {
         for (Indicator ind : indicadoresRackElegido.values()) ind.setOn(ind.getCode().equals(codigoRackSeleccionado));
     }
 
+    private void mostrarAuraPasilloElegido() {
+        indicadoresPasilloElegido.values().forEach(ind -> ind.setOn(false));
+        String codigoIndPasilloSleccionado = "indPasilloElegido";
+        switch (pasilloCalienteSeleccionado.code()) {
+            case "HA01" -> codigoIndPasilloSleccionado += "C01";
+            case "HA02" -> codigoIndPasilloSleccionado += "C02-C03";
+            case "HA03" -> codigoIndPasilloSleccionado += "C04-C05";
+            case "HA04" -> codigoIndPasilloSleccionado += "C06-C07";
+            case "HA05" -> codigoIndPasilloSleccionado += "C08";
+            default -> {
+                return;
+            }
+        }
+        indicadoresPasilloElegido.get(codigoIndPasilloSleccionado).setOn(true);
+    }
+
     private void initializeHotAisleMapping(HotAisleConfiguration configuration) {
         hotAisleByColumn.clear();
         for (HotAisleDefinition hotAisle : configuration.hotAisles()) {
@@ -404,6 +434,7 @@ public class Sketch extends PApplet {
         if (!updateUI) return;
         updatePanelRackElegido();
         updatePanelPasilloElegido();
+        updatePanelSala();
         updateUI = false;
     }
 
@@ -490,6 +521,7 @@ public class Sketch extends PApplet {
     private void actualizarColorSlot(Indicator indSlot, float temperatura) {
         Objects.requireNonNull(indSlot);
         float fColor = map(temperatura, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1);
+        fColor = Math.clamp(fColor, 0, 1);
         int colorSlot = Colors.lerpColor(COLOR_TEMPERATURA_MINIMA, COLOR_TEMPERATURA_MAXIMA, fColor);
         indSlot.setOnColor(colorSlot);
         indSlot.setOn(true);
@@ -664,7 +696,7 @@ public class Sketch extends PApplet {
                 maxServerTemperatureCelsius,
                 0,
                 1);
-        int colorEfectoTemperatura = Colors.lerpColor(COLOR_TEMPERATURA_MEDIA, COLOR_TEMPERATURA_MAXIMA, fColor);
+        int colorEfectoTemperatura = Colors.lerpColor(COLOR_TEMPERATURA_MINIMA, COLOR_TEMPERATURA_MAXIMA, fColor);
         indicadores.get("indPasilloElegidoEfectoTemperatura").setOnColor(colorEfectoTemperatura);
     }
 
@@ -727,11 +759,41 @@ public class Sketch extends PApplet {
                 ));
     }
 
+    private void updatePanelSala() {
+        updateSalaIndicadorPasilloCaliente("HA01", "indSalaPasilloCalienteC01");
+        updateSalaIndicadorPasilloCaliente("HA02", "indSalaPasilloCalienteC02-C03");
+        updateSalaIndicadorPasilloCaliente("HA03", "indSalaPasilloCalienteC04-C05");
+        updateSalaIndicadorPasilloCaliente("HA04", "indSalaPasilloCalienteC06-C07");
+        updateSalaIndicadorPasilloCaliente("HA05", "indSalaPasilloCalienteC08");
+    }
+
+    private void updateSalaIndicadorPasilloCaliente(String codigoPasilloCaliente, String codigoIndicador) {
+        float temperaturaPromedio =
+                (float) operationalSnapshot.findServerGroup(codigoPasilloCaliente)
+                        .orElseThrow(() -> new IllegalStateException("No existe snapshot operacional para el pasillo: " + codigoPasilloCaliente))
+                        .averageOnlineTemperatureCelsius();
+        float temperaturaMaxima =
+                (float) operationalSnapshot.findServerGroup(codigoPasilloCaliente)
+                        .orElseThrow(() -> new IllegalStateException("No existe snapshot operacional para el pasillo: " + codigoPasilloCaliente))
+                        .maximumTemperatureCelsius();
+        float temperatura = (temperaturaMaxima + temperaturaPromedio) * 0.5f;
+        float f = map(temperatura, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1);
+        f = Math.clamp(f, 0, 1);
+        int colorPasilloCaliente = lerpColor(COLOR_TEMPERATURA_MINIMA, COLOR_TEMPERATURA_MAXIMA, f);
+        int a = (int) map(temperatura, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 96);
+        a = Math.clamp(a, 0, 128);
+        int r = Colors.red(colorPasilloCaliente);
+        int g = Colors.green(colorPasilloCaliente);
+        int b = Colors.blue(colorPasilloCaliente);
+        indicadores.get(codigoIndicador).setOnColor(Colors.argb(a, r, g, b));
+    }
+
     private void dibujarFondo() {
         background(128);
         pushStyle();
         imageMode(CORNER);
         image(fondo, 0, 0, width, height);
+        image(fondoSala, 0, 0, width, height);
         image(fondoPasilloElegido, 0, 0, width, height);
         image(fondoRackElegido, 0, 0, width, height);
         popStyle();
@@ -741,11 +803,12 @@ public class Sketch extends PApplet {
         indicadoresAlerta.values().forEach(Indicator::draw);
         labels.values().forEach(Label::draw);
         indicadores.values().forEach(Indicator::draw);
+        indicadoresPasilloElegido.values().forEach(Indicator::draw);
         indicadoresPasilloElegidoServidorTemperaturaMaxima.values().forEach(Indicator::draw);
         indicadoresRackElegido.values().forEach(Indicator::draw);
         indicadoresSlotIA.values().forEach(Indicator::draw);
         indicadoresPasilloNull.values().forEach(Indicator::draw);
-        botonesPasilloElegidoRacks.values().forEach(Button::draw);
+        //botonesPasilloElegidoRacks.values().forEach(Button::draw);
         toggles.values().forEach(Toggle::draw);
     }
 
@@ -763,7 +826,7 @@ public class Sketch extends PApplet {
         float maxY = y + h;
         float temperatura = temperaturasPasilloCalienteSeleccionado.getFirst();
         int color = Colors.lerpColor(
-                COLOR_TEMPERATURA_MEDIA,
+                COLOR_TEMPERATURA_MINIMA,
                 COLOR_TEMPERATURA_MAXIMA,
                 map(temperatura, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1)
         );
@@ -778,12 +841,12 @@ public class Sketch extends PApplet {
             minY = y + (i + 1) * h;
             maxY = y + (i + 2) * h;
             color = Colors.lerpColor(
-                    COLOR_TEMPERATURA_MEDIA,
+                    COLOR_TEMPERATURA_MINIMA,
                     COLOR_TEMPERATURA_MAXIMA,
                     map(temperatura, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1)
             );
             int colorSiguiente = Colors.lerpColor(
-                    COLOR_TEMPERATURA_MEDIA,
+                    COLOR_TEMPERATURA_MINIMA,
                     COLOR_TEMPERATURA_MAXIMA,
                     map(temperaturaSiguiente, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1)
             );
@@ -881,6 +944,7 @@ public class Sketch extends PApplet {
         //* ******** DEBE INVOCARSE EN CADA CAMBIO DE RACK/COLUMNA *********
         obtenerPasilloCalienteElegido();
         //actualizarRackSeleccionado("Izq01");
+        mostrarAuraPasilloElegido();
         mostrarAuraRackSeleccionado();
         updateUI = true;
         // *****************************************************************

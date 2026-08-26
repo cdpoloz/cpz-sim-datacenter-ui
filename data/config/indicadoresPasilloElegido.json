@@ -1,0 +1,114 @@
+{
+  "controls": [
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoC01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.05607005208,
+        "y": 0.1825372608,
+        "width": 0.08260876133,
+        "height": 0.3787270896
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoSimple.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoC02-C03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.094034375,
+        "y": 0.1811062437,
+        "width": 0.2109989930,
+        "height": 0.3815906344
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoDoble.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoC04-C05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.1892625,
+        "y": 0.1811062437,
+        "width": 0.2109989930,
+        "height": 0.3815906344
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoDoble.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoC06-C07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2838083333,
+        "y": 0.1811062437,
+        "width": 0.2109989930,
+        "height": 0.3815906344
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoDoble.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPasilloElegidoC08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.3856622396,
+        "y": 0.1811062437,
+        "width": 0.09232527694,
+        "height": 0.3815906344
+      },
+      "on": false,
+      "onColor": "#ff2df9f7",
+      "offColor": "#002df9f7",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indPasilloElegidoSimple.png"
+        }
+      }
+    }
+  ]
+}

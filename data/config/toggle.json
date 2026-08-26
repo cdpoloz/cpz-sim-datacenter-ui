@@ -7,8 +7,8 @@
       "totalStates": 2,
       "bounds": {
         "mode": "relative",
-        "x": 0.1001984375,
-        "y": 0.3640463243,
+        "x": 0.1011539063,
+        "y": 0.3856988922,
         "width": 0.02316213494,
         "height": 0.02316213494
       },
@@ -18,37 +18,6 @@
         "stateColors": [
           "#2e3c4a",
           "#7a9dbe"
-        ],
-        "strokeColor": "#FFFFFF",
-        "strokeWidth": 0.0,
-        "strokeWidthHover": 0.0,
-        "hoverBlendWithWhite": 0.18,
-        "pressedBlendWithBlack": 0.20,
-        "disabledAlpha": 70,
-        "renderer": {
-          "type": "svg",
-          "path": "data/img/tgl/tglVentilador.svg"
-        }
-      }
-    },
-    {
-      "type": "toggle",
-      "code": "tglSalaExtractorC01-C02",
-      "state": 0,
-      "totalStates": 2,
-      "bounds": {
-        "mode": "relative",
-        "x": 0.1001984375,
-        "y": 0.1907009063,
-        "width": 0.02316213494,
-        "height": 0.02316213494
-      },
-      "enabled": true,
-      "visible": true,
-      "style": {
-        "stateColors": [
-          "#800033",
-          "#ff0066"
         ],
         "strokeColor": "#FFFFFF",
         "strokeWidth": 0.0,
@@ -69,8 +38,8 @@
       "totalStates": 2,
       "bounds": {
         "mode": "relative",
-        "x": 0.1945419271,
-        "y": 0.3640463243,
+        "x": 0.1960408854,
+        "y": 0.3856988922,
         "width": 0.02316213494,
         "height": 0.02316213494
       },
@@ -80,37 +49,6 @@
         "stateColors": [
           "#2e3c4a",
           "#7a9dbe"
-        ],
-        "strokeColor": "#FFFFFF",
-        "strokeWidth": 0.0,
-        "strokeWidthHover": 0.0,
-        "hoverBlendWithWhite": 0.18,
-        "pressedBlendWithBlack": 0.20,
-        "disabledAlpha": 70,
-        "renderer": {
-          "type": "svg",
-          "path": "data/img/tgl/tglVentilador.svg"
-        }
-      }
-    },
-    {
-      "type": "toggle",
-      "code": "tglSalaExtractorC03-C04",
-      "state": 0,
-      "totalStates": 2,
-      "bounds": {
-        "mode": "relative",
-        "x": 0.1945419271,
-        "y": 0.1907009063,
-        "width": 0.02316213494,
-        "height": 0.02316213494
-      },
-      "enabled": true,
-      "visible": true,
-      "style": {
-        "stateColors": [
-          "#800033",
-          "#ff0066"
         ],
         "strokeColor": "#FFFFFF",
         "strokeWidth": 0.0,
@@ -131,8 +69,8 @@
       "totalStates": 2,
       "bounds": {
         "mode": "relative",
-        "x": 0.2888203125,
-        "y": 0.3640463243,
+        "x": 0.290928125,
+        "y": 0.3856988922,
         "width": 0.02316213494,
         "height": 0.02316213494
       },
@@ -157,13 +95,44 @@
     },
     {
       "type": "toggle",
-      "code": "tglSalaExtractorC05-C06",
+      "code": "tglSalaVentiladorC07-C08",
       "state": 0,
       "totalStates": 2,
       "bounds": {
         "mode": "relative",
-        "x": 0.2888203125,
-        "y": 0.1907009063,
+        "x": 0.3858151042,
+        "y": 0.3856988922,
+        "width": 0.02316213494,
+        "height": 0.02316213494
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "stateColors": [
+          "#2e3c4a",
+          "#7a9dbe"
+        ],
+        "strokeColor": "#FFFFFF",
+        "strokeWidth": 0.0,
+        "strokeWidthHover": 0.0,
+        "hoverBlendWithWhite": 0.18,
+        "pressedBlendWithBlack": 0.20,
+        "disabledAlpha": 70,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/tgl/tglVentilador.svg"
+        }
+      }
+    },
+    {
+      "type": "toggle",
+      "code": "tglSalaExtractorC01",
+      "state": 0,
+      "totalStates": 2,
+      "bounds": {
+        "mode": "relative",
+        "x": 0.05371041667,
+        "y": 0.2106616314,
         "width": 0.02316213494,
         "height": 0.02316213494
       },
@@ -188,13 +157,13 @@
     },
     {
       "type": "toggle",
-      "code": "tglSalaVentiladorC07-C08",
+      "code": "tglSalaExtractorC02-C03",
       "state": 0,
       "totalStates": 2,
       "bounds": {
         "mode": "relative",
-        "x": 0.383253125,
-        "y": 0.3640463243,
+        "x": 0.1485973958,
+        "y": 0.2106616314,
         "width": 0.02316213494,
         "height": 0.02316213494
       },
@@ -202,8 +171,8 @@
       "visible": true,
       "style": {
         "stateColors": [
-          "#2e3c4a",
-          "#7a9dbe"
+          "#800033",
+          "#ff0066"
         ],
         "strokeColor": "#FFFFFF",
         "strokeWidth": 0.0,
@@ -219,13 +188,75 @@
     },
     {
       "type": "toggle",
-      "code": "tglSalaExtractorC07-C08",
+      "code": "tglSalaExtractorC04-C05",
       "state": 0,
       "totalStates": 2,
       "bounds": {
         "mode": "relative",
-        "x": 0.383253125,
-        "y": 0.1907009063,
+        "x": 0.243484375,
+        "y": 0.2106616314,
+        "width": 0.02316213494,
+        "height": 0.02316213494
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "stateColors": [
+          "#800033",
+          "#ff0066"
+        ],
+        "strokeColor": "#FFFFFF",
+        "strokeWidth": 0.0,
+        "strokeWidthHover": 0.0,
+        "hoverBlendWithWhite": 0.18,
+        "pressedBlendWithBlack": 0.20,
+        "disabledAlpha": 70,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/tgl/tglVentilador.svg"
+        }
+      }
+    },
+    {
+      "type": "toggle",
+      "code": "tglSalaExtractorC06-C07",
+      "state": 0,
+      "totalStates": 2,
+      "bounds": {
+        "mode": "relative",
+        "x": 0.3383713542,
+        "y": 0.2106616314,
+        "width": 0.02316213494,
+        "height": 0.02316213494
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "stateColors": [
+          "#800033",
+          "#ff0066"
+        ],
+        "strokeColor": "#FFFFFF",
+        "strokeWidth": 0.0,
+        "strokeWidthHover": 0.0,
+        "hoverBlendWithWhite": 0.18,
+        "pressedBlendWithBlack": 0.20,
+        "disabledAlpha": 70,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/tgl/tglVentilador.svg"
+        }
+      }
+    },
+    {
+      "type": "toggle",
+      "code": "tglSalaExtractorC08",
+      "state": 0,
+      "totalStates": 2,
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4332585938,
+        "y": 0.2106616314,
         "width": 0.02316213494,
         "height": 0.02316213494
       },

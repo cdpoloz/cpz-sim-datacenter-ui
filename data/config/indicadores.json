@@ -1781,6 +1781,116 @@
           "path": "data/img/ind/indPasilloElegidoEfectoTemperatura.png"
         }
       }
+    },
+    {
+      "type": "indicator",
+      "code": "indSalaPasilloCalienteC01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.04119348958,
+        "y": 0.2130830816,
+        "width": 0.04840533736,
+        "height": 0.3386495468
+      },
+      "on": true,
+      "onColor": "#ff0066ff",
+      "offColor": "#000066ff",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indSalaPasilloCaliente.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSalaPasilloCalienteC02-C03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.1360802083,
+        "y": 0.2130830816,
+        "width": 0.04840533736,
+        "height": 0.3386495468
+      },
+      "on": true,
+      "onColor": "#ff0066ff",
+      "offColor": "#000066ff",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indSalaPasilloCaliente.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSalaPasilloCalienteC04-C05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2309671875,
+        "y": 0.2130830816,
+        "width": 0.04840533736,
+        "height": 0.3386495468
+      },
+      "on": true,
+      "onColor": "#ff0066ff",
+      "offColor": "#000066ff",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indSalaPasilloCaliente.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSalaPasilloCalienteC06-C07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.3258541667,
+        "y": 0.2130830816,
+        "width": 0.04840533736,
+        "height": 0.3386495468
+      },
+      "on": true,
+      "onColor": "#ff0066ff",
+      "offColor": "#000066ff",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indSalaPasilloCaliente.png"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSalaPasilloCalienteC08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4207414063,
+        "y": 0.2130830816,
+        "width": 0.04840533736,
+        "height": 0.3386495468
+      },
+      "on": true,
+      "onColor": "#ff0066ff",
+      "offColor": "#000066ff",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "png",
+          "path": "data/img/ind/indSalaPasilloCaliente.png"
+        }
+      }
     }
   ]
 }
