@@ -1,0 +1,244 @@
+{
+  "controls": [
+    {
+      "type": "button",
+      "code": "btnColumnaElegidaC01",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.07743229167,
+        "y": 0.3824078550,
+        "width": 0.05022658610,
+        "height": 0.3181802618
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#012df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnColumna.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnColumnaElegidaC02",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.1248757813,
+        "y": 0.3824078550,
+        "width": 0.05022658610,
+        "height": 0.3181802618
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#012df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnColumna.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnColumnaElegidaC03",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.1723192708,
+        "y": 0.3824078550,
+        "width": 0.05022658610,
+        "height": 0.3181802618
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#012df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnColumna.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnColumnaElegidaC04",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2197627604,
+        "y": 0.3824078550,
+        "width": 0.05022658610,
+        "height": 0.3181802618
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#012df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnColumna.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnColumnaElegidaC05",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.26720625,
+        "y": 0.3824078550,
+        "width": 0.05022658610,
+        "height": 0.3181802618
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#012df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.15,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnColumna.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnColumnaElegidaC06",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.3146497396,
+        "y": 0.3824078550,
+        "width": 0.05022658610,
+        "height": 0.3181802618
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#012df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.10,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnColumna.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnColumnaElegidaC07",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.3620932292,
+        "y": 0.3824078550,
+        "width": 0.05022658610,
+        "height": 0.3181802618
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#012df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.10,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnColumna.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnColumnaElegidaC08",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4095369792,
+        "y": 0.3824078550,
+        "width": 0.05022658610,
+        "height": 0.3181802618
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "baseColor": "#012df9f7",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.10,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnColumna.svg"
+        }
+      }
+    }
+  ]
+}

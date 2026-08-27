@@ -72,8 +72,8 @@ public class Sketch extends PApplet {
     private Map<String, Control> controls;
     private Map<String, Indicator> indicadores, indicadoresSlotIA, indicadoresAlerta;
     private Map<String, Indicator> indicadoresPasilloElegidoServidorTemperaturaMaxima, indicadoresRackElegido, indicadoresPasilloNull;
-    private Map<String, Indicator> indicadoresPasilloElegido;
-    private Map<String, Button> botonesPasilloElegidoRacks;
+    private Map<String, Indicator> indicadoresPasilloElegido, indicadoresRack, indicadoresRackCondicion;
+    private Map<String, Button> botonesPasilloElegidoRacks, botonesColumnas;
     private Map<String, Label> labels;
     private Map<String, Toggle> toggles;
     private PImage fondo, overlayEstatico, fondoPasilloElegido, fondoRackElegido, fondoSala;
@@ -157,6 +157,17 @@ public class Sketch extends PApplet {
         controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresPasilloElegido.json");
         indicadoresPasilloElegido = new HashMap<>();
         controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadoresPasilloElegido.put(ind.getCode(), (Indicator) ind));
+
+        // indicadoresRack
+        controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresRack.json");
+        indicadoresRack = new HashMap<>();
+        controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadoresRack.put(ind.getCode(), (Indicator) ind));
+
+        // indicadoresRackCondicion
+        controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresRackCondicion.json");
+        indicadoresRackCondicion = new HashMap<>();
+        controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadoresRackCondicion.put(ind.getCode(), (Indicator) ind));
+
         // indicadoresPasilloElegidoServidorTemperaturaMaxima
         controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresPasilloElegidoServidorTemperaturaMaxima.json");
         indicadoresPasilloElegidoServidorTemperaturaMaxima = new HashMap<>();
@@ -166,6 +177,14 @@ public class Sketch extends PApplet {
         botonesPasilloElegidoRacks = new HashMap<>();
         controles.values().stream().filter(c -> c instanceof Button).forEach(btn -> botonesPasilloElegidoRacks.put(btn.getCode(), (Button) btn));
         botonesPasilloElegidoRacks.values().forEach(btn -> {
+            mainInputLayer.addPointerTarget(btn::handlePointerEvent);
+            btn.setClickListener(() -> btnClicked(btn.getCode()));
+        });
+        // botonesPasilloElegidoRacks
+        controles = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "botonesColumnaElegida.json");
+        botonesColumnas = new HashMap<>();
+        controles.values().stream().filter(c -> c instanceof Button).forEach(btn -> botonesColumnas.put(btn.getCode(), (Button) btn));
+        botonesColumnas.values().forEach(btn -> {
             mainInputLayer.addPointerTarget(btn::handlePointerEvent);
             btn.setClickListener(() -> btnClicked(btn.getCode()));
         });
@@ -310,10 +329,11 @@ public class Sketch extends PApplet {
     }
 
     private void btnClicked(String codigoBoton) {
-        if (codigoBoton.startsWith("btnRackElegido")) {
+        if (codigoBoton.startsWith("btnRackElegido"))
             actualizarRackSeleccionado(codigoBoton.replace("btnRackElegido", ""));
-            updateUI = true;
-        }
+        else if (codigoBoton.startsWith("btnColumnaElegida"))
+            actualizarColumnaSeleccionada(codigoBoton.replace("btnColumnaElegida", ""));
+        updateUI = true;
     }
 
     private void tglClicked(String codigoToggle, int estado) {
@@ -341,6 +361,13 @@ public class Sketch extends PApplet {
             if (rackClic.toLowerCase().contains("izq")) columnaElegida = pasilloCalienteSeleccionado.columns().getFirst();
             else if (rackClic.toLowerCase().contains("der")) columnaElegida = pasilloCalienteSeleccionado.columns().getLast();
         }
+        mostrarAuraRackSeleccionado();
+    }
+
+    private void actualizarColumnaSeleccionada(String columnaElegida) {
+        this.columnaElegida = columnaElegida;
+        obtenerPasilloCalienteElegido();
+        mostrarAuraPasilloElegido();
         mostrarAuraRackSeleccionado();
     }
 
@@ -765,6 +792,49 @@ public class Sketch extends PApplet {
         updateSalaIndicadorPasilloCaliente("HA03", "indSalaPasilloCalienteC04-C05");
         updateSalaIndicadorPasilloCaliente("HA04", "indSalaPasilloCalienteC06-C07");
         updateSalaIndicadorPasilloCaliente("HA05", "indSalaPasilloCalienteC08");
+        for (Rack rack : datacenter.getRacks()) {
+            RackLocation location = rack.getLocation();
+            String codigoIndRack = "indRack" + rack.getColumn() + rack.getRow();
+            Indicator indRack = indicadoresRack.get(codigoIndRack);
+            if (indRack == null) continue;
+            List<Server> servidoresEnRack = datacenter.getServers(location);
+            RackOperationalSnapshot rackSnapshot = operationalSnapshot.getRack(location);
+            boolean rackVacio = !rackSnapshot.hasInstalledServers();
+            boolean rackOffline = rackSnapshot.hasInstalledServers() && !rackSnapshot.hasOnlineServers();
+            boolean rackIA = servidoresEnRack.stream().anyMatch(server -> server.getRole() == ServerRole.AI);
+            float temperaturaPromedio = (float) rackSnapshot.averageOnlineTemperatureCelsius();
+            boolean rackHotspot = temperaturaPromedio > maxServerTemperatureCelsius;
+            int colorRack;
+            if (rackVacio) colorRack = COLOR_RACK_VACIO;
+            else if (rackOffline) colorRack = COLOR_RACK_OFFLINE;
+            else if (rackHotspot) colorRack = COLOR_RACK_HOTSPOT;
+            else colorRack = calcularColorRack(temperaturaPromedio);
+            indRack.setOnColor(colorRack);
+            if (codigoIndRack.contains("C01")) actualizarIndicadoresRackCondicion(codigoIndRack, rackOffline, rackVacio, rackHotspot, rackIA);
+        }
+    }
+
+    private int calcularColorRack(float temperatura) {
+        float fColor = map(temperatura, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1);
+        fColor = Math.clamp(fColor, 0, 1);
+        return Colors.lerpColor(COLOR_TEMPERATURA_MINIMA, COLOR_TEMPERATURA_MAXIMA, fColor);
+    }
+
+    private void actualizarIndicadoresRackCondicion(
+            String codigoIndRack,
+            boolean rackOffline,
+            boolean rackVacio,
+            boolean rackHotspot,
+            boolean rackIA
+    ) {
+        Indicator indOffline = indicadoresRackCondicion.get(codigoIndRack.replace("indRack", "indRackOffline"));
+        Indicator indVacio = indicadoresRackCondicion.get(codigoIndRack.replace("indRack", "indRackVacio"));
+        Indicator indHotspot = indicadoresRackCondicion.get(codigoIndRack.replace("indRack", "indRackHotspot"));
+        Indicator indIA = indicadoresRackCondicion.get(codigoIndRack.replace("indRack", "indRackIA"));
+        indOffline.setOn(rackOffline);
+        indVacio.setOn(rackVacio);
+        indHotspot.setOn(rackHotspot);
+        indIA.setOn(rackIA);
     }
 
     private void updateSalaIndicadorPasilloCaliente(String codigoPasilloCaliente, String codigoIndicador) {
@@ -806,9 +876,12 @@ public class Sketch extends PApplet {
         indicadoresPasilloElegido.values().forEach(Indicator::draw);
         indicadoresPasilloElegidoServidorTemperaturaMaxima.values().forEach(Indicator::draw);
         indicadoresRackElegido.values().forEach(Indicator::draw);
-        indicadoresSlotIA.values().forEach(Indicator::draw);
+        indicadoresRack.values().forEach(Indicator::draw);
         indicadoresPasilloNull.values().forEach(Indicator::draw);
-        //botonesPasilloElegidoRacks.values().forEach(Button::draw);
+        indicadoresSlotIA.values().forEach(Indicator::draw);
+        indicadoresRackCondicion.values().forEach(Indicator::draw);
+        botonesPasilloElegidoRacks.values().forEach(Button::draw);
+        botonesColumnas.values().forEach(Button::draw);
         toggles.values().forEach(Toggle::draw);
     }
 
@@ -876,13 +949,12 @@ public class Sketch extends PApplet {
     }
 
     private void dibujarOverlay() {
-        if (showOverlay) {
-            pushStyle();
-            imageMode(CORNER);
-            image(overlayEstatico, 0, 0, width, height);
-            popStyle();
-        }
         overlayManager.getActiveOverlays().forEach(entry -> entry.getRender().run());
+        if (!showOverlay) return;
+        pushStyle();
+        imageMode(CORNER);
+        image(overlayEstatico, 0, 0, width, height);
+        popStyle();
     }
 
     // <editor-fold defaultstate="collapsed" desc="*** mouse events ***">
@@ -918,36 +990,6 @@ public class Sketch extends PApplet {
     public void keyReleased() {
         if (key == 'm') showOverlay = !showOverlay;
         else if (keyCode == BARRA_ESPACIADORA) timerSimulacion.toggle();
-        else if (keyCode == 49) columnaElegida = "C01";
-        else if (keyCode == 50) columnaElegida = "C02";
-        else if (keyCode == 51) columnaElegida = "C03";
-        else if (keyCode == 52) columnaElegida = "C04";
-        else if (keyCode == 53) columnaElegida = "C05";
-        else if (keyCode == 54) columnaElegida = "C06";
-        else if (keyCode == 55) columnaElegida = "C07";
-        else if (keyCode == 56) columnaElegida = "C08";
-
-        else if (keyCode == 81) rackElegido = "R01";
-        else if (keyCode == 87) rackElegido = "R02";
-        else if (keyCode == 69) rackElegido = "R03";
-        else if (keyCode == 82) rackElegido = "R04";
-        else if (keyCode == 84) rackElegido = "R05";
-        else if (keyCode == 89) rackElegido = "R06";
-        else if (keyCode == 85) rackElegido = "R07";
-        else if (keyCode == 73) rackElegido = "R08";
-        else if (keyCode == 79) rackElegido = "R09";
-        else if (keyCode == 80) rackElegido = "R10";
-        else if (keyCode == -431) rackElegido = "R11";
-        else if (keyCode == 43) rackElegido = "R12";
-
-        // *****************************************************************
-        //* ******** DEBE INVOCARSE EN CADA CAMBIO DE RACK/COLUMNA *********
-        obtenerPasilloCalienteElegido();
-        //actualizarRackSeleccionado("Izq01");
-        mostrarAuraPasilloElegido();
-        mostrarAuraRackSeleccionado();
-        updateUI = true;
-        // *****************************************************************
     }
 
 }

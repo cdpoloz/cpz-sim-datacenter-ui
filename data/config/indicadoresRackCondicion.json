@@ -87,7 +87,984 @@
           "path": "data/img/ind/indCirculo.svg"
         }
       }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackOfflineC01R02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.2581384693,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackVacioC01R02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.2581384693,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackHotspotC01R02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.2588615307,
+        "width": 0.01158106747,
+        "height": 0.01013393756
+      },
+      "on": false,
+      "onColor": "#ffff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackIAC01R02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.08501666667,
+        "y": 0.2581384693,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+
+    {
+      "type": "indicator",
+      "code": "indRackOfflineC01R03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.2844667674,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackVacioC01R03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.2844667674,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackHotspotC01R03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.2851903323,
+        "width": 0.01158106747,
+        "height": 0.01013393756
+      },
+      "on": false,
+      "onColor": "#ffff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackIAC01R03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.08501666667,
+        "y": 0.2844667674,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+
+    {
+      "type": "indicator",
+      "code": "indRackOfflineC01R04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.3107955690,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackVacioC01R04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.3107955690,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackHotspotC01R04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.3115191339,
+        "width": 0.01158106747,
+        "height": 0.01013393756
+      },
+      "on": false,
+      "onColor": "#ffff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackIAC01R04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.08501666667,
+        "y": 0.3107955690,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+
+    {
+      "type": "indicator",
+      "code": "indRackOfflineC01R05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.3371243706,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackVacioC01R05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.3371243706,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackHotspotC01R05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.3378479355,
+        "width": 0.01158106747,
+        "height": 0.01013393756
+      },
+      "on": false,
+      "onColor": "#ffff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackIAC01R05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.08501666667,
+        "y": 0.3371243706,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+
+    {
+      "type": "indicator",
+      "code": "indRackOfflineC01R06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.3634531722,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackVacioC01R06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.3634531722,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackHotspotC01R06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.3641762336,
+        "width": 0.01158106747,
+        "height": 0.01013393756
+      },
+      "on": false,
+      "onColor": "#ffff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackIAC01R06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.08501666667,
+        "y": 0.3634531722,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+
+    {
+      "type": "indicator",
+      "code": "indRackOfflineC01R07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.3897814703,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackVacioC01R07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.3897814703,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackHotspotC01R07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.3905050352,
+        "width": 0.01158106747,
+        "height": 0.01013393756
+      },
+      "on": false,
+      "onColor": "#ffff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackIAC01R07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.08501666667,
+        "y": 0.3897814703,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+
+    {
+      "type": "indicator",
+      "code": "indRackOfflineC01R08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.4161102719,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackVacioC01R08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.4161102719,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackHotspotC01R08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.4168338369,
+        "width": 0.01158106747,
+        "height": 0.01013393756
+      },
+      "on": false,
+      "onColor": "#ffff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackIAC01R08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.08501666667,
+        "y": 0.4161102719,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+
+    {
+      "type": "indicator",
+      "code": "indRackOfflineC01R09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.4424390735,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackVacioC01R09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.4424390735,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackHotspotC01R09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.4431626385,
+        "width": 0.01158106747,
+        "height": 0.01013393756
+      },
+      "on": false,
+      "onColor": "#ffff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackIAC01R09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.08501666667,
+        "y": 0.4424390735,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+
+    {
+      "type": "indicator",
+      "code": "indRackOfflineC01R10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.4687678751,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackVacioC01R10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.4687678751,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackHotspotC01R10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.4694909366,
+        "width": 0.01158106747,
+        "height": 0.01013393756
+      },
+      "on": false,
+      "onColor": "#ffff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackIAC01R10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.08501666667,
+        "y": 0.4687678751,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+
+    {
+      "type": "indicator",
+      "code": "indRackOfflineC01R11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.4950961732,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackVacioC01R11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.4950961732,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackHotspotC01R11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.4958197382,
+        "width": 0.01158106747,
+        "height": 0.01013393756
+      },
+      "on": false,
+      "onColor": "#ffff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackIAC01R11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.08501666667,
+        "y": 0.4950961732,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    },
+
+    {
+      "type": "indicator",
+      "code": "indRackOfflineC01R12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.5214249748,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackVacioC01R12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.5214249748,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackHotspotC01R12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.5221485398,
+        "width": 0.01158106747,
+        "height": 0.01013393756
+      },
+      "on": false,
+      "onColor": "#ffff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackIAC01R12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.08501666667,
+        "y": 0.5214249748,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
     }
-    
   ]
 }

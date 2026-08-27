@@ -19,6 +19,8 @@ public class Constantes {
     public static int COLOR_TEMPERATURA_MEDIA = Colors.rgb(255, 204, 0);
     public static int COLOR_TEMPERATURA_MAXIMA = Colors.rgb(255, 0, 102);
     public static int COLOR_BORDE_GRADIENTE_TEMPERATURA = Colors.rgb(10, 35, 45);
-
+    public static int COLOR_RACK_VACIO = Colors.rgb(1, 19, 29);
+    public static int COLOR_RACK_OFFLINE = Colors.rgb(46, 60, 74);
+    public static int COLOR_RACK_HOTSPOT = Colors.rgb(61, 25, 57);
     public static int BARRA_ESPACIADORA = 32;
 }
