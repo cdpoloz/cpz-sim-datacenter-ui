@@ -1,0 +1,93 @@
+{
+  "controls": [
+    {
+      "type": "indicator",
+      "code": "indRackOfflineC01R01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.2318096677,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotOffline.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackVacioC01R01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.2318096677,
+        "width": 0.01158106747,
+        "height": 0.01158106747
+      },
+      "on": false,
+      "onColor": "#ff7a9dbe",
+      "offColor": "#007a9dbe",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotVacio.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackHotspotC01R01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.06750390625,
+        "y": 0.2325332326,
+        "width": 0.01158106747,
+        "height": 0.01013393756
+      },
+      "on": false,
+      "onColor": "#ffff0066",
+      "offColor": "#00ff0066",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSlotAlerta.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackIAC01R01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.08501666667,
+        "y": 0.2292291037,
+        "width": 0.005035246727,
+        "height": 0.005035246727
+      },
+      "on": false,
+      "onColor": "#ffffcc00",
+      "offColor": "#00ffcc00",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCirculo.svg"
+        }
+      }
+    }
+    
+  ]
+}
