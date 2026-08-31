@@ -157,17 +157,14 @@ public class Sketch extends PApplet {
         controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresPasilloElegido.json");
         indicadoresPasilloElegido = new HashMap<>();
         controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadoresPasilloElegido.put(ind.getCode(), (Indicator) ind));
-
         // indicadoresRack
         controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresRack.json");
         indicadoresRack = new HashMap<>();
         controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadoresRack.put(ind.getCode(), (Indicator) ind));
-
         // indicadoresRackCondicion
         controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresRackCondicion.json");
         indicadoresRackCondicion = new HashMap<>();
         controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadoresRackCondicion.put(ind.getCode(), (Indicator) ind));
-
         // indicadoresPasilloElegidoServidorTemperaturaMaxima
         controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresPasilloElegidoServidorTemperaturaMaxima.json");
         indicadoresPasilloElegidoServidorTemperaturaMaxima = new HashMap<>();
@@ -208,7 +205,7 @@ public class Sketch extends PApplet {
         fondoSala = loadImage("data" + File.separator + "img" + File.separator + "ui_fondoSala.png");
         overlayEstatico = loadImage("data" + File.separator + "img" + File.separator + "ui_overlay.png");
         // datacenter
-        Path configPath = Path.of("data/config/datacenter-test-complete-rezoned.json");
+        Path configPath = Path.of("data/config/datacenter-test-complete-rezoned-edge-cases-custom-v2.json");
         DatacenterDefinition definition = new JsonDatacenterConfigLoader().load(configPath);
         datacenter = new DatacenterFactory().create(definition);
         coolingConfiguration =
@@ -263,7 +260,6 @@ public class Sketch extends PApplet {
         energySnapshotProvider = new EnergyConsumptionSnapshotProvider(datacenter, energySystem);
         temperatureSnapshotProvider = new TemperatureSnapshotProvider(datacenter, temperatureSystem, temperatureOptions);
         healthSnapshotProvider = new HealthSnapshotProvider(datacenter, healthSystem, temperatureSystem);
-        operationalSnapshotProvider = new DatacenterOperationalSnapshotProvider(datacenter);
         // pasillos calientes
         Path configurationPath = Path.of(dataPath("config" + File.separator + "hot-aisle-mapping.json"));
         HotAisleConfigurationLoader loader = new HotAisleConfigurationLoader();
@@ -306,6 +302,18 @@ public class Sketch extends PApplet {
             labels.get(codigoLblEscalaTemperatura).setText(String.format(formatoTemperaturaSimple, temperatura));
         }
         labels.get("lblSalaEscalaTemperatura06").setText(String.format(formatoTemperaturaSimple, maxServerTemperatureCelsius));
+        int totalInstalledServers = operationalSnapshot.racks()
+                .values()
+                .stream()
+                .mapToInt(RackOperationalSnapshot::installedServerCount)
+                .sum();
+        int totalOnlineServers = operationalSnapshot.racks()
+                .values()
+                .stream()
+                .mapToInt(RackOperationalSnapshot::onlineServerCount)
+                .sum();
+        labels.get("lblSalaServidoresTotalValor").setText(String.valueOf(totalInstalledServers));
+        labels.get("lblSalaServidoresOnlineValor").setText(String.valueOf(totalOnlineServers));
         // debug
         showOverlay = true;
     }
@@ -806,11 +814,11 @@ public class Sketch extends PApplet {
             boolean rackHotspot = temperaturaPromedio > maxServerTemperatureCelsius;
             int colorRack;
             if (rackVacio) colorRack = COLOR_RACK_VACIO;
-            else if (rackOffline) colorRack = COLOR_RACK_OFFLINE;
+            else if (rackOffline) colorRack = COLOR_TEMPERATURA_MINIMA; //COLOR_RACK_OFFLINE
             else if (rackHotspot) colorRack = COLOR_RACK_HOTSPOT;
             else colorRack = calcularColorRack(temperaturaPromedio);
             indRack.setOnColor(colorRack);
-            if (codigoIndRack.contains("C01")) actualizarIndicadoresRackCondicion(codigoIndRack, rackOffline, rackVacio, rackHotspot, rackIA);
+            actualizarIndicadoresRackCondicion(codigoIndRack, rackOffline, rackVacio, rackHotspot, rackIA);
         }
     }
 

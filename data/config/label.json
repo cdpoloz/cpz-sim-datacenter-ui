@@ -31,7 +31,7 @@
       "text": "--",
       "bounds": {
         "mode": "relative",
-        "x": 0.8036153646,
+        "x": 0.9381835938,
         "y": 0.09330110775,
         "width": 0.0005035246727,
         "height": 0.01074185616
@@ -1556,7 +1556,7 @@
       "text": "--",
       "bounds": {
         "mode": "relative",
-        "x": 0.5555807292,
+        "x": 0.6686643229,
         "y": 0.09347784491,
         "width": 0.0005035246727,
         "height": 0.01074185616
@@ -3096,6 +3096,106 @@
         "textColor": "#f2ebe7",
         "lineSpacingMultiplier": 1.0,
         "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSalaServidoresTotal",
+      "text": "INSTALLED SERVERS",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2238158854,
+        "y": 0.09340886203,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01309164149
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSalaServidoresTotalValor",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.3128776042,
+        "y": 0.09340886203,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01309164149
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#5cb4c6",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSalaServidoresOnline",
+      "text": "ONLINE SERVERS",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.3455380208,
+        "y": 0.09340886203,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01309164149
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSalaServidoresOnlineValor",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4231914063,
+        "y": 0.09340886203,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01309164149
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#5cb4c6",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
         "alignY": "top",
         "disabledAlpha": 80
       }
