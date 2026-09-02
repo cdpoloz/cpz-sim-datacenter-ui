@@ -278,6 +278,68 @@
           "path": "data/img/tgl/tglVentilador.svg"
         }
       }
+    },
+    {
+      "type": "toggle",
+      "code": "tglSalaVentilador",
+      "state": 0,
+      "totalStates": 2,
+      "bounds": {
+        "mode": "relative",
+        "x": 0.3733236979,
+        "y": 0.1539702920,
+        "width": 0.02316213494,
+        "height": 0.02316213494
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "stateColors": [
+          "#2e3c4a",
+          "#7a9dbe"
+        ],
+        "strokeColor": "#FFFFFF",
+        "strokeWidth": 0.0,
+        "strokeWidthHover": 0.0,
+        "hoverBlendWithWhite": 0.18,
+        "pressedBlendWithBlack": 0.20,
+        "disabledAlpha": 70,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/tgl/tglVentilador.svg"
+        }
+      }
+    },
+    {
+      "type": "toggle",
+      "code": "tglSalaExtractor",
+      "state": 0,
+      "totalStates": 2,
+      "bounds": {
+        "mode": "relative",
+        "x": 0.3983065104,
+        "y": 0.1539702920,
+        "width": 0.02316213494,
+        "height": 0.02316213494
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "stateColors": [
+          "#800033",
+          "#ff0066"
+        ],
+        "strokeColor": "#FFFFFF",
+        "strokeWidth": 0.0,
+        "strokeWidthHover": 0.0,
+        "hoverBlendWithWhite": 0.18,
+        "pressedBlendWithBlack": 0.20,
+        "disabledAlpha": 70,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/tgl/tglVentilador.svg"
+        }
+      }
     }
   ]
 }

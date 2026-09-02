@@ -10,17 +10,14 @@ import com.cpz.processing.controls.core.input.InputManager;
 import com.cpz.processing.controls.core.input.PointerEvent;
 import com.cpz.processing.controls.core.overlay.OverlayManager;
 import com.cpz.processing.controls.input.ProcessingKeyboardAdapter;
-import com.cpz.sim.datacenter.cooling.CoolingZoneDefinition;
+import com.cpz.sim.datacenter.cooling.*;
 import com.cpz.sim.datacenter.ui.config.HotAisleConfiguration;
 import com.cpz.sim.datacenter.ui.config.HotAisleConfigurationLoader;
 import com.cpz.sim.datacenter.ui.config.HotAisleDefinition;
 import com.cpz.sim.datacenter.ui.input.MainInputLayer;
 import com.cpz.sim.datacenter.config.definition.DatacenterDefinition;
 import com.cpz.sim.datacenter.config.json.JsonDatacenterConfigLoader;
-import com.cpz.sim.datacenter.cooling.CoolingConfiguration;
 import com.cpz.sim.datacenter.factory.CoolingConfigurationFactory;
-import com.cpz.sim.datacenter.cooling.CoolingSnapshotCoordinator;
-import com.cpz.sim.datacenter.cooling.DatacenterCoolingTickInputProvider;
 import com.cpz.sim.datacenter.temperature.CoolingSnapshotTemperatureReferenceProvider;
 import com.cpz.sim.datacenter.factory.DatacenterFactory;
 import com.cpz.sim.datacenter.factory.TemperatureSystemOptionsFactory;
@@ -80,6 +77,8 @@ public class Sketch extends PApplet {
     private boolean showOverlay;
     private Timer timerSimulacion;
     private boolean updateSnapshots, updateUI;
+    private boolean sincronizandoTogglesRefrigeracion = false;
+    private List<String> togglesVentiladores, togglesExtractores;
     private SimulationEngine engine;
     private DatacenterOperationalSnapshot operationalSnapshot;
     private DatacenterOperationalSnapshotProvider operationalSnapshotProvider;
@@ -191,7 +190,7 @@ public class Sketch extends PApplet {
         controles.values().stream().filter(c -> c instanceof Toggle).forEach(tgl -> toggles.put(tgl.getCode(), (Toggle) tgl));
         toggles.values().forEach(tgl -> {
             mainInputLayer.addPointerTarget(tgl::handlePointerEvent);
-            tgl.setChangeListener(estado -> tglClicked(tgl.getCode(), estado));
+            tgl.setChangeListener(estado -> tglClicked(tgl, estado));
         });
         // registro de capas en inputLayer
         inputManager.registerLayer(mainInputLayer);
@@ -274,7 +273,7 @@ public class Sketch extends PApplet {
         operationalSnapshotProvider = new DatacenterOperationalSnapshotProvider(datacenter, operationalGroups);
         // timers
         timerSimulacion = new Timer();
-        timerSimulacion.setPeriodMillis(100);
+        timerSimulacion.setPeriodMillis(500);
         timerSimulacion.start();
         // valores iniciales
         columnaElegida = "C01";
@@ -287,6 +286,22 @@ public class Sketch extends PApplet {
         updateUI = true;
         updateSnapshots = true;
         updateSnapshots();
+        togglesVentiladores = new ArrayList<>();
+        coolingSnapshot.units()
+                .stream()
+                .filter(unit -> unit.type() == CoolingUnitType.SUPPLY)
+                .forEach(unit -> {
+                    String tglCode = unit.unitCode().replace("SUPPLY-", "tglSalaVentilador");
+                    togglesVentiladores.add(tglCode);
+                });
+        togglesExtractores = new ArrayList<>();
+        coolingSnapshot.units()
+                .stream()
+                .filter(unit -> unit.type() == CoolingUnitType.EXHAUST)
+                .forEach(unit -> {
+                    String tglCode = unit.unitCode().replace("EXHAUST-", "tglSalaExtractor");
+                    togglesExtractores.add(tglCode);
+                });
         formatoPorcentaje = PROPS.getProperty("number.format.percentage");
         formatoTemperatura = PROPS.getProperty("number.format.temperature");
         formatoTemperaturaSimple = PROPS.getProperty("number.format.temperature.simple");
@@ -344,16 +359,66 @@ public class Sketch extends PApplet {
         updateUI = true;
     }
 
-    private void tglClicked(String codigoToggle, int estado) {
-        if (codigoToggle.toLowerCase().contains("ventilador") || codigoToggle.toLowerCase().contains("extractor"))
-            actualizarUnidadRefrigeracion(codigoToggle, estado == 1);
+    private void tglClicked(Toggle tgl, int estado) {
+        if (sincronizandoTogglesRefrigeracion) return;
+        String codigoToggle = tgl.getCode();
+        boolean enabled = estado == 1;
+        if (codigoToggle.equals("tglSalaVentilador")) {
+            actualizarTogglesRefrigeracionHijos(togglesVentiladores, enabled);
+            return;
+        }
+        if (codigoToggle.equals("tglSalaExtractor")) {
+            actualizarTogglesRefrigeracionHijos(togglesExtractores, enabled);
+            return;
+        }
+        if (togglesVentiladores.contains(codigoToggle)) {
+            actualizarUnidadRefrigeracion(tgl, enabled);
+            actualizarToggleMaestro("tglSalaVentilador", togglesVentiladores);
+            return;
+        }
+        if (togglesExtractores.contains(codigoToggle)) {
+            actualizarUnidadRefrigeracion(tgl, enabled);
+            actualizarToggleMaestro("tglSalaExtractor", togglesExtractores);
+        }
     }
 
-    private void actualizarUnidadRefrigeracion(String tglCode, boolean enabled) {
+    private void actualizarTogglesRefrigeracionHijos(List<String> codigosToggles, boolean enabled) {
+        sincronizandoTogglesRefrigeracion = true;
+        try {
+            for (String codigoToggle : codigosToggles) {
+                Toggle toggle = toggles.get(codigoToggle);
+                if (toggle == null) throw new IllegalStateException("No existe el toggle: " + codigoToggle);
+                toggle.setState(enabled ? 1 : 0);
+                actualizarUnidadRefrigeracion(toggle, enabled);
+            }
+        } finally {
+            sincronizandoTogglesRefrigeracion = false;
+        }
+    }
+
+    private void actualizarToggleMaestro(String codigoToggleMaestro, List<String> codigosTogglesHijos) {
+        boolean algunoEncendido = codigosTogglesHijos
+                .stream()
+                .map(toggles::get)
+                .anyMatch(toggle -> toggle != null && toggle.getState() == 1);
+        sincronizandoTogglesRefrigeracion = true;
+        try {
+            Toggle toggleMaestro = toggles.get(codigoToggleMaestro);
+            if (toggleMaestro == null) throw new IllegalStateException("No existe el toggle maestro: " + codigoToggleMaestro);
+            toggleMaestro.setState(algunoEncendido ? 1 : 0);
+        } finally {
+            sincronizandoTogglesRefrigeracion = false;
+        }
+    }
+
+    private void actualizarUnidadRefrigeracion(Toggle tgl, boolean enabled) {
         String unitType = "";
+        String tglCode = tgl.getCode();
         if (tglCode.contains("Ventilador")) unitType = "SUPPLY";
         else if (tglCode.contains("Extractor")) unitType = "EXHAUST";
         if (unitType.isEmpty()) return;
+        boolean esToggleIndividual = tglCode.startsWith("tglSalaVentiladorC") || tglCode.startsWith("tglSalaExtractorC");
+        if (!esToggleIndividual) return;
         String unitCode = unitType
                 + "-"
                 + tglCode
@@ -720,7 +785,7 @@ public class Sketch extends PApplet {
             for (String column : pasilloCalienteSeleccionado.columns()) {
                 RackLocation rackLocation = new RackLocation(column, new RackCode(rackCode));
                 RackOperationalSnapshot rackSnapshot = operationalSnapshot.findRack(rackLocation).orElseThrow();
-                temperaturaPromedioRacks += (float) rackSnapshot.averageOnlineTemperatureCelsius();
+                temperaturaPromedioRacks += (float) rackSnapshot.representativeTemperatureCelsius();
             }
             temperaturaPromedioRacks /= pasilloCalienteSeleccionado.columns().size();
             temperaturasPasilloCalienteSeleccionado.add(temperaturaPromedioRacks);
@@ -905,19 +970,20 @@ public class Sketch extends PApplet {
         float maxW = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.max.width")) * height;
         float minY = y;
         float maxY = y + h;
-        float temperatura = temperaturasPasilloCalienteSeleccionado.getFirst();
-        int color = Colors.lerpColor(
-                COLOR_TEMPERATURA_MINIMA,
-                COLOR_TEMPERATURA_MAXIMA,
-                map(temperatura, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1)
-        );
+        float fColor = map(
+                temperaturasPasilloCalienteSeleccionado.getFirst(),
+                minServerTemperatureCelsius,
+                maxServerTemperatureCelsius,
+                0,
+                1);
+        int color = Colors.lerpColor(COLOR_TEMPERATURA_MINIMA, COLOR_TEMPERATURA_MAXIMA, fColor);
         for (int j = (int) minY; j < (int) maxY; j++) {
             float w = map(j, y, totalH, minW, maxW);
             stroke(color);
             line(x - w * 0.5f, j, x + w * 0.5f, j);
         }
         for (int i = 0; i < temperaturasPasilloCalienteSeleccionado.size() - 1; i++) {
-            temperatura = temperaturasPasilloCalienteSeleccionado.get(i);
+            float temperatura = temperaturasPasilloCalienteSeleccionado.get(i);
             float temperaturaSiguiente = temperaturasPasilloCalienteSeleccionado.get(i + 1);
             minY = y + (i + 1) * h;
             maxY = y + (i + 2) * h;
@@ -933,7 +999,7 @@ public class Sketch extends PApplet {
             );
             for (int j = (int) minY; j < (int) maxY; j++) {
                 float w = map(j, y, totalH, minW, maxW);
-                float fColor = map(j, minY, maxY, 0, 1);
+                fColor = map(j, minY, maxY, 0, 1);
                 int colorLinea = Colors.lerpColor(color, colorSiguiente, fColor);
                 stroke(colorLinea);
                 line(x - w * 0.5f, j, x + w * 0.5f, j);
