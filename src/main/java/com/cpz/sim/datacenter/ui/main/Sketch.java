@@ -80,6 +80,7 @@ public class Sketch extends PApplet {
     private boolean updateSnapshots, updateUI;
     private boolean sincronizandoTogglesRefrigeracion;
     private int previousSecond, previousDay;
+    private String roomName;
     private List<String> togglesVentiladores, togglesExtractores;
     private SimulationEngine engine;
     private DatacenterOperationalSnapshot operationalSnapshot;
@@ -212,6 +213,7 @@ public class Sketch extends PApplet {
         Path configPath = Path.of("data/config/datacenter-test-complete-rezoned-edge-cases-custom-v2.json");
         DatacenterDefinition definition = new JsonDatacenterConfigLoader().load(configPath);
         datacenter = new DatacenterFactory().create(definition);
+        roomName = definition.layout().room().name();
         coolingConfiguration =
                 new CoolingConfigurationFactory()
                         .create(definition, datacenter)
@@ -341,6 +343,14 @@ public class Sketch extends PApplet {
     }
 
     private void updateCabecera() {
+        // por ahora una única sala, se debe agregar una bandera para que en cada evento de cambio de sala se actualice el layout
+        String s = "DATACENTER MAP";
+        if (roomName != null && !roomName.isEmpty()) s += (" - " + roomName);
+        labels.get("lblSala").setText(s);
+        updateDateTime();
+    }
+
+    private void updateDateTime() {
         if (second() == previousSecond) return;
         previousSecond = second();
         labels.get("lblHora").setText(String.format("%02d", hour()) + ":" + String.format("%02d", minute()) + ":" + String.format("%02d", second()));
