@@ -2253,7 +2253,7 @@
     {
       "type": "label",
       "code": "lblSala",
-      "text": "ROOM MAP",
+      "text": "DATACENTER MAP",
       "bounds": {
         "mode": "relative",
         "x": 0.04864557292,
