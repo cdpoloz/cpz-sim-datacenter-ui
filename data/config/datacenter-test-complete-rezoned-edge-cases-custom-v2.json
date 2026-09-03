@@ -1,6 +1,10 @@
 {
   "name": "Complete 8x12 UI Test Datacenter",
   "layout": {
+    "room": {
+      "code": "ROOM-01",
+      "name": "Main Room"
+    },
     "racks": [
       {
         "code": "R01",
