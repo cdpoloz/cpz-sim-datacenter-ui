@@ -1582,7 +1582,7 @@
       "bounds": {
         "mode": "relative",
         "x": 0.4946338542,
-        "y": 0.1312789527,
+        "y": 0.1309597180,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -1607,7 +1607,7 @@
       "bounds": {
         "mode": "relative",
         "x": 0.4946338542,
-        "y": 0.1536424975,
+        "y": 0.1506374622,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -1632,7 +1632,7 @@
       "bounds": {
         "mode": "relative",
         "x": 0.5717841146,
-        "y": 0.1312789527,
+        "y": 0.1309597180,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -1657,7 +1657,7 @@
       "bounds": {
         "mode": "relative",
         "x": 0.5717841146,
-        "y": 0.1536424975,
+        "y": 0.1506374622,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -1682,7 +1682,7 @@
       "bounds": {
         "mode": "relative",
         "x": 0.6489341146,
-        "y": 0.1312789527,
+        "y": 0.1309597180,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -1707,7 +1707,7 @@
       "bounds": {
         "mode": "relative",
         "x": 0.6489341146,
-        "y": 0.1536424975,
+        "y": 0.1506374622,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -2253,7 +2253,7 @@
     {
       "type": "label",
       "code": "lblSala",
-      "text": "DATACENTER MAP",
+      "text": "ROOM MAP",
       "bounds": {
         "mode": "relative",
         "x": 0.04864557292,
@@ -3196,6 +3196,81 @@
         "textColor": "#5cb4c6",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblTitulo",
+      "text": "Datacenter Simulator",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.05209322917,
+        "y": 0.02714551863,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.02719033233
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblFecha",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8678052083,
+        "y": 0.03260322256,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#7a9dbe",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblHora",
+      "text": "--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9118200521,
+        "y": 0.03260322256,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#7a9dbe",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
         "alignY": "top",
         "disabledAlpha": 80
       }

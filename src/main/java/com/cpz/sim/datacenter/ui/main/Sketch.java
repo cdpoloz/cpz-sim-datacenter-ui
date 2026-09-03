@@ -73,11 +73,13 @@ public class Sketch extends PApplet {
     private Map<String, Button> botonesPasilloElegidoRacks, botonesColumnas;
     private Map<String, Label> labels;
     private Map<String, Toggle> toggles;
-    private PImage fondo, overlayEstatico, fondoPasilloElegido, fondoRackElegido, fondoSala;
+    private List<PImage> fondo;
+    private PImage overlayEstatico;
     private boolean showOverlay;
     private Timer timerSimulacion;
     private boolean updateSnapshots, updateUI;
-    private boolean sincronizandoTogglesRefrigeracion = false;
+    private boolean sincronizandoTogglesRefrigeracion;
+    private int previousSecond, previousDay;
     private List<String> togglesVentiladores, togglesExtractores;
     private SimulationEngine engine;
     private DatacenterOperationalSnapshot operationalSnapshot;
@@ -197,11 +199,14 @@ public class Sketch extends PApplet {
         //inputManager.registerLayer(new TooltipInputLayer(1000, tooltips));
         // font
         textFont(createFont("data" + File.separator + "font" + File.separator + "JetBrainsMono.ttf", 96, true));
-        // imágenes
-        fondo = loadImage("data" + File.separator + "img" + File.separator + "ui_fondo.png");
-        fondoPasilloElegido = loadImage("data" + File.separator + "img" + File.separator + "ui_fondoPasilloElegido.png");
-        fondoRackElegido = loadImage("data" + File.separator + "img" + File.separator + "ui_fondoRackElegido.png");
-        fondoSala = loadImage("data" + File.separator + "img" + File.separator + "ui_fondoSala.png");
+        // imágenes de fondo
+        fondo = new ArrayList<>();
+        fondo.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondo.png"));
+        fondo.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoPasilloElegido.png"));
+        fondo.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoRackElegido.png"));
+        fondo.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoSala.png"));
+        fondo.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoCabecera.png"));
+        // overlay estático
         overlayEstatico = loadImage("data" + File.separator + "img" + File.separator + "ui_overlay.png");
         // datacenter
         Path configPath = Path.of("data/config/datacenter-test-complete-rezoned-edge-cases-custom-v2.json");
@@ -329,8 +334,19 @@ public class Sketch extends PApplet {
                 .sum();
         labels.get("lblSalaServidoresTotalValor").setText(String.valueOf(totalInstalledServers));
         labels.get("lblSalaServidoresOnlineValor").setText(String.valueOf(totalOnlineServers));
+        labels.get("lblFecha").setText(String.format("%02d", day()) + "/" + String.format("%02d", month()) + "/" + year());
+        labels.get("lblHora").setText(String.format("%02d", hour()) + ":" + String.format("%02d", minute()) + ":" + String.format("%02d", second()));
         // debug
         showOverlay = true;
+    }
+
+    private void updateCabecera() {
+        if (second() == previousSecond) return;
+        previousSecond = second();
+        labels.get("lblHora").setText(String.format("%02d", hour()) + ":" + String.format("%02d", minute()) + ":" + String.format("%02d", second()));
+        if (day() == previousDay) return;
+        previousDay = day();
+        labels.get("lblFecha").setText(String.format("%02d", day()) + "/" + String.format("%02d", month()) + "/" + year());
     }
 
     private List<ServerGroupDefinition> createOperationalGroups(HotAisleConfiguration configuration) {
@@ -532,6 +548,7 @@ public class Sketch extends PApplet {
 
     private void updateControles() {
         if (!updateUI) return;
+        updateCabecera();
         updatePanelRackElegido();
         updatePanelPasilloElegido();
         updatePanelSala();
@@ -932,13 +949,10 @@ public class Sketch extends PApplet {
     }
 
     private void dibujarFondo() {
-        background(128);
+        background(COLOR_FONDO);
         pushStyle();
         imageMode(CORNER);
-        image(fondo, 0, 0, width, height);
-        image(fondoSala, 0, 0, width, height);
-        image(fondoPasilloElegido, 0, 0, width, height);
-        image(fondoRackElegido, 0, 0, width, height);
+        fondo.forEach(img -> image(img, 0, 0, width, height));
         popStyle();
     }
 
