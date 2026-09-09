@@ -77,7 +77,10 @@ public class Sketch extends PApplet {
     private PImage overlayEstatico;
     private boolean showOverlay;
     private Timer timerSimulacion;
-    private boolean updateSnapshots, updateUI, updateTglPlay;
+    private int simulationBasePeriodMillis;
+    private List<Double> simulationSpeedFactors;
+    private int simulationSpeedFactorIndex;
+    private boolean updateSnapshots, updateUI, updateTogglePlay;
     private boolean sincronizandoTogglesRefrigeracion;
     private int previousSecond, previousDay;
     private String roomName;
@@ -287,10 +290,14 @@ public class Sketch extends PApplet {
         // grupos operacionales
         List<ServerGroupDefinition> operationalGroups = createOperationalGroups(hotAisleConfiguration);
         operationalSnapshotProvider = new DatacenterOperationalSnapshotProvider(datacenter, operationalGroups);
-        // timers
+        // simulation timer
+        simulationBasePeriodMillis = Integer.parseInt(PROPS.getProperty("simulation.timer.base-period-ms"));
+        simulationSpeedFactors = parseSimulationSpeedFactors(PROPS.getProperty("simulation.timer.speed-factors"));
+        simulationSpeedFactorIndex = findSimulationSpeedFactorIndex(Double.parseDouble(PROPS.getProperty("simulation.timer.initial-speed-factor")));
         timerSimulacion = new Timer();
         timerSimulacion.setPeriodMillis(1000);
-        //timerSimulacion.start();
+        updateSimulationTimerPeriod();
+        updateSimulationControls();
         // valores iniciales
         columnaElegida = "C01";
         rackElegido = "R01";
@@ -351,6 +358,61 @@ public class Sketch extends PApplet {
         showOverlay = true;
     }
 
+    private List<Double> parseSimulationSpeedFactors(String rawFactors) {
+        if (rawFactors == null || rawFactors.isBlank()) throw new IllegalArgumentException("simulation.timer.speed-factors must not be empty");
+        List<Double> factors = Arrays.stream(rawFactors.split(","))
+                .map(String::trim)
+                .filter(value -> !value.isEmpty())
+                .map(Double::parseDouble)
+                .toList();
+        if (factors.isEmpty()) throw new IllegalArgumentException("simulation.timer.speed-factors must contain at least one value");
+        if (factors.stream().anyMatch(factor -> factor <= 0.0)) throw new IllegalArgumentException("simulation.timer.speed-factors must contain only positive values");
+        return factors;
+    }
+
+    private int findSimulationSpeedFactorIndex(double initialFactor) {
+        for (int i = 0; i < simulationSpeedFactors.size(); i++) {
+            if (Double.compare(simulationSpeedFactors.get(i), initialFactor) == 0) return i;
+        }
+        throw new IllegalArgumentException("simulation.timer.initial-speed-factor must exist in simulation.timer.speed-factors");
+    }
+
+    private void updateSimulationTimerPeriod() {
+        double factor = simulationSpeedFactors.get(simulationSpeedFactorIndex);
+        int periodMillis = (int) Math.round(simulationBasePeriodMillis / factor);
+        timerSimulacion.setPeriodMillis(periodMillis);
+    }
+
+    private void increaseSimulationSpeed() {
+        if (simulationSpeedFactorIndex >= simulationSpeedFactors.size() - 1) return;
+        simulationSpeedFactorIndex++;
+        updateSimulationTimerPeriod();
+        updateSimulationControls();
+    }
+
+    private void decreaseSimulationSpeed() {
+        if (simulationSpeedFactorIndex <= 0) return;
+        simulationSpeedFactorIndex--;
+        updateSimulationTimerPeriod();
+        updateSimulationControls();
+    }
+
+    private void updateSimulationControls() {
+        boolean simulationRunning = timerSimulacion.isRunning();
+        String speedLabel = formatSimulationSpeedFactor();
+        labels.get("lblSimulacionValor").setText(simulationRunning ? "Running " + speedLabel : "Stopped " + speedLabel);
+        Button btnPlayMenos = botonesPlay.get("btnPlayMenos");
+        if (btnPlayMenos != null) btnPlayMenos.setEnabled(simulationSpeedFactorIndex > 0);
+        Button btnPlayMas = botonesPlay.get("btnPlayMas");
+        if (btnPlayMas != null) btnPlayMas.setEnabled(simulationSpeedFactorIndex < simulationSpeedFactors.size() - 1);
+    }
+
+    private String formatSimulationSpeedFactor() {
+        double factor = simulationSpeedFactors.get(simulationSpeedFactorIndex);
+        if (factor == Math.rint(factor)) return "x" + (int) factor;
+        return "x" + factor;
+    }
+
     private void updateCabecera() {
         // por ahora una única sala, se debe agregar una bandera para que en cada evento de cambio de sala se actualice el layout
         String s = "DATACENTER MAP";
@@ -392,7 +454,14 @@ public class Sketch extends PApplet {
         else if (codigoBoton.startsWith("btnColumnaElegida"))
             actualizarColumnaSeleccionada(codigoBoton.replace("btnColumnaElegida", ""));
         else if (codigoBoton.startsWith("btnPlay")) {
-            System.out.println(codigoBoton);
+            if (codigoBoton.equals("btnPlayMas")) {
+                increaseSimulationSpeed();
+                return;
+            }
+            if (codigoBoton.equals("btnPlayMenos")) {
+                decreaseSimulationSpeed();
+                return;
+            }
         }
         updateUI = true;
     }
@@ -401,22 +470,20 @@ public class Sketch extends PApplet {
         String codigoToggle = tgl.getCode();
         if (codigoToggle.contains("SalaVentilador") || codigoToggle.contains("SalaExtractor")) tglClickedCooling(tgl, estado);
         else if (codigoToggle.equals("tglPlay")) {
-            if (updateTglPlay) return;
+            if (updateTogglePlay) return;
             toggleSimulation();
         }
     }
 
     private void toggleSimulation() {
         timerSimulacion.toggle();
-        boolean simulationRunning = timerSimulacion.isRunning();
-        botonesPlay.values().forEach(btn -> btn.setEnabled(timerSimulacion.isRunning()));
-        labels.get("lblSimulacionValor").setText(simulationRunning ? "Running" : "Stopped");
-        updateTglPlay = true;
+        updateTogglePlay = true;
         try {
-            toggles.get("tglPlay").setState(simulationRunning ? 1 : 0);
+            toggles.get("tglPlay").setState(timerSimulacion.isRunning() ? 1 : 0);
         } finally {
-            updateTglPlay = false;
+            updateTogglePlay = false;
         }
+        updateSimulationControls();
     }
 
     private void tglClickedCooling(Toggle tgl, int estado) {

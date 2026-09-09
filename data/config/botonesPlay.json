@@ -11,7 +11,7 @@
         "width": 0.02316213494,
         "height": 0.02316213494
       },
-      "enabled": false,
+      "enabled": true,
       "visible": true,
       "style": {
         "baseColor": "#008066",
@@ -41,7 +41,7 @@
         "width": 0.02316213494,
         "height": 0.02316213494
       },
-      "enabled": false,
+      "enabled": true,
       "visible": true,
       "style": {
         "baseColor": "#008066",
