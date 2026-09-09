@@ -26,7 +26,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnPlayMenos.svg"
+          "path": "data/img/btn/btnPlayMinus.svg"
         }
       }
     },
@@ -56,7 +56,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnPlayMas.svg"
+          "path": "data/img/btn/btnPlayPlus.svg"
         }
       }
     }

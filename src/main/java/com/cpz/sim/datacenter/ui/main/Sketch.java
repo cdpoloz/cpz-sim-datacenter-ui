@@ -213,12 +213,12 @@ public class Sketch extends PApplet {
         textFont(createFont("data" + File.separator + "font" + File.separator + "JetBrainsMono.ttf", 96, true));
         // background images
         backgroundImages = new ArrayList<>();
-        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondo.png"));
-        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoPasilloElegido.png"));
-        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoRackElegido.png"));
-        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoSala.png"));
-        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoCabecera.png"));
-        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoFooter.png"));
+        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_background.png"));
+        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_backgroundSelectedAisle.png"));
+        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_backgroundSelectedRack.png"));
+        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_backgroundRoom.png"));
+        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_backgroundHeader.png"));
+        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_backgroundFooter.png"));
         // static overlay
         staticOverlay = loadImage("data" + File.separator + "img" + File.separator + "ui_overlay.png");
         // datacenter
@@ -1190,6 +1190,8 @@ public class Sketch extends PApplet {
     @Override
     public void keyReleased() {
         if (keyCode == SPACE_BAR) toggleSimulation();
+        else if (keyCode == PLUS) increaseSimulationSpeed();
+        else if (keyCode == MINUS) decreaseSimulationSpeed();
     }
 
 }

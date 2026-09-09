@@ -23,4 +23,10 @@ public class Constants {
     public static int COLOR_OFFLINE_RACK = Colors.rgb(46, 60, 74);
     public static int COLOR_HOTSPOT_RACK = Colors.rgb(61, 25, 57);
     public static int SPACE_BAR = 32;
+    public static int PLUS = 139;
+    public static int MINUS = 140;
+    public static int ARROW_LEFT = 37;
+    public static int ARROW_UP = 38;
+    public static int ARROW_RIGHT = 39;
+    public static int ARROW_DOWN = 40;
 }

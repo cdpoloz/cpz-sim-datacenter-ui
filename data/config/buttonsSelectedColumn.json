@@ -26,7 +26,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnColumna.svg"
+          "path": "data/img/btn/btnColumn.svg"
         }
       }
     },
@@ -56,7 +56,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnColumna.svg"
+          "path": "data/img/btn/btnColumn.svg"
         }
       }
     },
@@ -86,7 +86,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnColumna.svg"
+          "path": "data/img/btn/btnColumn.svg"
         }
       }
     },
@@ -116,7 +116,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnColumna.svg"
+          "path": "data/img/btn/btnColumn.svg"
         }
       }
     },
@@ -146,7 +146,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnColumna.svg"
+          "path": "data/img/btn/btnColumn.svg"
         }
       }
     },
@@ -176,7 +176,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnColumna.svg"
+          "path": "data/img/btn/btnColumn.svg"
         }
       }
     },
@@ -206,7 +206,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnColumna.svg"
+          "path": "data/img/btn/btnColumn.svg"
         }
       }
     },
@@ -236,7 +236,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnColumna.svg"
+          "path": "data/img/btn/btnColumn.svg"
         }
       }
     }

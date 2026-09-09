@@ -18,7 +18,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indAlertaTop.png"
+          "path": "data/img/ind/indAlertTop.png"
         }
       }
     },
@@ -40,7 +40,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indAlertaMid.png"
+          "path": "data/img/ind/indAlertMiddle.png"
         }
       }
     },
@@ -62,7 +62,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indAlertaMid.png"
+          "path": "data/img/ind/indAlertMiddle.png"
         }
       }
     },
@@ -84,7 +84,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indAlertaMid.png"
+          "path": "data/img/ind/indAlertMiddle.png"
         }
       }
     },
@@ -106,7 +106,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indAlertaMid.png"
+          "path": "data/img/ind/indAlertMiddle.png"
         }
       }
     },
@@ -128,7 +128,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indAlertaMid.png"
+          "path": "data/img/ind/indAlertMiddle.png"
         }
       }
     },
@@ -150,7 +150,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indAlertaMid.png"
+          "path": "data/img/ind/indAlertMiddle.png"
         }
       }
     },
@@ -172,7 +172,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indAlertaMid.png"
+          "path": "data/img/ind/indAlertMiddle.png"
         }
       }
     },
@@ -194,7 +194,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indAlertaMid.png"
+          "path": "data/img/ind/indAlertMiddle.png"
         }
       }
     },
@@ -216,7 +216,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indAlertaMid.png"
+          "path": "data/img/ind/indAlertMiddle.png"
         }
       }
     },
@@ -238,7 +238,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indAlertaMid.png"
+          "path": "data/img/ind/indAlertMiddle.png"
         }
       }
     },
@@ -260,7 +260,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indAlertaBottom.png"
+          "path": "data/img/ind/indAlertBottom.png"
         }
       }
     }

@@ -18,7 +18,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoSimple.png"
+          "path": "data/img/ind/indSelectedAisleSimple.png"
         }
       }
     },
@@ -40,7 +40,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoDoble.png"
+          "path": "data/img/ind/indSelectedAisleDouble.png"
         }
       }
     },
@@ -62,7 +62,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoDoble.png"
+          "path": "data/img/ind/indSelectedAisleDouble.png"
         }
       }
     },
@@ -84,7 +84,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoDoble.png"
+          "path": "data/img/ind/indSelectedAisleDouble.png"
         }
       }
     },
@@ -106,7 +106,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoSimple.png"
+          "path": "data/img/ind/indSelectedAisleSimple.png"
         }
       }
     }

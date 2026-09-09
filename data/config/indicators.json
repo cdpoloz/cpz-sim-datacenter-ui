@@ -282,7 +282,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indCirculo.svg"
+          "path": "data/img/ind/indCircle.svg"
         }
       }
     },
@@ -304,7 +304,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indCirculo.svg"
+          "path": "data/img/ind/indCircle.svg"
         }
       }
     },
@@ -326,7 +326,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indCirculo.svg"
+          "path": "data/img/ind/indCircle.svg"
         }
       }
     },
@@ -348,7 +348,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indCirculo.svg"
+          "path": "data/img/ind/indCircle.svg"
         }
       }
     },
@@ -370,7 +370,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indCirculo.svg"
+          "path": "data/img/ind/indCircle.svg"
         }
       }
     },
@@ -392,7 +392,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indCirculo.svg"
+          "path": "data/img/ind/indCircle.svg"
         }
       }
     },
@@ -414,7 +414,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indCirculo.svg"
+          "path": "data/img/ind/indCircle.svg"
         }
       }
     },
@@ -436,7 +436,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indCirculo.svg"
+          "path": "data/img/ind/indCircle.svg"
         }
       }
     },
@@ -458,7 +458,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indCirculo.svg"
+          "path": "data/img/ind/indCircle.svg"
         }
       }
     },
@@ -480,7 +480,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indCirculo.svg"
+          "path": "data/img/ind/indCircle.svg"
         }
       }
     },
@@ -502,7 +502,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indCirculo.svg"
+          "path": "data/img/ind/indCircle.svg"
         }
       }
     },
@@ -524,7 +524,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indCirculo.svg"
+          "path": "data/img/ind/indCircle.svg"
         }
       }
     },
@@ -810,7 +810,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotAlerta.svg"
+          "path": "data/img/ind/indSlotAlert.svg"
         }
       }
     },
@@ -832,7 +832,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotAlerta.svg"
+          "path": "data/img/ind/indSlotAlert.svg"
         }
       }
     },
@@ -854,7 +854,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotAlerta.svg"
+          "path": "data/img/ind/indSlotAlert.svg"
         }
       }
     },
@@ -876,7 +876,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotAlerta.svg"
+          "path": "data/img/ind/indSlotAlert.svg"
         }
       }
     },
@@ -898,7 +898,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotAlerta.svg"
+          "path": "data/img/ind/indSlotAlert.svg"
         }
       }
     },
@@ -920,7 +920,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotAlerta.svg"
+          "path": "data/img/ind/indSlotAlert.svg"
         }
       }
     },
@@ -942,7 +942,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotAlerta.svg"
+          "path": "data/img/ind/indSlotAlert.svg"
         }
       }
     },
@@ -964,7 +964,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotAlerta.svg"
+          "path": "data/img/ind/indSlotAlert.svg"
         }
       }
     },
@@ -986,7 +986,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotAlerta.svg"
+          "path": "data/img/ind/indSlotAlert.svg"
         }
       }
     },
@@ -1008,7 +1008,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotAlerta.svg"
+          "path": "data/img/ind/indSlotAlert.svg"
         }
       }
     },
@@ -1030,7 +1030,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotAlerta.svg"
+          "path": "data/img/ind/indSlotAlert.svg"
         }
       }
     },
@@ -1052,7 +1052,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotAlerta.svg"
+          "path": "data/img/ind/indSlotAlert.svg"
         }
       }
     },
@@ -1338,7 +1338,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotVacio.svg"
+          "path": "data/img/ind/indSlotEmpty.svg"
         }
       }
     },
@@ -1360,7 +1360,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotVacio.svg"
+          "path": "data/img/ind/indSlotEmpty.svg"
         }
       }
     },
@@ -1382,7 +1382,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotVacio.svg"
+          "path": "data/img/ind/indSlotEmpty.svg"
         }
       }
     },
@@ -1404,7 +1404,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotVacio.svg"
+          "path": "data/img/ind/indSlotEmpty.svg"
         }
       }
     },
@@ -1426,7 +1426,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotVacio.svg"
+          "path": "data/img/ind/indSlotEmpty.svg"
         }
       }
     },
@@ -1448,7 +1448,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotVacio.svg"
+          "path": "data/img/ind/indSlotEmpty.svg"
         }
       }
     },
@@ -1470,7 +1470,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotVacio.svg"
+          "path": "data/img/ind/indSlotEmpty.svg"
         }
       }
     },
@@ -1492,7 +1492,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotVacio.svg"
+          "path": "data/img/ind/indSlotEmpty.svg"
         }
       }
     },
@@ -1514,7 +1514,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotVacio.svg"
+          "path": "data/img/ind/indSlotEmpty.svg"
         }
       }
     },
@@ -1536,7 +1536,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotVacio.svg"
+          "path": "data/img/ind/indSlotEmpty.svg"
         }
       }
     },
@@ -1558,7 +1558,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotVacio.svg"
+          "path": "data/img/ind/indSlotEmpty.svg"
         }
       }
     },
@@ -1580,7 +1580,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indSlotVacio.svg"
+          "path": "data/img/ind/indSlotEmpty.svg"
         }
       }
     },
@@ -1602,7 +1602,7 @@
         "strokeWeight": 1.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indElementoBarra.svg"
+          "path": "data/img/ind/indBarElement.svg"
         }
       }
     },
@@ -1624,7 +1624,7 @@
         "strokeWeight": 1.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indElementoBarra.svg"
+          "path": "data/img/ind/indBarElement.svg"
         }
       }
     },
@@ -1646,7 +1646,7 @@
         "strokeWeight": 1.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indElementoBarra.svg"
+          "path": "data/img/ind/indBarElement.svg"
         }
       }
     },
@@ -1668,7 +1668,7 @@
         "strokeWeight": 1.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indElementoBarra.svg"
+          "path": "data/img/ind/indBarElement.svg"
         }
       }
     },
@@ -1690,7 +1690,7 @@
         "strokeWeight": 1.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indElementoBarra.svg"
+          "path": "data/img/ind/indBarElement.svg"
         }
       }
     },
@@ -1712,7 +1712,7 @@
         "strokeWeight": 1.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/ind/indElementoBarra.svg"
+          "path": "data/img/ind/indBarElement.svg"
         }
       }
     },
@@ -1734,7 +1734,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indFlechasAireFrioIzq.png"
+          "path": "data/img/ind/indArrowsColdAirLeft.png"
         }
       }
     },
@@ -1756,7 +1756,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indFlechasAireFrioDer.png"
+          "path": "data/img/ind/indArrowsColdAirRight.png"
         }
       }
     },
@@ -1778,7 +1778,7 @@
         "strokeWeight": 1.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoEfectoTemperatura.png"
+          "path": "data/img/ind/indSelectedAisleTemperatureEffect.png"
         }
       }
     },
@@ -1800,7 +1800,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indSalaPasilloCaliente.png"
+          "path": "data/img/ind/indRoomHotAisle.png"
         }
       }
     },
@@ -1822,7 +1822,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indSalaPasilloCaliente.png"
+          "path": "data/img/ind/indRoomHotAisle.png"
         }
       }
     },
@@ -1844,7 +1844,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indSalaPasilloCaliente.png"
+          "path": "data/img/ind/indRoomHotAisle.png"
         }
       }
     },
@@ -1866,7 +1866,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indSalaPasilloCaliente.png"
+          "path": "data/img/ind/indRoomHotAisle.png"
         }
       }
     },
@@ -1888,7 +1888,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indSalaPasilloCaliente.png"
+          "path": "data/img/ind/indRoomHotAisle.png"
         }
       }
     }

@@ -26,7 +26,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoIzq01.svg"
+          "path": "data/img/btn/btnSelectedRackLeft01.svg"
         }
       }
     },
@@ -56,7 +56,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoIzq02.svg"
+          "path": "data/img/btn/btnSelectedRackLeft02.svg"
         }
       }
     },
@@ -86,7 +86,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoIzq03.svg"
+          "path": "data/img/btn/btnSelectedRackLeft03.svg"
         }
       }
     },
@@ -116,7 +116,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoIzq04.svg"
+          "path": "data/img/btn/btnSelectedRackLeft04.svg"
         }
       }
     },
@@ -146,7 +146,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoIzq05.svg"
+          "path": "data/img/btn/btnSelectedRackLeft05.svg"
         }
       }
     },
@@ -176,7 +176,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoIzq06.svg"
+          "path": "data/img/btn/btnSelectedRackLeft06.svg"
         }
       }
     },
@@ -206,7 +206,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoIzq07.svg"
+          "path": "data/img/btn/btnSelectedRackLeft07.svg"
         }
       }
     },
@@ -236,7 +236,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoIzq08.svg"
+          "path": "data/img/btn/btnSelectedRackLeft08.svg"
         }
       }
     },
@@ -266,7 +266,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoIzq09.svg"
+          "path": "data/img/btn/btnSelectedRackLeft09.svg"
         }
       }
     },
@@ -296,7 +296,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoIzq10.svg"
+          "path": "data/img/btn/btnSelectedRackLeft10.svg"
         }
       }
     },
@@ -326,7 +326,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoIzq11.svg"
+          "path": "data/img/btn/btnSelectedRackLeft11.svg"
         }
       }
     },
@@ -356,7 +356,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoIzq12.svg"
+          "path": "data/img/btn/btnSelectedRackLeft12.svg"
         }
       }
     },
@@ -386,7 +386,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoDer01.svg"
+          "path": "data/img/btn/btnSelectedRackRight01.svg"
         }
       }
     },
@@ -416,7 +416,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoDer02.svg"
+          "path": "data/img/btn/btnSelectedRackRight02.svg"
         }
       }
     },
@@ -446,7 +446,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoDer03.svg"
+          "path": "data/img/btn/btnSelectedRackRight03.svg"
         }
       }
     },
@@ -476,7 +476,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoDer04.svg"
+          "path": "data/img/btn/btnSelectedRackRight04.svg"
         }
       }
     },
@@ -506,7 +506,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoDer05.svg"
+          "path": "data/img/btn/btnSelectedRackRight05.svg"
         }
       }
     },
@@ -536,7 +536,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoDer06.svg"
+          "path": "data/img/btn/btnSelectedRackRight06.svg"
         }
       }
     },
@@ -566,7 +566,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoDer07.svg"
+          "path": "data/img/btn/btnSelectedRackRight07.svg"
         }
       }
     },
@@ -596,7 +596,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoDer08.svg"
+          "path": "data/img/btn/btnSelectedRackRight08.svg"
         }
       }
     },
@@ -626,7 +626,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoDer09.svg"
+          "path": "data/img/btn/btnSelectedRackRight09.svg"
         }
       }
     },
@@ -656,7 +656,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoDer10.svg"
+          "path": "data/img/btn/btnSelectedRackRight10.svg"
         }
       }
     },
@@ -686,7 +686,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoDer11.svg"
+          "path": "data/img/btn/btnSelectedRackRight11.svg"
         }
       }
     },
@@ -716,7 +716,7 @@
         "textSize": 12.0,
         "renderer": {
           "type": "svg",
-          "path": "data/img/btn/btnRackElegidoDer12.svg"
+          "path": "data/img/btn/btnSelectedRackRight12.svg"
         }
       }
     }
