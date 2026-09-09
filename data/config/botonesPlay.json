@@ -1,0 +1,64 @@
+{
+  "controls": [
+    {
+      "type": "button",
+      "code": "btnPlayMenos",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9356007813,
+        "y": 0.9461797583,
+        "width": 0.02316213494,
+        "height": 0.02316213494
+      },
+      "enabled": false,
+      "visible": true,
+      "style": {
+        "baseColor": "#008066",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.35,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnPlayMenos.svg"
+        }
+      }
+    },
+    {
+      "type": "button",
+      "code": "btnPlayMas",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9527882813,
+        "y": 0.9461797583,
+        "width": 0.02316213494,
+        "height": 0.02316213494
+      },
+      "enabled": false,
+      "visible": true,
+      "style": {
+        "baseColor": "#008066",
+        "textColor": "#002df9f7",
+        "strokeColor": "#002df9f7",
+        "strokeWeight": 0.0,
+        "strokeWeightHover": 2.0,
+        "cornerRadius": 10.0,
+        "disabledAlpha": 90,
+        "hoverBlendWithWhite": 0.35,
+        "pressedBlendWithBlack": 0.25,
+        "textSize": 12.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/btn/btnPlayMas.svg"
+        }
+      }
+    }
+  ]
+}

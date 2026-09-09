@@ -3274,6 +3274,56 @@
         "alignY": "top",
         "disabledAlpha": 80
       }
+    },
+    {
+      "type": "label",
+      "code": "lblSimulacion",
+      "text": "SIMULATION",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8809997396,
+        "y": 0.9312885196,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSimulacionValor",
+      "text": "Stopped",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8809997396,
+        "y": 0.9513912387,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01208459215
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
     }
   ]
 }

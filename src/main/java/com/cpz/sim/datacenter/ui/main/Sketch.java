@@ -70,14 +70,14 @@ public class Sketch extends PApplet {
     private Map<String, Indicator> indicadores, indicadoresSlotIA, indicadoresAlerta;
     private Map<String, Indicator> indicadoresPasilloElegidoServidorTemperaturaMaxima, indicadoresRackElegido, indicadoresPasilloNull;
     private Map<String, Indicator> indicadoresPasilloElegido, indicadoresRack, indicadoresRackCondicion;
-    private Map<String, Button> botonesPasilloElegidoRacks, botonesColumnas;
+    private Map<String, Button> botonesPasilloElegidoRacks, botonesColumnas, botonesPlay;
     private Map<String, Label> labels;
     private Map<String, Toggle> toggles;
     private List<PImage> fondo;
     private PImage overlayEstatico;
     private boolean showOverlay;
     private Timer timerSimulacion;
-    private boolean updateSnapshots, updateUI;
+    private boolean updateSnapshots, updateUI, updateTglPlay;
     private boolean sincronizandoTogglesRefrigeracion;
     private int previousSecond, previousDay;
     private String roomName;
@@ -187,6 +187,14 @@ public class Sketch extends PApplet {
             mainInputLayer.addPointerTarget(btn::handlePointerEvent);
             btn.setClickListener(() -> btnClicked(btn.getCode()));
         });
+        // botonesPlay
+        controles = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "botonesPlay.json");
+        botonesPlay = new HashMap<>();
+        controles.values().stream().filter(c -> c instanceof Button).forEach(btn -> botonesPlay.put(btn.getCode(), (Button) btn));
+        botonesPlay.values().forEach(btn -> {
+            mainInputLayer.addPointerTarget(btn::handlePointerEvent);
+            btn.setClickListener(() -> btnClicked(btn.getCode()));
+        });
         // toggles
         controles = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "toggle.json");
         toggles = new HashMap<>();
@@ -207,6 +215,7 @@ public class Sketch extends PApplet {
         fondo.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoRackElegido.png"));
         fondo.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoSala.png"));
         fondo.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoCabecera.png"));
+        fondo.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoFooter.png"));
         // overlay estático
         overlayEstatico = loadImage("data" + File.separator + "img" + File.separator + "ui_overlay.png");
         // datacenter
@@ -280,8 +289,8 @@ public class Sketch extends PApplet {
         operationalSnapshotProvider = new DatacenterOperationalSnapshotProvider(datacenter, operationalGroups);
         // timers
         timerSimulacion = new Timer();
-        timerSimulacion.setPeriodMillis(500);
-        timerSimulacion.start();
+        timerSimulacion.setPeriodMillis(1000);
+        //timerSimulacion.start();
         // valores iniciales
         columnaElegida = "C01";
         rackElegido = "R01";
@@ -382,10 +391,35 @@ public class Sketch extends PApplet {
             actualizarRackSeleccionado(codigoBoton.replace("btnRackElegido", ""));
         else if (codigoBoton.startsWith("btnColumnaElegida"))
             actualizarColumnaSeleccionada(codigoBoton.replace("btnColumnaElegida", ""));
+        else if (codigoBoton.startsWith("btnPlay")) {
+            System.out.println(codigoBoton);
+        }
         updateUI = true;
     }
 
     private void tglClicked(Toggle tgl, int estado) {
+        String codigoToggle = tgl.getCode();
+        if (codigoToggle.contains("SalaVentilador") || codigoToggle.contains("SalaExtractor")) tglClickedCooling(tgl, estado);
+        else if (codigoToggle.equals("tglPlay")) {
+            if (updateTglPlay) return;
+            toggleSimulation();
+        }
+    }
+
+    private void toggleSimulation() {
+        timerSimulacion.toggle();
+        boolean simulationRunning = timerSimulacion.isRunning();
+        botonesPlay.values().forEach(btn -> btn.setEnabled(timerSimulacion.isRunning()));
+        labels.get("lblSimulacionValor").setText(simulationRunning ? "Running" : "Stopped");
+        updateTglPlay = true;
+        try {
+            toggles.get("tglPlay").setState(simulationRunning ? 1 : 0);
+        } finally {
+            updateTglPlay = false;
+        }
+    }
+
+    private void tglClickedCooling(Toggle tgl, int estado) {
         if (sincronizandoTogglesRefrigeracion) return;
         String codigoToggle = tgl.getCode();
         boolean enabled = estado == 1;
@@ -979,6 +1013,7 @@ public class Sketch extends PApplet {
         indicadoresRackCondicion.values().forEach(Indicator::draw);
         botonesPasilloElegidoRacks.values().forEach(Button::draw);
         botonesColumnas.values().forEach(Button::draw);
+        botonesPlay.values().forEach(Button::draw);
         toggles.values().forEach(Toggle::draw);
     }
 
@@ -1086,8 +1121,7 @@ public class Sketch extends PApplet {
 
     @Override
     public void keyReleased() {
-        if (key == 'm') showOverlay = !showOverlay;
-        else if (keyCode == BARRA_ESPACIADORA) timerSimulacion.toggle();
+        if (keyCode == BARRA_ESPACIADORA) toggleSimulation();
     }
 
 }
