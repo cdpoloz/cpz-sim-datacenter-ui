@@ -135,47 +135,47 @@ public class Sketch extends PApplet {
         // controls
         Map<String, Control> controlsByCode;
         // labels
-        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "label.json");
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "labels.json");
         labels = new HashMap<>();
         controlsByCode.values().stream().filter(c -> c instanceof Label).forEach(label -> labels.put(label.getCode(), (Label) label));
         // indicators
-        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadores.json");
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicators.json");
         indicators = new HashMap<>();
         controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicators.put(ind.getCode(), (Indicator) ind));
         // AI slot indicators
-        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresSlotIA.json");
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicatorsAiSlot.json");
         indicatorsAiSlot = new HashMap<>();
         controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsAiSlot.put(ind.getCode(), (Indicator) ind));
         // alert indicators
-        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresAlerta.json");
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicatorsAlert.json");
         indicatorsAlert = new HashMap<>();
         controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsAlert.put(ind.getCode(), (Indicator) ind));
         // overlay indicators
-        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresPasilloNull.json");
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicatorsNullAisle.json");
         indicatorsNullAisle = new HashMap<>();
         controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsNullAisle.put(ind.getCode(), (Indicator) ind));
         // selected rack indicators
-        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresRackElegido.json");
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicatorsSelectedRack.json");
         indicatorsSelectedRack = new HashMap<>();
         controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsSelectedRack.put(ind.getCode(), (Indicator) ind));
         // selected aisle indicators
-        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresPasilloElegido.json");
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicatorsSelectedAisle.json");
         indicatorsSelectedAisle = new HashMap<>();
         controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsSelectedAisle.put(ind.getCode(), (Indicator) ind));
         // rack indicators
-        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresRack.json");
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicatorsRack.json");
         indicatorsRack = new HashMap<>();
         controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsRack.put(ind.getCode(), (Indicator) ind));
         // rack condition indicators
-        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresRackCondicion.json");
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicatorsRackCondition.json");
         indicatorsRackCondition = new HashMap<>();
         controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsRackCondition.put(ind.getCode(), (Indicator) ind));
         // selected aisle indicatorsServidorTemperaturaMaxima
-        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresPasilloElegidoServidorTemperaturaMaxima.json");
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicatorsSelectedAisleMaximumTemperatureServer.json");
         indicatorsSelectedAisleMaxTemperatureServer = new HashMap<>();
         controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsSelectedAisleMaxTemperatureServer.put(ind.getCode(), (Indicator) ind));
         // selected aisle rack buttons
-        controlsByCode = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "botonesPasilloElegidoRacks.json");
+        controlsByCode = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "buttonsSelectedAisleRacks.json");
         buttonsSelectedAisleRack = new HashMap<>();
         controlsByCode.values().stream().filter(c -> c instanceof Button).forEach(btn -> buttonsSelectedAisleRack.put(btn.getCode(), (Button) btn));
         buttonsSelectedAisleRack.values().forEach(btn -> {
@@ -183,7 +183,7 @@ public class Sketch extends PApplet {
             btn.setClickListener(() -> btnClicked(btn.getCode()));
         });
         // selected aisle rack buttons
-        controlsByCode = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "botonesColumnaElegida.json");
+        controlsByCode = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "buttonsSelectedColumn.json");
         buttonsColumn = new HashMap<>();
         controlsByCode.values().stream().filter(c -> c instanceof Button).forEach(btn -> buttonsColumn.put(btn.getCode(), (Button) btn));
         buttonsColumn.values().forEach(btn -> {
@@ -191,7 +191,7 @@ public class Sketch extends PApplet {
             btn.setClickListener(() -> btnClicked(btn.getCode()));
         });
         // play buttons
-        controlsByCode = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "botonesPlay.json");
+        controlsByCode = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "buttonsPlay.json");
         buttonsPlay = new HashMap<>();
         controlsByCode.values().stream().filter(c -> c instanceof Button).forEach(btn -> buttonsPlay.put(btn.getCode(), (Button) btn));
         buttonsPlay.values().forEach(btn -> {
@@ -199,7 +199,7 @@ public class Sketch extends PApplet {
             btn.setClickListener(() -> btnClicked(btn.getCode()));
         });
         // toggles
-        controlsByCode = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "toggle.json");
+        controlsByCode = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "toggles.json");
         toggles = new HashMap<>();
         controlsByCode.values().stream().filter(c -> c instanceof Toggle).forEach(tgl -> toggles.put(tgl.getCode(), (Toggle) tgl));
         toggles.values().forEach(tgl -> {
