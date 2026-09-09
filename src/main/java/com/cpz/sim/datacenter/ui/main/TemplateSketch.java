@@ -64,7 +64,7 @@ public class TemplateSketch extends PApplet {
         overlayManager = new OverlayManager();
         notifications = new NotificationManager(this, overlayManager);
         NotificationConfigLoader.apply(this, "config/notification.json", notifications);
-        // controles
+        // controls
         controls = TemplateSketchConfig.setupControls(this, overlayManager, inputManager);
         buttons = TemplateSketchConfig.filterButtons(controls);
         checkboxes = TemplateSketchConfig.filterCheckboxes(controls);

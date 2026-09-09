@@ -55,36 +55,36 @@ import java.util.stream.Collectors;
 
 import static com.cpz.sim.datacenter.ui.main.Launcher.LOG;
 import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
-import static com.cpz.sim.datacenter.ui.util.Constantes.*;
+import static com.cpz.sim.datacenter.ui.util.Constants.*;
 
 /**
  * @author CPZ
  */
 public class Sketch extends PApplet {
 
-    private final Map<String, HotAisleDefinition> hotAisleByColumn = new HashMap<>();
+    private Map<String, HotAisleDefinition> hotAisleByColumn;
     private InputManager inputManager;
     private OverlayManager overlayManager;
     private ProcessingKeyboardAdapter processingKeyboardAdapter;
     private Map<String, Control> controls;
-    private Map<String, Indicator> indicadores, indicadoresSlotIA, indicadoresAlerta;
-    private Map<String, Indicator> indicadoresPasilloElegidoServidorTemperaturaMaxima, indicadoresRackElegido, indicadoresPasilloNull;
-    private Map<String, Indicator> indicadoresPasilloElegido, indicadoresRack, indicadoresRackCondicion;
-    private Map<String, Button> botonesPasilloElegidoRacks, botonesColumnas, botonesPlay;
+    private Map<String, Indicator> indicators, indicatorsAiSlot, indicatorsAlert;
+    private Map<String, Indicator> indicatorsSelectedAisleMaxTemperatureServer, indicatorsSelectedRack, indicatorsNullAisle;
+    private Map<String, Indicator> indicatorsSelectedAisle, indicatorsRack, indicatorsRackCondition;
+    private Map<String, Button> buttonsSelectedAisleRack, buttonsColumn, buttonsPlay;
     private Map<String, Label> labels;
     private Map<String, Toggle> toggles;
-    private List<PImage> fondo;
-    private PImage overlayEstatico;
+    private List<PImage> backgroundImages;
+    private PImage staticOverlay;
     private boolean showOverlay;
-    private Timer timerSimulacion;
+    private Timer simulationTimer;
     private int simulationBasePeriodMillis;
     private List<Double> simulationSpeedFactors;
     private int simulationSpeedFactorIndex;
-    private boolean updateSnapshots, updateUI, updateTogglePlay;
-    private boolean sincronizandoTogglesRefrigeracion;
+    private boolean updateSnapshots, updateUI, syncingPlayToggle;
+    private boolean syncingCoolingToggles;
     private int previousSecond, previousDay;
     private String roomName;
-    private List<String> togglesVentiladores, togglesExtractores;
+    private List<String> supplyToggleCodes, exhaustToggleCodes;
     private SimulationEngine engine;
     private DatacenterOperationalSnapshot operationalSnapshot;
     private DatacenterOperationalSnapshotProvider operationalSnapshotProvider;
@@ -98,23 +98,23 @@ public class Sketch extends PApplet {
     private TemperatureSystem temperatureSystem;
     private TemperatureSnapshotProvider temperatureSnapshotProvider;
     private TemperatureSnapshot temperatureSnapshot;
-    private String columnaElegida, rackElegido;
+    private String selectedColumn, selectedRack;
     private HotAisleConfiguration hotAisleConfiguration;
-    private HotAisleDefinition pasilloCalienteSeleccionado;
+    private HotAisleDefinition selectedHotAisle;
     private Map<String, Rack> racks;
     private float minServerTemperatureCelsius, maxServerTemperatureCelsius; //*******
-    private List<Float> temperaturasPasilloCalienteSeleccionado;
+    private List<Float> selectedHotAisleTemperatures;
     private CoolingConfiguration coolingConfiguration;
     private CoolingSystem coolingSystem;
     private CoolingSnapshotCoordinator coolingSnapshotCoordinator;
     private CoolingSnapshotTemperatureReferenceProvider coolingTemperatureReferenceProvider;
     private CoolingSnapshot coolingSnapshot;
-    private String formatoTemperatura, formatoTemperaturaSimple, formatoPorcentaje, formatoPotenciaKw, formatoPotenciaMw, formatoVelocidad, formatoPresion, formatoFlujoAire;
+    private String temperatureFormat, simpleTemperatureFormat, percentageFormat, powerKwFormat, powerMwFormat, speedFormat, pressureFormat, airflowFormat;
 
     public void settings() {
         LOG.info("Starting settings");
         PJOGL.setIcon("data" + File.separator + "img" + File.separator + PROPS.getProperty("window.icon"));
-        // tamaño de ventana
+        // window size
         size(Integer.parseInt(PROPS.getProperty("sketch.width")), Integer.parseInt(PROPS.getProperty("sketch.height")), P2D);
         // smoothing
         smooth(Integer.parseInt(PROPS.getProperty("sketch.smoothing")));
@@ -123,7 +123,7 @@ public class Sketch extends PApplet {
 
     public void setup() {
         LOG.info("Starting initial setup");
-        background(COLOR_FONDO);
+        background(COLOR_BACKGROUND);
         frameRate(Integer.parseInt(PROPS.getProperty("sketch.fps")));
         getSurface().setTitle(PROPS.getProperty("window.title"));
         LOG.info("Finished initial setup");
@@ -132,100 +132,101 @@ public class Sketch extends PApplet {
         MainInputLayer mainInputLayer = new MainInputLayer(0);
         // overlay manager
         overlayManager = new OverlayManager();
-        // controles
-        Map<String, Control> controles;
+        // controls
+        Map<String, Control> controlsByCode;
         // labels
-        controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "label.json");
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "label.json");
         labels = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Label).forEach(lbl -> labels.put(lbl.getCode(), (Label) lbl));
-        // indicadores
-        controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadores.json");
-        indicadores = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadores.put(ind.getCode(), (Indicator) ind));
-        // indicadoresSlotIA
-        controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresSlotIA.json");
-        indicadoresSlotIA = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadoresSlotIA.put(ind.getCode(), (Indicator) ind));
-        // indicadoresAlerta
-        controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresAlerta.json");
-        indicadoresAlerta = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadoresAlerta.put(ind.getCode(), (Indicator) ind));
-        // indicadoresOverlay
-        controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresPasilloNull.json");
-        indicadoresPasilloNull = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadoresPasilloNull.put(ind.getCode(), (Indicator) ind));
-        // indicadoresRackElegido
-        controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresRackElegido.json");
-        indicadoresRackElegido = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadoresRackElegido.put(ind.getCode(), (Indicator) ind));
-        // indicadoresPasilloElegido
-        controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresPasilloElegido.json");
-        indicadoresPasilloElegido = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadoresPasilloElegido.put(ind.getCode(), (Indicator) ind));
-        // indicadoresRack
-        controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresRack.json");
-        indicadoresRack = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadoresRack.put(ind.getCode(), (Indicator) ind));
-        // indicadoresRackCondicion
-        controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresRackCondicion.json");
-        indicadoresRackCondicion = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadoresRackCondicion.put(ind.getCode(), (Indicator) ind));
-        // indicadoresPasilloElegidoServidorTemperaturaMaxima
-        controles = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresPasilloElegidoServidorTemperaturaMaxima.json");
-        indicadoresPasilloElegidoServidorTemperaturaMaxima = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicadoresPasilloElegidoServidorTemperaturaMaxima.put(ind.getCode(), (Indicator) ind));
-        // botonesPasilloElegidoRacks
-        controles = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "botonesPasilloElegidoRacks.json");
-        botonesPasilloElegidoRacks = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Button).forEach(btn -> botonesPasilloElegidoRacks.put(btn.getCode(), (Button) btn));
-        botonesPasilloElegidoRacks.values().forEach(btn -> {
+        controlsByCode.values().stream().filter(c -> c instanceof Label).forEach(label -> labels.put(label.getCode(), (Label) label));
+        // indicators
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadores.json");
+        indicators = new HashMap<>();
+        controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicators.put(ind.getCode(), (Indicator) ind));
+        // AI slot indicators
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresSlotIA.json");
+        indicatorsAiSlot = new HashMap<>();
+        controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsAiSlot.put(ind.getCode(), (Indicator) ind));
+        // alert indicators
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresAlerta.json");
+        indicatorsAlert = new HashMap<>();
+        controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsAlert.put(ind.getCode(), (Indicator) ind));
+        // overlay indicators
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresPasilloNull.json");
+        indicatorsNullAisle = new HashMap<>();
+        controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsNullAisle.put(ind.getCode(), (Indicator) ind));
+        // selected rack indicators
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresRackElegido.json");
+        indicatorsSelectedRack = new HashMap<>();
+        controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsSelectedRack.put(ind.getCode(), (Indicator) ind));
+        // selected aisle indicators
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresPasilloElegido.json");
+        indicatorsSelectedAisle = new HashMap<>();
+        controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsSelectedAisle.put(ind.getCode(), (Indicator) ind));
+        // rack indicators
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresRack.json");
+        indicatorsRack = new HashMap<>();
+        controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsRack.put(ind.getCode(), (Indicator) ind));
+        // rack condition indicators
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresRackCondicion.json");
+        indicatorsRackCondition = new HashMap<>();
+        controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsRackCondition.put(ind.getCode(), (Indicator) ind));
+        // selected aisle indicatorsServidorTemperaturaMaxima
+        controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicadoresPasilloElegidoServidorTemperaturaMaxima.json");
+        indicatorsSelectedAisleMaxTemperatureServer = new HashMap<>();
+        controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsSelectedAisleMaxTemperatureServer.put(ind.getCode(), (Indicator) ind));
+        // selected aisle rack buttons
+        controlsByCode = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "botonesPasilloElegidoRacks.json");
+        buttonsSelectedAisleRack = new HashMap<>();
+        controlsByCode.values().stream().filter(c -> c instanceof Button).forEach(btn -> buttonsSelectedAisleRack.put(btn.getCode(), (Button) btn));
+        buttonsSelectedAisleRack.values().forEach(btn -> {
             mainInputLayer.addPointerTarget(btn::handlePointerEvent);
             btn.setClickListener(() -> btnClicked(btn.getCode()));
         });
-        // botonesPasilloElegidoRacks
-        controles = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "botonesColumnaElegida.json");
-        botonesColumnas = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Button).forEach(btn -> botonesColumnas.put(btn.getCode(), (Button) btn));
-        botonesColumnas.values().forEach(btn -> {
+        // selected aisle rack buttons
+        controlsByCode = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "botonesColumnaElegida.json");
+        buttonsColumn = new HashMap<>();
+        controlsByCode.values().stream().filter(c -> c instanceof Button).forEach(btn -> buttonsColumn.put(btn.getCode(), (Button) btn));
+        buttonsColumn.values().forEach(btn -> {
             mainInputLayer.addPointerTarget(btn::handlePointerEvent);
             btn.setClickListener(() -> btnClicked(btn.getCode()));
         });
-        // botonesPlay
-        controles = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "botonesPlay.json");
-        botonesPlay = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Button).forEach(btn -> botonesPlay.put(btn.getCode(), (Button) btn));
-        botonesPlay.values().forEach(btn -> {
+        // play buttons
+        controlsByCode = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "botonesPlay.json");
+        buttonsPlay = new HashMap<>();
+        controlsByCode.values().stream().filter(c -> c instanceof Button).forEach(btn -> buttonsPlay.put(btn.getCode(), (Button) btn));
+        buttonsPlay.values().forEach(btn -> {
             mainInputLayer.addPointerTarget(btn::handlePointerEvent);
             btn.setClickListener(() -> btnClicked(btn.getCode()));
         });
         // toggles
-        controles = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "toggle.json");
+        controlsByCode = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "toggle.json");
         toggles = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Toggle).forEach(tgl -> toggles.put(tgl.getCode(), (Toggle) tgl));
+        controlsByCode.values().stream().filter(c -> c instanceof Toggle).forEach(tgl -> toggles.put(tgl.getCode(), (Toggle) tgl));
         toggles.values().forEach(tgl -> {
             mainInputLayer.addPointerTarget(tgl::handlePointerEvent);
-            tgl.setChangeListener(estado -> tglClicked(tgl, estado));
+            tgl.setChangeListener(state -> tglClicked(tgl, state));
         });
-        // registro de capas en inputLayer
+        // input layer registration
         inputManager.registerLayer(mainInputLayer);
         //inputManager.registerLayer(new TooltipInputLayer(1000, tooltips));
         // font
         textFont(createFont("data" + File.separator + "font" + File.separator + "JetBrainsMono.ttf", 96, true));
-        // imágenes de fondo
-        fondo = new ArrayList<>();
-        fondo.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondo.png"));
-        fondo.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoPasilloElegido.png"));
-        fondo.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoRackElegido.png"));
-        fondo.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoSala.png"));
-        fondo.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoCabecera.png"));
-        fondo.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoFooter.png"));
-        // overlay estático
-        overlayEstatico = loadImage("data" + File.separator + "img" + File.separator + "ui_overlay.png");
+        // background images
+        backgroundImages = new ArrayList<>();
+        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondo.png"));
+        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoPasilloElegido.png"));
+        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoRackElegido.png"));
+        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoSala.png"));
+        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoCabecera.png"));
+        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_fondoFooter.png"));
+        // static overlay
+        staticOverlay = loadImage("data" + File.separator + "img" + File.separator + "ui_overlay.png");
         // datacenter
         Path configPath = Path.of("data/config/datacenter-test-complete-rezoned-edge-cases-custom-v2.json");
         DatacenterDefinition definition = new JsonDatacenterConfigLoader().load(configPath);
         datacenter = new DatacenterFactory().create(definition);
         roomName = definition.layout().room().name();
+        hotAisleByColumn = new HashMap<>();
         coolingConfiguration =
                 new CoolingConfigurationFactory()
                         .create(definition, datacenter)
@@ -252,7 +253,7 @@ public class Sketch extends PApplet {
         SimulationClock clock = new SimulationClock(Duration.ofMinutes(1));
         // engine
         engine = new SimulationEngine(clock);
-        // sistemas
+        // systems
         energySystem = new EnergyConsumptionSystem(datacenter);
         coolingSystem = new CoolingSystem(coolingConfiguration);
         coolingTemperatureReferenceProvider = new CoolingSnapshotTemperatureReferenceProvider(coolingConfiguration);
@@ -278,68 +279,68 @@ public class Sketch extends PApplet {
         energySnapshotProvider = new EnergyConsumptionSnapshotProvider(datacenter, energySystem);
         temperatureSnapshotProvider = new TemperatureSnapshotProvider(datacenter, temperatureSystem, temperatureOptions);
         healthSnapshotProvider = new HealthSnapshotProvider(datacenter, healthSystem, temperatureSystem);
-        // pasillos calientes
+        // hot aisles
         Path configurationPath = Path.of(dataPath("config" + File.separator + "hot-aisle-mapping.json"));
         HotAisleConfigurationLoader loader = new HotAisleConfigurationLoader();
         try {
             hotAisleConfiguration = loader.load(configurationPath);
             initializeHotAisleMapping(hotAisleConfiguration);
         } catch (IOException e) {
-            throw new RuntimeException("No se pudo cargar la configuración de pasillos calientes", e);
+            throw new RuntimeException("Could not load hot aisle configuration", e);
         }
-        // grupos operacionales
+        // operational groups
         List<ServerGroupDefinition> operationalGroups = createOperationalGroups(hotAisleConfiguration);
         operationalSnapshotProvider = new DatacenterOperationalSnapshotProvider(datacenter, operationalGroups);
         // simulation timer
         simulationBasePeriodMillis = Integer.parseInt(PROPS.getProperty("simulation.timer.base-period-ms"));
         simulationSpeedFactors = parseSimulationSpeedFactors(PROPS.getProperty("simulation.timer.speed-factors"));
         simulationSpeedFactorIndex = findSimulationSpeedFactorIndex(Double.parseDouble(PROPS.getProperty("simulation.timer.initial-speed-factor")));
-        timerSimulacion = new Timer();
-        timerSimulacion.setPeriodMillis(1000);
+        simulationTimer = new Timer();
+        simulationTimer.setPeriodMillis(1000);
         updateSimulationTimerPeriod();
         updateSimulationControls();
-        // valores iniciales
-        columnaElegida = "C01";
-        rackElegido = "R01";
-        obtenerPasilloCalienteElegido();
-        mostrarAuraRackSeleccionado();
-        mostrarAuraPasilloElegido();
+        // initial values
+        selectedColumn = "C01";
+        selectedRack = "R01";
+        resolveSelectedHotAisle();
+        showSelectedRackHighlight();
+        showSelectedAisleHighlight();
         calculateTemperatureRange(datacenter, temperatureOptions);
         engine.step();
         updateUI = true;
         updateSnapshots = true;
         updateSnapshots();
-        togglesVentiladores = new ArrayList<>();
+        supplyToggleCodes = new ArrayList<>();
         coolingSnapshot.units()
                 .stream()
                 .filter(unit -> unit.type() == CoolingUnitType.SUPPLY)
                 .forEach(unit -> {
                     String tglCode = unit.unitCode().replace("SUPPLY-", "tglSalaVentilador");
-                    togglesVentiladores.add(tglCode);
+                    supplyToggleCodes.add(tglCode);
                 });
-        togglesExtractores = new ArrayList<>();
+        exhaustToggleCodes = new ArrayList<>();
         coolingSnapshot.units()
                 .stream()
                 .filter(unit -> unit.type() == CoolingUnitType.EXHAUST)
                 .forEach(unit -> {
                     String tglCode = unit.unitCode().replace("EXHAUST-", "tglSalaExtractor");
-                    togglesExtractores.add(tglCode);
+                    exhaustToggleCodes.add(tglCode);
                 });
-        formatoPorcentaje = PROPS.getProperty("number.format.percentage");
-        formatoTemperatura = PROPS.getProperty("number.format.temperature");
-        formatoTemperaturaSimple = PROPS.getProperty("number.format.temperature.simple");
-        formatoPotenciaKw = PROPS.getProperty("number.format.power.kw");
-        formatoPotenciaMw = PROPS.getProperty("number.format.power.mw");
-        formatoVelocidad = PROPS.getProperty("number.format.velocidad");
-        formatoPresion = PROPS.getProperty("number.format.presion");
-        formatoFlujoAire = PROPS.getProperty("number.format.airflow");
-        labels.get("lblSalaEscalaTemperatura01").setText(String.format(formatoTemperaturaSimple, minServerTemperatureCelsius));
+        percentageFormat = PROPS.getProperty("number.format.percentage");
+        temperatureFormat = PROPS.getProperty("number.format.temperature");
+        simpleTemperatureFormat = PROPS.getProperty("number.format.temperature.simple");
+        powerKwFormat = PROPS.getProperty("number.format.power.kw");
+        powerMwFormat = PROPS.getProperty("number.format.power.mw");
+        speedFormat = PROPS.getProperty("number.format.velocidad");
+        pressureFormat = PROPS.getProperty("number.format.presion");
+        airflowFormat = PROPS.getProperty("number.format.airflow");
+        labels.get("lblSalaEscalaTemperatura01").setText(String.format(simpleTemperatureFormat, minServerTemperatureCelsius));
         for (int i = 0; i < 5; i++) {
-            float temperatura = map(i, 0, 5, minServerTemperatureCelsius, maxServerTemperatureCelsius);
-            String codigoLblEscalaTemperatura = "lblSalaEscalaTemperatura0" + (i + 1);
-            labels.get(codigoLblEscalaTemperatura).setText(String.format(formatoTemperaturaSimple, temperatura));
+            float temperature = map(i, 0, 5, minServerTemperatureCelsius, maxServerTemperatureCelsius);
+            String temperatureScaleLabelCode = "lblSalaEscalaTemperatura0" + (i + 1);
+            labels.get(temperatureScaleLabelCode).setText(String.format(simpleTemperatureFormat, temperature));
         }
-        labels.get("lblSalaEscalaTemperatura06").setText(String.format(formatoTemperaturaSimple, maxServerTemperatureCelsius));
+        labels.get("lblSalaEscalaTemperatura06").setText(String.format(simpleTemperatureFormat, maxServerTemperatureCelsius));
         int totalInstalledServers = operationalSnapshot.racks()
                 .values()
                 .stream()
@@ -380,7 +381,7 @@ public class Sketch extends PApplet {
     private void updateSimulationTimerPeriod() {
         double factor = simulationSpeedFactors.get(simulationSpeedFactorIndex);
         int periodMillis = (int) Math.round(simulationBasePeriodMillis / factor);
-        timerSimulacion.setPeriodMillis(periodMillis);
+        simulationTimer.setPeriodMillis(periodMillis);
     }
 
     private void increaseSimulationSpeed() {
@@ -398,12 +399,12 @@ public class Sketch extends PApplet {
     }
 
     private void updateSimulationControls() {
-        boolean simulationRunning = timerSimulacion.isRunning();
+        boolean simulationRunning = simulationTimer.isRunning();
         String speedLabel = formatSimulationSpeedFactor();
         labels.get("lblSimulacionValor").setText(simulationRunning ? "Running " + speedLabel : "Stopped " + speedLabel);
-        Button btnPlayMenos = botonesPlay.get("btnPlayMenos");
+        Button btnPlayMenos = buttonsPlay.get("btnPlayMenos");
         if (btnPlayMenos != null) btnPlayMenos.setEnabled(simulationSpeedFactorIndex > 0);
-        Button btnPlayMas = botonesPlay.get("btnPlayMas");
+        Button btnPlayMas = buttonsPlay.get("btnPlayMas");
         if (btnPlayMas != null) btnPlayMas.setEnabled(simulationSpeedFactorIndex < simulationSpeedFactors.size() - 1);
     }
 
@@ -413,8 +414,8 @@ public class Sketch extends PApplet {
         return "x" + factor;
     }
 
-    private void updateCabecera() {
-        // por ahora una única sala, se debe agregar una bandera para que en cada evento de cambio de sala se actualice el layout
+    private void updateHeader() {
+        // single-room layout for now; refresh here when room switching is added
         String s = "DATACENTER MAP";
         if (roomName != null && !roomName.isEmpty()) s += (" - " + roomName);
         labels.get("lblSala").setText(s);
@@ -448,17 +449,17 @@ public class Sketch extends PApplet {
                 .toList();
     }
 
-    private void btnClicked(String codigoBoton) {
-        if (codigoBoton.startsWith("btnRackElegido"))
-            actualizarRackSeleccionado(codigoBoton.replace("btnRackElegido", ""));
-        else if (codigoBoton.startsWith("btnColumnaElegida"))
-            actualizarColumnaSeleccionada(codigoBoton.replace("btnColumnaElegida", ""));
-        else if (codigoBoton.startsWith("btnPlay")) {
-            if (codigoBoton.equals("btnPlayMas")) {
+    private void btnClicked(String buttonCode) {
+        if (buttonCode.startsWith("btnRackElegido"))
+            updateSelectedRack(buttonCode.replace("btnRackElegido", ""));
+        else if (buttonCode.startsWith("btnColumnaElegida"))
+            updateSelectedColumn(buttonCode.replace("btnColumnaElegida", ""));
+        else if (buttonCode.startsWith("btnPlay")) {
+            if (buttonCode.equals("btnPlayMas")) {
                 increaseSimulationSpeed();
                 return;
             }
-            if (codigoBoton.equals("btnPlayMenos")) {
+            if (buttonCode.equals("btnPlayMenos")) {
                 decreaseSimulationSpeed();
                 return;
             }
@@ -466,86 +467,86 @@ public class Sketch extends PApplet {
         updateUI = true;
     }
 
-    private void tglClicked(Toggle tgl, int estado) {
-        String codigoToggle = tgl.getCode();
-        if (codigoToggle.contains("SalaVentilador") || codigoToggle.contains("SalaExtractor")) tglClickedCooling(tgl, estado);
-        else if (codigoToggle.equals("tglPlay")) {
-            if (updateTogglePlay) return;
+    private void tglClicked(Toggle tgl, int state) {
+        String toggleCode = tgl.getCode();
+        if (toggleCode.contains("SalaVentilador") || toggleCode.contains("SalaExtractor")) coolingToggleClicked(tgl, state);
+        else if (toggleCode.equals("tglPlay")) {
+            if (syncingPlayToggle) return;
             toggleSimulation();
         }
     }
 
     private void toggleSimulation() {
-        timerSimulacion.toggle();
-        updateTogglePlay = true;
+        simulationTimer.toggle();
+        syncingPlayToggle = true;
         try {
-            toggles.get("tglPlay").setState(timerSimulacion.isRunning() ? 1 : 0);
+            toggles.get("tglPlay").setState(simulationTimer.isRunning() ? 1 : 0);
         } finally {
-            updateTogglePlay = false;
+            syncingPlayToggle = false;
         }
         updateSimulationControls();
     }
 
-    private void tglClickedCooling(Toggle tgl, int estado) {
-        if (sincronizandoTogglesRefrigeracion) return;
-        String codigoToggle = tgl.getCode();
-        boolean enabled = estado == 1;
-        if (codigoToggle.equals("tglSalaVentilador")) {
-            actualizarTogglesRefrigeracionHijos(togglesVentiladores, enabled);
+    private void coolingToggleClicked(Toggle tgl, int state) {
+        if (syncingCoolingToggles) return;
+        String toggleCode = tgl.getCode();
+        boolean enabled = state == 1;
+        if (toggleCode.equals("tglSalaVentilador")) {
+            updateChildCoolingToggles(supplyToggleCodes, enabled);
             return;
         }
-        if (codigoToggle.equals("tglSalaExtractor")) {
-            actualizarTogglesRefrigeracionHijos(togglesExtractores, enabled);
+        if (toggleCode.equals("tglSalaExtractor")) {
+            updateChildCoolingToggles(exhaustToggleCodes, enabled);
             return;
         }
-        if (togglesVentiladores.contains(codigoToggle)) {
-            actualizarUnidadRefrigeracion(tgl, enabled);
-            actualizarToggleMaestro("tglSalaVentilador", togglesVentiladores);
+        if (supplyToggleCodes.contains(toggleCode)) {
+            updateCoolingUnit(tgl, enabled);
+            updateMasterToggle("tglSalaVentilador", supplyToggleCodes);
             return;
         }
-        if (togglesExtractores.contains(codigoToggle)) {
-            actualizarUnidadRefrigeracion(tgl, enabled);
-            actualizarToggleMaestro("tglSalaExtractor", togglesExtractores);
+        if (exhaustToggleCodes.contains(toggleCode)) {
+            updateCoolingUnit(tgl, enabled);
+            updateMasterToggle("tglSalaExtractor", exhaustToggleCodes);
         }
     }
 
-    private void actualizarTogglesRefrigeracionHijos(List<String> codigosToggles, boolean enabled) {
-        sincronizandoTogglesRefrigeracion = true;
+    private void updateChildCoolingToggles(List<String> toggleCodes, boolean enabled) {
+        syncingCoolingToggles = true;
         try {
-            for (String codigoToggle : codigosToggles) {
-                Toggle toggle = toggles.get(codigoToggle);
-                if (toggle == null) throw new IllegalStateException("No existe el toggle: " + codigoToggle);
+            for (String toggleCode : toggleCodes) {
+                Toggle toggle = toggles.get(toggleCode);
+                if (toggle == null) throw new IllegalStateException("Missing toggle: " + toggleCode);
                 toggle.setState(enabled ? 1 : 0);
-                actualizarUnidadRefrigeracion(toggle, enabled);
+                updateCoolingUnit(toggle, enabled);
             }
         } finally {
-            sincronizandoTogglesRefrigeracion = false;
+            syncingCoolingToggles = false;
         }
     }
 
-    private void actualizarToggleMaestro(String codigoToggleMaestro, List<String> codigosTogglesHijos) {
-        boolean algunoEncendido = codigosTogglesHijos
+    private void updateMasterToggle(String masterToggleCode, List<String> childToggleCodes) {
+        boolean anyEnabled = childToggleCodes
                 .stream()
                 .map(toggles::get)
                 .anyMatch(toggle -> toggle != null && toggle.getState() == 1);
-        sincronizandoTogglesRefrigeracion = true;
+        syncingCoolingToggles = true;
         try {
-            Toggle toggleMaestro = toggles.get(codigoToggleMaestro);
-            if (toggleMaestro == null) throw new IllegalStateException("No existe el toggle maestro: " + codigoToggleMaestro);
-            toggleMaestro.setState(algunoEncendido ? 1 : 0);
+            Toggle masterToggle = toggles.get(masterToggleCode);
+            if (masterToggle == null) throw new IllegalStateException("Missing master toggle: " + masterToggleCode);
+            masterToggle.setState(anyEnabled ? 1 : 0);
         } finally {
-            sincronizandoTogglesRefrigeracion = false;
+            syncingCoolingToggles = false;
         }
     }
 
-    private void actualizarUnidadRefrigeracion(Toggle tgl, boolean enabled) {
+    private void updateCoolingUnit(Toggle tgl, boolean enabled) {
         String unitType = "";
         String tglCode = tgl.getCode();
         if (tglCode.contains("Ventilador")) unitType = "SUPPLY";
         else if (tglCode.contains("Extractor")) unitType = "EXHAUST";
         if (unitType.isEmpty()) return;
-        boolean esToggleIndividual = tglCode.startsWith("tglSalaVentiladorC") || tglCode.startsWith("tglSalaExtractorC");
-        if (!esToggleIndividual) return;
+        boolean individualToggle = tglCode.startsWith("tglSalaVentiladorC") || tglCode.startsWith("tglSalaExtractorC");
+        if (!individualToggle) return;
         String unitCode = unitType
                 + "-"
                 + tglCode
@@ -555,51 +556,51 @@ public class Sketch extends PApplet {
         coolingSystem.setEnabled(unitCode, enabled);
     }
 
-    private void actualizarRackSeleccionado(String rackClic) {
-        rackElegido = "R" + rackClic.toLowerCase().replace("der", "").replace("izq", "");
-        if (!columnaElegida.equals(PROPS.getProperty("datacenter.first.column")) && !columnaElegida.equals(PROPS.getProperty("datacenter.last.column"))) {
-            if (rackClic.toLowerCase().contains("izq")) columnaElegida = pasilloCalienteSeleccionado.columns().getFirst();
-            else if (rackClic.toLowerCase().contains("der")) columnaElegida = pasilloCalienteSeleccionado.columns().getLast();
+    private void updateSelectedRack(String clickedRack) {
+        selectedRack = "R" + clickedRack.toLowerCase().replace("der", "").replace("izq", "");
+        if (!selectedColumn.equals(PROPS.getProperty("datacenter.first.column")) && !selectedColumn.equals(PROPS.getProperty("datacenter.last.column"))) {
+            if (clickedRack.toLowerCase().contains("izq")) selectedColumn = selectedHotAisle.columns().getFirst();
+            else if (clickedRack.toLowerCase().contains("der")) selectedColumn = selectedHotAisle.columns().getLast();
         }
-        mostrarAuraRackSeleccionado();
+        showSelectedRackHighlight();
     }
 
-    private void actualizarColumnaSeleccionada(String columnaElegida) {
-        this.columnaElegida = columnaElegida;
-        obtenerPasilloCalienteElegido();
-        mostrarAuraPasilloElegido();
-        mostrarAuraRackSeleccionado();
+    private void updateSelectedColumn(String selectedColumn) {
+        this.selectedColumn = selectedColumn;
+        resolveSelectedHotAisle();
+        showSelectedAisleHighlight();
+        showSelectedRackHighlight();
     }
 
-    private void mostrarAuraRackSeleccionado() {
-        int i = Integer.parseInt(columnaElegida.replace("C", ""));
-        String lado = i % 2 == 0 ? "Izq" : "Der";
-        String codigoRackSeleccionado = "indRackElegido" + lado + rackElegido.replace("R", "");
-        String codigoBotonSeleccionado = codigoRackSeleccionado.replace("ind", "btn");
-        for (Button btn : botonesPasilloElegidoRacks.values()) {
-            if (columnaElegida.equals(PROPS.getProperty("datacenter.first.column")) && btn.getCode().toLowerCase().contains("izq"))
+    private void showSelectedRackHighlight() {
+        int i = Integer.parseInt(selectedColumn.replace("C", ""));
+        String side = i % 2 == 0 ? "Izq" : "Der";
+        String selectedRackIndicatorCode = "indRackElegido" + side + selectedRack.replace("R", "");
+        String selectedButtonCode = selectedRackIndicatorCode.replace("ind", "btn");
+        for (Button btn : buttonsSelectedAisleRack.values()) {
+            if (selectedColumn.equals(PROPS.getProperty("datacenter.first.column")) && btn.getCode().toLowerCase().contains("izq"))
                 btn.setVisible(false);
-            else if (columnaElegida.equals(PROPS.getProperty("datacenter.last.column")) && btn.getCode().toLowerCase().contains("der"))
+            else if (selectedColumn.equals(PROPS.getProperty("datacenter.last.column")) && btn.getCode().toLowerCase().contains("der"))
                 btn.setVisible(false);
-            else btn.setVisible(!btn.getCode().equals(codigoBotonSeleccionado));
+            else btn.setVisible(!btn.getCode().equals(selectedButtonCode));
         }
-        for (Indicator ind : indicadoresRackElegido.values()) ind.setOn(ind.getCode().equals(codigoRackSeleccionado));
+        for (Indicator ind : indicatorsSelectedRack.values()) ind.setOn(ind.getCode().equals(selectedRackIndicatorCode));
     }
 
-    private void mostrarAuraPasilloElegido() {
-        indicadoresPasilloElegido.values().forEach(ind -> ind.setOn(false));
-        String codigoIndPasilloSleccionado = "indPasilloElegido";
-        switch (pasilloCalienteSeleccionado.code()) {
-            case "HA01" -> codigoIndPasilloSleccionado += "C01";
-            case "HA02" -> codigoIndPasilloSleccionado += "C02-C03";
-            case "HA03" -> codigoIndPasilloSleccionado += "C04-C05";
-            case "HA04" -> codigoIndPasilloSleccionado += "C06-C07";
-            case "HA05" -> codigoIndPasilloSleccionado += "C08";
+    private void showSelectedAisleHighlight() {
+        indicatorsSelectedAisle.values().forEach(ind -> ind.setOn(false));
+        String selectedAisleIndicatorCode = "indPasilloElegido";
+        switch (selectedHotAisle.code()) {
+            case "HA01" -> selectedAisleIndicatorCode += "C01";
+            case "HA02" -> selectedAisleIndicatorCode += "C02-C03";
+            case "HA03" -> selectedAisleIndicatorCode += "C04-C05";
+            case "HA04" -> selectedAisleIndicatorCode += "C06-C07";
+            case "HA05" -> selectedAisleIndicatorCode += "C08";
             default -> {
                 return;
             }
         }
-        indicadoresPasilloElegido.get(codigoIndPasilloSleccionado).setOn(true);
+        indicatorsSelectedAisle.get(selectedAisleIndicatorCode).setOn(true);
     }
 
     private void initializeHotAisleMapping(HotAisleConfiguration configuration) {
@@ -632,17 +633,17 @@ public class Sketch extends PApplet {
         // update
         updateClock();
         updateSnapshots();
-        updateControles();
+        updateControls();
         //draw
-        dibujarFondo();
-        dibujarControles();
-        dibujarGradienteTemperaturaEnPasilloElegido();
-        dibujarOverlay();
+        drawBackground();
+        drawControls();
+        drawSelectedHotAisleTemperatureGradient();
+        drawOverlay();
     }
 
     private void updateClock() {
-        if (timerSimulacion == null || engine == null) return;
-        if (!timerSimulacion.pollPeriodPulse()) return;
+        if (simulationTimer == null || engine == null) return;
+        if (!simulationTimer.pollPeriodPulse()) return;
         engine.step();
         updateSnapshots = true;
     }
@@ -657,319 +658,319 @@ public class Sketch extends PApplet {
         updateUI = true;
     }
 
-    private void updateControles() {
+    private void updateControls() {
         if (!updateUI) return;
-        updateCabecera();
-        updatePanelRackElegido();
-        updatePanelPasilloElegido();
-        updatePanelSala();
+        updateHeader();
+        updateSelectedRackPanel();
+        updateSelectedAislePanel();
+        updateRoomPanel();
         updateUI = false;
     }
 
-    private void updatePanelRackElegido() {
-        labels.get("lblRackElegidoValor").setText(columnaElegida + "-" + rackElegido);
-        Rack rack = obtenerRackElegido();
-        RackLocation rackLocation = new RackLocation(columnaElegida, new RackCode(rackElegido));
+    private void updateSelectedRackPanel() {
+        labels.get("lblRackElegidoValor").setText(selectedColumn + "-" + selectedRack);
+        Rack rack = resolveSelectedRack();
+        RackLocation rackLocation = new RackLocation(selectedColumn, new RackCode(selectedRack));
         RackOperationalSnapshot rackSnapshot = operationalSnapshot
                 .findRack(rackLocation)
-                .orElseThrow(() -> new IllegalStateException("No existe snapshot operacional para el rack: " + rackLocation.code()
+                .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for rack: " + rackLocation.code()
                 ));
-        Map<ServerLocation, ServerEnergySnapshot> energiaPorUbicacion = obtenerEnergiaPorUbicacion();
-        Map<ServerLocation, ServerTemperatureSnapshot> temperaturaPorUbicacion = obtenerTemperaturaPorUbicacion();
-        Map<ServerLocation, ServerHealthSnapshot> saludPorUbicacion = obtenerSaludPorUbicacion();
+        Map<ServerLocation, ServerEnergySnapshot> energyByLocation = resolveEnergyByLocation();
+        Map<ServerLocation, ServerTemperatureSnapshot> temperatureByLocation = resolveTemperatureByLocation();
+        Map<ServerLocation, ServerHealthSnapshot> healthByLocation = resolveHealthByLocation();
         for (String slot : rack.getSlotCodes()) {
-            String numeroSlot = slot.replace("S", "");
-            ServerLocation location = new ServerLocation(columnaElegida, new RackCode(rackElegido), slot);
+            String slotNumber = slot.replace("S", "");
+            ServerLocation location = new ServerLocation(selectedColumn, new RackCode(selectedRack), slot);
             Optional<Server> installedServer = datacenter.getServer(location);
-            Label lblSlotTemperatura = labels.get("lblSlotTemperatura" + numeroSlot);
-            Label lblSlotCarga = labels.get("lblSlotCarga" + numeroSlot);
-            Label lblSlotPotencia = labels.get("lblSlotPotencia" + numeroSlot);
-            Indicator indSlot = indicadores.get("indSlot" + numeroSlot);
-            Indicator indSlotVacio = indicadores.get("indSlotVacio" + numeroSlot);
-            Indicator indSlotOffline = indicadores.get("indSlotOffline" + numeroSlot);
-            Indicator indSlotStatusOk = indicadores.get("indSlotOk" + numeroSlot);
-            Indicator indSlotStatusAlerta = indicadores.get("indSlotAlerta" + numeroSlot);
-            Indicator indAlerta = indicadoresAlerta.get("indAlerta" + numeroSlot);
-            Indicator indSlotIA1 = indicadoresSlotIA.get("indSlotIA" + numeroSlot + "-1");
-            Indicator indSlotIA2 = indicadores.get("indSlotIA" + numeroSlot + "-2");
+            Label slotTemperatureLabel = labels.get("lblSlotTemperatura" + slotNumber);
+            Label slotLoadLabel = labels.get("lblSlotCarga" + slotNumber);
+            Label slotPowerLabel = labels.get("lblSlotPotencia" + slotNumber);
+            Indicator indSlot = indicators.get("indSlot" + slotNumber);
+            Indicator emptySlotIndicator = indicators.get("indSlotVacio" + slotNumber);
+            Indicator indSlotOffline = indicators.get("indSlotOffline" + slotNumber);
+            Indicator okSlotStatusIndicator = indicators.get("indSlotOk" + slotNumber);
+            Indicator alertSlotStatusIndicator = indicators.get("indSlotAlerta" + slotNumber);
+            Indicator alertIndicator = indicatorsAlert.get("indAlerta" + slotNumber);
+            Indicator aiSlotIndicator1 = indicatorsAiSlot.get("indSlotIA" + slotNumber + "-1");
+            Indicator aiSlotIndicator2 = indicators.get("indSlotIA" + slotNumber + "-2");
             if (installedServer.isEmpty()) {
-                mostrarSlotVacio(indSlot,
-                        lblSlotTemperatura,
-                        lblSlotCarga,
-                        lblSlotPotencia,
-                        indSlotVacio,
+                showEmptySlot(indSlot,
+                        slotTemperatureLabel,
+                        slotLoadLabel,
+                        slotPowerLabel,
+                        emptySlotIndicator,
                         indSlotOffline,
-                        indSlotStatusOk,
-                        indSlotStatusAlerta,
-                        indAlerta,
-                        indSlotIA1,
-                        indSlotIA2
+                        okSlotStatusIndicator,
+                        alertSlotStatusIndicator,
+                        alertIndicator,
+                        aiSlotIndicator1,
+                        aiSlotIndicator2
                 );
                 continue;
             }
-            ServerTemperatureSnapshot temperatura = temperaturaPorUbicacion.get(location);
-            if (temperatura == null) throw new IllegalStateException("No existe snapshot de temperatura para el servidor: " + location);
-            ServerEnergySnapshot energia = energiaPorUbicacion.get(location);
-            if (energia == null) throw new IllegalStateException("No existe snapshot de energía para el servidor: " + location);
-            ServerHealthSnapshot salud = saludPorUbicacion.get(location);
-            if (salud == null) throw new IllegalStateException("No existe snapshot de salud para el servidor: " + location);
-            actualizarColorSlot(indSlot, (float) temperatura.temperatureCelsius());
-            lblSlotTemperatura.setText(String.format(formatoTemperatura, temperatura.temperatureCelsius()));
-            lblSlotCarga.setText(String.format(formatoPorcentaje, energia.utilization() * 100));
-            lblSlotPotencia.setText(String.format(formatoPotenciaKw, energia.currentPowerWatts() / 1000));
-            HardwareStatus status = salud.status();
-            indSlotStatusOk.setOn(status == HardwareStatus.OK);
-            indSlotStatusAlerta.setOn(status == HardwareStatus.ALERT);
-            indAlerta.setOn(status == HardwareStatus.ALERT);
-            boolean alertaPorCarga = salud.hasAlertReason(ServerAlertReason.HIGH_UTILIZATION);
-            lblSlotCarga.setTextColor(alertaPorCarga ? COLOR_LABEL_MAGENTA : COLOR_LABEL_AZUL);
-            boolean alertaPorTemperatura = salud.hasAlertReason(ServerAlertReason.HIGH_TEMPERATURE);
-            actualizarColorLabelPorTemperatura(alertaPorTemperatura, lblSlotTemperatura, temperatura.temperatureCelsius());
-            indSlotVacio.setOn(false);
+            ServerTemperatureSnapshot temperature = temperatureByLocation.get(location);
+            if (temperature == null) throw new IllegalStateException("Missing temperature snapshot for server: " + location);
+            ServerEnergySnapshot energy = energyByLocation.get(location);
+            if (energy == null) throw new IllegalStateException("Missing energy snapshot for server: " + location);
+            ServerHealthSnapshot health = healthByLocation.get(location);
+            if (health == null) throw new IllegalStateException("Missing health snapshot for server: " + location);
+            updateSlotColor(indSlot, (float) temperature.temperatureCelsius());
+            slotTemperatureLabel.setText(String.format(temperatureFormat, temperature.temperatureCelsius()));
+            slotLoadLabel.setText(String.format(percentageFormat, energy.utilization() * 100));
+            slotPowerLabel.setText(String.format(powerKwFormat, energy.currentPowerWatts() / 1000));
+            HardwareStatus status = health.status();
+            okSlotStatusIndicator.setOn(status == HardwareStatus.OK);
+            alertSlotStatusIndicator.setOn(status == HardwareStatus.ALERT);
+            alertIndicator.setOn(status == HardwareStatus.ALERT);
+            boolean loadAlert = health.hasAlertReason(ServerAlertReason.HIGH_UTILIZATION);
+            slotLoadLabel.setTextColor(loadAlert ? COLOR_MAGENTA_LABEL : COLOR_BLUE_LABEL);
+            boolean temperatureAlert = health.hasAlertReason(ServerAlertReason.HIGH_TEMPERATURE);
+            updateTemperatureLabelColor(temperatureAlert, slotTemperatureLabel, temperature.temperatureCelsius());
+            emptySlotIndicator.setOn(false);
             indSlotOffline.setOn(status == HardwareStatus.OFFLINE);
-            boolean serverIA = installedServer.orElseThrow().getRole() == ServerRole.AI;
-            indSlotIA1.setOn(serverIA);
-            indSlotIA2.setOn(serverIA);
+            boolean aiServer = installedServer.orElseThrow().getRole() == ServerRole.AI;
+            aiSlotIndicator1.setOn(aiServer);
+            aiSlotIndicator2.setOn(aiServer);
         }
-        Label lblTemperaturaPromedio = labels.get("lblRackTemperaturaPromedioValor");
-        Label lblCargaPromedio = labels.get("lblRackCargaPromedioValor");
+        Label averageTemperatureLabel = labels.get("lblRackTemperaturaPromedioValor");
+        Label averageLoadLabel = labels.get("lblRackCargaPromedioValor");
         if (rackSnapshot.hasOnlineServers()) {
-            lblTemperaturaPromedio.setTextColor(COLOR_LABEL_AMARILLO);
-            lblTemperaturaPromedio.setText(String.format(formatoTemperatura, rackSnapshot.averageOnlineTemperatureCelsius()));
-            lblCargaPromedio.setText(String.format(formatoPorcentaje, rackSnapshot.averageOnlineUtilization() * 100));
+            averageTemperatureLabel.setTextColor(COLOR_YELLOW_LABEL);
+            averageTemperatureLabel.setText(String.format(temperatureFormat, rackSnapshot.averageOnlineTemperatureCelsius()));
+            averageLoadLabel.setText(String.format(percentageFormat, rackSnapshot.averageOnlineUtilization() * 100));
         } else {
-            lblTemperaturaPromedio.setTextColor(COLOR_LABEL_BLANCO);
-            lblTemperaturaPromedio.setText("--");
-            lblCargaPromedio.setText("--");
+            averageTemperatureLabel.setTextColor(COLOR_WHITE_LABEL);
+            averageTemperatureLabel.setText("--");
+            averageLoadLabel.setText("--");
         }
-        labels.get("lblRackPotenciaAcumuladaValor").setText(String.format(formatoPotenciaKw, rackSnapshot.currentPowerWatts() / 1000));
-        actualizarBarra("RackElegidoPotencia", rackSnapshot.currentPowerWatts(), rackSnapshot.idlePowerWatts(), rackSnapshot.maxPowerWatts());
+        labels.get("lblRackPotenciaAcumuladaValor").setText(String.format(powerKwFormat, rackSnapshot.currentPowerWatts() / 1000));
+        updateBar("RackElegidoPotencia", rackSnapshot.currentPowerWatts(), rackSnapshot.idlePowerWatts(), rackSnapshot.maxPowerWatts());
     }
 
-    private void actualizarColorSlot(Indicator indSlot, float temperatura) {
+    private void updateSlotColor(Indicator indSlot, float temperature) {
         Objects.requireNonNull(indSlot);
-        float fColor = map(temperatura, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1);
+        float fColor = map(temperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1);
         fColor = Math.clamp(fColor, 0, 1);
-        int colorSlot = Colors.lerpColor(COLOR_TEMPERATURA_MINIMA, COLOR_TEMPERATURA_MAXIMA, fColor);
+        int colorSlot = Colors.lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, fColor);
         indSlot.setOnColor(colorSlot);
         indSlot.setOn(true);
     }
 
-    private void mostrarSlotVacio(
+    private void showEmptySlot(
             Indicator indSlot,
-            Label lblSlotTemperatura,
-            Label lblSlotCarga,
-            Label lblSlotPotencia,
-            Indicator indSlotVacio,
+            Label slotTemperatureLabel,
+            Label slotLoadLabel,
+            Label slotPowerLabel,
+            Indicator emptySlotIndicator,
             Indicator indSlotOffline,
-            Indicator indSlotStatusOk,
-            Indicator indSlotStatusAlerta,
-            Indicator indAlerta,
-            Indicator indSlotIA1,
-            Indicator indSlotIA2
+            Indicator okSlotStatusIndicator,
+            Indicator alertSlotStatusIndicator,
+            Indicator alertIndicator,
+            Indicator aiSlotIndicator1,
+            Indicator aiSlotIndicator2
     ) {
         Objects.requireNonNull(indSlot);
-        Objects.requireNonNull(lblSlotTemperatura);
-        Objects.requireNonNull(lblSlotCarga);
-        Objects.requireNonNull(lblSlotPotencia);
-        Objects.requireNonNull(indSlotVacio);
+        Objects.requireNonNull(slotTemperatureLabel);
+        Objects.requireNonNull(slotLoadLabel);
+        Objects.requireNonNull(slotPowerLabel);
+        Objects.requireNonNull(emptySlotIndicator);
         Objects.requireNonNull(indSlotOffline);
-        Objects.requireNonNull(indSlotStatusOk);
-        Objects.requireNonNull(indSlotStatusAlerta);
-        Objects.requireNonNull(indAlerta);
-        Objects.requireNonNull(indSlotIA1);
-        Objects.requireNonNull(indSlotIA2);
-        lblSlotTemperatura.setTextColor(COLOR_LABEL_BLANCO);
-        lblSlotCarga.setTextColor(COLOR_LABEL_BLANCO);
-        lblSlotTemperatura.setText("--");
-        lblSlotCarga.setText("--");
-        lblSlotPotencia.setText("--");
+        Objects.requireNonNull(okSlotStatusIndicator);
+        Objects.requireNonNull(alertSlotStatusIndicator);
+        Objects.requireNonNull(alertIndicator);
+        Objects.requireNonNull(aiSlotIndicator1);
+        Objects.requireNonNull(aiSlotIndicator2);
+        slotTemperatureLabel.setTextColor(COLOR_WHITE_LABEL);
+        slotLoadLabel.setTextColor(COLOR_WHITE_LABEL);
+        slotTemperatureLabel.setText("--");
+        slotLoadLabel.setText("--");
+        slotPowerLabel.setText("--");
         indSlot.setOn(false);
-        indSlotVacio.setOn(true);
+        emptySlotIndicator.setOn(true);
         indSlotOffline.setOn(false);
-        indSlotStatusOk.setOn(false);
-        indSlotStatusAlerta.setOn(false);
-        indAlerta.setOn(false);
-        indSlotIA1.setOn(false);
-        indSlotIA2.setOn(false);
+        okSlotStatusIndicator.setOn(false);
+        alertSlotStatusIndicator.setOn(false);
+        alertIndicator.setOn(false);
+        aiSlotIndicator1.setOn(false);
+        aiSlotIndicator2.setOn(false);
     }
 
-    private void actualizarColorLabelPorTemperatura(boolean alerta, Label lbl, double temperatura) {
-        if (alerta) lbl.setTextColor(COLOR_LABEL_MAGENTA);
-        else if (temperatura >= Double.parseDouble(PROPS.getProperty("simulation.health.temperature.warning-threshold-celsius")))
-            lbl.setTextColor(COLOR_LABEL_AMARILLO);
-        else lbl.setTextColor(COLOR_LABEL_VERDE);
+    private void updateTemperatureLabelColor(boolean alert, Label label, double temperature) {
+        if (alert) label.setTextColor(COLOR_MAGENTA_LABEL);
+        else if (temperature >= Double.parseDouble(PROPS.getProperty("simulation.health.temperature.warning-threshold-celsius")))
+            label.setTextColor(COLOR_YELLOW_LABEL);
+        else label.setTextColor(COLOR_GREEN_LABEL);
     }
 
-    private void actualizarBarra(String tipo, double valor, double valorMin, double valorMax) {
-        if (tipo == null || tipo.isEmpty()) return;
-        String llave = "indBarra" + tipo;
-        int iMax = (int) map((float) valor, (float) valorMin, (float) valorMax, 1, 6);
-        for (int i = 0; i < 6; i++) indicadores.get(llave + (i + 1)).setOn(i < iMax);
+    private void updateBar(String type, double value, double minValue, double maxValue) {
+        if (type == null || type.isEmpty()) return;
+        String key = "indBarra" + type;
+        int iMax = (int) map((float) value, (float) minValue, (float) maxValue, 1, 6);
+        for (int i = 0; i < 6; i++) indicators.get(key + (i + 1)).setOn(i < iMax);
     }
 
-    private Rack obtenerRackElegido() {
-        return datacenter.findRack(columnaElegida, rackElegido).orElseThrow(() -> new IllegalStateException("Rack no encontrado: " + columnaElegida + "-" + rackElegido));
+    private Rack resolveSelectedRack() {
+        return datacenter.findRack(selectedColumn, selectedRack).orElseThrow(() -> new IllegalStateException("Rack not found: " + selectedColumn + "-" + selectedRack));
     }
 
-    private void updatePanelPasilloElegido() {
-        boolean pasilloExtremoIzquierdoElegido = columnaElegida.equals(PROPS.getProperty("datacenter.first.column"));
-        boolean pasilloExtremoDerechoElegido = columnaElegida.equals(PROPS.getProperty("datacenter.last.column"));
-        indicadoresPasilloNull.get("indPasilloNullIzq").setOn(pasilloExtremoIzquierdoElegido);
-        indicadores.get("indFlechasAireFrioIzq").setOn(!pasilloExtremoIzquierdoElegido);
-        indicadoresPasilloNull.get("indPasilloNullDer").setOn(pasilloExtremoDerechoElegido);
-        indicadores.get("indFlechasAireFrioDer").setOn(!pasilloExtremoDerechoElegido);
-        obtenerPasilloCalienteElegido();
-        labels.get("lblPasilloElegidoValor").setText(pasilloCalienteSeleccionado.displayName());
-        // datos adicionales
-        List<String> zoneCodesDelPasillo = obtenerCoolingZoneCodesPasillo(pasilloCalienteSeleccionado);
-        CoolingZoneGroupSnapshot coolingGroupSnapshot = coolingSnapshot.aggregateZones(pasilloCalienteSeleccionado.code(), zoneCodesDelPasillo);
+    private void updateSelectedAislePanel() {
+        boolean leftEdgeAisleSelected = selectedColumn.equals(PROPS.getProperty("datacenter.first.column"));
+        boolean rightEdgeAisleSelected = selectedColumn.equals(PROPS.getProperty("datacenter.last.column"));
+        indicatorsNullAisle.get("indPasilloNullIzq").setOn(leftEdgeAisleSelected);
+        indicators.get("indFlechasAireFrioIzq").setOn(!leftEdgeAisleSelected);
+        indicatorsNullAisle.get("indPasilloNullDer").setOn(rightEdgeAisleSelected);
+        indicators.get("indFlechasAireFrioDer").setOn(!rightEdgeAisleSelected);
+        resolveSelectedHotAisle();
+        labels.get("lblPasilloElegidoValor").setText(selectedHotAisle.displayName());
+        // additional data
+        List<String> aisleZoneCodes = resolveAisleCoolingZoneCodes(selectedHotAisle);
+        CoolingZoneGroupSnapshot coolingGroupSnapshot = coolingSnapshot.aggregateZones(selectedHotAisle.code(), aisleZoneCodes);
         double thermalCoverage = coolingGroupSnapshot.thermalCoverage();
-        labels.get("lblPasilloElegidoCoberturaTermicaValor").setText(String.format(formatoPorcentaje, thermalCoverage * 100.0));
+        labels.get("lblPasilloElegidoCoberturaTermicaValor").setText(String.format(percentageFormat, thermalCoverage * 100.0));
         double deltaTinOut = coolingGroupSnapshot.airTemperatureRiseCelsius();
-        labels.get("lblPasilloElegidoDeltaTemperaturaValor").setText(String.format(formatoTemperatura, deltaTinOut));
+        labels.get("lblPasilloElegidoDeltaTemperaturaValor").setText(String.format(temperatureFormat, deltaTinOut));
         double recirculation = coolingGroupSnapshot.averageRecirculationFraction();
-        labels.get("lblPasilloElegidoRecirculacionValor").setText(String.format(formatoPorcentaje, recirculation * 100.0));
-        double supplyAirflow = zoneCodesDelPasillo.stream()
+        labels.get("lblPasilloElegidoRecirculacionValor").setText(String.format(percentageFormat, recirculation * 100.0));
+        double supplyAirflow = aisleZoneCodes.stream()
                 .map(coolingSnapshot::findZone)
                 .flatMap(Optional::stream)
                 .mapToDouble(CoolingZoneSnapshot::supplyAirflowCubicMetersPerSecond)
                 .sum();
         double exhaustAirflow =
-                zoneCodesDelPasillo
+                aisleZoneCodes
                         .stream()
                         .map(coolingSnapshot::findZone)
                         .flatMap(Optional::stream)
                         .mapToDouble(CoolingZoneSnapshot::exhaustAirflowCubicMetersPerSecond)
                         .sum();
-        labels.get("lblPasilloElegidoFlujoAireValor").setText(String.format(formatoFlujoAire, supplyAirflow, exhaustAirflow));
-        // servidores instalados
+        labels.get("lblPasilloElegidoFlujoAireValor").setText(String.format(airflowFormat, supplyAirflow, exhaustAirflow));
+        // installed servers
         ServerGroupOperationalSnapshot aisleSnapshot = operationalSnapshot
-                .findServerGroup(pasilloCalienteSeleccionado.code())
-                .orElseThrow(() -> new IllegalStateException("No existe snapshot operacional para el pasillo: " + pasilloCalienteSeleccionado.code()));
-        Label lblTemperaturaPromedio = labels.get("lblPasilloElegidoTemperaturaPromedioValor");
-        Label lblTemperaturaMaxima = labels.get("lblPasilloElegidoTemperaturaMaximaValor");
-        Label lblCargaPromedio = labels.get("lblPasilloElegidoCargaITValor");
-        indicadoresPasilloElegidoServidorTemperaturaMaxima.values().forEach(indicador -> indicador.setOn(false));
+                .findServerGroup(selectedHotAisle.code())
+                .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for aisle: " + selectedHotAisle.code()));
+        Label averageTemperatureLabel = labels.get("lblPasilloElegidoTemperaturaPromedioValor");
+        Label maxTemperatureLabel = labels.get("lblPasilloElegidoTemperaturaMaximaValor");
+        Label averageLoadLabel = labels.get("lblPasilloElegidoCargaITValor");
+        indicatorsSelectedAisleMaxTemperatureServer.values().forEach(indicador -> indicador.setOn(false));
         if (!aisleSnapshot.hasInstalledServers()) {
-            lblTemperaturaPromedio.setTextColor(COLOR_LABEL_BLANCO);
-            lblTemperaturaMaxima.setTextColor(COLOR_LABEL_BLANCO);
-            lblTemperaturaPromedio.setText("--");
-            lblTemperaturaMaxima.setText("--");
-            lblCargaPromedio.setText("--");
+            averageTemperatureLabel.setTextColor(COLOR_WHITE_LABEL);
+            maxTemperatureLabel.setTextColor(COLOR_WHITE_LABEL);
+            averageTemperatureLabel.setText("--");
+            maxTemperatureLabel.setText("--");
+            averageLoadLabel.setText("--");
             return;
         }
-        // Temperatura máxima: considera todos los servidores instalados
-        double temperaturaMaxima = aisleSnapshot.maximumTemperatureCelsius();
-        int colorTemperaturaMaxima = obtenerColorRangoTemperatura((float) temperaturaMaxima);
-        lblTemperaturaMaxima.setTextColor(colorTemperaturaMaxima);
-        lblTemperaturaMaxima.setText(String.format(formatoTemperatura, temperaturaMaxima));
-        ServerLocation ubicacionTemperaturaMaxima = aisleSnapshot
+        // Maximum temperature considers all installed servers
+        double maxTemperature = aisleSnapshot.maximumTemperatureCelsius();
+        int maxTemperatureColor = resolveTemperatureRangeColor((float) maxTemperature);
+        maxTemperatureLabel.setTextColor(maxTemperatureColor);
+        maxTemperatureLabel.setText(String.format(temperatureFormat, maxTemperature));
+        ServerLocation maxTemperatureLocation = aisleSnapshot
                 .maximumTemperatureLocation()
                 .orElseThrow(() ->
                         new IllegalStateException(
-                                "El pasillo tiene servidores instalados, "
+                                "The aisle has installed servers, "
                                         + "pero no informa la ubicación "
-                                        + "de la temperatura máxima: "
-                                        + pasilloCalienteSeleccionado.code()
+                                        + "of the maximum temperature: "
+                                        + selectedHotAisle.code()
                         )
                 );
-        String columnaTemperaturaMaxima = ubicacionTemperaturaMaxima.column();
-        String ladoTemperaturaMaxima;
-        if (columnaTemperaturaMaxima.equals(PROPS.getProperty("datacenter.first.column")))
-            ladoTemperaturaMaxima = "Der";
-        else if (columnaTemperaturaMaxima.equals(PROPS.getProperty("datacenter.last.column")))
-            ladoTemperaturaMaxima = "Izq";
+        String maxTemperatureColumn = maxTemperatureLocation.column();
+        String maxTemperatureSide;
+        if (maxTemperatureColumn.equals(PROPS.getProperty("datacenter.first.column")))
+            maxTemperatureSide = "Der";
+        else if (maxTemperatureColumn.equals(PROPS.getProperty("datacenter.last.column")))
+            maxTemperatureSide = "Izq";
         else {
-            int numeroColumna = Integer.parseInt(columnaTemperaturaMaxima.replace("C", ""));
-            ladoTemperaturaMaxima = numeroColumna % 2 == 0 ? "Izq" : "Der";
+            int columnNumber = Integer.parseInt(maxTemperatureColumn.replace("C", ""));
+            maxTemperatureSide = columnNumber % 2 == 0 ? "Izq" : "Der";
         }
-        String numeroRack = ubicacionTemperaturaMaxima.rackCode().value().replace("R", "");
-        String codigoIndicador = "indPasilloElegidoServidorTemperaturaMaxima" + ladoTemperaturaMaxima + numeroRack;
-        Indicator indicadorTemperaturaMaxima = indicadoresPasilloElegidoServidorTemperaturaMaxima.get(codigoIndicador);
-        if (indicadorTemperaturaMaxima == null) throw new IllegalStateException("No existe el indicador de temperatura máxima: " + codigoIndicador);
-        indicadorTemperaturaMaxima.setOnColor(colorTemperaturaMaxima);
-        indicadorTemperaturaMaxima.setOn(true);
+        String rackNumber = maxTemperatureLocation.rackCode().value().replace("R", "");
+        String indicatorCode = "indPasilloElegidoServidorTemperaturaMaxima" + maxTemperatureSide + rackNumber;
+        Indicator maxTemperatureIndicator = indicatorsSelectedAisleMaxTemperatureServer.get(indicatorCode);
+        if (maxTemperatureIndicator == null) throw new IllegalStateException("Missing maximum temperature indicator: " + indicatorCode);
+        maxTemperatureIndicator.setOnColor(maxTemperatureColor);
+        maxTemperatureIndicator.setOn(true);
         /*
-         * Los promedios consideran únicamente servidores online.
+         * Averages only include online servers.
          */
         if (aisleSnapshot.hasOnlineServers()) {
-            double temperaturaPromedio = aisleSnapshot.averageOnlineTemperatureCelsius();
-            double cargaPromedio = aisleSnapshot.averageOnlineUtilization();
-            int colorTemperaturaPromedio = obtenerColorRangoTemperatura((float) temperaturaPromedio);
-            lblTemperaturaPromedio.setTextColor(colorTemperaturaPromedio);
-            lblTemperaturaPromedio.setText(String.format(formatoTemperatura, temperaturaPromedio));
-            lblCargaPromedio.setText(String.format(formatoPorcentaje, cargaPromedio * 100));
+            double averageTemperature = aisleSnapshot.averageOnlineTemperatureCelsius();
+            double averageLoad = aisleSnapshot.averageOnlineUtilization();
+            int averageTemperatureColor = resolveTemperatureRangeColor((float) averageTemperature);
+            averageTemperatureLabel.setTextColor(averageTemperatureColor);
+            averageTemperatureLabel.setText(String.format(temperatureFormat, averageTemperature));
+            averageLoadLabel.setText(String.format(percentageFormat, averageLoad * 100));
         } else {
-            lblTemperaturaPromedio.setTextColor(COLOR_LABEL_BLANCO);
-            lblTemperaturaPromedio.setText("--");
-            lblCargaPromedio.setText("--");
+            averageTemperatureLabel.setTextColor(COLOR_WHITE_LABEL);
+            averageTemperatureLabel.setText("--");
+            averageLoadLabel.setText("--");
         }
-        // gradiente color pasillo caliente
-        temperaturasPasilloCalienteSeleccionado = new ArrayList<>();
-        List<String> rackCodes = obtenerRackCodesPasillo(pasilloCalienteSeleccionado);
+        // hot aisle temperature gradient
+        selectedHotAisleTemperatures = new ArrayList<>();
+        List<String> rackCodes = resolveAisleRackCodes(selectedHotAisle);
         for (String rackCode : rackCodes) {
-            float temperaturaPromedioRacks = 0;
-            for (String column : pasilloCalienteSeleccionado.columns()) {
+            float averageRackTemperature = 0;
+            for (String column : selectedHotAisle.columns()) {
                 RackLocation rackLocation = new RackLocation(column, new RackCode(rackCode));
                 RackOperationalSnapshot rackSnapshot = operationalSnapshot.findRack(rackLocation).orElseThrow();
-                temperaturaPromedioRacks += (float) rackSnapshot.representativeTemperatureCelsius();
+                averageRackTemperature += (float) rackSnapshot.representativeTemperatureCelsius();
             }
-            temperaturaPromedioRacks /= pasilloCalienteSeleccionado.columns().size();
-            temperaturasPasilloCalienteSeleccionado.add(temperaturaPromedioRacks);
+            averageRackTemperature /= selectedHotAisle.columns().size();
+            selectedHotAisleTemperatures.add(averageRackTemperature);
         }
         float fColor = map(
-                temperaturasPasilloCalienteSeleccionado.getFirst(),
+                selectedHotAisleTemperatures.getFirst(),
                 minServerTemperatureCelsius,
                 maxServerTemperatureCelsius,
                 0,
                 1);
-        int colorEfectoTemperatura = Colors.lerpColor(COLOR_TEMPERATURA_MINIMA, COLOR_TEMPERATURA_MAXIMA, fColor);
-        indicadores.get("indPasilloElegidoEfectoTemperatura").setOnColor(colorEfectoTemperatura);
+        int temperatureEffectColor = Colors.lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, fColor);
+        indicators.get("indPasilloElegidoEfectoTemperatura").setOnColor(temperatureEffectColor);
     }
 
-    private List<String> obtenerRackCodesPasillo(HotAisleDefinition pasillo) {
-        String columnaReferencia = pasillo.columns().getFirst();
+    private List<String> resolveAisleRackCodes(HotAisleDefinition aisle) {
+        String referenceColumn = aisle.columns().getFirst();
         return datacenter
                 .getRacks()
                 .stream()
-                .filter(rack -> rack.getLocation().column().equals(columnaReferencia))
+                .filter(rack -> rack.getLocation().column().equals(referenceColumn))
                 .map(rack -> rack.getCode().value())
                 .sorted()
                 .toList();
     }
 
-    private List<String> obtenerCoolingZoneCodesPasillo(HotAisleDefinition pasillo) {
-        Set<String> columnasPasillo = new HashSet<>(pasillo.columns());
+    private List<String> resolveAisleCoolingZoneCodes(HotAisleDefinition aisle) {
+        Set<String> aisleColumns = new HashSet<>(aisle.columns());
         return coolingConfiguration
                 .zones()
                 .stream()
-                .filter(zone -> zone.serverLocations().stream().anyMatch(location -> columnasPasillo.contains(location.column())))
+                .filter(zone -> zone.serverLocations().stream().anyMatch(location -> aisleColumns.contains(location.column())))
                 .map(CoolingZoneDefinition::code)
                 .sorted()
                 .toList();
     }
 
-    private int obtenerColorRangoTemperatura(float temperatura) {
-        if (temperatura >= Float.parseFloat(PROPS.getProperty("simulation.health.temperature.alert-threshold-celsius")))
-            return COLOR_LABEL_MAGENTA;
-        else if (temperatura >= Float.parseFloat(PROPS.getProperty("simulation.health.temperature.warning-threshold-celsius")))
-            return COLOR_LABEL_AMARILLO;
-        else return COLOR_LABEL_VERDE;
+    private int resolveTemperatureRangeColor(float temperature) {
+        if (temperature >= Float.parseFloat(PROPS.getProperty("simulation.health.temperature.alert-threshold-celsius")))
+            return COLOR_MAGENTA_LABEL;
+        else if (temperature >= Float.parseFloat(PROPS.getProperty("simulation.health.temperature.warning-threshold-celsius")))
+            return COLOR_YELLOW_LABEL;
+        else return COLOR_GREEN_LABEL;
     }
 
-    private void obtenerPasilloCalienteElegido() {
-        pasilloCalienteSeleccionado = hotAisleByColumn.get(columnaElegida);
-        if (pasilloCalienteSeleccionado == null) throw new IllegalArgumentException("No hot aisle configured for column: " + columnaElegida);
+    private void resolveSelectedHotAisle() {
+        selectedHotAisle = hotAisleByColumn.get(selectedColumn);
+        if (selectedHotAisle == null) throw new IllegalArgumentException("No hot aisle configured for column: " + selectedColumn);
     }
 
-    private Map<ServerLocation, ServerEnergySnapshot> obtenerEnergiaPorUbicacion() {
+    private Map<ServerLocation, ServerEnergySnapshot> resolveEnergyByLocation() {
         return energySnapshot.servers()
                 .stream()
                 .collect(Collectors.toUnmodifiableMap(ServerEnergySnapshot::location, Function.identity()));
     }
 
-    private Map<ServerLocation, ServerTemperatureSnapshot> obtenerTemperaturaPorUbicacion() {
+    private Map<ServerLocation, ServerTemperatureSnapshot> resolveTemperatureByLocation() {
         return temperatureSnapshot.servers()
                 .stream()
                 .collect(Collectors.toMap(
@@ -978,7 +979,7 @@ public class Sketch extends PApplet {
                 ));
     }
 
-    private Map<ServerLocation, ServerHealthSnapshot> obtenerSaludPorUbicacion() {
+    private Map<ServerLocation, ServerHealthSnapshot> resolveHealthByLocation() {
         return healthSnapshot.servers()
                 .stream()
                 .collect(Collectors.toMap(
@@ -987,152 +988,152 @@ public class Sketch extends PApplet {
                 ));
     }
 
-    private void updatePanelSala() {
-        updateSalaIndicadorPasilloCaliente("HA01", "indSalaPasilloCalienteC01");
-        updateSalaIndicadorPasilloCaliente("HA02", "indSalaPasilloCalienteC02-C03");
-        updateSalaIndicadorPasilloCaliente("HA03", "indSalaPasilloCalienteC04-C05");
-        updateSalaIndicadorPasilloCaliente("HA04", "indSalaPasilloCalienteC06-C07");
-        updateSalaIndicadorPasilloCaliente("HA05", "indSalaPasilloCalienteC08");
+    private void updateRoomPanel() {
+        updateRoomHotAisleIndicator("HA01", "indSalaPasilloCalienteC01");
+        updateRoomHotAisleIndicator("HA02", "indSalaPasilloCalienteC02-C03");
+        updateRoomHotAisleIndicator("HA03", "indSalaPasilloCalienteC04-C05");
+        updateRoomHotAisleIndicator("HA04", "indSalaPasilloCalienteC06-C07");
+        updateRoomHotAisleIndicator("HA05", "indSalaPasilloCalienteC08");
         for (Rack rack : datacenter.getRacks()) {
             RackLocation location = rack.getLocation();
-            String codigoIndRack = "indRack" + rack.getColumn() + rack.getRow();
-            Indicator indRack = indicadoresRack.get(codigoIndRack);
-            if (indRack == null) continue;
-            List<Server> servidoresEnRack = datacenter.getServers(location);
+            String rackIndicatorCode = "indRack" + rack.getColumn() + rack.getRow();
+            Indicator rackIndicator = indicatorsRack.get(rackIndicatorCode);
+            if (rackIndicator == null) continue;
+            List<Server> rackServers = datacenter.getServers(location);
             RackOperationalSnapshot rackSnapshot = operationalSnapshot.getRack(location);
-            boolean rackVacio = !rackSnapshot.hasInstalledServers();
+            boolean emptyRack = !rackSnapshot.hasInstalledServers();
             boolean rackOffline = rackSnapshot.hasInstalledServers() && !rackSnapshot.hasOnlineServers();
-            boolean rackIA = servidoresEnRack.stream().anyMatch(server -> server.getRole() == ServerRole.AI);
-            float temperaturaPromedio = (float) rackSnapshot.averageOnlineTemperatureCelsius();
-            boolean rackHotspot = temperaturaPromedio > maxServerTemperatureCelsius;
-            int colorRack;
-            if (rackVacio) colorRack = COLOR_RACK_VACIO;
-            else if (rackOffline) colorRack = COLOR_TEMPERATURA_MINIMA; //COLOR_RACK_OFFLINE
-            else if (rackHotspot) colorRack = COLOR_RACK_HOTSPOT;
-            else colorRack = calcularColorRack(temperaturaPromedio);
-            indRack.setOnColor(colorRack);
-            actualizarIndicadoresRackCondicion(codigoIndRack, rackOffline, rackVacio, rackHotspot, rackIA);
+            boolean aiRack = rackServers.stream().anyMatch(server -> server.getRole() == ServerRole.AI);
+            float averageTemperature = (float) rackSnapshot.averageOnlineTemperatureCelsius();
+            boolean rackHotspot = averageTemperature > maxServerTemperatureCelsius;
+            int rackColor;
+            if (emptyRack) rackColor = COLOR_EMPTY_RACK;
+            else if (rackOffline) rackColor = COLOR_MIN_TEMPERATURE; // OFFLINE_RACK_COLOR
+            else if (rackHotspot) rackColor = COLOR_HOTSPOT_RACK;
+            else rackColor = calculateRackColor(averageTemperature);
+            rackIndicator.setOnColor(rackColor);
+            updateRackConditionIndicators(rackIndicatorCode, rackOffline, emptyRack, rackHotspot, aiRack);
         }
     }
 
-    private int calcularColorRack(float temperatura) {
-        float fColor = map(temperatura, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1);
+    private int calculateRackColor(float temperature) {
+        float fColor = map(temperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1);
         fColor = Math.clamp(fColor, 0, 1);
-        return Colors.lerpColor(COLOR_TEMPERATURA_MINIMA, COLOR_TEMPERATURA_MAXIMA, fColor);
+        return Colors.lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, fColor);
     }
 
-    private void actualizarIndicadoresRackCondicion(
-            String codigoIndRack,
+    private void updateRackConditionIndicators(
+            String rackIndicatorCode,
             boolean rackOffline,
-            boolean rackVacio,
+            boolean emptyRack,
             boolean rackHotspot,
-            boolean rackIA
+            boolean aiRack
     ) {
-        Indicator indOffline = indicadoresRackCondicion.get(codigoIndRack.replace("indRack", "indRackOffline"));
-        Indicator indVacio = indicadoresRackCondicion.get(codigoIndRack.replace("indRack", "indRackVacio"));
-        Indicator indHotspot = indicadoresRackCondicion.get(codigoIndRack.replace("indRack", "indRackHotspot"));
-        Indicator indIA = indicadoresRackCondicion.get(codigoIndRack.replace("indRack", "indRackIA"));
-        indOffline.setOn(rackOffline);
-        indVacio.setOn(rackVacio);
-        indHotspot.setOn(rackHotspot);
-        indIA.setOn(rackIA);
+        Indicator offlineIndicator = indicatorsRackCondition.get(rackIndicatorCode.replace("indRack", "indRackOffline"));
+        Indicator emptyIndicator = indicatorsRackCondition.get(rackIndicatorCode.replace("indRack", "indRackVacio"));
+        Indicator hotspotIndicator = indicatorsRackCondition.get(rackIndicatorCode.replace("indRack", "indRackHotspot"));
+        Indicator aiIndicator = indicatorsRackCondition.get(rackIndicatorCode.replace("indRack", "indRackIA"));
+        offlineIndicator.setOn(rackOffline);
+        emptyIndicator.setOn(emptyRack);
+        hotspotIndicator.setOn(rackHotspot);
+        aiIndicator.setOn(aiRack);
     }
 
-    private void updateSalaIndicadorPasilloCaliente(String codigoPasilloCaliente, String codigoIndicador) {
-        float temperaturaPromedio =
-                (float) operationalSnapshot.findServerGroup(codigoPasilloCaliente)
-                        .orElseThrow(() -> new IllegalStateException("No existe snapshot operacional para el pasillo: " + codigoPasilloCaliente))
+    private void updateRoomHotAisleIndicator(String hotAisleCode, String indicatorCode) {
+        float averageTemperature =
+                (float) operationalSnapshot.findServerGroup(hotAisleCode)
+                        .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for aisle: " + hotAisleCode))
                         .averageOnlineTemperatureCelsius();
-        float temperaturaMaxima =
-                (float) operationalSnapshot.findServerGroup(codigoPasilloCaliente)
-                        .orElseThrow(() -> new IllegalStateException("No existe snapshot operacional para el pasillo: " + codigoPasilloCaliente))
+        float maxTemperature =
+                (float) operationalSnapshot.findServerGroup(hotAisleCode)
+                        .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for aisle: " + hotAisleCode))
                         .maximumTemperatureCelsius();
-        float temperatura = (temperaturaMaxima + temperaturaPromedio) * 0.5f;
-        float f = map(temperatura, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1);
+        float temperature = (maxTemperature + averageTemperature) * 0.5f;
+        float f = map(temperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1);
         f = Math.clamp(f, 0, 1);
-        int colorPasilloCaliente = lerpColor(COLOR_TEMPERATURA_MINIMA, COLOR_TEMPERATURA_MAXIMA, f);
-        int a = (int) map(temperatura, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 96);
+        int hotAisleColor = lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, f);
+        int a = (int) map(temperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 96);
         a = Math.clamp(a, 0, 128);
-        int r = Colors.red(colorPasilloCaliente);
-        int g = Colors.green(colorPasilloCaliente);
-        int b = Colors.blue(colorPasilloCaliente);
-        indicadores.get(codigoIndicador).setOnColor(Colors.argb(a, r, g, b));
+        int r = Colors.red(hotAisleColor);
+        int g = Colors.green(hotAisleColor);
+        int b = Colors.blue(hotAisleColor);
+        indicators.get(indicatorCode).setOnColor(Colors.argb(a, r, g, b));
     }
 
-    private void dibujarFondo() {
-        background(COLOR_FONDO);
+    private void drawBackground() {
+        background(COLOR_BACKGROUND);
         pushStyle();
         imageMode(CORNER);
-        fondo.forEach(img -> image(img, 0, 0, width, height));
+        backgroundImages.forEach(img -> image(img, 0, 0, width, height));
         popStyle();
     }
 
-    private void dibujarControles() {
-        indicadoresAlerta.values().forEach(Indicator::draw);
+    private void drawControls() {
+        indicatorsAlert.values().forEach(Indicator::draw);
         labels.values().forEach(Label::draw);
-        indicadores.values().forEach(Indicator::draw);
-        indicadoresPasilloElegido.values().forEach(Indicator::draw);
-        indicadoresPasilloElegidoServidorTemperaturaMaxima.values().forEach(Indicator::draw);
-        indicadoresRackElegido.values().forEach(Indicator::draw);
-        indicadoresRack.values().forEach(Indicator::draw);
-        indicadoresPasilloNull.values().forEach(Indicator::draw);
-        indicadoresSlotIA.values().forEach(Indicator::draw);
-        indicadoresRackCondicion.values().forEach(Indicator::draw);
-        botonesPasilloElegidoRacks.values().forEach(Button::draw);
-        botonesColumnas.values().forEach(Button::draw);
-        botonesPlay.values().forEach(Button::draw);
+        indicators.values().forEach(Indicator::draw);
+        indicatorsSelectedAisle.values().forEach(Indicator::draw);
+        indicatorsSelectedAisleMaxTemperatureServer.values().forEach(Indicator::draw);
+        indicatorsSelectedRack.values().forEach(Indicator::draw);
+        indicatorsRack.values().forEach(Indicator::draw);
+        indicatorsNullAisle.values().forEach(Indicator::draw);
+        indicatorsAiSlot.values().forEach(Indicator::draw);
+        indicatorsRackCondition.values().forEach(Indicator::draw);
+        buttonsSelectedAisleRack.values().forEach(Button::draw);
+        buttonsColumn.values().forEach(Button::draw);
+        buttonsPlay.values().forEach(Button::draw);
         toggles.values().forEach(Toggle::draw);
     }
 
-    private void dibujarGradienteTemperaturaEnPasilloElegido() {
+    private void drawSelectedHotAisleTemperatureGradient() {
         pushStyle();
         noFill();
         strokeWeight(1);
         float y = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.y")) * height;
         float h = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.height")) * height;
-        float totalH = y + temperaturasPasilloCalienteSeleccionado.size() * h;
+        float totalH = y + selectedHotAisleTemperatures.size() * h;
         float x = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.x")) * width;
         float minW = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.min.width")) * height;
         float maxW = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.max.width")) * height;
         float minY = y;
         float maxY = y + h;
         float fColor = map(
-                temperaturasPasilloCalienteSeleccionado.getFirst(),
+                selectedHotAisleTemperatures.getFirst(),
                 minServerTemperatureCelsius,
                 maxServerTemperatureCelsius,
                 0,
                 1);
-        int color = Colors.lerpColor(COLOR_TEMPERATURA_MINIMA, COLOR_TEMPERATURA_MAXIMA, fColor);
+        int color = Colors.lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, fColor);
         for (int j = (int) minY; j < (int) maxY; j++) {
             float w = map(j, y, totalH, minW, maxW);
             stroke(color);
             line(x - w * 0.5f, j, x + w * 0.5f, j);
         }
-        for (int i = 0; i < temperaturasPasilloCalienteSeleccionado.size() - 1; i++) {
-            float temperatura = temperaturasPasilloCalienteSeleccionado.get(i);
-            float temperaturaSiguiente = temperaturasPasilloCalienteSeleccionado.get(i + 1);
+        for (int i = 0; i < selectedHotAisleTemperatures.size() - 1; i++) {
+            float temperature = selectedHotAisleTemperatures.get(i);
+            float nextTemperature = selectedHotAisleTemperatures.get(i + 1);
             minY = y + (i + 1) * h;
             maxY = y + (i + 2) * h;
             color = Colors.lerpColor(
-                    COLOR_TEMPERATURA_MINIMA,
-                    COLOR_TEMPERATURA_MAXIMA,
-                    map(temperatura, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1)
+                    COLOR_MIN_TEMPERATURE,
+                    COLOR_MAX_TEMPERATURE,
+                    map(temperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1)
             );
-            int colorSiguiente = Colors.lerpColor(
-                    COLOR_TEMPERATURA_MINIMA,
-                    COLOR_TEMPERATURA_MAXIMA,
-                    map(temperaturaSiguiente, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1)
+            int nextColor = Colors.lerpColor(
+                    COLOR_MIN_TEMPERATURE,
+                    COLOR_MAX_TEMPERATURE,
+                    map(nextTemperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1)
             );
             for (int j = (int) minY; j < (int) maxY; j++) {
                 float w = map(j, y, totalH, minW, maxW);
                 fColor = map(j, minY, maxY, 0, 1);
-                int colorLinea = Colors.lerpColor(color, colorSiguiente, fColor);
-                stroke(colorLinea);
+                int lineColor = Colors.lerpColor(color, nextColor, fColor);
+                stroke(lineColor);
                 line(x - w * 0.5f, j, x + w * 0.5f, j);
             }
         }
         strokeWeight(Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.stroke.weigth")) * height);
-        stroke(COLOR_BORDE_GRADIENTE_TEMPERATURA);
+        stroke(COLOR_TEMPERATURE_GRADIENT_BORDER);
         line(
                 Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.x.00")) * width,
                 Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.y.00")) * height,
@@ -1148,12 +1149,12 @@ public class Sketch extends PApplet {
         popStyle();
     }
 
-    private void dibujarOverlay() {
+    private void drawOverlay() {
         overlayManager.getActiveOverlays().forEach(entry -> entry.getRender().run());
         if (!showOverlay) return;
         pushStyle();
         imageMode(CORNER);
-        image(overlayEstatico, 0, 0, width, height);
+        image(staticOverlay, 0, 0, width, height);
         popStyle();
     }
 
@@ -1188,7 +1189,7 @@ public class Sketch extends PApplet {
 
     @Override
     public void keyReleased() {
-        if (keyCode == BARRA_ESPACIADORA) toggleSimulation();
+        if (keyCode == SPACE_BAR) toggleSimulation();
     }
 
 }

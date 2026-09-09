@@ -38,7 +38,7 @@ public class TemplateSketchConfig {
         if (sk == null) return;
         LOG.info("Starting settings");
         PJOGL.setIcon("data" + File.separator + "img" + File.separator + PROPS.getProperty("window.icon"));
-        // tamaño de ventana
+        // window size
         sk.size(Integer.parseInt(PROPS.getProperty("sketch.width")), Integer.parseInt(PROPS.getProperty("sketch.height")), P2D);
         // smoothing
         sk.smooth(Integer.parseInt(PROPS.getProperty("sketch.smoothing")));
@@ -57,124 +57,124 @@ public class TemplateSketchConfig {
         if (sk == null || overlayManager == null || inputManager == null) return null;
         String templateConfigPath = "data" + File.separator + "config" + File.separator + "template-sketch.json";
         ControlConfigLoader loader = new ControlConfigLoader(sk, overlayManager, inputManager);
-        Map<String, Control> controles = loader.load(templateConfigPath);
-        controles
+        Map<String, Control> controlsByCode = loader.load(templateConfigPath);
+        controlsByCode
                 .values()
                 .stream()
                 .filter(c -> c instanceof Button)
                 .forEach(btn -> ((Button) btn).setClickListener(() -> sk.btnClicked(btn.getCode())));
-        controles
+        controlsByCode
                 .values()
                 .stream()
                 .filter(c -> c instanceof Checkbox)
-                .forEach(chk -> ((Checkbox) chk).setChangeListener(estado -> sk.chkClicked(chk.getCode(), estado)));
-        controles
+                .forEach(chk -> ((Checkbox) chk).setChangeListener(state -> sk.chkClicked(chk.getCode(), state)));
+        controlsByCode
                 .values()
                 .stream()
                 .filter(c -> c instanceof DropDown)
-                .forEach(dd -> ((DropDown) dd).setChangeListener(estado -> sk.ddChanged((DropDown) dd)));
-        controles
+                .forEach(dd -> ((DropDown) dd).setChangeListener(state -> sk.ddChanged((DropDown) dd)));
+        controlsByCode
                 .values()
                 .stream()
                 .filter(c -> c instanceof NumericField)
                 .forEach(nf -> ((NumericField) nf).setChangeListener(text -> sk.nfChanged((NumericField) nf)));
-        controles
+        controlsByCode
                 .values()
                 .stream()
                 .filter(c -> c instanceof RadioGroup)
                 .forEach(rg -> ((RadioGroup) rg).setChangeListener(selectedOption -> sk.rgClicked((RadioGroup) rg)));
-        controles
+        controlsByCode
                 .values()
                 .stream()
                 .filter(c -> c instanceof Slider)
-                .forEach(sld -> ((Slider) sld).setChangeListener(valor -> sk.sldChanged(sld.getCode(), valor)));
-        controles
+                .forEach(sld -> ((Slider) sld).setChangeListener(value -> sk.sldChanged(sld.getCode(), value)));
+        controlsByCode
                 .values()
                 .stream()
                 .filter(c -> c instanceof TextField)
                 .forEach(tf -> ((TextField) tf).setChangeListener(text -> sk.tfChanged(tf.getCode(), text)));
-        controles
+        controlsByCode
                 .values()
                 .stream()
                 .filter(c -> c instanceof Toggle)
-                .forEach(tgl -> ((Toggle) tgl).setChangeListener(estado -> sk.tglClicked(tgl.getCode(), estado)));
-        return controles;
+                .forEach(tgl -> ((Toggle) tgl).setChangeListener(state -> sk.tglClicked(tgl.getCode(), state)));
+        return controlsByCode;
     }
 
-    public static Map<String, Button> filterButtons(Map<String, Control> controles) {
-        if (controles == null) return null;
-        Map<String, Button> botones = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Button).forEach(btn -> botones.put(btn.getCode(), (Button) btn));
-        return botones;
+    public static Map<String, Button> filterButtons(Map<String, Control> controlsByCode) {
+        if (controlsByCode == null) return null;
+        Map<String, Button> buttons = new HashMap<>();
+        controlsByCode.values().stream().filter(c -> c instanceof Button).forEach(btn -> buttons.put(btn.getCode(), (Button) btn));
+        return buttons;
     }
 
-    public static Map<String, Checkbox> filterCheckboxes(Map<String, Control> controles) {
-        if (controles == null) return null;
+    public static Map<String, Checkbox> filterCheckboxes(Map<String, Control> controlsByCode) {
+        if (controlsByCode == null) return null;
         Map<String, Checkbox> checkboxes = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Checkbox).forEach(chk -> checkboxes.put(chk.getCode(), (Checkbox) chk));
+        controlsByCode.values().stream().filter(c -> c instanceof Checkbox).forEach(chk -> checkboxes.put(chk.getCode(), (Checkbox) chk));
         return checkboxes;
     }
 
-    public static Map<String, DropDown> filterDropdowns(Map<String, Control> controles) {
-        if (controles == null) return null;
+    public static Map<String, DropDown> filterDropdowns(Map<String, Control> controlsByCode) {
+        if (controlsByCode == null) return null;
         Map<String, DropDown> dropdowns = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof DropDown).forEach(dd -> dropdowns.put(dd.getCode(), (DropDown) dd));
+        controlsByCode.values().stream().filter(c -> c instanceof DropDown).forEach(dd -> dropdowns.put(dd.getCode(), (DropDown) dd));
         return dropdowns;
     }
 
-    public static Map<String, Indicator> filterIndicators(Map<String, Control> controles) {
-        if (controles == null) return null;
+    public static Map<String, Indicator> filterIndicators(Map<String, Control> controlsByCode) {
+        if (controlsByCode == null) return null;
         Map<String, Indicator> indicators = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicators.put(ind.getCode(), (Indicator) ind));
+        controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicators.put(ind.getCode(), (Indicator) ind));
         return indicators;
     }
 
-    public static Map<String, Label> filterLabels(Map<String, Control> controles) {
-        if (controles == null) return null;
+    public static Map<String, Label> filterLabels(Map<String, Control> controlsByCode) {
+        if (controlsByCode == null) return null;
         Map<String, Label> labels = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Label).forEach(lbl -> labels.put(lbl.getCode(), (Label) lbl));
+        controlsByCode.values().stream().filter(c -> c instanceof Label).forEach(label -> labels.put(label.getCode(), (Label) label));
         return labels;
     }
 
-    public static Map<String, NumericField> filterNumericfields(Map<String, Control> controles) {
-        if (controles == null) return null;
+    public static Map<String, NumericField> filterNumericfields(Map<String, Control> controlsByCode) {
+        if (controlsByCode == null) return null;
         Map<String, NumericField> numericfields = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof NumericField).forEach(nf -> numericfields.put(nf.getCode(), (NumericField) nf));
+        controlsByCode.values().stream().filter(c -> c instanceof NumericField).forEach(nf -> numericfields.put(nf.getCode(), (NumericField) nf));
         return numericfields;
     }
 
-    public static Map<String, ProgressBar> filterProgressbars(Map<String, Control> controles) {
-        if (controles == null) return null;
+    public static Map<String, ProgressBar> filterProgressbars(Map<String, Control> controlsByCode) {
+        if (controlsByCode == null) return null;
         Map<String, ProgressBar> progressbars = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof ProgressBar).forEach(pb -> progressbars.put(pb.getCode(), (ProgressBar) pb));
+        controlsByCode.values().stream().filter(c -> c instanceof ProgressBar).forEach(pb -> progressbars.put(pb.getCode(), (ProgressBar) pb));
         return progressbars;
     }
 
-    public static Map<String, RadioGroup> filterRadiogroups(Map<String, Control> controles) {
-        if (controles == null) return null;
+    public static Map<String, RadioGroup> filterRadiogroups(Map<String, Control> controlsByCode) {
+        if (controlsByCode == null) return null;
         Map<String, RadioGroup> radiogroups = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof RadioGroup).forEach(rg -> radiogroups.put(rg.getCode(), (RadioGroup) rg));
+        controlsByCode.values().stream().filter(c -> c instanceof RadioGroup).forEach(rg -> radiogroups.put(rg.getCode(), (RadioGroup) rg));
         return radiogroups;
     }
 
-    public static Map<String, Slider> filterSliders(Map<String, Control> controles) {
-        if (controles == null) return null;
+    public static Map<String, Slider> filterSliders(Map<String, Control> controlsByCode) {
+        if (controlsByCode == null) return null;
         Map<String, Slider> sliders = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Slider).forEach(sld -> sliders.put(sld.getCode(), (Slider) sld));
+        controlsByCode.values().stream().filter(c -> c instanceof Slider).forEach(sld -> sliders.put(sld.getCode(), (Slider) sld));
         return sliders;
     }
 
-    public static Map<String, TextField> filterTextfields(Map<String, Control> controles) {
-        if (controles == null) return null;
+    public static Map<String, TextField> filterTextfields(Map<String, Control> controlsByCode) {
+        if (controlsByCode == null) return null;
         Map<String, TextField> textfields = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof TextField).forEach(tf -> textfields.put(tf.getCode(), (TextField) tf));
+        controlsByCode.values().stream().filter(c -> c instanceof TextField).forEach(tf -> textfields.put(tf.getCode(), (TextField) tf));
         return textfields;
     }
 
-    public static Map<String, Toggle> filterToggles(Map<String, Control> controles) {
-        if (controles == null) return null;
+    public static Map<String, Toggle> filterToggles(Map<String, Control> controlsByCode) {
+        if (controlsByCode == null) return null;
         Map<String, Toggle> toggles = new HashMap<>();
-        controles.values().stream().filter(c -> c instanceof Toggle).forEach(tgl -> toggles.put(tgl.getCode(), (Toggle) tgl));
+        controlsByCode.values().stream().filter(c -> c instanceof Toggle).forEach(tgl -> toggles.put(tgl.getCode(), (Toggle) tgl));
         return toggles;
     }
 
