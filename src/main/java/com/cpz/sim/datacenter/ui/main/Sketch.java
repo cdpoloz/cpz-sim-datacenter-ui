@@ -11,6 +11,8 @@ import com.cpz.processing.controls.core.input.PointerEvent;
 import com.cpz.processing.controls.core.overlay.OverlayManager;
 import com.cpz.processing.controls.input.ProcessingKeyboardAdapter;
 import com.cpz.sim.datacenter.cooling.*;
+import com.cpz.sim.datacenter.ui.app.ApplicationBootstrap;
+import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.config.HotAisleConfiguration;
 import com.cpz.sim.datacenter.ui.config.HotAisleConfigurationLoader;
 import com.cpz.sim.datacenter.ui.config.HotAisleDefinition;
@@ -127,6 +129,10 @@ public class Sketch extends PApplet {
         frameRate(Integer.parseInt(PROPS.getProperty("sketch.fps")));
         getSurface().setTitle(PROPS.getProperty("window.title"));
         LOG.info("Finished initial setup");
+        // app context & bootstrap
+        ApplicationContext context = new ApplicationContext(this);
+        ApplicationBootstrap bootstrap = new ApplicationBootstrap(context);
+        bootstrap.initialize();
         // input manager
         inputManager = new InputManager();
         MainInputLayer mainInputLayer = new MainInputLayer(0);

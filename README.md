@@ -6,7 +6,13 @@
 ![License](https://img.shields.io/badge/license-Apache--2.0-lightgrey)
 [![GitHub](https://img.shields.io/badge/GitHub-cdpoloz-181717?logo=github)](https://github.com/cdpoloz)
 
+## Architecture
 
+The application follows a modular architecture where the Processing sketch acts as the application entry point while the application logic is progressively delegated to specialized components.
+
+See:
+
+[Architecture](docs/architecture.md)
 
 ## License
 
