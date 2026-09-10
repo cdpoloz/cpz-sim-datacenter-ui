@@ -315,7 +315,7 @@ public class Sketch extends PApplet {
                 .stream()
                 .filter(unit -> unit.type() == CoolingUnitType.SUPPLY)
                 .forEach(unit -> {
-                    String tglCode = unit.unitCode().replace("SUPPLY-", "tglSalaVentilador");
+                    String tglCode = unit.unitCode().replace("SUPPLY-", "tglSupply");
                     supplyToggleCodes.add(tglCode);
                 });
         exhaustToggleCodes = new ArrayList<>();
@@ -323,7 +323,7 @@ public class Sketch extends PApplet {
                 .stream()
                 .filter(unit -> unit.type() == CoolingUnitType.EXHAUST)
                 .forEach(unit -> {
-                    String tglCode = unit.unitCode().replace("EXHAUST-", "tglSalaExtractor");
+                    String tglCode = unit.unitCode().replace("EXHAUST-", "tglExhaust");
                     exhaustToggleCodes.add(tglCode);
                 });
         percentageFormat = PROPS.getProperty("number.format.percentage");
@@ -469,7 +469,7 @@ public class Sketch extends PApplet {
 
     private void tglClicked(Toggle tgl, int state) {
         String toggleCode = tgl.getCode();
-        if (toggleCode.contains("SalaVentilador") || toggleCode.contains("SalaExtractor")) coolingToggleClicked(tgl, state);
+        if (toggleCode.startsWith("tglSupply") || toggleCode.startsWith("tglExhaust")) coolingToggleClicked(tgl, state);
         else if (toggleCode.equals("tglPlay")) {
             if (syncingPlayToggle) return;
             toggleSimulation();
@@ -491,22 +491,22 @@ public class Sketch extends PApplet {
         if (syncingCoolingToggles) return;
         String toggleCode = tgl.getCode();
         boolean enabled = state == 1;
-        if (toggleCode.equals("tglSalaVentilador")) {
+        if (toggleCode.equals("tglSupply")) {
             updateChildCoolingToggles(supplyToggleCodes, enabled);
             return;
         }
-        if (toggleCode.equals("tglSalaExtractor")) {
+        if (toggleCode.equals("tglExhaust")) {
             updateChildCoolingToggles(exhaustToggleCodes, enabled);
             return;
         }
         if (supplyToggleCodes.contains(toggleCode)) {
             updateCoolingUnit(tgl, enabled);
-            updateMasterToggle("tglSalaVentilador", supplyToggleCodes);
+            updateMasterToggle("tglSupply", supplyToggleCodes);
             return;
         }
         if (exhaustToggleCodes.contains(toggleCode)) {
             updateCoolingUnit(tgl, enabled);
-            updateMasterToggle("tglSalaExtractor", exhaustToggleCodes);
+            updateMasterToggle("tglExhaust", exhaustToggleCodes);
         }
     }
 
@@ -542,17 +542,16 @@ public class Sketch extends PApplet {
     private void updateCoolingUnit(Toggle tgl, boolean enabled) {
         String unitType = "";
         String tglCode = tgl.getCode();
-        if (tglCode.contains("Ventilador")) unitType = "SUPPLY";
-        else if (tglCode.contains("Extractor")) unitType = "EXHAUST";
+        if (tglCode.startsWith("tglSupply")) unitType = "SUPPLY";
+        else if (tglCode.startsWith("tglExhaust")) unitType = "EXHAUST";
         if (unitType.isEmpty()) return;
-        boolean individualToggle = tglCode.startsWith("tglSalaVentiladorC") || tglCode.startsWith("tglSalaExtractorC");
+        boolean individualToggle = tglCode.startsWith("tglSupplyC") || tglCode.startsWith("tglExhaustC");
         if (!individualToggle) return;
         String unitCode = unitType
                 + "-"
                 + tglCode
-                .replace("tglSala", "")
-                .replace("Ventilador", "")
-                .replace("Extractor", "");
+                .replace("tglSupply", "")
+                .replace("tglExhaust", "");
         coolingSystem.setEnabled(unitCode, enabled);
     }
 
