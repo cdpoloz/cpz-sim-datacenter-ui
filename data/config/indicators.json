@@ -266,7 +266,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA01-2",
+      "code": "indSlotAI01-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -288,7 +288,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA02-2",
+      "code": "indSlotAI02-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -310,7 +310,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA03-2",
+      "code": "indSlotAI03-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -332,7 +332,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA04-2",
+      "code": "indSlotAI04-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -354,7 +354,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA05-2",
+      "code": "indSlotAI05-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -376,7 +376,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA06-2",
+      "code": "indSlotAI06-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -398,7 +398,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA07-2",
+      "code": "indSlotAI07-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -420,7 +420,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA08-2",
+      "code": "indSlotAI08-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -442,7 +442,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA09-2",
+      "code": "indSlotAI09-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -464,7 +464,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA10-2",
+      "code": "indSlotAI10-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -486,7 +486,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA11-2",
+      "code": "indSlotAI11-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -508,7 +508,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA12-2",
+      "code": "indSlotAI12-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,

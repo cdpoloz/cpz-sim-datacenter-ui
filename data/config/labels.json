@@ -3027,7 +3027,7 @@
     },
     {
       "type": "label",
-      "code": "lblIA",
+      "code": "lblAI",
       "text": "AI SERVER",
       "bounds": {
         "mode": "relative",
@@ -3202,7 +3202,7 @@
     },
     {
       "type": "label",
-      "code": "lblTitulo",
+      "code": "lblTitle",
       "text": "Datacenter Simulator",
       "bounds": {
         "mode": "relative",
@@ -3227,7 +3227,7 @@
     },
     {
       "type": "label",
-      "code": "lblFecha",
+      "code": "lblDate",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -3252,7 +3252,7 @@
     },
     {
       "type": "label",
-      "code": "lblHora",
+      "code": "lblTime",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -3277,7 +3277,7 @@
     },
     {
       "type": "label",
-      "code": "lblSimulacion",
+      "code": "lblSimulation",
       "text": "SIMULATION",
       "bounds": {
         "mode": "relative",
@@ -3302,7 +3302,7 @@
     },
     {
       "type": "label",
-      "code": "lblSimulacionValor",
+      "code": "lblSimulationValue",
       "text": "Stopped",
       "bounds": {
         "mode": "relative",

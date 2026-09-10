@@ -353,8 +353,8 @@ public class Sketch extends PApplet {
                 .sum();
         labels.get("lblRoomTotalServersValue").setText(String.valueOf(totalInstalledServers));
         labels.get("lblRoomOnlineServersValue").setText(String.valueOf(totalOnlineServers));
-        labels.get("lblFecha").setText(String.format("%02d", day()) + "/" + String.format("%02d", month()) + "/" + year());
-        labels.get("lblHora").setText(String.format("%02d", hour()) + ":" + String.format("%02d", minute()) + ":" + String.format("%02d", second()));
+        labels.get("lblDate").setText(String.format("%02d", day()) + "/" + String.format("%02d", month()) + "/" + year());
+        labels.get("lblTime").setText(String.format("%02d", hour()) + ":" + String.format("%02d", minute()) + ":" + String.format("%02d", second()));
         // debug
         showOverlay = true;
     }
@@ -401,7 +401,7 @@ public class Sketch extends PApplet {
     private void updateSimulationControls() {
         boolean simulationRunning = simulationTimer.isRunning();
         String speedLabel = formatSimulationSpeedFactor();
-        labels.get("lblSimulacionValor").setText(simulationRunning ? "Running " + speedLabel : "Stopped " + speedLabel);
+        labels.get("lblSimulationValue").setText(simulationRunning ? "Running " + speedLabel : "Stopped " + speedLabel);
         Button btnPlayMinus = buttonsPlay.get("btnPlayMinus");
         if (btnPlayMinus != null) btnPlayMinus.setEnabled(simulationSpeedFactorIndex > 0);
         Button btnPlayPlus = buttonsPlay.get("btnPlayPlus");
@@ -425,10 +425,10 @@ public class Sketch extends PApplet {
     private void updateDateTime() {
         if (second() == previousSecond) return;
         previousSecond = second();
-        labels.get("lblHora").setText(String.format("%02d", hour()) + ":" + String.format("%02d", minute()) + ":" + String.format("%02d", second()));
+        labels.get("lblTime").setText(String.format("%02d", hour()) + ":" + String.format("%02d", minute()) + ":" + String.format("%02d", second()));
         if (day() == previousDay) return;
         previousDay = day();
-        labels.get("lblFecha").setText(String.format("%02d", day()) + "/" + String.format("%02d", month()) + "/" + year());
+        labels.get("lblDate").setText(String.format("%02d", day()) + "/" + String.format("%02d", month()) + "/" + year());
     }
 
     private List<ServerGroupDefinition> createOperationalGroups(HotAisleConfiguration configuration) {
@@ -690,8 +690,8 @@ public class Sketch extends PApplet {
             Indicator okSlotStatusIndicator = indicators.get("indSlotOk" + slotNumber);
             Indicator alertSlotStatusIndicator = indicators.get("indSlotAlert" + slotNumber);
             Indicator alertIndicator = indicatorsAlert.get("indAlert" + slotNumber);
-            Indicator aiSlotIndicator1 = indicatorsAiSlot.get("indSlotIA" + slotNumber + "-1");
-            Indicator aiSlotIndicator2 = indicators.get("indSlotIA" + slotNumber + "-2");
+            Indicator aiSlotIndicator1 = indicatorsAiSlot.get("indSlotAI" + slotNumber + "-1");
+            Indicator aiSlotIndicator2 = indicators.get("indSlotAI" + slotNumber + "-2");
             if (installedServer.isEmpty()) {
                 showEmptySlot(indSlot,
                         slotTemperatureLabel,
