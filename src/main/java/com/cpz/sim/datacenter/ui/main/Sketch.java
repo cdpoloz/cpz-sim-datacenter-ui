@@ -589,7 +589,7 @@ public class Sketch extends PApplet {
 
     private void showSelectedAisleHighlight() {
         indicatorsSelectedAisle.values().forEach(ind -> ind.setOn(false));
-        String selectedAisleIndicatorCode = "indPasilloElegido";
+        String selectedAisleIndicatorCode = "indSelectedAisle";
         switch (selectedHotAisle.code()) {
             case "HA01" -> selectedAisleIndicatorCode += "C01";
             case "HA02" -> selectedAisleIndicatorCode += "C02-C03";
@@ -851,7 +851,7 @@ public class Sketch extends PApplet {
         Label averageTemperatureLabel = labels.get("lblPasilloElegidoTemperaturaPromedioValor");
         Label maxTemperatureLabel = labels.get("lblPasilloElegidoTemperaturaMaximaValor");
         Label averageLoadLabel = labels.get("lblPasilloElegidoCargaITValor");
-        indicatorsSelectedAisleMaximumTemperatureServer.values().forEach(indicador -> indicador.setOn(false));
+        indicatorsSelectedAisleMaximumTemperatureServer.values().forEach(ind -> ind.setOn(false));
         if (!aisleSnapshot.hasInstalledServers()) {
             averageTemperatureLabel.setTextColor(COLOR_WHITE_LABEL);
             maxTemperatureLabel.setTextColor(COLOR_WHITE_LABEL);
@@ -878,15 +878,15 @@ public class Sketch extends PApplet {
         String maxTemperatureColumn = maxTemperatureLocation.column();
         String maxTemperatureSide;
         if (maxTemperatureColumn.equals(PROPS.getProperty("datacenter.first.column")))
-            maxTemperatureSide = "Der";
+            maxTemperatureSide = "Right";
         else if (maxTemperatureColumn.equals(PROPS.getProperty("datacenter.last.column")))
-            maxTemperatureSide = "Izq";
+            maxTemperatureSide = "Left";
         else {
             int columnNumber = Integer.parseInt(maxTemperatureColumn.replace("C", ""));
-            maxTemperatureSide = columnNumber % 2 == 0 ? "Izq" : "Der";
+            maxTemperatureSide = columnNumber % 2 == 0 ? "Left" : "Right";
         }
         String rackNumber = maxTemperatureLocation.rackCode().value().replace("R", "");
-        String indicatorCode = "indPasilloElegidoServidorTemperaturaMaxima" + maxTemperatureSide + rackNumber;
+        String indicatorCode = "indSelectedAisleMaximumTemperatureServer" + maxTemperatureSide + rackNumber;
         Indicator maxTemperatureIndicator = indicatorsSelectedAisleMaximumTemperatureServer.get(indicatorCode);
         if (maxTemperatureIndicator == null) throw new IllegalStateException("Missing maximum temperature indicator: " + indicatorCode);
         maxTemperatureIndicator.setOnColor(maxTemperatureColor);
@@ -926,7 +926,7 @@ public class Sketch extends PApplet {
                 0,
                 1);
         int temperatureEffectColor = Colors.lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, fColor);
-        indicators.get("indPasilloElegidoEfectoTemperatura").setOnColor(temperatureEffectColor);
+        indicators.get("indSelectedAisleTemperatureEffect").setOnColor(temperatureEffectColor);
     }
 
     private List<String> resolveAisleRackCodes(HotAisleDefinition aisle) {

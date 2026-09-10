@@ -1762,7 +1762,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoEfectoTemperatura",
+      "code": "indSelectedAisleTemperatureEffect",
       "bounds": {
         "mode": "relative",
         "x": 0.5362867188,

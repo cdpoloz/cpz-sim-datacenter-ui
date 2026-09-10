@@ -2,7 +2,7 @@
   "controls": [
     {
       "type": "indicator",
-      "code": "indPasilloElegidoC01",
+      "code": "indSelectedAisleC01",
       "bounds": {
         "mode": "relative",
         "x": 0.05607005208,
@@ -24,7 +24,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoC02-C03",
+      "code": "indSelectedAisleC02-C03",
       "bounds": {
         "mode": "relative",
         "x": 0.094034375,
@@ -46,7 +46,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoC04-C05",
+      "code": "indSelectedAisleC04-C05",
       "bounds": {
         "mode": "relative",
         "x": 0.1892625,
@@ -68,7 +68,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoC06-C07",
+      "code": "indSelectedAisleC06-C07",
       "bounds": {
         "mode": "relative",
         "x": 0.2838083333,
@@ -90,7 +90,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoC08",
+      "code": "indSelectedAisleC08",
       "bounds": {
         "mode": "relative",
         "x": 0.3856622396,
