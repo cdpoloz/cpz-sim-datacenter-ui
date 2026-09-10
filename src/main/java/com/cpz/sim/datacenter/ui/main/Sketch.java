@@ -1029,9 +1029,9 @@ public class Sketch extends PApplet {
             boolean aiRack
     ) {
         Indicator offlineIndicator = indicatorsRackCondition.get(rackIndicatorCode.replace("indRack", "indRackOffline"));
-        Indicator emptyIndicator = indicatorsRackCondition.get(rackIndicatorCode.replace("indRack", "indRackVacio"));
+        Indicator emptyIndicator = indicatorsRackCondition.get(rackIndicatorCode.replace("indRack", "indRackEmpty"));
         Indicator hotspotIndicator = indicatorsRackCondition.get(rackIndicatorCode.replace("indRack", "indRackHotspot"));
-        Indicator aiIndicator = indicatorsRackCondition.get(rackIndicatorCode.replace("indRack", "indRackIA"));
+        Indicator aiIndicator = indicatorsRackCondition.get(rackIndicatorCode.replace("indRack", "indRackAI"));
         offlineIndicator.setOn(rackOffline);
         emptyIndicator.setOn(emptyRack);
         hotspotIndicator.setOn(rackHotspot);
