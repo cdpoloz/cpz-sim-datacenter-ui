@@ -452,8 +452,8 @@ public class Sketch extends PApplet {
     private void btnClicked(String buttonCode) {
         if (buttonCode.startsWith("btnRackElegido"))
             updateSelectedRack(buttonCode.replace("btnRackElegido", ""));
-        else if (buttonCode.startsWith("btnColumnaElegida"))
-            updateSelectedColumn(buttonCode.replace("btnColumnaElegida", ""));
+        else if (buttonCode.startsWith("btnSelectedColumn"))
+            updateSelectedColumn(buttonCode.replace("btnSelectedColumn", ""));
         else if (buttonCode.startsWith("btnPlay")) {
             if (buttonCode.equals("btnPlayPlus")) {
                 increaseSimulationSpeed();
