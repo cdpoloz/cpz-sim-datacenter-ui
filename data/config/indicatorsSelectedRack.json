@@ -2,7 +2,7 @@
   "controls": [
     {
       "type": "indicator",
-      "code": "indRackElegidoIzq01",
+      "code": "indSelectedRackLeft01",
       "bounds": {
         "mode": "relative",
         "x": 0.5047958333,
@@ -24,7 +24,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoIzq02",
+      "code": "indSelectedRackLeft02",
       "bounds": {
         "mode": "relative",
         "x": 0.5029580729,
@@ -46,7 +46,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoIzq03",
+      "code": "indSelectedRackLeft03",
       "bounds": {
         "mode": "relative",
         "x": 0.5011627604,
@@ -68,7 +68,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoIzq04",
+      "code": "indSelectedRackLeft04",
       "bounds": {
         "mode": "relative",
         "x": 0.4993583333,
@@ -90,7 +90,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoIzq05",
+      "code": "indSelectedRackLeft05",
       "bounds": {
         "mode": "relative",
         "x": 0.4975453125,
@@ -112,7 +112,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoIzq06",
+      "code": "indSelectedRackLeft06",
       "bounds": {
         "mode": "relative",
         "x": 0.4955723958,
@@ -134,7 +134,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoIzq07",
+      "code": "indSelectedRackLeft07",
       "bounds": {
         "mode": "relative",
         "x": 0.4939369792,
@@ -156,7 +156,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoIzq08",
+      "code": "indSelectedRackLeft08",
       "bounds": {
         "mode": "relative",
         "x": 0.4921325521,
@@ -178,7 +178,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoIzq09",
+      "code": "indSelectedRackLeft09",
       "bounds": {
         "mode": "relative",
         "x": 0.490328125,
@@ -200,7 +200,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoIzq10",
+      "code": "indSelectedRackLeft10",
       "bounds": {
         "mode": "relative",
         "x": 0.4885236979,
@@ -222,7 +222,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoIzq11",
+      "code": "indSelectedRackLeft11",
       "bounds": {
         "mode": "relative",
         "x": 0.4867192708,
@@ -244,7 +244,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoIzq12",
+      "code": "indSelectedRackLeft12",
       "bounds": {
         "mode": "relative",
         "x": 0.4849229167,
@@ -266,7 +266,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoDer01",
+      "code": "indSelectedRackRight01",
       "bounds": {
         "mode": "relative",
         "x": 0.5643638021,
@@ -288,7 +288,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoDer02",
+      "code": "indSelectedRackRight02",
       "bounds": {
         "mode": "relative",
         "x": 0.5648830729,
@@ -310,7 +310,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoDer03",
+      "code": "indSelectedRackRight03",
       "bounds": {
         "mode": "relative",
         "x": 0.5654450521,
@@ -332,7 +332,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoDer04",
+      "code": "indSelectedRackRight04",
       "bounds": {
         "mode": "relative",
         "x": 0.56599375,
@@ -354,7 +354,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoDer05",
+      "code": "indSelectedRackRight05",
       "bounds": {
         "mode": "relative",
         "x": 0.5665385417,
@@ -376,7 +376,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoDer06",
+      "code": "indSelectedRackRight06",
       "bounds": {
         "mode": "relative",
         "x": 0.5669973958,
@@ -398,7 +398,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoDer07",
+      "code": "indSelectedRackRight07",
       "bounds": {
         "mode": "relative",
         "x": 0.5676414063,
@@ -420,7 +420,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoDer08",
+      "code": "indSelectedRackRight08",
       "bounds": {
         "mode": "relative",
         "x": 0.5681901042,
@@ -442,7 +442,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoDer09",
+      "code": "indSelectedRackRight09",
       "bounds": {
         "mode": "relative",
         "x": 0.5687385417,
@@ -464,7 +464,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoDer10",
+      "code": "indSelectedRackRight10",
       "bounds": {
         "mode": "relative",
         "x": 0.5692872396,
@@ -486,7 +486,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoDer11",
+      "code": "indSelectedRackRight11",
       "bounds": {
         "mode": "relative",
         "x": 0.5698359375,
@@ -508,7 +508,7 @@
     },
     {
       "type": "indicator",
-      "code": "indRackElegidoDer12",
+      "code": "indSelectedRackRight12",
       "bounds": {
         "mode": "relative",
         "x": 0.5703825521,

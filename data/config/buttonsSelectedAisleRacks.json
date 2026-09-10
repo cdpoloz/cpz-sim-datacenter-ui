@@ -2,7 +2,7 @@
   "controls": [
     {
       "type": "button",
-      "code": "btnRackElegidoIzq01",
+      "code": "btnSelectedRackLeft01",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -32,7 +32,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoIzq02",
+      "code": "btnSelectedRackLeft02",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -62,7 +62,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoIzq03",
+      "code": "btnSelectedRackLeft03",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -92,7 +92,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoIzq04",
+      "code": "btnSelectedRackLeft04",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -122,7 +122,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoIzq05",
+      "code": "btnSelectedRackLeft05",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -152,7 +152,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoIzq06",
+      "code": "btnSelectedRackLeft06",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -182,7 +182,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoIzq07",
+      "code": "btnSelectedRackLeft07",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -212,7 +212,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoIzq08",
+      "code": "btnSelectedRackLeft08",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -242,7 +242,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoIzq09",
+      "code": "btnSelectedRackLeft09",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -272,7 +272,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoIzq10",
+      "code": "btnSelectedRackLeft10",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -302,7 +302,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoIzq11",
+      "code": "btnSelectedRackLeft11",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -332,7 +332,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoIzq12",
+      "code": "btnSelectedRackLeft12",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -362,7 +362,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoDer01",
+      "code": "btnSelectedRackRight01",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -392,7 +392,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoDer02",
+      "code": "btnSelectedRackRight02",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -422,7 +422,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoDer03",
+      "code": "btnSelectedRackRight03",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -452,7 +452,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoDer04",
+      "code": "btnSelectedRackRight04",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -482,7 +482,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoDer05",
+      "code": "btnSelectedRackRight05",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -512,7 +512,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoDer06",
+      "code": "btnSelectedRackRight06",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -542,7 +542,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoDer07",
+      "code": "btnSelectedRackRight07",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -572,7 +572,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoDer08",
+      "code": "btnSelectedRackRight08",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -602,7 +602,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoDer09",
+      "code": "btnSelectedRackRight09",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -632,7 +632,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoDer10",
+      "code": "btnSelectedRackRight10",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -662,7 +662,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoDer11",
+      "code": "btnSelectedRackRight11",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -692,7 +692,7 @@
     },
     {
       "type": "button",
-      "code": "btnRackElegidoDer12",
+      "code": "btnSelectedRackRight12",
       "text": "",
       "bounds": {
         "mode": "relative",

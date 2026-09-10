@@ -450,8 +450,8 @@ public class Sketch extends PApplet {
     }
 
     private void btnClicked(String buttonCode) {
-        if (buttonCode.startsWith("btnRackElegido"))
-            updateSelectedRack(buttonCode.replace("btnRackElegido", ""));
+        if (buttonCode.startsWith("btnSelectedRack"))
+            updateSelectedRack(buttonCode.replace("btnSelectedRack", ""));
         else if (buttonCode.startsWith("btnSelectedColumn"))
             updateSelectedColumn(buttonCode.replace("btnSelectedColumn", ""));
         else if (buttonCode.startsWith("btnPlay")) {
@@ -557,10 +557,10 @@ public class Sketch extends PApplet {
     }
 
     private void updateSelectedRack(String clickedRack) {
-        selectedRack = "R" + clickedRack.toLowerCase().replace("der", "").replace("izq", "");
+        selectedRack = "R" + clickedRack.toLowerCase().replace("right", "").replace("left", "");
         if (!selectedColumn.equals(PROPS.getProperty("datacenter.first.column")) && !selectedColumn.equals(PROPS.getProperty("datacenter.last.column"))) {
-            if (clickedRack.toLowerCase().contains("izq")) selectedColumn = selectedHotAisle.columns().getFirst();
-            else if (clickedRack.toLowerCase().contains("der")) selectedColumn = selectedHotAisle.columns().getLast();
+            if (clickedRack.toLowerCase().contains("left")) selectedColumn = selectedHotAisle.columns().getFirst();
+            else if (clickedRack.toLowerCase().contains("right")) selectedColumn = selectedHotAisle.columns().getLast();
         }
         showSelectedRackHighlight();
     }
@@ -574,13 +574,13 @@ public class Sketch extends PApplet {
 
     private void showSelectedRackHighlight() {
         int i = Integer.parseInt(selectedColumn.replace("C", ""));
-        String side = i % 2 == 0 ? "Izq" : "Der";
-        String selectedRackIndicatorCode = "indRackElegido" + side + selectedRack.replace("R", "");
+        String side = i % 2 == 0 ? "Left" : "Right";
+        String selectedRackIndicatorCode = "indSelectedRack" + side + selectedRack.replace("R", "");
         String selectedButtonCode = selectedRackIndicatorCode.replace("ind", "btn");
         for (Button btn : buttonsSelectedAisleRack.values()) {
-            if (selectedColumn.equals(PROPS.getProperty("datacenter.first.column")) && btn.getCode().toLowerCase().contains("izq"))
+            if (selectedColumn.equals(PROPS.getProperty("datacenter.first.column")) && btn.getCode().toLowerCase().contains("left"))
                 btn.setVisible(false);
-            else if (selectedColumn.equals(PROPS.getProperty("datacenter.last.column")) && btn.getCode().toLowerCase().contains("der"))
+            else if (selectedColumn.equals(PROPS.getProperty("datacenter.last.column")) && btn.getCode().toLowerCase().contains("right"))
                 btn.setVisible(false);
             else btn.setVisible(!btn.getCode().equals(selectedButtonCode));
         }
