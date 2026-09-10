@@ -331,8 +331,8 @@ public class Sketch extends PApplet {
         simpleTemperatureFormat = PROPS.getProperty("number.format.temperature.simple");
         powerKwFormat = PROPS.getProperty("number.format.power.kw");
         powerMwFormat = PROPS.getProperty("number.format.power.mw");
-        speedFormat = PROPS.getProperty("number.format.velocidad");
-        pressureFormat = PROPS.getProperty("number.format.presion");
+        speedFormat = PROPS.getProperty("number.format.speed");
+        pressureFormat = PROPS.getProperty("number.format.pressure");
         airflowFormat = PROPS.getProperty("number.format.airflow");
         labels.get("lblRoomTemperatureScale01").setText(String.format(simpleTemperatureFormat, minServerTemperatureCelsius));
         for (int i = 0; i < 5; i++) {
