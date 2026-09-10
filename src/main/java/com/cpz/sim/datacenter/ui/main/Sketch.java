@@ -685,11 +685,11 @@ public class Sketch extends PApplet {
             Label slotLoadLabel = labels.get("lblSlotCarga" + slotNumber);
             Label slotPowerLabel = labels.get("lblSlotPotencia" + slotNumber);
             Indicator indSlot = indicators.get("indSlot" + slotNumber);
-            Indicator emptySlotIndicator = indicators.get("indSlotVacio" + slotNumber);
+            Indicator emptySlotIndicator = indicators.get("indSlotEmpty" + slotNumber);
             Indicator indSlotOffline = indicators.get("indSlotOffline" + slotNumber);
             Indicator okSlotStatusIndicator = indicators.get("indSlotOk" + slotNumber);
-            Indicator alertSlotStatusIndicator = indicators.get("indSlotAlerta" + slotNumber);
-            Indicator alertIndicator = indicatorsAlert.get("indAlerta" + slotNumber);
+            Indicator alertSlotStatusIndicator = indicators.get("indSlotAlert" + slotNumber);
+            Indicator alertIndicator = indicatorsAlert.get("indAlert" + slotNumber);
             Indicator aiSlotIndicator1 = indicatorsAiSlot.get("indSlotIA" + slotNumber + "-1");
             Indicator aiSlotIndicator2 = indicators.get("indSlotIA" + slotNumber + "-2");
             if (installedServer.isEmpty()) {

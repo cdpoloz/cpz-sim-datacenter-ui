@@ -794,7 +794,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta01",
+      "code": "indSlotAlert01",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -816,7 +816,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta02",
+      "code": "indSlotAlert02",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -838,7 +838,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta03",
+      "code": "indSlotAlert03",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -860,7 +860,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta04",
+      "code": "indSlotAlert04",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -882,7 +882,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta05",
+      "code": "indSlotAlert05",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -904,7 +904,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta06",
+      "code": "indSlotAlert06",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -926,7 +926,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta07",
+      "code": "indSlotAlert07",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -948,7 +948,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta08",
+      "code": "indSlotAlert08",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -970,7 +970,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta09",
+      "code": "indSlotAlert09",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -992,7 +992,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta10",
+      "code": "indSlotAlert10",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1014,7 +1014,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta11",
+      "code": "indSlotAlert11",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1036,7 +1036,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta12",
+      "code": "indSlotAlert12",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1322,7 +1322,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio01",
+      "code": "indSlotEmpty01",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1344,7 +1344,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio02",
+      "code": "indSlotEmpty02",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1366,7 +1366,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio03",
+      "code": "indSlotEmpty03",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1388,7 +1388,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio04",
+      "code": "indSlotEmpty04",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1410,7 +1410,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio05",
+      "code": "indSlotEmpty05",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1432,7 +1432,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio06",
+      "code": "indSlotEmpty06",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1454,7 +1454,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio07",
+      "code": "indSlotEmpty07",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1476,7 +1476,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio08",
+      "code": "indSlotEmpty08",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1498,7 +1498,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio09",
+      "code": "indSlotEmpty09",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1520,7 +1520,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio10",
+      "code": "indSlotEmpty10",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1542,7 +1542,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio11",
+      "code": "indSlotEmpty11",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1564,7 +1564,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio12",
+      "code": "indSlotEmpty12",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
