@@ -2,7 +2,7 @@
   "controls": [
     {
       "type": "button",
-      "code": "btnPlayMenos",
+      "code": "btnPlayMinus",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -32,7 +32,7 @@
     },
     {
       "type": "button",
-      "code": "btnPlayMas",
+      "code": "btnPlayPlus",
       "text": "",
       "bounds": {
         "mode": "relative",
