@@ -402,10 +402,10 @@ public class Sketch extends PApplet {
         boolean simulationRunning = simulationTimer.isRunning();
         String speedLabel = formatSimulationSpeedFactor();
         labels.get("lblSimulacionValor").setText(simulationRunning ? "Running " + speedLabel : "Stopped " + speedLabel);
-        Button btnPlayMenos = buttonsPlay.get("btnPlayMenos");
-        if (btnPlayMenos != null) btnPlayMenos.setEnabled(simulationSpeedFactorIndex > 0);
-        Button btnPlayMas = buttonsPlay.get("btnPlayMas");
-        if (btnPlayMas != null) btnPlayMas.setEnabled(simulationSpeedFactorIndex < simulationSpeedFactors.size() - 1);
+        Button btnPlayMinus = buttonsPlay.get("btnPlayMinus");
+        if (btnPlayMinus != null) btnPlayMinus.setEnabled(simulationSpeedFactorIndex > 0);
+        Button btnPlayPlus = buttonsPlay.get("btnPlayPlus");
+        if (btnPlayPlus != null) btnPlayPlus.setEnabled(simulationSpeedFactorIndex < simulationSpeedFactors.size() - 1);
     }
 
     private String formatSimulationSpeedFactor() {
@@ -455,11 +455,11 @@ public class Sketch extends PApplet {
         else if (buttonCode.startsWith("btnColumnaElegida"))
             updateSelectedColumn(buttonCode.replace("btnColumnaElegida", ""));
         else if (buttonCode.startsWith("btnPlay")) {
-            if (buttonCode.equals("btnPlayMas")) {
+            if (buttonCode.equals("btnPlayPlus")) {
                 increaseSimulationSpeed();
                 return;
             }
-            if (buttonCode.equals("btnPlayMenos")) {
+            if (buttonCode.equals("btnPlayMinus")) {
                 decreaseSimulationSpeed();
                 return;
             }
