@@ -2252,7 +2252,7 @@
     },
     {
       "type": "label",
-      "code": "lblSala",
+      "code": "lblRoom",
       "text": "DATACENTER MAP",
       "bounds": {
         "mode": "relative",
@@ -2277,7 +2277,7 @@
     },
     {
       "type": "label",
-      "code": "lblSalaEscalaTemperatura",
+      "code": "lblRoomTemperatureScale",
       "text": "TEMPERATURE",
       "bounds": {
         "mode": "relative",
@@ -2302,7 +2302,7 @@
     },
     {
       "type": "label",
-      "code": "lblSalaEscalaTemperatura01",
+      "code": "lblRoomTemperatureScale01",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -2327,7 +2327,7 @@
     },
     {
       "type": "label",
-      "code": "lblSalaEscalaTemperatura02",
+      "code": "lblRoomTemperatureScale02",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -2352,7 +2352,7 @@
     },
     {
       "type": "label",
-      "code": "lblSalaEscalaTemperatura03",
+      "code": "lblRoomTemperatureScale03",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -2377,7 +2377,7 @@
     },
     {
       "type": "label",
-      "code": "lblSalaEscalaTemperatura04",
+      "code": "lblRoomTemperatureScale04",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -2402,7 +2402,7 @@
     },
     {
       "type": "label",
-      "code": "lblSalaEscalaTemperatura05",
+      "code": "lblRoomTemperatureScale05",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -2427,7 +2427,7 @@
     },
     {
       "type": "label",
-      "code": "lblSalaEscalaTemperatura06",
+      "code": "lblRoomTemperatureScale06",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -2452,7 +2452,7 @@
     },
     {
       "type": "label",
-      "code": "lblColumna01",
+      "code": "lblColumn01",
       "text": "C01",
       "bounds": {
         "mode": "relative",
@@ -2477,7 +2477,7 @@
     },
     {
       "type": "label",
-      "code": "lblColumna02",
+      "code": "lblColumn02",
       "text": "C02",
       "bounds": {
         "mode": "relative",
@@ -2502,7 +2502,7 @@
     },
     {
       "type": "label",
-      "code": "lblColumna03",
+      "code": "lblColumn03",
       "text": "C03",
       "bounds": {
         "mode": "relative",
@@ -2527,7 +2527,7 @@
     },
     {
       "type": "label",
-      "code": "lblColumna04",
+      "code": "lblColumn04",
       "text": "C04",
       "bounds": {
         "mode": "relative",
@@ -2552,7 +2552,7 @@
     },
     {
       "type": "label",
-      "code": "lblColumna05",
+      "code": "lblColumn05",
       "text": "C05",
       "bounds": {
         "mode": "relative",
@@ -2577,7 +2577,7 @@
     },
     {
       "type": "label",
-      "code": "lblColumna06",
+      "code": "lblColumn06",
       "text": "C06",
       "bounds": {
         "mode": "relative",
@@ -2602,7 +2602,7 @@
     },
     {
       "type": "label",
-      "code": "lblColumna07",
+      "code": "lblColumn07",
       "text": "C07",
       "bounds": {
         "mode": "relative",
@@ -2627,7 +2627,7 @@
     },
     {
       "type": "label",
-      "code": "lblColumna08",
+      "code": "lblColumn08",
       "text": "C08",
       "bounds": {
         "mode": "relative",
@@ -2652,7 +2652,7 @@
     },
     {
       "type": "label",
-      "code": "lblFila01",
+      "code": "lblRow01",
       "text": "R01",
       "bounds": {
         "mode": "relative",
@@ -2677,7 +2677,7 @@
     },
     {
       "type": "label",
-      "code": "lblFila02",
+      "code": "lblRow02",
       "text": "R02",
       "bounds": {
         "mode": "relative",
@@ -2702,7 +2702,7 @@
     },
     {
       "type": "label",
-      "code": "lblFila03",
+      "code": "lblRow03",
       "text": "R03",
       "bounds": {
         "mode": "relative",
@@ -2727,7 +2727,7 @@
     },
     {
       "type": "label",
-      "code": "lblFila04",
+      "code": "lblRow04",
       "text": "R04",
       "bounds": {
         "mode": "relative",
@@ -2752,7 +2752,7 @@
     },
     {
       "type": "label",
-      "code": "lblFila05",
+      "code": "lblRow05",
       "text": "R05",
       "bounds": {
         "mode": "relative",
@@ -2777,7 +2777,7 @@
     },
     {
       "type": "label",
-      "code": "lblFila06",
+      "code": "lblRow06",
       "text": "R06",
       "bounds": {
         "mode": "relative",
@@ -2802,7 +2802,7 @@
     },
     {
       "type": "label",
-      "code": "lblFila07",
+      "code": "lblRow07",
       "text": "R07",
       "bounds": {
         "mode": "relative",
@@ -2827,7 +2827,7 @@
     },
     {
       "type": "label",
-      "code": "lblFila08",
+      "code": "lblRow08",
       "text": "R08",
       "bounds": {
         "mode": "relative",
@@ -2852,7 +2852,7 @@
     },
     {
       "type": "label",
-      "code": "lblFila09",
+      "code": "lblRow09",
       "text": "R09",
       "bounds": {
         "mode": "relative",
@@ -2877,7 +2877,7 @@
     },
     {
       "type": "label",
-      "code": "lblFila10",
+      "code": "lblRow10",
       "text": "R10",
       "bounds": {
         "mode": "relative",
@@ -2902,7 +2902,7 @@
     },
     {
       "type": "label",
-      "code": "lblFila11",
+      "code": "lblRow11",
       "text": "R11",
       "bounds": {
         "mode": "relative",
@@ -2927,7 +2927,7 @@
     },
     {
       "type": "label",
-      "code": "lblFila12",
+      "code": "lblRow12",
       "text": "R12",
       "bounds": {
         "mode": "relative",
@@ -2952,7 +2952,7 @@
     },
     {
       "type": "label",
-      "code": "lblVentilador",
+      "code": "lblSupply",
       "text": "SUPPLY UNIT",
       "bounds": {
         "mode": "relative",
@@ -2977,7 +2977,7 @@
     },
     {
       "type": "label",
-      "code": "lblExtractor",
+      "code": "lblExhaust",
       "text": "EXHAUST UNIT",
       "bounds": {
         "mode": "relative",
@@ -3077,7 +3077,7 @@
     },
     {
       "type": "label",
-      "code": "lblVacio",
+      "code": "lblEmpty",
       "text": "EMPTY",
       "bounds": {
         "mode": "relative",
@@ -3102,7 +3102,7 @@
     },
     {
       "type": "label",
-      "code": "lblSalaServidoresTotal",
+      "code": "lblRoomTotalServers",
       "text": "INSTALLED SERVERS",
       "bounds": {
         "mode": "relative",
@@ -3127,7 +3127,7 @@
     },
     {
       "type": "label",
-      "code": "lblSalaServidoresTotalValor",
+      "code": "lblRoomTotalServersValue",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -3152,7 +3152,7 @@
     },
     {
       "type": "label",
-      "code": "lblSalaServidoresOnline",
+      "code": "lblRoomOnlineServers",
       "text": "ONLINE SERVERS",
       "bounds": {
         "mode": "relative",
@@ -3177,7 +3177,7 @@
     },
     {
       "type": "label",
-      "code": "lblSalaServidoresOnlineValor",
+      "code": "lblRoomOnlineServersValue",
       "text": "--",
       "bounds": {
         "mode": "relative",

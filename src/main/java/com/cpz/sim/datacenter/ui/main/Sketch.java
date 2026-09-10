@@ -334,13 +334,13 @@ public class Sketch extends PApplet {
         speedFormat = PROPS.getProperty("number.format.velocidad");
         pressureFormat = PROPS.getProperty("number.format.presion");
         airflowFormat = PROPS.getProperty("number.format.airflow");
-        labels.get("lblSalaEscalaTemperatura01").setText(String.format(simpleTemperatureFormat, minServerTemperatureCelsius));
+        labels.get("lblRoomTemperatureScale01").setText(String.format(simpleTemperatureFormat, minServerTemperatureCelsius));
         for (int i = 0; i < 5; i++) {
             float temperature = map(i, 0, 5, minServerTemperatureCelsius, maxServerTemperatureCelsius);
-            String temperatureScaleLabelCode = "lblSalaEscalaTemperatura0" + (i + 1);
+            String temperatureScaleLabelCode = "lblRoomTemperatureScale0" + (i + 1);
             labels.get(temperatureScaleLabelCode).setText(String.format(simpleTemperatureFormat, temperature));
         }
-        labels.get("lblSalaEscalaTemperatura06").setText(String.format(simpleTemperatureFormat, maxServerTemperatureCelsius));
+        labels.get("lblRoomTemperatureScale06").setText(String.format(simpleTemperatureFormat, maxServerTemperatureCelsius));
         int totalInstalledServers = operationalSnapshot.racks()
                 .values()
                 .stream()
@@ -351,8 +351,8 @@ public class Sketch extends PApplet {
                 .stream()
                 .mapToInt(RackOperationalSnapshot::onlineServerCount)
                 .sum();
-        labels.get("lblSalaServidoresTotalValor").setText(String.valueOf(totalInstalledServers));
-        labels.get("lblSalaServidoresOnlineValor").setText(String.valueOf(totalOnlineServers));
+        labels.get("lblRoomTotalServersValue").setText(String.valueOf(totalInstalledServers));
+        labels.get("lblRoomOnlineServersValue").setText(String.valueOf(totalOnlineServers));
         labels.get("lblFecha").setText(String.format("%02d", day()) + "/" + String.format("%02d", month()) + "/" + year());
         labels.get("lblHora").setText(String.format("%02d", hour()) + ":" + String.format("%02d", minute()) + ":" + String.format("%02d", second()));
         // debug
@@ -418,7 +418,7 @@ public class Sketch extends PApplet {
         // single-room layout for now; refresh here when room switching is added
         String s = "DATACENTER MAP";
         if (roomName != null && !roomName.isEmpty()) s += (" - " + roomName);
-        labels.get("lblSala").setText(s);
+        labels.get("lblRoom").setText(s);
         updateDateTime();
     }
 
