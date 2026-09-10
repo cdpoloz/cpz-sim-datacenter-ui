@@ -107,4 +107,44 @@ public class UiComponentContainer {
     public Map<String, Toggle> toggles() {
         return toggles;
     }
+
+    public Map<String, Label> labels() {
+        return labels;
+    }
+
+    public Map<String, Indicator> indicatorsSelectedAisle() {
+        return indicatorsSelectedAisle;
+    }
+
+    public Map<String, Indicator> indicatorsSelectedRack() {
+        return indicatorsSelectedRack;
+    }
+
+    public Map<String, Indicator> indicators() {
+        return indicators;
+    }
+
+    public Map<String, Indicator> indicatorsAlert() {
+        return indicatorsAlert;
+    }
+
+    public Map<String, Indicator> indicatorsAiSlot() {
+        return indicatorsAiSlot;
+    }
+
+    public Map<String, Indicator> indicatorsNullAisle() {
+        return indicatorsNullAisle;
+    }
+
+    public Map<String, Indicator> indicatorsSelectedAisleMaximumTemperatureServer() {
+        return indicatorsSelectedAisleMaximumTemperatureServer;
+    }
+
+    public Map<String, Indicator> indicatorsRack() {
+        return indicatorsRack;
+    }
+
+    public Map<String, Indicator> indicatorsRackCondition() {
+        return indicatorsRackCondition;
+    }
 }
