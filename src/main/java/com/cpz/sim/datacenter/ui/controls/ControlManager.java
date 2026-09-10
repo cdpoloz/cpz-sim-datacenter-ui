@@ -1,8 +1,7 @@
 package com.cpz.sim.datacenter.ui.controls;
 
-import com.cpz.processing.controls.controls.Control;
 import com.cpz.processing.controls.controls.config.ControlConfigLoader;
-import com.cpz.processing.controls.controls.label.Label;
+import com.cpz.processing.controls.controls.toggle.Toggle;
 import com.cpz.processing.controls.core.input.InputManager;
 import com.cpz.processing.controls.core.overlay.OverlayManager;
 import com.cpz.sim.datacenter.ui.app.ApplicationComponent;
@@ -11,9 +10,7 @@ import com.cpz.sim.datacenter.ui.app.Initializable;
 import com.cpz.sim.datacenter.ui.input.MainInputLayer;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -28,6 +25,7 @@ public class ControlManager extends ApplicationComponent implements Initializabl
     private final InputManager inputManager;
     private final MainInputLayer mainInputLayer;
     private final Consumer<String> buttonClickHandler;
+    private final BiConsumer<Toggle, Integer> toggleChangeHandler;
 
     public ControlManager(
             ApplicationContext context,
@@ -35,7 +33,8 @@ public class ControlManager extends ApplicationComponent implements Initializabl
             OverlayManager overlayManager,
             InputManager inputManager,
             MainInputLayer mainInputLayer,
-            Consumer<String> buttonClickHandler
+            Consumer<String> buttonClickHandler,
+            BiConsumer<Toggle, Integer> toggleChangeHandler
     ) {
         super(context);
         this.container = container;
@@ -43,6 +42,7 @@ public class ControlManager extends ApplicationComponent implements Initializabl
         this.inputManager = inputManager;
         this.mainInputLayer = mainInputLayer;
         this.buttonClickHandler = buttonClickHandler;
+        this.toggleChangeHandler = toggleChangeHandler;
         loader = new ControlLoader(context);
     }
 
@@ -92,7 +92,12 @@ public class ControlManager extends ApplicationComponent implements Initializabl
     }
 
     private void loadToggles() {
-
+        ControlConfigLoader controlConfigLoader = new ControlConfigLoader(sketch(), overlayManager, inputManager);
+        container.setToggles(loader.loadToggles(controlConfigLoader, CONFIG_PATH + "toggles.json"));
+        container.toggles().values().forEach(toggle -> {
+            mainInputLayer.addPointerTarget(toggle::handlePointerEvent);
+            toggle.setChangeListener(state -> toggleChangeHandler.accept(toggle, state));
+        });
     }
 
 }
