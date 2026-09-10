@@ -2,7 +2,7 @@
   "controls": [
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq01",
+      "code": "indSelectedAisleMaximumTemperatureServerLeft01",
       "bounds": {
         "mode": "relative",
         "x": 0.5097796875,
@@ -24,7 +24,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq02",
+      "code": "indSelectedAisleMaximumTemperatureServerLeft02",
       "bounds": {
         "mode": "relative",
         "x": 0.5080588542,
@@ -46,7 +46,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq03",
+      "code": "indSelectedAisleMaximumTemperatureServerLeft03",
       "bounds": {
         "mode": "relative",
         "x": 0.5063510417,
@@ -68,7 +68,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq04",
+      "code": "indSelectedAisleMaximumTemperatureServerLeft04",
       "bounds": {
         "mode": "relative",
         "x": 0.5046401042,
@@ -90,7 +90,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq05",
+      "code": "indSelectedAisleMaximumTemperatureServerLeft05",
       "bounds": {
         "mode": "relative",
         "x": 0.50293125,
@@ -112,7 +112,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq06",
+      "code": "indSelectedAisleMaximumTemperatureServerLeft06",
       "bounds": {
         "mode": "relative",
         "x": 0.5012221354,
@@ -134,7 +134,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq07",
+      "code": "indSelectedAisleMaximumTemperatureServerLeft07",
       "bounds": {
         "mode": "relative",
         "x": 0.4995130208,
@@ -156,7 +156,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq08",
+      "code": "indSelectedAisleMaximumTemperatureServerLeft08",
       "bounds": {
         "mode": "relative",
         "x": 0.4978039063,
@@ -178,7 +178,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq09",
+      "code": "indSelectedAisleMaximumTemperatureServerLeft09",
       "bounds": {
         "mode": "relative",
         "x": 0.4960945313,
@@ -200,7 +200,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq10",
+      "code": "indSelectedAisleMaximumTemperatureServerLeft10",
       "bounds": {
         "mode": "relative",
         "x": 0.494854167,
@@ -222,7 +222,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq11",
+      "code": "indSelectedAisleMaximumTemperatureServerLeft11",
       "bounds": {
         "mode": "relative",
         "x": 0.4926763021,
@@ -244,7 +244,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaIzq12",
+      "code": "indSelectedAisleMaximumTemperatureServerLeft12",
       "bounds": {
         "mode": "relative",
         "x": 0.4909669271,
@@ -266,7 +266,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaDer01",
+      "code": "indSelectedAisleMaximumTemperatureServerRight01",
       "bounds": {
         "mode": "relative",
         "x": 0.5693533854,
@@ -288,7 +288,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaDer02",
+      "code": "indSelectedAisleMaximumTemperatureServerRight02",
       "bounds": {
         "mode": "relative",
         "x": 0.5699973958,
@@ -310,7 +310,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaDer03",
+      "code": "indSelectedAisleMaximumTemperatureServerRight03",
       "bounds": {
         "mode": "relative",
         "x": 0.5706414063,
@@ -332,7 +332,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaDer04",
+      "code": "indSelectedAisleMaximumTemperatureServerRight04",
       "bounds": {
         "mode": "relative",
         "x": 0.5712854167,
@@ -354,7 +354,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaDer05",
+      "code": "indSelectedAisleMaximumTemperatureServerRight05",
       "bounds": {
         "mode": "relative",
         "x": 0.5719294271,
@@ -376,7 +376,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaDer06",
+      "code": "indSelectedAisleMaximumTemperatureServerRight06",
       "bounds": {
         "mode": "relative",
         "x": 0.5725734375,
@@ -398,7 +398,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaDer07",
+      "code": "indSelectedAisleMaximumTemperatureServerRight07",
       "bounds": {
         "mode": "relative",
         "x": 0.5732174479,
@@ -420,7 +420,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaDer08",
+      "code": "indSelectedAisleMaximumTemperatureServerRight08",
       "bounds": {
         "mode": "relative",
         "x": 0.5738614583,
@@ -442,7 +442,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaDer09",
+      "code": "indSelectedAisleMaximumTemperatureServerRight09",
       "bounds": {
         "mode": "relative",
         "x": 0.5745054688,
@@ -464,7 +464,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaDer10",
+      "code": "indSelectedAisleMaximumTemperatureServerRight10",
       "bounds": {
         "mode": "relative",
         "x": 0.5751494792,
@@ -486,7 +486,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaDer11",
+      "code": "indSelectedAisleMaximumTemperatureServerRight11",
       "bounds": {
         "mode": "relative",
         "x": 0.5757934896,
@@ -508,7 +508,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoServidorTemperaturaMaximaDer12",
+      "code": "indSelectedAisleMaximumTemperatureServerRight12",
       "bounds": {
         "mode": "relative",
         "x": 0.5764375,

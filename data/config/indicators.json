@@ -266,7 +266,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA01-2",
+      "code": "indSlotAI01-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -288,7 +288,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA02-2",
+      "code": "indSlotAI02-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -310,7 +310,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA03-2",
+      "code": "indSlotAI03-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -332,7 +332,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA04-2",
+      "code": "indSlotAI04-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -354,7 +354,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA05-2",
+      "code": "indSlotAI05-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -376,7 +376,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA06-2",
+      "code": "indSlotAI06-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -398,7 +398,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA07-2",
+      "code": "indSlotAI07-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -420,7 +420,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA08-2",
+      "code": "indSlotAI08-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -442,7 +442,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA09-2",
+      "code": "indSlotAI09-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -464,7 +464,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA10-2",
+      "code": "indSlotAI10-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -486,7 +486,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA11-2",
+      "code": "indSlotAI11-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -508,7 +508,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotIA12-2",
+      "code": "indSlotAI12-2",
       "bounds": {
         "mode": "relative",
         "x": 0.9466325521,
@@ -794,7 +794,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta01",
+      "code": "indSlotAlert01",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -816,7 +816,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta02",
+      "code": "indSlotAlert02",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -838,7 +838,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta03",
+      "code": "indSlotAlert03",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -860,7 +860,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta04",
+      "code": "indSlotAlert04",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -882,7 +882,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta05",
+      "code": "indSlotAlert05",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -904,7 +904,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta06",
+      "code": "indSlotAlert06",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -926,7 +926,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta07",
+      "code": "indSlotAlert07",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -948,7 +948,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta08",
+      "code": "indSlotAlert08",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -970,7 +970,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta09",
+      "code": "indSlotAlert09",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -992,7 +992,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta10",
+      "code": "indSlotAlert10",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1014,7 +1014,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta11",
+      "code": "indSlotAlert11",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1036,7 +1036,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotAlerta12",
+      "code": "indSlotAlert12",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1322,7 +1322,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio01",
+      "code": "indSlotEmpty01",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1344,7 +1344,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio02",
+      "code": "indSlotEmpty02",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1366,7 +1366,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio03",
+      "code": "indSlotEmpty03",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1388,7 +1388,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio04",
+      "code": "indSlotEmpty04",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1410,7 +1410,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio05",
+      "code": "indSlotEmpty05",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1432,7 +1432,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio06",
+      "code": "indSlotEmpty06",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1454,7 +1454,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio07",
+      "code": "indSlotEmpty07",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1476,7 +1476,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio08",
+      "code": "indSlotEmpty08",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1498,7 +1498,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio09",
+      "code": "indSlotEmpty09",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1520,7 +1520,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio10",
+      "code": "indSlotEmpty10",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1542,7 +1542,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio11",
+      "code": "indSlotEmpty11",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1564,7 +1564,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSlotVacio12",
+      "code": "indSlotEmpty12",
       "bounds": {
         "mode": "relative",
         "x": 0.9329341146,
@@ -1586,7 +1586,7 @@
     },
     {
       "type": "indicator",
-      "code": "indBarraRackElegidoPotencia1",
+      "code": "indSelectedRackPowerBar1",
       "bounds": {
         "mode": "relative",
         "x": 0.9235104167,
@@ -1608,7 +1608,7 @@
     },
     {
       "type": "indicator",
-      "code": "indBarraRackElegidoPotencia2",
+      "code": "indSelectedRackPowerBar2",
       "bounds": {
         "mode": "relative",
         "x": 0.9273916667,
@@ -1630,7 +1630,7 @@
     },
     {
       "type": "indicator",
-      "code": "indBarraRackElegidoPotencia3",
+      "code": "indSelectedRackPowerBar3",
       "bounds": {
         "mode": "relative",
         "x": 0.9312731771,
@@ -1652,7 +1652,7 @@
     },
     {
       "type": "indicator",
-      "code": "indBarraRackElegidoPotencia4",
+      "code": "indSelectedRackPowerBar4",
       "bounds": {
         "mode": "relative",
         "x": 0.9351544271,
@@ -1674,7 +1674,7 @@
     },
     {
       "type": "indicator",
-      "code": "indBarraRackElegidoPotencia5",
+      "code": "indSelectedRackPowerBar5",
       "bounds": {
         "mode": "relative",
         "x": 0.9390359375,
@@ -1696,7 +1696,7 @@
     },
     {
       "type": "indicator",
-      "code": "indBarraRackElegidoPotencia6",
+      "code": "indSelectedRackPowerBar6",
       "bounds": {
         "mode": "relative",
         "x": 0.9429174479,
@@ -1718,7 +1718,7 @@
     },
     {
       "type": "indicator",
-      "code": "indFlechasAireFrioIzq",
+      "code": "indColdAirArrowsLeft",
       "bounds": {
         "mode": "relative",
         "x": 0.4795546875,
@@ -1740,7 +1740,7 @@
     },
     {
       "type": "indicator",
-      "code": "indFlechasAireFrioDer",
+      "code": "indColdAirArrowsRight",
       "bounds": {
         "mode": "relative",
         "x": 0.5950515625,
@@ -1762,7 +1762,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloElegidoEfectoTemperatura",
+      "code": "indSelectedAisleTemperatureEffect",
       "bounds": {
         "mode": "relative",
         "x": 0.5362867188,
@@ -1784,7 +1784,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSalaPasilloCalienteC01",
+      "code": "indRoomHotAisleC01",
       "bounds": {
         "mode": "relative",
         "x": 0.04119348958,
@@ -1806,7 +1806,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSalaPasilloCalienteC02-C03",
+      "code": "indRoomHotAisleC02-C03",
       "bounds": {
         "mode": "relative",
         "x": 0.1360802083,
@@ -1828,7 +1828,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSalaPasilloCalienteC04-C05",
+      "code": "indRoomHotAisleC04-C05",
       "bounds": {
         "mode": "relative",
         "x": 0.2309671875,
@@ -1850,7 +1850,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSalaPasilloCalienteC06-C07",
+      "code": "indRoomHotAisleC06-C07",
       "bounds": {
         "mode": "relative",
         "x": 0.3258541667,
@@ -1872,7 +1872,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSalaPasilloCalienteC08",
+      "code": "indRoomHotAisleC08",
       "bounds": {
         "mode": "relative",
         "x": 0.4207414063,

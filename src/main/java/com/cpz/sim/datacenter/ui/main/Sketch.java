@@ -315,7 +315,7 @@ public class Sketch extends PApplet {
                 .stream()
                 .filter(unit -> unit.type() == CoolingUnitType.SUPPLY)
                 .forEach(unit -> {
-                    String tglCode = unit.unitCode().replace("SUPPLY-", "tglSalaVentilador");
+                    String tglCode = unit.unitCode().replace("SUPPLY-", "tglSupply");
                     supplyToggleCodes.add(tglCode);
                 });
         exhaustToggleCodes = new ArrayList<>();
@@ -323,7 +323,7 @@ public class Sketch extends PApplet {
                 .stream()
                 .filter(unit -> unit.type() == CoolingUnitType.EXHAUST)
                 .forEach(unit -> {
-                    String tglCode = unit.unitCode().replace("EXHAUST-", "tglSalaExtractor");
+                    String tglCode = unit.unitCode().replace("EXHAUST-", "tglExhaust");
                     exhaustToggleCodes.add(tglCode);
                 });
         percentageFormat = PROPS.getProperty("number.format.percentage");
@@ -331,16 +331,16 @@ public class Sketch extends PApplet {
         simpleTemperatureFormat = PROPS.getProperty("number.format.temperature.simple");
         powerKwFormat = PROPS.getProperty("number.format.power.kw");
         powerMwFormat = PROPS.getProperty("number.format.power.mw");
-        speedFormat = PROPS.getProperty("number.format.velocidad");
-        pressureFormat = PROPS.getProperty("number.format.presion");
+        speedFormat = PROPS.getProperty("number.format.speed");
+        pressureFormat = PROPS.getProperty("number.format.pressure");
         airflowFormat = PROPS.getProperty("number.format.airflow");
-        labels.get("lblSalaEscalaTemperatura01").setText(String.format(simpleTemperatureFormat, minServerTemperatureCelsius));
+        labels.get("lblRoomTemperatureScale01").setText(String.format(simpleTemperatureFormat, minServerTemperatureCelsius));
         for (int i = 0; i < 5; i++) {
             float temperature = map(i, 0, 5, minServerTemperatureCelsius, maxServerTemperatureCelsius);
-            String temperatureScaleLabelCode = "lblSalaEscalaTemperatura0" + (i + 1);
+            String temperatureScaleLabelCode = "lblRoomTemperatureScale0" + (i + 1);
             labels.get(temperatureScaleLabelCode).setText(String.format(simpleTemperatureFormat, temperature));
         }
-        labels.get("lblSalaEscalaTemperatura06").setText(String.format(simpleTemperatureFormat, maxServerTemperatureCelsius));
+        labels.get("lblRoomTemperatureScale06").setText(String.format(simpleTemperatureFormat, maxServerTemperatureCelsius));
         int totalInstalledServers = operationalSnapshot.racks()
                 .values()
                 .stream()
@@ -351,10 +351,10 @@ public class Sketch extends PApplet {
                 .stream()
                 .mapToInt(RackOperationalSnapshot::onlineServerCount)
                 .sum();
-        labels.get("lblSalaServidoresTotalValor").setText(String.valueOf(totalInstalledServers));
-        labels.get("lblSalaServidoresOnlineValor").setText(String.valueOf(totalOnlineServers));
-        labels.get("lblFecha").setText(String.format("%02d", day()) + "/" + String.format("%02d", month()) + "/" + year());
-        labels.get("lblHora").setText(String.format("%02d", hour()) + ":" + String.format("%02d", minute()) + ":" + String.format("%02d", second()));
+        labels.get("lblRoomTotalServersValue").setText(String.valueOf(totalInstalledServers));
+        labels.get("lblRoomOnlineServersValue").setText(String.valueOf(totalOnlineServers));
+        labels.get("lblDate").setText(String.format("%02d", day()) + "/" + String.format("%02d", month()) + "/" + year());
+        labels.get("lblTime").setText(String.format("%02d", hour()) + ":" + String.format("%02d", minute()) + ":" + String.format("%02d", second()));
         // debug
         showOverlay = true;
     }
@@ -401,7 +401,7 @@ public class Sketch extends PApplet {
     private void updateSimulationControls() {
         boolean simulationRunning = simulationTimer.isRunning();
         String speedLabel = formatSimulationSpeedFactor();
-        labels.get("lblSimulacionValor").setText(simulationRunning ? "Running " + speedLabel : "Stopped " + speedLabel);
+        labels.get("lblSimulationValue").setText(simulationRunning ? "Running " + speedLabel : "Stopped " + speedLabel);
         Button btnPlayMinus = buttonsPlay.get("btnPlayMinus");
         if (btnPlayMinus != null) btnPlayMinus.setEnabled(simulationSpeedFactorIndex > 0);
         Button btnPlayPlus = buttonsPlay.get("btnPlayPlus");
@@ -418,17 +418,17 @@ public class Sketch extends PApplet {
         // single-room layout for now; refresh here when room switching is added
         String s = "DATACENTER MAP";
         if (roomName != null && !roomName.isEmpty()) s += (" - " + roomName);
-        labels.get("lblSala").setText(s);
+        labels.get("lblRoom").setText(s);
         updateDateTime();
     }
 
     private void updateDateTime() {
         if (second() == previousSecond) return;
         previousSecond = second();
-        labels.get("lblHora").setText(String.format("%02d", hour()) + ":" + String.format("%02d", minute()) + ":" + String.format("%02d", second()));
+        labels.get("lblTime").setText(String.format("%02d", hour()) + ":" + String.format("%02d", minute()) + ":" + String.format("%02d", second()));
         if (day() == previousDay) return;
         previousDay = day();
-        labels.get("lblFecha").setText(String.format("%02d", day()) + "/" + String.format("%02d", month()) + "/" + year());
+        labels.get("lblDate").setText(String.format("%02d", day()) + "/" + String.format("%02d", month()) + "/" + year());
     }
 
     private List<ServerGroupDefinition> createOperationalGroups(HotAisleConfiguration configuration) {
@@ -450,10 +450,10 @@ public class Sketch extends PApplet {
     }
 
     private void btnClicked(String buttonCode) {
-        if (buttonCode.startsWith("btnRackElegido"))
-            updateSelectedRack(buttonCode.replace("btnRackElegido", ""));
-        else if (buttonCode.startsWith("btnColumnaElegida"))
-            updateSelectedColumn(buttonCode.replace("btnColumnaElegida", ""));
+        if (buttonCode.startsWith("btnSelectedRack"))
+            updateSelectedRack(buttonCode.replace("btnSelectedRack", ""));
+        else if (buttonCode.startsWith("btnSelectedColumn"))
+            updateSelectedColumn(buttonCode.replace("btnSelectedColumn", ""));
         else if (buttonCode.startsWith("btnPlay")) {
             if (buttonCode.equals("btnPlayPlus")) {
                 increaseSimulationSpeed();
@@ -469,7 +469,7 @@ public class Sketch extends PApplet {
 
     private void tglClicked(Toggle tgl, int state) {
         String toggleCode = tgl.getCode();
-        if (toggleCode.contains("SalaVentilador") || toggleCode.contains("SalaExtractor")) coolingToggleClicked(tgl, state);
+        if (toggleCode.startsWith("tglSupply") || toggleCode.startsWith("tglExhaust")) coolingToggleClicked(tgl, state);
         else if (toggleCode.equals("tglPlay")) {
             if (syncingPlayToggle) return;
             toggleSimulation();
@@ -491,22 +491,22 @@ public class Sketch extends PApplet {
         if (syncingCoolingToggles) return;
         String toggleCode = tgl.getCode();
         boolean enabled = state == 1;
-        if (toggleCode.equals("tglSalaVentilador")) {
+        if (toggleCode.equals("tglSupply")) {
             updateChildCoolingToggles(supplyToggleCodes, enabled);
             return;
         }
-        if (toggleCode.equals("tglSalaExtractor")) {
+        if (toggleCode.equals("tglExhaust")) {
             updateChildCoolingToggles(exhaustToggleCodes, enabled);
             return;
         }
         if (supplyToggleCodes.contains(toggleCode)) {
             updateCoolingUnit(tgl, enabled);
-            updateMasterToggle("tglSalaVentilador", supplyToggleCodes);
+            updateMasterToggle("tglSupply", supplyToggleCodes);
             return;
         }
         if (exhaustToggleCodes.contains(toggleCode)) {
             updateCoolingUnit(tgl, enabled);
-            updateMasterToggle("tglSalaExtractor", exhaustToggleCodes);
+            updateMasterToggle("tglExhaust", exhaustToggleCodes);
         }
     }
 
@@ -542,25 +542,24 @@ public class Sketch extends PApplet {
     private void updateCoolingUnit(Toggle tgl, boolean enabled) {
         String unitType = "";
         String tglCode = tgl.getCode();
-        if (tglCode.contains("Ventilador")) unitType = "SUPPLY";
-        else if (tglCode.contains("Extractor")) unitType = "EXHAUST";
+        if (tglCode.startsWith("tglSupply")) unitType = "SUPPLY";
+        else if (tglCode.startsWith("tglExhaust")) unitType = "EXHAUST";
         if (unitType.isEmpty()) return;
-        boolean individualToggle = tglCode.startsWith("tglSalaVentiladorC") || tglCode.startsWith("tglSalaExtractorC");
+        boolean individualToggle = tglCode.startsWith("tglSupplyC") || tglCode.startsWith("tglExhaustC");
         if (!individualToggle) return;
         String unitCode = unitType
                 + "-"
                 + tglCode
-                .replace("tglSala", "")
-                .replace("Ventilador", "")
-                .replace("Extractor", "");
+                .replace("tglSupply", "")
+                .replace("tglExhaust", "");
         coolingSystem.setEnabled(unitCode, enabled);
     }
 
     private void updateSelectedRack(String clickedRack) {
-        selectedRack = "R" + clickedRack.toLowerCase().replace("der", "").replace("izq", "");
+        selectedRack = "R" + clickedRack.toLowerCase().replace("right", "").replace("left", "");
         if (!selectedColumn.equals(PROPS.getProperty("datacenter.first.column")) && !selectedColumn.equals(PROPS.getProperty("datacenter.last.column"))) {
-            if (clickedRack.toLowerCase().contains("izq")) selectedColumn = selectedHotAisle.columns().getFirst();
-            else if (clickedRack.toLowerCase().contains("der")) selectedColumn = selectedHotAisle.columns().getLast();
+            if (clickedRack.toLowerCase().contains("left")) selectedColumn = selectedHotAisle.columns().getFirst();
+            else if (clickedRack.toLowerCase().contains("right")) selectedColumn = selectedHotAisle.columns().getLast();
         }
         showSelectedRackHighlight();
     }
@@ -574,13 +573,13 @@ public class Sketch extends PApplet {
 
     private void showSelectedRackHighlight() {
         int i = Integer.parseInt(selectedColumn.replace("C", ""));
-        String side = i % 2 == 0 ? "Izq" : "Der";
-        String selectedRackIndicatorCode = "indRackElegido" + side + selectedRack.replace("R", "");
+        String side = i % 2 == 0 ? "Left" : "Right";
+        String selectedRackIndicatorCode = "indSelectedRack" + side + selectedRack.replace("R", "");
         String selectedButtonCode = selectedRackIndicatorCode.replace("ind", "btn");
         for (Button btn : buttonsSelectedAisleRack.values()) {
-            if (selectedColumn.equals(PROPS.getProperty("datacenter.first.column")) && btn.getCode().toLowerCase().contains("izq"))
+            if (selectedColumn.equals(PROPS.getProperty("datacenter.first.column")) && btn.getCode().toLowerCase().contains("left"))
                 btn.setVisible(false);
-            else if (selectedColumn.equals(PROPS.getProperty("datacenter.last.column")) && btn.getCode().toLowerCase().contains("der"))
+            else if (selectedColumn.equals(PROPS.getProperty("datacenter.last.column")) && btn.getCode().toLowerCase().contains("right"))
                 btn.setVisible(false);
             else btn.setVisible(!btn.getCode().equals(selectedButtonCode));
         }
@@ -589,7 +588,7 @@ public class Sketch extends PApplet {
 
     private void showSelectedAisleHighlight() {
         indicatorsSelectedAisle.values().forEach(ind -> ind.setOn(false));
-        String selectedAisleIndicatorCode = "indPasilloElegido";
+        String selectedAisleIndicatorCode = "indSelectedAisle";
         switch (selectedHotAisle.code()) {
             case "HA01" -> selectedAisleIndicatorCode += "C01";
             case "HA02" -> selectedAisleIndicatorCode += "C02-C03";
@@ -668,7 +667,7 @@ public class Sketch extends PApplet {
     }
 
     private void updateSelectedRackPanel() {
-        labels.get("lblRackElegidoValor").setText(selectedColumn + "-" + selectedRack);
+        labels.get("lblSelectedRackValue").setText(selectedColumn + "-" + selectedRack);
         Rack rack = resolveSelectedRack();
         RackLocation rackLocation = new RackLocation(selectedColumn, new RackCode(selectedRack));
         RackOperationalSnapshot rackSnapshot = operationalSnapshot
@@ -682,17 +681,17 @@ public class Sketch extends PApplet {
             String slotNumber = slot.replace("S", "");
             ServerLocation location = new ServerLocation(selectedColumn, new RackCode(selectedRack), slot);
             Optional<Server> installedServer = datacenter.getServer(location);
-            Label slotTemperatureLabel = labels.get("lblSlotTemperatura" + slotNumber);
-            Label slotLoadLabel = labels.get("lblSlotCarga" + slotNumber);
-            Label slotPowerLabel = labels.get("lblSlotPotencia" + slotNumber);
+            Label slotTemperatureLabel = labels.get("lblSlotTemperature" + slotNumber);
+            Label slotLoadLabel = labels.get("lblSlotLoad" + slotNumber);
+            Label slotPowerLabel = labels.get("lblSlotPower" + slotNumber);
             Indicator indSlot = indicators.get("indSlot" + slotNumber);
-            Indicator emptySlotIndicator = indicators.get("indSlotVacio" + slotNumber);
+            Indicator emptySlotIndicator = indicators.get("indSlotEmpty" + slotNumber);
             Indicator indSlotOffline = indicators.get("indSlotOffline" + slotNumber);
             Indicator okSlotStatusIndicator = indicators.get("indSlotOk" + slotNumber);
-            Indicator alertSlotStatusIndicator = indicators.get("indSlotAlerta" + slotNumber);
-            Indicator alertIndicator = indicatorsAlert.get("indAlerta" + slotNumber);
-            Indicator aiSlotIndicator1 = indicatorsAiSlot.get("indSlotIA" + slotNumber + "-1");
-            Indicator aiSlotIndicator2 = indicators.get("indSlotIA" + slotNumber + "-2");
+            Indicator alertSlotStatusIndicator = indicators.get("indSlotAlert" + slotNumber);
+            Indicator alertIndicator = indicatorsAlert.get("indAlert" + slotNumber);
+            Indicator aiSlotIndicator1 = indicatorsAiSlot.get("indSlotAI" + slotNumber + "-1");
+            Indicator aiSlotIndicator2 = indicators.get("indSlotAI" + slotNumber + "-2");
             if (installedServer.isEmpty()) {
                 showEmptySlot(indSlot,
                         slotTemperatureLabel,
@@ -732,8 +731,8 @@ public class Sketch extends PApplet {
             aiSlotIndicator1.setOn(aiServer);
             aiSlotIndicator2.setOn(aiServer);
         }
-        Label averageTemperatureLabel = labels.get("lblRackTemperaturaPromedioValor");
-        Label averageLoadLabel = labels.get("lblRackCargaPromedioValor");
+        Label averageTemperatureLabel = labels.get("lblRackAverageTemperatureValue");
+        Label averageLoadLabel = labels.get("lblRackAverageLoadValue");
         if (rackSnapshot.hasOnlineServers()) {
             averageTemperatureLabel.setTextColor(COLOR_YELLOW_LABEL);
             averageTemperatureLabel.setText(String.format(temperatureFormat, rackSnapshot.averageOnlineTemperatureCelsius()));
@@ -743,8 +742,8 @@ public class Sketch extends PApplet {
             averageTemperatureLabel.setText("--");
             averageLoadLabel.setText("--");
         }
-        labels.get("lblRackPotenciaAcumuladaValor").setText(String.format(powerKwFormat, rackSnapshot.currentPowerWatts() / 1000));
-        updateBar("RackElegidoPotencia", rackSnapshot.currentPowerWatts(), rackSnapshot.idlePowerWatts(), rackSnapshot.maxPowerWatts());
+        labels.get("lblRackCurrentPowerValue").setText(String.format(powerKwFormat, rackSnapshot.currentPowerWatts() / 1000));
+        updateBar("SelectedRackPowerBar", rackSnapshot.currentPowerWatts(), rackSnapshot.idlePowerWatts(), rackSnapshot.maxPowerWatts());
     }
 
     private void updateSlotColor(Indicator indSlot, float temperature) {
@@ -804,7 +803,7 @@ public class Sketch extends PApplet {
 
     private void updateBar(String type, double value, double minValue, double maxValue) {
         if (type == null || type.isEmpty()) return;
-        String key = "indBarra" + type;
+        String key = "ind" + type;
         int iMax = (int) map((float) value, (float) minValue, (float) maxValue, 1, 6);
         for (int i = 0; i < 6; i++) indicators.get(key + (i + 1)).setOn(i < iMax);
     }
@@ -816,21 +815,21 @@ public class Sketch extends PApplet {
     private void updateSelectedAislePanel() {
         boolean leftEdgeAisleSelected = selectedColumn.equals(PROPS.getProperty("datacenter.first.column"));
         boolean rightEdgeAisleSelected = selectedColumn.equals(PROPS.getProperty("datacenter.last.column"));
-        indicatorsNullAisle.get("indPasilloNullIzq").setOn(leftEdgeAisleSelected);
-        indicators.get("indFlechasAireFrioIzq").setOn(!leftEdgeAisleSelected);
-        indicatorsNullAisle.get("indPasilloNullDer").setOn(rightEdgeAisleSelected);
-        indicators.get("indFlechasAireFrioDer").setOn(!rightEdgeAisleSelected);
+        indicatorsNullAisle.get("indNullAisleLeft").setOn(leftEdgeAisleSelected);
+        indicators.get("indColdAirArrowsLeft").setOn(!leftEdgeAisleSelected);
+        indicatorsNullAisle.get("indNullAisleRight").setOn(rightEdgeAisleSelected);
+        indicators.get("indColdAirArrowsRight").setOn(!rightEdgeAisleSelected);
         resolveSelectedHotAisle();
-        labels.get("lblPasilloElegidoValor").setText(selectedHotAisle.displayName());
+        labels.get("lblSelectedAisleValue").setText(selectedHotAisle.displayName());
         // additional data
         List<String> aisleZoneCodes = resolveAisleCoolingZoneCodes(selectedHotAisle);
         CoolingZoneGroupSnapshot coolingGroupSnapshot = coolingSnapshot.aggregateZones(selectedHotAisle.code(), aisleZoneCodes);
         double thermalCoverage = coolingGroupSnapshot.thermalCoverage();
-        labels.get("lblPasilloElegidoCoberturaTermicaValor").setText(String.format(percentageFormat, thermalCoverage * 100.0));
+        labels.get("lblSelectedAisleThermalCoverageValue").setText(String.format(percentageFormat, thermalCoverage * 100.0));
         double deltaTinOut = coolingGroupSnapshot.airTemperatureRiseCelsius();
-        labels.get("lblPasilloElegidoDeltaTemperaturaValor").setText(String.format(temperatureFormat, deltaTinOut));
+        labels.get("lblSelectedAisleTemperatureDeltaValue").setText(String.format(temperatureFormat, deltaTinOut));
         double recirculation = coolingGroupSnapshot.averageRecirculationFraction();
-        labels.get("lblPasilloElegidoRecirculacionValor").setText(String.format(percentageFormat, recirculation * 100.0));
+        labels.get("lblSelectedAisleRecirculationValue").setText(String.format(percentageFormat, recirculation * 100.0));
         double supplyAirflow = aisleZoneCodes.stream()
                 .map(coolingSnapshot::findZone)
                 .flatMap(Optional::stream)
@@ -843,15 +842,15 @@ public class Sketch extends PApplet {
                         .flatMap(Optional::stream)
                         .mapToDouble(CoolingZoneSnapshot::exhaustAirflowCubicMetersPerSecond)
                         .sum();
-        labels.get("lblPasilloElegidoFlujoAireValor").setText(String.format(airflowFormat, supplyAirflow, exhaustAirflow));
+        labels.get("lblSelectedAisleAirflowValue").setText(String.format(airflowFormat, supplyAirflow, exhaustAirflow));
         // installed servers
         ServerGroupOperationalSnapshot aisleSnapshot = operationalSnapshot
                 .findServerGroup(selectedHotAisle.code())
                 .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for aisle: " + selectedHotAisle.code()));
-        Label averageTemperatureLabel = labels.get("lblPasilloElegidoTemperaturaPromedioValor");
-        Label maxTemperatureLabel = labels.get("lblPasilloElegidoTemperaturaMaximaValor");
-        Label averageLoadLabel = labels.get("lblPasilloElegidoCargaITValor");
-        indicatorsSelectedAisleMaximumTemperatureServer.values().forEach(indicador -> indicador.setOn(false));
+        Label averageTemperatureLabel = labels.get("lblSelectedAisleAverageTemperatureValue");
+        Label maxTemperatureLabel = labels.get("lblSelectedAisleMaximumTemperatureValue");
+        Label averageLoadLabel = labels.get("lblSelectedAisleITLoadValue");
+        indicatorsSelectedAisleMaximumTemperatureServer.values().forEach(ind -> ind.setOn(false));
         if (!aisleSnapshot.hasInstalledServers()) {
             averageTemperatureLabel.setTextColor(COLOR_WHITE_LABEL);
             maxTemperatureLabel.setTextColor(COLOR_WHITE_LABEL);
@@ -878,15 +877,15 @@ public class Sketch extends PApplet {
         String maxTemperatureColumn = maxTemperatureLocation.column();
         String maxTemperatureSide;
         if (maxTemperatureColumn.equals(PROPS.getProperty("datacenter.first.column")))
-            maxTemperatureSide = "Der";
+            maxTemperatureSide = "Right";
         else if (maxTemperatureColumn.equals(PROPS.getProperty("datacenter.last.column")))
-            maxTemperatureSide = "Izq";
+            maxTemperatureSide = "Left";
         else {
             int columnNumber = Integer.parseInt(maxTemperatureColumn.replace("C", ""));
-            maxTemperatureSide = columnNumber % 2 == 0 ? "Izq" : "Der";
+            maxTemperatureSide = columnNumber % 2 == 0 ? "Left" : "Right";
         }
         String rackNumber = maxTemperatureLocation.rackCode().value().replace("R", "");
-        String indicatorCode = "indPasilloElegidoServidorTemperaturaMaxima" + maxTemperatureSide + rackNumber;
+        String indicatorCode = "indSelectedAisleMaximumTemperatureServer" + maxTemperatureSide + rackNumber;
         Indicator maxTemperatureIndicator = indicatorsSelectedAisleMaximumTemperatureServer.get(indicatorCode);
         if (maxTemperatureIndicator == null) throw new IllegalStateException("Missing maximum temperature indicator: " + indicatorCode);
         maxTemperatureIndicator.setOnColor(maxTemperatureColor);
@@ -926,7 +925,7 @@ public class Sketch extends PApplet {
                 0,
                 1);
         int temperatureEffectColor = Colors.lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, fColor);
-        indicators.get("indPasilloElegidoEfectoTemperatura").setOnColor(temperatureEffectColor);
+        indicators.get("indSelectedAisleTemperatureEffect").setOnColor(temperatureEffectColor);
     }
 
     private List<String> resolveAisleRackCodes(HotAisleDefinition aisle) {
@@ -989,11 +988,11 @@ public class Sketch extends PApplet {
     }
 
     private void updateRoomPanel() {
-        updateRoomHotAisleIndicator("HA01", "indSalaPasilloCalienteC01");
-        updateRoomHotAisleIndicator("HA02", "indSalaPasilloCalienteC02-C03");
-        updateRoomHotAisleIndicator("HA03", "indSalaPasilloCalienteC04-C05");
-        updateRoomHotAisleIndicator("HA04", "indSalaPasilloCalienteC06-C07");
-        updateRoomHotAisleIndicator("HA05", "indSalaPasilloCalienteC08");
+        updateRoomHotAisleIndicator("HA01", "indRoomHotAisleC01");
+        updateRoomHotAisleIndicator("HA02", "indRoomHotAisleC02-C03");
+        updateRoomHotAisleIndicator("HA03", "indRoomHotAisleC04-C05");
+        updateRoomHotAisleIndicator("HA04", "indRoomHotAisleC06-C07");
+        updateRoomHotAisleIndicator("HA05", "indRoomHotAisleC08");
         for (Rack rack : datacenter.getRacks()) {
             RackLocation location = rack.getLocation();
             String rackIndicatorCode = "indRack" + rack.getColumn() + rack.getRow();
@@ -1030,9 +1029,9 @@ public class Sketch extends PApplet {
             boolean aiRack
     ) {
         Indicator offlineIndicator = indicatorsRackCondition.get(rackIndicatorCode.replace("indRack", "indRackOffline"));
-        Indicator emptyIndicator = indicatorsRackCondition.get(rackIndicatorCode.replace("indRack", "indRackVacio"));
+        Indicator emptyIndicator = indicatorsRackCondition.get(rackIndicatorCode.replace("indRack", "indRackEmpty"));
         Indicator hotspotIndicator = indicatorsRackCondition.get(rackIndicatorCode.replace("indRack", "indRackHotspot"));
-        Indicator aiIndicator = indicatorsRackCondition.get(rackIndicatorCode.replace("indRack", "indRackIA"));
+        Indicator aiIndicator = indicatorsRackCondition.get(rackIndicatorCode.replace("indRack", "indRackAI"));
         offlineIndicator.setOn(rackOffline);
         emptyIndicator.setOn(emptyRack);
         hotspotIndicator.setOn(rackHotspot);

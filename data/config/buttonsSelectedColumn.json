@@ -2,7 +2,7 @@
   "controls": [
     {
       "type": "button",
-      "code": "btnColumnaElegidaC01",
+      "code": "btnSelectedColumnC01",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -32,7 +32,7 @@
     },
     {
       "type": "button",
-      "code": "btnColumnaElegidaC02",
+      "code": "btnSelectedColumnC02",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -62,7 +62,7 @@
     },
     {
       "type": "button",
-      "code": "btnColumnaElegidaC03",
+      "code": "btnSelectedColumnC03",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -92,7 +92,7 @@
     },
     {
       "type": "button",
-      "code": "btnColumnaElegidaC04",
+      "code": "btnSelectedColumnC04",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -122,7 +122,7 @@
     },
     {
       "type": "button",
-      "code": "btnColumnaElegidaC05",
+      "code": "btnSelectedColumnC05",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -152,7 +152,7 @@
     },
     {
       "type": "button",
-      "code": "btnColumnaElegidaC06",
+      "code": "btnSelectedColumnC06",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -182,7 +182,7 @@
     },
     {
       "type": "button",
-      "code": "btnColumnaElegidaC07",
+      "code": "btnSelectedColumnC07",
       "text": "",
       "bounds": {
         "mode": "relative",
@@ -212,7 +212,7 @@
     },
     {
       "type": "button",
-      "code": "btnColumnaElegidaC08",
+      "code": "btnSelectedColumnC08",
       "text": "",
       "bounds": {
         "mode": "relative",

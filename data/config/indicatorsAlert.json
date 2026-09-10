@@ -2,7 +2,7 @@
   "controls": [
     {
       "type": "indicator",
-      "code": "indAlerta01",
+      "code": "indAlert01",
       "bounds": {
         "mode": "relative",
         "x": 0.7854791667,
@@ -24,7 +24,7 @@
     },
     {
       "type": "indicator",
-      "code": "indAlerta02",
+      "code": "indAlert02",
       "bounds": {
         "mode": "relative",
         "x": 0.7854791667,
@@ -46,7 +46,7 @@
     },
     {
       "type": "indicator",
-      "code": "indAlerta03",
+      "code": "indAlert03",
       "bounds": {
         "mode": "relative",
         "x": 0.7854791667,
@@ -68,7 +68,7 @@
     },
     {
       "type": "indicator",
-      "code": "indAlerta04",
+      "code": "indAlert04",
       "bounds": {
         "mode": "relative",
         "x": 0.7854791667,
@@ -90,7 +90,7 @@
     },
     {
       "type": "indicator",
-      "code": "indAlerta05",
+      "code": "indAlert05",
       "bounds": {
         "mode": "relative",
         "x": 0.7854791667,
@@ -112,7 +112,7 @@
     },
     {
       "type": "indicator",
-      "code": "indAlerta06",
+      "code": "indAlert06",
       "bounds": {
         "mode": "relative",
         "x": 0.7854791667,
@@ -134,7 +134,7 @@
     },
     {
       "type": "indicator",
-      "code": "indAlerta07",
+      "code": "indAlert07",
       "bounds": {
         "mode": "relative",
         "x": 0.7854791667,
@@ -156,7 +156,7 @@
     },
     {
       "type": "indicator",
-      "code": "indAlerta08",
+      "code": "indAlert08",
       "bounds": {
         "mode": "relative",
         "x": 0.7854791667,
@@ -178,7 +178,7 @@
     },
     {
       "type": "indicator",
-      "code": "indAlerta09",
+      "code": "indAlert09",
       "bounds": {
         "mode": "relative",
         "x": 0.7854791667,
@@ -200,7 +200,7 @@
     },
     {
       "type": "indicator",
-      "code": "indAlerta10",
+      "code": "indAlert10",
       "bounds": {
         "mode": "relative",
         "x": 0.7854791667,
@@ -222,7 +222,7 @@
     },
     {
       "type": "indicator",
-      "code": "indAlerta11",
+      "code": "indAlert11",
       "bounds": {
         "mode": "relative",
         "x": 0.7854791667,
@@ -244,7 +244,7 @@
     },
     {
       "type": "indicator",
-      "code": "indAlerta12",
+      "code": "indAlert12",
       "bounds": {
         "mode": "relative",
         "x": 0.7854791667,

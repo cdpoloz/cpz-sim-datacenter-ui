@@ -2,7 +2,7 @@
   "controls": [
     {
       "type": "toggle",
-      "code": "tglSalaVentiladorC01-C02",
+      "code": "tglSupplyC01-C02",
       "state": 0,
       "totalStates": 2,
       "bounds": {
@@ -33,7 +33,7 @@
     },
     {
       "type": "toggle",
-      "code": "tglSalaVentiladorC03-C04",
+      "code": "tglSupplyC03-C04",
       "state": 0,
       "totalStates": 2,
       "bounds": {
@@ -64,7 +64,7 @@
     },
     {
       "type": "toggle",
-      "code": "tglSalaVentiladorC05-C06",
+      "code": "tglSupplyC05-C06",
       "state": 0,
       "totalStates": 2,
       "bounds": {
@@ -95,7 +95,7 @@
     },
     {
       "type": "toggle",
-      "code": "tglSalaVentiladorC07-C08",
+      "code": "tglSupplyC07-C08",
       "state": 0,
       "totalStates": 2,
       "bounds": {
@@ -126,7 +126,7 @@
     },
     {
       "type": "toggle",
-      "code": "tglSalaExtractorC01",
+      "code": "tglExhaustC01",
       "state": 0,
       "totalStates": 2,
       "bounds": {
@@ -157,7 +157,7 @@
     },
     {
       "type": "toggle",
-      "code": "tglSalaExtractorC02-C03",
+      "code": "tglExhaustC02-C03",
       "state": 0,
       "totalStates": 2,
       "bounds": {
@@ -188,7 +188,7 @@
     },
     {
       "type": "toggle",
-      "code": "tglSalaExtractorC04-C05",
+      "code": "tglExhaustC04-C05",
       "state": 0,
       "totalStates": 2,
       "bounds": {
@@ -219,7 +219,7 @@
     },
     {
       "type": "toggle",
-      "code": "tglSalaExtractorC06-C07",
+      "code": "tglExhaustC06-C07",
       "state": 0,
       "totalStates": 2,
       "bounds": {
@@ -250,7 +250,7 @@
     },
     {
       "type": "toggle",
-      "code": "tglSalaExtractorC08",
+      "code": "tglExhaustC08",
       "state": 0,
       "totalStates": 2,
       "bounds": {
@@ -281,7 +281,7 @@
     },
     {
       "type": "toggle",
-      "code": "tglSalaVentilador",
+      "code": "tglSupply",
       "state": 0,
       "totalStates": 2,
       "bounds": {
@@ -312,7 +312,7 @@
     },
     {
       "type": "toggle",
-      "code": "tglSalaExtractor",
+      "code": "tglExhaust",
       "state": 0,
       "totalStates": 2,
       "bounds": {

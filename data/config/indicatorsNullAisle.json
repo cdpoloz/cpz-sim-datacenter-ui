@@ -2,7 +2,7 @@
   "controls": [
     {
       "type": "indicator",
-      "code": "indPasilloNullIzq",
+      "code": "indNullAisleLeft",
       "bounds": {
         "mode": "relative",
         "x": 0.4909195313,
@@ -24,7 +24,7 @@
     },
     {
       "type": "indicator",
-      "code": "indPasilloNullDer",
+      "code": "indNullAisleRight",
       "bounds": {
         "mode": "relative",
         "x": 0.5626260417,
