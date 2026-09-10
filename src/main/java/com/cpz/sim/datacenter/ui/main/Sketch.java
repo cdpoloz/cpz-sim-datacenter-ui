@@ -820,16 +820,16 @@ public class Sketch extends PApplet {
         indicatorsNullAisle.get("indNullAisleRight").setOn(rightEdgeAisleSelected);
         indicators.get("indColdAirArrowsRight").setOn(!rightEdgeAisleSelected);
         resolveSelectedHotAisle();
-        labels.get("lblPasilloElegidoValor").setText(selectedHotAisle.displayName());
+        labels.get("lblSelectedAisleValue").setText(selectedHotAisle.displayName());
         // additional data
         List<String> aisleZoneCodes = resolveAisleCoolingZoneCodes(selectedHotAisle);
         CoolingZoneGroupSnapshot coolingGroupSnapshot = coolingSnapshot.aggregateZones(selectedHotAisle.code(), aisleZoneCodes);
         double thermalCoverage = coolingGroupSnapshot.thermalCoverage();
-        labels.get("lblPasilloElegidoCoberturaTermicaValor").setText(String.format(percentageFormat, thermalCoverage * 100.0));
+        labels.get("lblSelectedAisleThermalCoverageValue").setText(String.format(percentageFormat, thermalCoverage * 100.0));
         double deltaTinOut = coolingGroupSnapshot.airTemperatureRiseCelsius();
-        labels.get("lblPasilloElegidoDeltaTemperaturaValor").setText(String.format(temperatureFormat, deltaTinOut));
+        labels.get("lblSelectedAisleTemperatureDeltaValue").setText(String.format(temperatureFormat, deltaTinOut));
         double recirculation = coolingGroupSnapshot.averageRecirculationFraction();
-        labels.get("lblPasilloElegidoRecirculacionValor").setText(String.format(percentageFormat, recirculation * 100.0));
+        labels.get("lblSelectedAisleRecirculationValue").setText(String.format(percentageFormat, recirculation * 100.0));
         double supplyAirflow = aisleZoneCodes.stream()
                 .map(coolingSnapshot::findZone)
                 .flatMap(Optional::stream)
@@ -842,14 +842,14 @@ public class Sketch extends PApplet {
                         .flatMap(Optional::stream)
                         .mapToDouble(CoolingZoneSnapshot::exhaustAirflowCubicMetersPerSecond)
                         .sum();
-        labels.get("lblPasilloElegidoFlujoAireValor").setText(String.format(airflowFormat, supplyAirflow, exhaustAirflow));
+        labels.get("lblSelectedAisleAirflowValue").setText(String.format(airflowFormat, supplyAirflow, exhaustAirflow));
         // installed servers
         ServerGroupOperationalSnapshot aisleSnapshot = operationalSnapshot
                 .findServerGroup(selectedHotAisle.code())
                 .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for aisle: " + selectedHotAisle.code()));
-        Label averageTemperatureLabel = labels.get("lblPasilloElegidoTemperaturaPromedioValor");
-        Label maxTemperatureLabel = labels.get("lblPasilloElegidoTemperaturaMaximaValor");
-        Label averageLoadLabel = labels.get("lblPasilloElegidoCargaITValor");
+        Label averageTemperatureLabel = labels.get("lblSelectedAisleAverageTemperatureValue");
+        Label maxTemperatureLabel = labels.get("lblSelectedAisleMaximumTemperatureValue");
+        Label averageLoadLabel = labels.get("lblSelectedAisleITLoadValue");
         indicatorsSelectedAisleMaximumTemperatureServer.values().forEach(ind -> ind.setOn(false));
         if (!aisleSnapshot.hasInstalledServers()) {
             averageTemperatureLabel.setTextColor(COLOR_WHITE_LABEL);

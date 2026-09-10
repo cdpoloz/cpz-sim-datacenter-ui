@@ -1527,7 +1527,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegido",
+      "code": "lblSelectedAisle",
       "text": "SELECTED AISLE",
       "bounds": {
         "mode": "relative",
@@ -1552,7 +1552,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoValor",
+      "code": "lblSelectedAisleValue",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -1577,7 +1577,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoTemperaturaPromedio",
+      "code": "lblSelectedAisleAverageTemperature",
       "text": "AVG SERVER TEMP",
       "bounds": {
         "mode": "relative",
@@ -1602,7 +1602,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoTemperaturaPromedioValor",
+      "code": "lblSelectedAisleAverageTemperatureValue",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -1627,7 +1627,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoTemperaturaMaxima",
+      "code": "lblSelectedAisleMaximumTemperature",
       "text": "MAX SERVER TEMP",
       "bounds": {
         "mode": "relative",
@@ -1652,7 +1652,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoTemperaturaMaximaValor",
+      "code": "lblSelectedAisleMaximumTemperatureValue",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -1677,7 +1677,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoCargaIT",
+      "code": "lblSelectedAisleITLoad",
       "text": "IT LOAD",
       "bounds": {
         "mode": "relative",
@@ -1702,7 +1702,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoCargaITValor",
+      "code": "lblSelectedAisleITLoadValue",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -1727,7 +1727,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoFila01",
+      "code": "lblSelectedAisleRow01",
       "text": "R01",
       "bounds": {
         "mode": "relative",
@@ -1752,7 +1752,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoFila02",
+      "code": "lblSelectedAisleRow02",
       "text": "R02",
       "bounds": {
         "mode": "relative",
@@ -1777,7 +1777,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoFila03",
+      "code": "lblSelectedAisleRow03",
       "text": "R03",
       "bounds": {
         "mode": "relative",
@@ -1802,7 +1802,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoFila04",
+      "code": "lblSelectedAisleRow04",
       "text": "R04",
       "bounds": {
         "mode": "relative",
@@ -1827,7 +1827,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoFila05",
+      "code": "lblSelectedAisleRow05",
       "text": "R05",
       "bounds": {
         "mode": "relative",
@@ -1852,7 +1852,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoFila06",
+      "code": "lblSelectedAisleRow06",
       "text": "R06",
       "bounds": {
         "mode": "relative",
@@ -1877,7 +1877,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoFila07",
+      "code": "lblSelectedAisleRow07",
       "text": "R07",
       "bounds": {
         "mode": "relative",
@@ -1902,7 +1902,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoFila08",
+      "code": "lblSelectedAisleRow08",
       "text": "R08",
       "bounds": {
         "mode": "relative",
@@ -1927,7 +1927,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoFila09",
+      "code": "lblSelectedAisleRow09",
       "text": "R09",
       "bounds": {
         "mode": "relative",
@@ -1952,7 +1952,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoFila10",
+      "code": "lblSelectedAisleRow10",
       "text": "R10",
       "bounds": {
         "mode": "relative",
@@ -1977,7 +1977,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoFila11",
+      "code": "lblSelectedAisleRow11",
       "text": "R11",
       "bounds": {
         "mode": "relative",
@@ -2002,7 +2002,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoFila12",
+      "code": "lblSelectedAisleRow12",
       "text": "R12",
       "bounds": {
         "mode": "relative",
@@ -2027,7 +2027,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoPerfilTemperatura",
+      "code": "lblSelectedAisleTemperatureProfile",
       "text": "TEMP PROFILE",
       "bounds": {
         "mode": "relative",
@@ -2052,7 +2052,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoFlujoAire",
+      "code": "lblSelectedAisleAirflow",
       "text": "AIRFLOW",
       "bounds": {
         "mode": "relative",
@@ -2077,7 +2077,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoFlujoAireValor",
+      "code": "lblSelectedAisleAirflowValue",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -2102,7 +2102,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoCoberturaTermica",
+      "code": "lblSelectedAisleThermalCoverage",
       "text": "THERMAL COVERAGE",
       "bounds": {
         "mode": "relative",
@@ -2127,7 +2127,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoCoberturaTermicaValor",
+      "code": "lblSelectedAisleThermalCoverageValue",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -2152,7 +2152,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoDeltaTemperatura",
+      "code": "lblSelectedAisleTemperatureDelta",
       "text": "ΔT IN/OUT",
       "bounds": {
         "mode": "relative",
@@ -2177,7 +2177,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoDeltaTemperaturaValor",
+      "code": "lblSelectedAisleTemperatureDeltaValue",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -2202,7 +2202,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoRecirculacion",
+      "code": "lblSelectedAisleRecirculation",
       "text": "RECIRCULATION",
       "bounds": {
         "mode": "relative",
@@ -2227,7 +2227,7 @@
     },
     {
       "type": "label",
-      "code": "lblPasilloElegidoRecirculacionValor",
+      "code": "lblSelectedAisleRecirculationValue",
       "text": "--",
       "bounds": {
         "mode": "relative",
