@@ -48,3 +48,4 @@ nbbuild/
 *.log
 /build
 /target/
+/log
