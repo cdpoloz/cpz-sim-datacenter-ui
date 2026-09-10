@@ -988,11 +988,11 @@ public class Sketch extends PApplet {
     }
 
     private void updateRoomPanel() {
-        updateRoomHotAisleIndicator("HA01", "indSalaPasilloCalienteC01");
-        updateRoomHotAisleIndicator("HA02", "indSalaPasilloCalienteC02-C03");
-        updateRoomHotAisleIndicator("HA03", "indSalaPasilloCalienteC04-C05");
-        updateRoomHotAisleIndicator("HA04", "indSalaPasilloCalienteC06-C07");
-        updateRoomHotAisleIndicator("HA05", "indSalaPasilloCalienteC08");
+        updateRoomHotAisleIndicator("HA01", "indRoomHotAisleC01");
+        updateRoomHotAisleIndicator("HA02", "indRoomHotAisleC02-C03");
+        updateRoomHotAisleIndicator("HA03", "indRoomHotAisleC04-C05");
+        updateRoomHotAisleIndicator("HA04", "indRoomHotAisleC06-C07");
+        updateRoomHotAisleIndicator("HA05", "indRoomHotAisleC08");
         for (Rack rack : datacenter.getRacks()) {
             RackLocation location = rack.getLocation();
             String rackIndicatorCode = "indRack" + rack.getColumn() + rack.getRow();

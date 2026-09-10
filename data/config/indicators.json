@@ -1784,7 +1784,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSalaPasilloCalienteC01",
+      "code": "indRoomHotAisleC01",
       "bounds": {
         "mode": "relative",
         "x": 0.04119348958,
@@ -1806,7 +1806,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSalaPasilloCalienteC02-C03",
+      "code": "indRoomHotAisleC02-C03",
       "bounds": {
         "mode": "relative",
         "x": 0.1360802083,
@@ -1828,7 +1828,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSalaPasilloCalienteC04-C05",
+      "code": "indRoomHotAisleC04-C05",
       "bounds": {
         "mode": "relative",
         "x": 0.2309671875,
@@ -1850,7 +1850,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSalaPasilloCalienteC06-C07",
+      "code": "indRoomHotAisleC06-C07",
       "bounds": {
         "mode": "relative",
         "x": 0.3258541667,
@@ -1872,7 +1872,7 @@
     },
     {
       "type": "indicator",
-      "code": "indSalaPasilloCalienteC08",
+      "code": "indRoomHotAisleC08",
       "bounds": {
         "mode": "relative",
         "x": 0.4207414063,
