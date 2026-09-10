@@ -68,7 +68,7 @@ public class Sketch extends PApplet {
     private ProcessingKeyboardAdapter processingKeyboardAdapter;
     private Map<String, Control> controls;
     private Map<String, Indicator> indicators, indicatorsAiSlot, indicatorsAlert;
-    private Map<String, Indicator> indicatorsSelectedAisleMaxTemperatureServer, indicatorsSelectedRack, indicatorsNullAisle;
+    private Map<String, Indicator> indicatorsSelectedAisleMaximumTemperatureServer, indicatorsSelectedRack, indicatorsNullAisle;
     private Map<String, Indicator> indicatorsSelectedAisle, indicatorsRack, indicatorsRackCondition;
     private Map<String, Button> buttonsSelectedAisleRack, buttonsColumn, buttonsPlay;
     private Map<String, Label> labels;
@@ -170,10 +170,10 @@ public class Sketch extends PApplet {
         controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicatorsRackCondition.json");
         indicatorsRackCondition = new HashMap<>();
         controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsRackCondition.put(ind.getCode(), (Indicator) ind));
-        // selected aisle indicatorsServidorTemperaturaMaxima
+        // selected aisle max-temperature server indicators
         controlsByCode = new ControlConfigLoader(this).load("data" + File.separator + "config" + File.separator + "indicatorsSelectedAisleMaximumTemperatureServer.json");
-        indicatorsSelectedAisleMaxTemperatureServer = new HashMap<>();
-        controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsSelectedAisleMaxTemperatureServer.put(ind.getCode(), (Indicator) ind));
+        indicatorsSelectedAisleMaximumTemperatureServer = new HashMap<>();
+        controlsByCode.values().stream().filter(c -> c instanceof Indicator).forEach(ind -> indicatorsSelectedAisleMaximumTemperatureServer.put(ind.getCode(), (Indicator) ind));
         // selected aisle rack buttons
         controlsByCode = new ControlConfigLoader(this, overlayManager, inputManager).load("data" + File.separator + "config" + File.separator + "buttonsSelectedAisleRacks.json");
         buttonsSelectedAisleRack = new HashMap<>();
@@ -851,7 +851,7 @@ public class Sketch extends PApplet {
         Label averageTemperatureLabel = labels.get("lblPasilloElegidoTemperaturaPromedioValor");
         Label maxTemperatureLabel = labels.get("lblPasilloElegidoTemperaturaMaximaValor");
         Label averageLoadLabel = labels.get("lblPasilloElegidoCargaITValor");
-        indicatorsSelectedAisleMaxTemperatureServer.values().forEach(indicador -> indicador.setOn(false));
+        indicatorsSelectedAisleMaximumTemperatureServer.values().forEach(indicador -> indicador.setOn(false));
         if (!aisleSnapshot.hasInstalledServers()) {
             averageTemperatureLabel.setTextColor(COLOR_WHITE_LABEL);
             maxTemperatureLabel.setTextColor(COLOR_WHITE_LABEL);
@@ -887,7 +887,7 @@ public class Sketch extends PApplet {
         }
         String rackNumber = maxTemperatureLocation.rackCode().value().replace("R", "");
         String indicatorCode = "indPasilloElegidoServidorTemperaturaMaxima" + maxTemperatureSide + rackNumber;
-        Indicator maxTemperatureIndicator = indicatorsSelectedAisleMaxTemperatureServer.get(indicatorCode);
+        Indicator maxTemperatureIndicator = indicatorsSelectedAisleMaximumTemperatureServer.get(indicatorCode);
         if (maxTemperatureIndicator == null) throw new IllegalStateException("Missing maximum temperature indicator: " + indicatorCode);
         maxTemperatureIndicator.setOnColor(maxTemperatureColor);
         maxTemperatureIndicator.setOn(true);
@@ -1073,7 +1073,7 @@ public class Sketch extends PApplet {
         labels.values().forEach(Label::draw);
         indicators.values().forEach(Indicator::draw);
         indicatorsSelectedAisle.values().forEach(Indicator::draw);
-        indicatorsSelectedAisleMaxTemperatureServer.values().forEach(Indicator::draw);
+        indicatorsSelectedAisleMaximumTemperatureServer.values().forEach(Indicator::draw);
         indicatorsSelectedRack.values().forEach(Indicator::draw);
         indicatorsRack.values().forEach(Indicator::draw);
         indicatorsNullAisle.values().forEach(Indicator::draw);
