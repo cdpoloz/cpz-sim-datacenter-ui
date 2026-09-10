@@ -681,9 +681,9 @@ public class Sketch extends PApplet {
             String slotNumber = slot.replace("S", "");
             ServerLocation location = new ServerLocation(selectedColumn, new RackCode(selectedRack), slot);
             Optional<Server> installedServer = datacenter.getServer(location);
-            Label slotTemperatureLabel = labels.get("lblSlotTemperatura" + slotNumber);
-            Label slotLoadLabel = labels.get("lblSlotCarga" + slotNumber);
-            Label slotPowerLabel = labels.get("lblSlotPotencia" + slotNumber);
+            Label slotTemperatureLabel = labels.get("lblSlotTemperature" + slotNumber);
+            Label slotLoadLabel = labels.get("lblSlotLoad" + slotNumber);
+            Label slotPowerLabel = labels.get("lblSlotPower" + slotNumber);
             Indicator indSlot = indicators.get("indSlot" + slotNumber);
             Indicator emptySlotIndicator = indicators.get("indSlotEmpty" + slotNumber);
             Indicator indSlotOffline = indicators.get("indSlotOffline" + slotNumber);

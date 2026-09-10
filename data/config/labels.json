@@ -202,7 +202,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotTemperatura01",
+      "code": "lblSlotTemperature01",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -227,7 +227,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotCarga01",
+      "code": "lblSlotLoad01",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -252,7 +252,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotPotencia01",
+      "code": "lblSlotPower01",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -302,7 +302,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotTemperatura02",
+      "code": "lblSlotTemperature02",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -327,7 +327,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotCarga02",
+      "code": "lblSlotLoad02",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -352,7 +352,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotPotencia02",
+      "code": "lblSlotPower02",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -402,7 +402,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotTemperatura03",
+      "code": "lblSlotTemperature03",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -427,7 +427,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotCarga03",
+      "code": "lblSlotLoad03",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -452,7 +452,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotPotencia03",
+      "code": "lblSlotPower03",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -502,7 +502,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotTemperatura04",
+      "code": "lblSlotTemperature04",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -527,7 +527,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotCarga04",
+      "code": "lblSlotLoad04",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -552,7 +552,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotPotencia04",
+      "code": "lblSlotPower04",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -602,7 +602,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotTemperatura05",
+      "code": "lblSlotTemperature05",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -627,7 +627,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotCarga05",
+      "code": "lblSlotLoad05",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -652,7 +652,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotPotencia05",
+      "code": "lblSlotPower05",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -702,7 +702,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotTemperatura06",
+      "code": "lblSlotTemperature06",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -727,7 +727,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotCarga06",
+      "code": "lblSlotLoad06",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -752,7 +752,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotPotencia06",
+      "code": "lblSlotPower06",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -802,7 +802,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotTemperatura07",
+      "code": "lblSlotTemperature07",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -827,7 +827,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotCarga07",
+      "code": "lblSlotLoad07",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -852,7 +852,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotPotencia07",
+      "code": "lblSlotPower07",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -902,7 +902,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotTemperatura08",
+      "code": "lblSlotTemperature08",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -927,7 +927,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotCarga08",
+      "code": "lblSlotLoad08",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -952,7 +952,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotPotencia08",
+      "code": "lblSlotPower08",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -1002,7 +1002,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotTemperatura09",
+      "code": "lblSlotTemperature09",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -1027,7 +1027,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotCarga09",
+      "code": "lblSlotLoad09",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -1052,7 +1052,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotPotencia09",
+      "code": "lblSlotPower09",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -1102,7 +1102,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotTemperatura10",
+      "code": "lblSlotTemperature10",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -1127,7 +1127,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotCarga10",
+      "code": "lblSlotLoad10",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -1152,7 +1152,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotPotencia10",
+      "code": "lblSlotPower10",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -1202,7 +1202,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotTemperatura11",
+      "code": "lblSlotTemperature11",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -1227,7 +1227,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotCarga11",
+      "code": "lblSlotLoad11",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -1252,7 +1252,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotPotencia11",
+      "code": "lblSlotPower11",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -1302,7 +1302,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotTemperatura12",
+      "code": "lblSlotTemperature12",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -1327,7 +1327,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotCarga12",
+      "code": "lblSlotLoad12",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -1352,7 +1352,7 @@
     },
     {
       "type": "label",
-      "code": "lblSlotPotencia12",
+      "code": "lblSlotPower12",
       "text": "--",
       "bounds": {
         "mode": "relative",
