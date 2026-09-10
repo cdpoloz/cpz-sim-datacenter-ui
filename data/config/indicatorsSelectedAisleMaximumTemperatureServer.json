@@ -18,7 +18,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq01.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerLeft01.png"
         }
       }
     },
@@ -40,7 +40,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq02.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerLeft02.png"
         }
       }
     },
@@ -62,7 +62,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq03.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerLeft03.png"
         }
       }
     },
@@ -84,7 +84,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq04.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerLeft04.png"
         }
       }
     },
@@ -106,7 +106,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq05.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerLeft05.png"
         }
       }
     },
@@ -128,7 +128,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq06.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerLeft06.png"
         }
       }
     },
@@ -150,7 +150,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq07.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerLeft07.png"
         }
       }
     },
@@ -172,7 +172,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq08.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerLeft08.png"
         }
       }
     },
@@ -194,7 +194,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq09.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerLeft09.png"
         }
       }
     },
@@ -216,7 +216,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq10.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerLeft10.png"
         }
       }
     },
@@ -238,7 +238,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq11.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerLeft11.png"
         }
       }
     },
@@ -260,7 +260,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaIzq12.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerLeft12.png"
         }
       }
     },
@@ -282,7 +282,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer01.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerRight01.png"
         }
       }
     },
@@ -304,7 +304,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer02.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerRight02.png"
         }
       }
     },
@@ -326,7 +326,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer03.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerRight03.png"
         }
       }
     },
@@ -348,7 +348,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer04.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerRight04.png"
         }
       }
     },
@@ -370,7 +370,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer05.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerRight05.png"
         }
       }
     },
@@ -392,7 +392,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer06.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerRight06.png"
         }
       }
     },
@@ -414,7 +414,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer07.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerRight07.png"
         }
       }
     },
@@ -436,7 +436,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer08.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerRight08.png"
         }
       }
     },
@@ -458,7 +458,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer09.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerRight09.png"
         }
       }
     },
@@ -480,7 +480,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer10.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerRight10.png"
         }
       }
     },
@@ -502,7 +502,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer11.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerRight11.png"
         }
       }
     },
@@ -524,7 +524,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloElegidoServidorTemperaturaMaximaDer12.png"
+          "path": "data/img/ind/indSelectedAisleMaximumTemperatureServerRight12.png"
         }
       }
     }

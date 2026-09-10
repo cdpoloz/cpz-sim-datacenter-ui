@@ -18,7 +18,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoIzq01.png"
+          "path": "data/img/ind/indSelectedRackLeft01.png"
         }
       }
     },
@@ -40,7 +40,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoIzq02.png"
+          "path": "data/img/ind/indSelectedRackLeft02.png"
         }
       }
     },
@@ -62,7 +62,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoIzq03.png"
+          "path": "data/img/ind/indSelectedRackLeft03.png"
         }
       }
     },
@@ -84,7 +84,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoIzq04.png"
+          "path": "data/img/ind/indSelectedRackLeft04.png"
         }
       }
     },
@@ -106,7 +106,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoIzq05.png"
+          "path": "data/img/ind/indSelectedRackLeft05.png"
         }
       }
     },
@@ -128,7 +128,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoIzq06.png"
+          "path": "data/img/ind/indSelectedRackLeft06.png"
         }
       }
     },
@@ -150,7 +150,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoIzq07.png"
+          "path": "data/img/ind/indSelectedRackLeft07.png"
         }
       }
     },
@@ -172,7 +172,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoIzq08.png"
+          "path": "data/img/ind/indSelectedRackLeft08.png"
         }
       }
     },
@@ -194,7 +194,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoIzq09.png"
+          "path": "data/img/ind/indSelectedRackLeft09.png"
         }
       }
     },
@@ -216,7 +216,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoIzq10.png"
+          "path": "data/img/ind/indSelectedRackLeft10.png"
         }
       }
     },
@@ -238,7 +238,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoIzq11.png"
+          "path": "data/img/ind/indSelectedRackLeft11.png"
         }
       }
     },
@@ -260,7 +260,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoIzq12.png"
+          "path": "data/img/ind/indSelectedRackLeft12.png"
         }
       }
     },
@@ -282,7 +282,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoDer01.png"
+          "path": "data/img/ind/indSelectedRackRight01.png"
         }
       }
     },
@@ -304,7 +304,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoDer02.png"
+          "path": "data/img/ind/indSelectedRackRight02.png"
         }
       }
     },
@@ -326,7 +326,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoDer03.png"
+          "path": "data/img/ind/indSelectedRackRight03.png"
         }
       }
     },
@@ -348,7 +348,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoDer04.png"
+          "path": "data/img/ind/indSelectedRackRight04.png"
         }
       }
     },
@@ -370,7 +370,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoDer05.png"
+          "path": "data/img/ind/indSelectedRackRight05.png"
         }
       }
     },
@@ -392,7 +392,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoDer06.png"
+          "path": "data/img/ind/indSelectedRackRight06.png"
         }
       }
     },
@@ -414,7 +414,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoDer07.png"
+          "path": "data/img/ind/indSelectedRackRight07.png"
         }
       }
     },
@@ -436,7 +436,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoDer08.png"
+          "path": "data/img/ind/indSelectedRackRight08.png"
         }
       }
     },
@@ -458,7 +458,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoDer09.png"
+          "path": "data/img/ind/indSelectedRackRight09.png"
         }
       }
     },
@@ -480,7 +480,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoDer10.png"
+          "path": "data/img/ind/indSelectedRackRight10.png"
         }
       }
     },
@@ -502,7 +502,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoDer11.png"
+          "path": "data/img/ind/indSelectedRackRight11.png"
         }
       }
     },
@@ -524,7 +524,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indRackElegidoDer12.png"
+          "path": "data/img/ind/indSelectedRackRight12.png"
         }
       }
     }

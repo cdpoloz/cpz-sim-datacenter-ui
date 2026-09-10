@@ -18,7 +18,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloNullIzq.png"
+          "path": "data/img/ind/indNullAisleLeft.png"
         }
       }
     },
@@ -40,7 +40,7 @@
         "strokeWeight": 0.0,
         "renderer": {
           "type": "png",
-          "path": "data/img/ind/indPasilloNullDer.png"
+          "path": "data/img/ind/indNullAisleRight.png"
         }
       }
     }
