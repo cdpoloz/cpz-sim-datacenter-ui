@@ -1718,7 +1718,7 @@
     },
     {
       "type": "indicator",
-      "code": "indFlechasAireFrioIzq",
+      "code": "indColdAirArrowsLeft",
       "bounds": {
         "mode": "relative",
         "x": 0.4795546875,
@@ -1740,7 +1740,7 @@
     },
     {
       "type": "indicator",
-      "code": "indFlechasAireFrioDer",
+      "code": "indColdAirArrowsRight",
       "bounds": {
         "mode": "relative",
         "x": 0.5950515625,

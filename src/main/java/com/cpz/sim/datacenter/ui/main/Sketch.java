@@ -815,10 +815,10 @@ public class Sketch extends PApplet {
     private void updateSelectedAislePanel() {
         boolean leftEdgeAisleSelected = selectedColumn.equals(PROPS.getProperty("datacenter.first.column"));
         boolean rightEdgeAisleSelected = selectedColumn.equals(PROPS.getProperty("datacenter.last.column"));
-        indicatorsNullAisle.get("indPasilloNullIzq").setOn(leftEdgeAisleSelected);
-        indicators.get("indFlechasAireFrioIzq").setOn(!leftEdgeAisleSelected);
-        indicatorsNullAisle.get("indPasilloNullDer").setOn(rightEdgeAisleSelected);
-        indicators.get("indFlechasAireFrioDer").setOn(!rightEdgeAisleSelected);
+        indicatorsNullAisle.get("indNullAisleLeft").setOn(leftEdgeAisleSelected);
+        indicators.get("indColdAirArrowsLeft").setOn(!leftEdgeAisleSelected);
+        indicatorsNullAisle.get("indNullAisleRight").setOn(rightEdgeAisleSelected);
+        indicators.get("indColdAirArrowsRight").setOn(!rightEdgeAisleSelected);
         resolveSelectedHotAisle();
         labels.get("lblPasilloElegidoValor").setText(selectedHotAisle.displayName());
         // additional data
