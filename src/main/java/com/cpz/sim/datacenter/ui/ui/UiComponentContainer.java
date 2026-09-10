@@ -91,4 +91,16 @@ public class UiComponentContainer {
     public void setToggles(Map<String, Toggle> toggles) {
         this.toggles = toggles;
     }
+
+    public Map<String, Button> buttonsSelectedAisleRack() {
+        return buttonsSelectedAisleRack;
+    }
+
+    public Map<String, Button> buttonsColumn() {
+        return buttonsColumn;
+    }
+
+    public Map<String, Button> buttonsPlay() {
+        return buttonsPlay;
+    }
 }
