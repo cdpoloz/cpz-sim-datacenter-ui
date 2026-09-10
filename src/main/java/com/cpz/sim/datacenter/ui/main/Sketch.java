@@ -667,7 +667,7 @@ public class Sketch extends PApplet {
     }
 
     private void updateSelectedRackPanel() {
-        labels.get("lblRackElegidoValor").setText(selectedColumn + "-" + selectedRack);
+        labels.get("lblSelectedRackValue").setText(selectedColumn + "-" + selectedRack);
         Rack rack = resolveSelectedRack();
         RackLocation rackLocation = new RackLocation(selectedColumn, new RackCode(selectedRack));
         RackOperationalSnapshot rackSnapshot = operationalSnapshot
@@ -731,8 +731,8 @@ public class Sketch extends PApplet {
             aiSlotIndicator1.setOn(aiServer);
             aiSlotIndicator2.setOn(aiServer);
         }
-        Label averageTemperatureLabel = labels.get("lblRackTemperaturaPromedioValor");
-        Label averageLoadLabel = labels.get("lblRackCargaPromedioValor");
+        Label averageTemperatureLabel = labels.get("lblRackAverageTemperatureValue");
+        Label averageLoadLabel = labels.get("lblRackAverageLoadValue");
         if (rackSnapshot.hasOnlineServers()) {
             averageTemperatureLabel.setTextColor(COLOR_YELLOW_LABEL);
             averageTemperatureLabel.setText(String.format(temperatureFormat, rackSnapshot.averageOnlineTemperatureCelsius()));
@@ -742,7 +742,7 @@ public class Sketch extends PApplet {
             averageTemperatureLabel.setText("--");
             averageLoadLabel.setText("--");
         }
-        labels.get("lblRackPotenciaAcumuladaValor").setText(String.format(powerKwFormat, rackSnapshot.currentPowerWatts() / 1000));
+        labels.get("lblRackCurrentPowerValue").setText(String.format(powerKwFormat, rackSnapshot.currentPowerWatts() / 1000));
         updateBar("SelectedRackPowerBar", rackSnapshot.currentPowerWatts(), rackSnapshot.idlePowerWatts(), rackSnapshot.maxPowerWatts());
     }
 

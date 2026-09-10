@@ -2,7 +2,7 @@
   "controls": [
     {
       "type": "label",
-      "code": "lblRackElegido",
+      "code": "lblSelectedRack",
       "text": "SELECTED RACK",
       "bounds": {
         "mode": "relative",
@@ -27,7 +27,7 @@
     },
     {
       "type": "label",
-      "code": "lblRackElegidoValor",
+      "code": "lblSelectedRackValue",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -52,7 +52,7 @@
     },
     {
       "type": "label",
-      "code": "lblRackElegidoSlot",
+      "code": "lblSelectedRackSlot",
       "text": "SLOT",
       "bounds": {
         "mode": "relative",
@@ -77,7 +77,7 @@
     },
     {
       "type": "label",
-      "code": "lblRackElegidoTemperatura",
+      "code": "lblSelectedRackTemperature",
       "text": "TEMP",
       "bounds": {
         "mode": "relative",
@@ -102,7 +102,7 @@
     },
     {
       "type": "label",
-      "code": "lblRackElegidoCarga",
+      "code": "lblSelectedRackLoad",
       "text": "LOAD",
       "bounds": {
         "mode": "relative",
@@ -127,7 +127,7 @@
     },
     {
       "type": "label",
-      "code": "lblRackElegidoPotencia",
+      "code": "lblSelectedRackPower",
       "text": "POWER",
       "bounds": {
         "mode": "relative",
@@ -152,7 +152,7 @@
     },
     {
       "type": "label",
-      "code": "lblRackElegidoStatus",
+      "code": "lblSelectedRackStatus",
       "text": "STATUS",
       "bounds": {
         "mode": "relative",
@@ -1377,7 +1377,7 @@
     },
     {
       "type": "label",
-      "code": "lblRackTemperaturaPromedio",
+      "code": "lblRackAverageTemperature",
       "text": "RACK TEMP",
       "bounds": {
         "mode": "relative",
@@ -1402,7 +1402,7 @@
     },
     {
       "type": "label",
-      "code": "lblRackTemperaturaPromedioValor",
+      "code": "lblRackAverageTemperatureValue",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -1427,7 +1427,7 @@
     },
     {
       "type": "label",
-      "code": "lblRackCargaPromedio",
+      "code": "lblRackAverageLoad",
       "text": "RACK LOAD",
       "bounds": {
         "mode": "relative",
@@ -1452,7 +1452,7 @@
     },
     {
       "type": "label",
-      "code": "lblRackCargaPromedioValor",
+      "code": "lblRackAverageLoadValue",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -1477,7 +1477,7 @@
     },
     {
       "type": "label",
-      "code": "lblRackPotenciaAcumulada",
+      "code": "lblRackCurrentPower",
       "text": "RACK POWER",
       "bounds": {
         "mode": "relative",
@@ -1502,7 +1502,7 @@
     },
     {
       "type": "label",
-      "code": "lblRackPotenciaAcumuladaValor",
+      "code": "lblRackCurrentPowerValue",
       "text": "--",
       "bounds": {
         "mode": "relative",
