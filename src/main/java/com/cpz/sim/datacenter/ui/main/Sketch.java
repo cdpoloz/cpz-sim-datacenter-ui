@@ -210,7 +210,7 @@ public class Sketch extends PApplet {
         controlsByCode.values().stream().filter(c -> c instanceof Toggle).forEach(tgl -> toggles.put(tgl.getCode(), (Toggle) tgl));
         toggles.values().forEach(tgl -> {
             mainInputLayer.addPointerTarget(tgl::handlePointerEvent);
-            tgl.setChangeListener(state -> tglClicked(tgl, state));
+            tgl.setChangeListener(state -> tglChanged(tgl, state));
         });
         // input layer registration
         inputManager.registerLayer(mainInputLayer);
@@ -473,7 +473,7 @@ public class Sketch extends PApplet {
         updateUI = true;
     }
 
-    private void tglClicked(Toggle tgl, int state) {
+    private void tglChanged(Toggle tgl, int state) {
         String toggleCode = tgl.getCode();
         if (toggleCode.startsWith("tglSupply") || toggleCode.startsWith("tglExhaust")) coolingToggleClicked(tgl, state);
         else if (toggleCode.equals("tglPlay")) {
