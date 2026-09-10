@@ -103,4 +103,8 @@ public class UiComponentContainer {
     public Map<String, Button> buttonsPlay() {
         return buttonsPlay;
     }
+
+    public Map<String, Toggle> toggles() {
+        return toggles;
+    }
 }
