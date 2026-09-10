@@ -743,7 +743,7 @@ public class Sketch extends PApplet {
             averageLoadLabel.setText("--");
         }
         labels.get("lblRackPotenciaAcumuladaValor").setText(String.format(powerKwFormat, rackSnapshot.currentPowerWatts() / 1000));
-        updateBar("RackElegidoPotencia", rackSnapshot.currentPowerWatts(), rackSnapshot.idlePowerWatts(), rackSnapshot.maxPowerWatts());
+        updateBar("SelectedRackPowerBar", rackSnapshot.currentPowerWatts(), rackSnapshot.idlePowerWatts(), rackSnapshot.maxPowerWatts());
     }
 
     private void updateSlotColor(Indicator indSlot, float temperature) {
@@ -803,7 +803,7 @@ public class Sketch extends PApplet {
 
     private void updateBar(String type, double value, double minValue, double maxValue) {
         if (type == null || type.isEmpty()) return;
-        String key = "indBarra" + type;
+        String key = "ind" + type;
         int iMax = (int) map((float) value, (float) minValue, (float) maxValue, 1, 6);
         for (int i = 0; i < 6; i++) indicators.get(key + (i + 1)).setOn(i < iMax);
     }

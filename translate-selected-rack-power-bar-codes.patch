@@ -1,0 +1,84 @@
+From 3bbe4a59fc24bc052de02350ed19d5c3f7765672 Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Thu, 10 Sep 2026 13:10:25 +0200
+Subject: [PATCH] refactor: translate selected rack power bar codes
+
+---
+ data/config/indicators.json                          | 12 ++++++------
+ .../java/com/cpz/sim/datacenter/ui/main/Sketch.java  |  2 +-
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/data/config/indicators.json b/data/config/indicators.json
+index ad3e9ac..02396cb 100644
+--- a/data/config/indicators.json
++++ b/data/config/indicators.json
+@@ -1586,7 +1586,7 @@
+     },
+     {
+       "type": "indicator",
+-      "code": "indBarraRackElegidoPotencia1",
++      "code": "indSelectedRackPowerBar1",
+       "bounds": {
+         "mode": "relative",
+         "x": 0.9235104167,
+@@ -1608,7 +1608,7 @@
+     },
+     {
+       "type": "indicator",
+-      "code": "indBarraRackElegidoPotencia2",
++      "code": "indSelectedRackPowerBar2",
+       "bounds": {
+         "mode": "relative",
+         "x": 0.9273916667,
+@@ -1630,7 +1630,7 @@
+     },
+     {
+       "type": "indicator",
+-      "code": "indBarraRackElegidoPotencia3",
++      "code": "indSelectedRackPowerBar3",
+       "bounds": {
+         "mode": "relative",
+         "x": 0.9312731771,
+@@ -1652,7 +1652,7 @@
+     },
+     {
+       "type": "indicator",
+-      "code": "indBarraRackElegidoPotencia4",
++      "code": "indSelectedRackPowerBar4",
+       "bounds": {
+         "mode": "relative",
+         "x": 0.9351544271,
+@@ -1674,7 +1674,7 @@
+     },
+     {
+       "type": "indicator",
+-      "code": "indBarraRackElegidoPotencia5",
++      "code": "indSelectedRackPowerBar5",
+       "bounds": {
+         "mode": "relative",
+         "x": 0.9390359375,
+@@ -1696,7 +1696,7 @@
+     },
+     {
+       "type": "indicator",
+-      "code": "indBarraRackElegidoPotencia6",
++      "code": "indSelectedRackPowerBar6",
+       "bounds": {
+         "mode": "relative",
+         "x": 0.9429174479,
+diff --git a/src/main/java/com/cpz/sim/datacenter/ui/main/Sketch.java b/src/main/java/com/cpz/sim/datacenter/ui/main/Sketch.java
+index 54a23d7..2ce5cd0 100644
+--- a/src/main/java/com/cpz/sim/datacenter/ui/main/Sketch.java
++++ b/src/main/java/com/cpz/sim/datacenter/ui/main/Sketch.java
+@@ -743,7 +743,7 @@ public class Sketch extends PApplet {
+             averageLoadLabel.setText("--");
+         }
+         labels.get("lblRackPotenciaAcumuladaValor").setText(String.format(powerKwFormat, rackSnapshot.currentPowerWatts() / 1000));
+-        updateBar("RackElegidoPotencia", rackSnapshot.currentPowerWatts(), rackSnapshot.idlePowerWatts(), rackSnapshot.maxPowerWatts());
++        updateBar("SelectedRackPowerBar", rackSnapshot.currentPowerWatts(), rackSnapshot.idlePowerWatts(), rackSnapshot.maxPowerWatts());
+     }
+ 
+     private void updateSlotColor(Indicator indSlot, float temperature) {
+-- 
+2.51.1
+
