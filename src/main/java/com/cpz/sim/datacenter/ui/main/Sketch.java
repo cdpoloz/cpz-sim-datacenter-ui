@@ -123,6 +123,8 @@ public class Sketch extends PApplet {
         // input manager
         inputManager = new InputManager();
         MainInputLayer mainInputLayer = new MainInputLayer(0);
+        // overlay manager
+        overlayManager = new OverlayManager();
         // controls
         uiComponentContainer = new UiComponentContainer();
         ControlManager controlManager = new ControlManager(
@@ -138,8 +140,6 @@ public class Sketch extends PApplet {
         // input layer registration
         inputManager.registerLayer(mainInputLayer);
         //inputManager.registerLayer(new TooltipInputLayer(1000, tooltips));
-        // overlay manager
-        overlayManager = new OverlayManager();
         // resources
         resourceContainer = new ResourceContainer();
         ResourceManager resourceManager = new ResourceManager(context, resourceContainer);
@@ -149,7 +149,7 @@ public class Sketch extends PApplet {
         simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         simulationManager.initialize();
         // app bootstrap
-        ApplicationBootstrap bootstrap = new ApplicationBootstrap(context, resourceContainer);
+        ApplicationBootstrap bootstrap = new ApplicationBootstrap(context);
         bootstrap.initialize();
         // workloads
         PerlinNoise perlinNoise = new PerlinNoise(1234L);
