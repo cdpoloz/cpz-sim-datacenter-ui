@@ -15,6 +15,7 @@ import com.cpz.sim.datacenter.workload.NoiseWorkloadSource;
 import com.cpz.sim.datacenter.workload.ScaledWorkloadSource;
 import com.cpz.sim.datacenter.workload.ServerWorkloadFactorProvider;
 import com.cpz.sim.datacenter.workload.WorkloadSource;
+import com.cpz.sim.foundation.engine.SimulationEngine;
 import com.cpz.sim.foundation.time.SimulationClock;
 import com.cpz.utils.noise.FractalNoise;
 import com.cpz.utils.noise.PerlinNoise;
@@ -52,6 +53,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         initializeTimer();
         initializeDatacenter();
         initializeWorkloads();
+        initializeEngine();
     }
 
     private void initializeTimer() {
@@ -137,6 +139,10 @@ public class SimulationManager extends ApplicationComponent implements Initializ
                 )
         );
         simulationContainer.setClock(new SimulationClock(Duration.ofMinutes(1)));
+    }
+
+    private void initializeEngine() {
+        simulationContainer.setEngine(new SimulationEngine(simulationContainer.clock()));
     }
 
     public void updateSimulationTimerPeriod() {
