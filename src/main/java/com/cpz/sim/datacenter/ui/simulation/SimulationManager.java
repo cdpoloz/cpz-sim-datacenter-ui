@@ -15,17 +15,8 @@ import com.cpz.sim.datacenter.health.ServerHealthOptions;
 import com.cpz.sim.datacenter.model.Rack;
 import com.cpz.sim.datacenter.model.Server;
 import com.cpz.sim.datacenter.model.ServerLocation;
-import com.cpz.sim.datacenter.snapshot.DatacenterOperationalSnapshotProvider;
-import com.cpz.sim.datacenter.snapshot.EnergyConsumptionSnapshotProvider;
-import com.cpz.sim.datacenter.snapshot.HealthSnapshotProvider;
-import com.cpz.sim.datacenter.snapshot.ServerGroupDefinition;
-import com.cpz.sim.datacenter.snapshot.TemperatureSnapshotProvider;
-import com.cpz.sim.datacenter.system.CoolingSystem;
-import com.cpz.sim.datacenter.system.EnergyConsumptionSystem;
-import com.cpz.sim.datacenter.system.PowerConsumptionSystem;
-import com.cpz.sim.datacenter.system.ServerHealthSystem;
-import com.cpz.sim.datacenter.system.TemperatureSystem;
-import com.cpz.sim.datacenter.system.WorkloadSystem;
+import com.cpz.sim.datacenter.snapshot.*;
+import com.cpz.sim.datacenter.system.*;
 import com.cpz.sim.datacenter.temperature.CoolingSnapshotTemperatureReferenceProvider;
 import com.cpz.sim.datacenter.temperature.SimpleServerTemperatureModel;
 import com.cpz.sim.datacenter.temperature.TemperatureSystemOptions;
@@ -62,6 +53,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
 
     private final SimulationContainer simulationContainer;
     private final UiComponentContainer uiComponentContainer;
+    private boolean syncingPlayToggle;
 
     public SimulationManager(
             ApplicationContext applicationContext,
@@ -309,10 +301,30 @@ public class SimulationManager extends ApplicationComponent implements Initializ
     }
 
     public void updateSnapshots() {
-        simulationContainer.setEnergySnapshot(simulationContainer.energySnapshotProvider().snapshot(simulationContainer.engine().currentTick()));
-        simulationContainer.setTemperatureSnapshot(simulationContainer.temperatureSnapshotProvider().snapshot(simulationContainer.engine().currentTick()));
-        simulationContainer.setHealthSnapshot(simulationContainer.healthSnapshotProvider().snapshot(simulationContainer.engine().currentTick()));
-        simulationContainer.setOperationalSnapshot(simulationContainer.operationalSnapshotProvider().snapshot(simulationContainer.energySnapshot(), simulationContainer.temperatureSnapshot(), simulationContainer.healthSnapshot()));
+        simulationContainer.setEnergySnapshot(
+                simulationContainer
+                        .energySnapshotProvider()
+                        .snapshot(simulationContainer.engine().currentTick())
+        );
+        simulationContainer.setTemperatureSnapshot(
+                simulationContainer
+                        .temperatureSnapshotProvider()
+                        .snapshot(simulationContainer.engine().currentTick())
+        );
+        simulationContainer.setHealthSnapshot(
+                simulationContainer
+                        .healthSnapshotProvider()
+                        .snapshot(simulationContainer.engine().currentTick())
+        );
+        simulationContainer.setOperationalSnapshot(
+                simulationContainer
+                        .operationalSnapshotProvider()
+                        .snapshot(
+                                simulationContainer.energySnapshot(),
+                                simulationContainer.temperatureSnapshot(),
+                                simulationContainer.healthSnapshot()
+                        )
+        );
     }
 
     public boolean updateClock() {
@@ -320,6 +332,21 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         if (!simulationContainer.simulationTimer().pollPeriodPulse()) return false;
         simulationContainer.engine().step();
         return true;
+    }
+
+    public boolean isSyncingPlayToggle() {
+        return syncingPlayToggle;
+    }
+
+    public void toggleSimulation() {
+        simulationContainer.simulationTimer().toggle();
+        syncingPlayToggle = true;
+        try {
+            uiComponentContainer.toggles().get("tglPlay").setState(simulationContainer.simulationTimer().isRunning() ? 1 : 0);
+        } finally {
+            syncingPlayToggle = false;
+        }
+        updateSimulationControls();
     }
 
     public void updateSimulationTimerPeriod() {
