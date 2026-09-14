@@ -6,6 +6,9 @@ import com.cpz.sim.datacenter.cooling.CoolingSnapshotCoordinator;
 import com.cpz.sim.datacenter.model.Datacenter;
 import com.cpz.sim.datacenter.model.Rack;
 import com.cpz.sim.datacenter.snapshot.CoolingSnapshot;
+import com.cpz.sim.datacenter.snapshot.EnergyConsumptionSnapshotProvider;
+import com.cpz.sim.datacenter.snapshot.HealthSnapshotProvider;
+import com.cpz.sim.datacenter.snapshot.TemperatureSnapshotProvider;
 import com.cpz.sim.datacenter.system.CoolingSystem;
 import com.cpz.sim.datacenter.system.EnergyConsumptionSystem;
 import com.cpz.sim.datacenter.system.ServerHealthSystem;
@@ -47,7 +50,9 @@ public class SimulationContainer {
     private TemperatureSystem temperatureSystem;
     private ServerHealthSystem healthSystem;
     private CoolingSnapshot coolingSnapshot;
-
+    private EnergyConsumptionSnapshotProvider energySnapshotProvider;
+    private TemperatureSnapshotProvider temperatureSnapshotProvider;
+    private HealthSnapshotProvider healthSnapshotProvider;
 
     public Timer simulationTimer() {
         return simulationTimer;
@@ -217,5 +222,29 @@ public class SimulationContainer {
 
     public void setCoolingSnapshot(CoolingSnapshot coolingSnapshot) {
         this.coolingSnapshot = coolingSnapshot;
+    }
+
+    public EnergyConsumptionSnapshotProvider energySnapshotProvider() {
+        return energySnapshotProvider;
+    }
+
+    public void setEnergySnapshotProvider(EnergyConsumptionSnapshotProvider energySnapshotProvider) {
+        this.energySnapshotProvider = energySnapshotProvider;
+    }
+
+    public TemperatureSnapshotProvider temperatureSnapshotProvider() {
+        return temperatureSnapshotProvider;
+    }
+
+    public void setTemperatureSnapshotProvider(TemperatureSnapshotProvider temperatureSnapshotProvider) {
+        this.temperatureSnapshotProvider = temperatureSnapshotProvider;
+    }
+
+    public HealthSnapshotProvider healthSnapshotProvider() {
+        return healthSnapshotProvider;
+    }
+
+    public void setHealthSnapshotProvider(HealthSnapshotProvider healthSnapshotProvider) {
+        this.healthSnapshotProvider = healthSnapshotProvider;
     }
 }
