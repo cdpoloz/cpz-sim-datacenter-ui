@@ -33,7 +33,7 @@ import com.cpz.sim.datacenter.ui.controls.ControlManager;
 import com.cpz.sim.datacenter.ui.input.MainInputLayer;
 import com.cpz.sim.datacenter.ui.resources.ResourceContainer;
 import com.cpz.sim.datacenter.ui.resources.ResourceManager;
-import com.cpz.sim.datacenter.ui.simulation.SimulationContext;
+import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.simulation.SimulationManager;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 import com.cpz.sim.datacenter.workload.NoiseWorkloadSource;
@@ -45,7 +45,6 @@ import com.cpz.sim.foundation.time.SimulationClock;
 import com.cpz.utils.color.Colors;
 import com.cpz.utils.noise.FractalNoise;
 import com.cpz.utils.noise.PerlinNoise;
-import com.cpz.utils.time.Timer;
 import processing.core.PApplet;
 import processing.event.MouseEvent;
 import processing.opengl.PJOGL;
@@ -67,13 +66,12 @@ import static com.cpz.sim.datacenter.ui.util.Constants.*;
  */
 public class Sketch extends PApplet {
 
-    private Map<String, HotAisleDefinition> hotAisleByColumn;
     private InputManager inputManager;
     private OverlayManager overlayManager;
     private ProcessingKeyboardAdapter processingKeyboardAdapter;
     private UiComponentContainer uiComponentContainer;
     private ResourceContainer resourceContainer;
-    private SimulationContext simulationContext;
+    private SimulationContainer simulationContainer;
     private SimulationManager simulationManager;
     private boolean updateSnapshots, updateUI, syncingPlayToggle;
     private boolean syncingCoolingToggles;
@@ -85,7 +83,6 @@ public class Sketch extends PApplet {
     private DatacenterOperationalSnapshotProvider operationalSnapshotProvider;
     private EnergyConsumptionSystem energySystem;
     private EnergyConsumptionSnapshotProvider energySnapshotProvider;
-    private Datacenter datacenter;
     private EnergyConsumptionSnapshot energySnapshot;
     private ServerHealthSystem healthSystem;
     private HealthSnapshotProvider healthSnapshotProvider;
@@ -99,7 +96,6 @@ public class Sketch extends PApplet {
     private Map<String, Rack> racks;
     private float minServerTemperatureCelsius, maxServerTemperatureCelsius; //*******
     private List<Float> selectedHotAisleTemperatures;
-    private CoolingConfiguration coolingConfiguration;
     private CoolingSystem coolingSystem;
     private CoolingSnapshotCoordinator coolingSnapshotCoordinator;
     private CoolingSnapshotTemperatureReferenceProvider coolingTemperatureReferenceProvider;
@@ -142,30 +138,19 @@ public class Sketch extends PApplet {
         // input layer registration
         inputManager.registerLayer(mainInputLayer);
         //inputManager.registerLayer(new TooltipInputLayer(1000, tooltips));
+        // overlay manager
+        overlayManager = new OverlayManager();
         // resources
         resourceContainer = new ResourceContainer();
         ResourceManager resourceManager = new ResourceManager(context, resourceContainer);
         resourceManager.initialize();
         // simulation manager
-        simulationContext = new SimulationContext();
-        simulationManager = new SimulationManager(context, simulationContext, uiComponentContainer);
+        simulationContainer = new SimulationContainer();
+        simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
+        simulationManager.initialize();
         // app bootstrap
         ApplicationBootstrap bootstrap = new ApplicationBootstrap(context, resourceContainer);
         bootstrap.initialize();
-        // overlay manager
-        overlayManager = new OverlayManager();
-        // datacenter
-        Path configPath = Path.of("data/config/datacenter-test-complete-rezoned-edge-cases-custom-v2.json");
-        DatacenterDefinition definition = new JsonDatacenterConfigLoader().load(configPath);
-        datacenter = new DatacenterFactory().create(definition);
-        roomName = definition.layout().room().name();
-        hotAisleByColumn = new HashMap<>();
-        coolingConfiguration =
-                new CoolingConfigurationFactory()
-                        .create(definition, datacenter)
-                        .orElseThrow(() -> new IllegalStateException("La configuración del datacenter no contiene el bloque cooling"));
-        racks = new HashMap<>();
-        for (Rack r : datacenter.getRacks()) racks.put(r.getCode().value(), r);
         // workloads
         PerlinNoise perlinNoise = new PerlinNoise(1234L);
         FractalNoise fractalNoise = new FractalNoise(
@@ -181,18 +166,18 @@ public class Sketch extends PApplet {
                 0.2f,
                 0.9f
         );
-        ServerWorkloadFactorProvider factorProvider = new WorkloadFactorProviderFactory().create(definition);
+        ServerWorkloadFactorProvider factorProvider = new WorkloadFactorProviderFactory().create(simulationContainer.datacenterDefinition());
         WorkloadSource workloadSource = new ScaledWorkloadSource(baseWorkloadSource, factorProvider);
         SimulationClock clock = new SimulationClock(Duration.ofMinutes(1));
         // engine
         engine = new SimulationEngine(clock);
         // systems
-        energySystem = new EnergyConsumptionSystem(datacenter);
-        coolingSystem = new CoolingSystem(coolingConfiguration);
-        coolingTemperatureReferenceProvider = new CoolingSnapshotTemperatureReferenceProvider(coolingConfiguration);
-        coolingSnapshotCoordinator = new CoolingSnapshotCoordinator(new DatacenterCoolingTickInputProvider(datacenter), coolingSystem, coolingTemperatureReferenceProvider);
-        TemperatureSystemOptions temperatureOptions = new TemperatureSystemOptionsFactory().create(definition);
-        temperatureSystem = new TemperatureSystem(datacenter, temperatureOptions, new SimpleServerTemperatureModel(), coolingTemperatureReferenceProvider);
+        energySystem = new EnergyConsumptionSystem(simulationContainer.datacenter());
+        coolingSystem = new CoolingSystem(simulationContainer.coolingConfiguration());
+        coolingTemperatureReferenceProvider = new CoolingSnapshotTemperatureReferenceProvider(simulationContainer.coolingConfiguration());
+        coolingSnapshotCoordinator = new CoolingSnapshotCoordinator(new DatacenterCoolingTickInputProvider(simulationContainer.datacenter()), coolingSystem, coolingTemperatureReferenceProvider);
+        TemperatureSystemOptions temperatureOptions = new TemperatureSystemOptionsFactory().create(simulationContainer.datacenterDefinition());
+        temperatureSystem = new TemperatureSystem(simulationContainer.datacenter(), temperatureOptions, new SimpleServerTemperatureModel(), coolingTemperatureReferenceProvider);
         HealthThreshold utilizationThreshold = new HealthThreshold(
                 Double.parseDouble(PROPS.getProperty("simulation.health.utilization.alert-threshold")),
                 Double.parseDouble(PROPS.getProperty("simulation.health.utilization.recovery-threshold"))
@@ -201,17 +186,17 @@ public class Sketch extends PApplet {
                 Double.parseDouble(PROPS.getProperty("simulation.health.temperature.alert-threshold-celsius")),
                 Double.parseDouble(PROPS.getProperty("simulation.health.temperature.recovery-threshold-celsius"))
         );
-        healthSystem = new ServerHealthSystem(datacenter, temperatureSystem, new ServerHealthOptions(utilizationThreshold, temperatureThreshold));
-        engine.register(new WorkloadSystem(datacenter, workloadSource));
-        engine.register(new PowerConsumptionSystem(datacenter));
+        healthSystem = new ServerHealthSystem(simulationContainer.datacenter(), temperatureSystem, new ServerHealthOptions(utilizationThreshold, temperatureThreshold));
+        engine.register(new WorkloadSystem(simulationContainer.datacenter(), workloadSource));
+        engine.register(new PowerConsumptionSystem(simulationContainer.datacenter()));
         engine.register(tick -> coolingSnapshot = coolingSnapshotCoordinator.update(tick));
         engine.register(temperatureSystem);
         engine.register(healthSystem);
         engine.register(energySystem);
         // snapshots
-        energySnapshotProvider = new EnergyConsumptionSnapshotProvider(datacenter, energySystem);
-        temperatureSnapshotProvider = new TemperatureSnapshotProvider(datacenter, temperatureSystem, temperatureOptions);
-        healthSnapshotProvider = new HealthSnapshotProvider(datacenter, healthSystem, temperatureSystem);
+        energySnapshotProvider = new EnergyConsumptionSnapshotProvider(simulationContainer.datacenter(), energySystem);
+        temperatureSnapshotProvider = new TemperatureSnapshotProvider(simulationContainer.datacenter(), temperatureSystem, temperatureOptions);
+        healthSnapshotProvider = new HealthSnapshotProvider(simulationContainer.datacenter(), healthSystem, temperatureSystem);
         // hot aisles
         Path configurationPath = Path.of(dataPath("config" + File.separator + "hot-aisle-mapping.json"));
         HotAisleConfigurationLoader loader = new HotAisleConfigurationLoader();
@@ -223,16 +208,14 @@ public class Sketch extends PApplet {
         }
         // operational groups
         List<ServerGroupDefinition> operationalGroups = createOperationalGroups(hotAisleConfiguration);
-        operationalSnapshotProvider = new DatacenterOperationalSnapshotProvider(datacenter, operationalGroups);
-        // simulation timer
-        simulationManager.initialize();
+        operationalSnapshotProvider = new DatacenterOperationalSnapshotProvider(simulationContainer.datacenter(), operationalGroups);
         // initial values
         selectedColumn = "C01";
         selectedRack = "R01";
         resolveSelectedHotAisle();
         showSelectedRackHighlight();
         showSelectedAisleHighlight();
-        calculateTemperatureRange(datacenter, temperatureOptions);
+        calculateTemperatureRange(simulationContainer.datacenter(), temperatureOptions);
         engine.step();
         updateUI = true;
         updateSnapshots = true;
@@ -300,17 +283,17 @@ public class Sketch extends PApplet {
     }
 
     private void increaseSimulationSpeed() {
-        if (simulationContext.simulationSpeedFactorIndex() >= simulationContext.simulationSpeedFactors().size() - 1) return;
-        int newIndex = simulationContext.simulationSpeedFactorIndex() + 1;
-        simulationContext.setSimulationSpeedFactorIndex(newIndex);
+        if (simulationContainer.simulationSpeedFactorIndex() >= simulationContainer.simulationSpeedFactors().size() - 1) return;
+        int newIndex = simulationContainer.simulationSpeedFactorIndex() + 1;
+        simulationContainer.setSimulationSpeedFactorIndex(newIndex);
         simulationManager.updateSimulationTimerPeriod();
         simulationManager.updateSimulationControls();
     }
 
     private void decreaseSimulationSpeed() {
-        if (simulationContext.simulationSpeedFactorIndex() <= 0) return;
-        int newIndex = simulationContext.simulationSpeedFactorIndex() - 1;
-        simulationContext.setSimulationSpeedFactorIndex(newIndex);
+        if (simulationContainer.simulationSpeedFactorIndex() <= 0) return;
+        int newIndex = simulationContainer.simulationSpeedFactorIndex() - 1;
+        simulationContainer.setSimulationSpeedFactorIndex(newIndex);
         simulationManager.updateSimulationTimerPeriod();
         simulationManager.updateSimulationControls();
     }
@@ -338,7 +321,7 @@ public class Sketch extends PApplet {
                 .hotAisles()
                 .stream()
                 .map(hotAisle -> {
-                    Set<ServerLocation> serverLocations = datacenter
+                    Set<ServerLocation> serverLocations = simulationContainer.datacenter()
                             .getServers()
                             .stream()
                             .map(Server::getLocation)
@@ -378,10 +361,10 @@ public class Sketch extends PApplet {
     }
 
     private void toggleSimulation() {
-        simulationContext.simulationTimer().toggle();
+        simulationContainer.simulationTimer().toggle();
         syncingPlayToggle = true;
         try {
-            uiComponentContainer.toggles().get("tglPlay").setState(simulationContext.simulationTimer().isRunning() ? 1 : 0);
+            uiComponentContainer.toggles().get("tglPlay").setState(simulationContainer.simulationTimer().isRunning() ? 1 : 0);
         } finally {
             syncingPlayToggle = false;
         }
@@ -505,10 +488,10 @@ public class Sketch extends PApplet {
     }
 
     private void initializeHotAisleMapping(HotAisleConfiguration configuration) {
-        hotAisleByColumn.clear();
+        simulationContainer.hotAisleByColumn().clear();
         for (HotAisleDefinition hotAisle : configuration.hotAisles()) {
             for (String column : hotAisle.columns()) {
-                HotAisleDefinition previous = hotAisleByColumn.put(column, hotAisle);
+                HotAisleDefinition previous = simulationContainer.hotAisleByColumn().put(column, hotAisle);
                 if (previous != null)
                     throw new IllegalArgumentException("Column '%s' is assigned to hot aisles '%s' and '%s'".formatted(column, previous.code(), hotAisle.code()));
             }
@@ -543,8 +526,8 @@ public class Sketch extends PApplet {
     }
 
     private void updateClock() {
-        if (simulationContext.simulationTimer() == null || engine == null) return;
-        if (!simulationContext.simulationTimer().pollPeriodPulse()) return;
+        if (simulationContainer.simulationTimer() == null || engine == null) return;
+        if (!simulationContainer.simulationTimer().pollPeriodPulse()) return;
         engine.step();
         updateSnapshots = true;
     }
@@ -582,7 +565,7 @@ public class Sketch extends PApplet {
         for (String slot : rack.getSlotCodes()) {
             String slotNumber = slot.replace("S", "");
             ServerLocation location = new ServerLocation(selectedColumn, new RackCode(selectedRack), slot);
-            Optional<Server> installedServer = datacenter.getServer(location);
+            Optional<Server> installedServer = simulationContainer.datacenter().getServer(location);
             Label slotTemperatureLabel = uiComponentContainer.labels().get("lblSlotTemperature" + slotNumber);
             Label slotLoadLabel = uiComponentContainer.labels().get("lblSlotLoad" + slotNumber);
             Label slotPowerLabel = uiComponentContainer.labels().get("lblSlotPower" + slotNumber);
@@ -712,7 +695,7 @@ public class Sketch extends PApplet {
     }
 
     private Rack resolveSelectedRack() {
-        return datacenter.findRack(selectedColumn, selectedRack).orElseThrow(() -> new IllegalStateException("Rack not found: " + selectedColumn + "-" + selectedRack));
+        return simulationContainer.datacenter().findRack(selectedColumn, selectedRack).orElseThrow(() -> new IllegalStateException("Rack not found: " + selectedColumn + "-" + selectedRack));
     }
 
     private void updateSelectedAislePanel() {
@@ -834,7 +817,7 @@ public class Sketch extends PApplet {
 
     private List<String> resolveAisleRackCodes(HotAisleDefinition aisle) {
         String referenceColumn = aisle.columns().getFirst();
-        return datacenter
+        return simulationContainer.datacenter()
                 .getRacks()
                 .stream()
                 .filter(rack -> rack.getLocation().column().equals(referenceColumn))
@@ -845,7 +828,7 @@ public class Sketch extends PApplet {
 
     private List<String> resolveAisleCoolingZoneCodes(HotAisleDefinition aisle) {
         Set<String> aisleColumns = new HashSet<>(aisle.columns());
-        return coolingConfiguration
+        return simulationContainer.coolingConfiguration()
                 .zones()
                 .stream()
                 .filter(zone -> zone.serverLocations().stream().anyMatch(location -> aisleColumns.contains(location.column())))
@@ -863,7 +846,7 @@ public class Sketch extends PApplet {
     }
 
     private void resolveSelectedHotAisle() {
-        selectedHotAisle = hotAisleByColumn.get(selectedColumn);
+        selectedHotAisle = simulationContainer.hotAisleByColumn().get(selectedColumn);
         if (selectedHotAisle == null)
             throw new IllegalArgumentException("No hot aisle configured for column: " + selectedColumn);
     }
@@ -898,12 +881,12 @@ public class Sketch extends PApplet {
         updateRoomHotAisleIndicator("HA03", "indRoomHotAisleC04-C05");
         updateRoomHotAisleIndicator("HA04", "indRoomHotAisleC06-C07");
         updateRoomHotAisleIndicator("HA05", "indRoomHotAisleC08");
-        for (Rack rack : datacenter.getRacks()) {
+        for (Rack rack : simulationContainer.datacenter().getRacks()) {
             RackLocation location = rack.getLocation();
             String rackIndicatorCode = "indRack" + rack.getColumn() + rack.getRow();
             Indicator rackIndicator = uiComponentContainer.indicatorsRack().get(rackIndicatorCode);
             if (rackIndicator == null) continue;
-            List<Server> rackServers = datacenter.getServers(location);
+            List<Server> rackServers = simulationContainer.datacenter().getServers(location);
             RackOperationalSnapshot rackSnapshot = operationalSnapshot.getRack(location);
             boolean emptyRack = !rackSnapshot.hasInstalledServers();
             boolean rackOffline = rackSnapshot.hasInstalledServers() && !rackSnapshot.hasOnlineServers();
@@ -969,7 +952,6 @@ public class Sketch extends PApplet {
         pushStyle();
         imageMode(CORNER);
         resourceContainer.backgroundImages().forEach(img -> image(img, 0, 0, width, height));
-        //backgroundImages.forEach(img -> image(img, 0, 0, width, height));
         popStyle();
     }
 
