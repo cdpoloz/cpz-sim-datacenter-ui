@@ -168,23 +168,6 @@ public class Sketch extends PApplet {
         uiComponentContainer.labels().get("lblTime").setText(String.format("%02d", hour()) + ":" + String.format("%02d", minute()) + ":" + String.format("%02d", second()));
     }
 
-    private void increaseSimulationSpeed() {
-        if (simulationContainer.simulationSpeedFactorIndex() >= simulationContainer.simulationSpeedFactors().size() - 1)
-            return;
-        int newIndex = simulationContainer.simulationSpeedFactorIndex() + 1;
-        simulationContainer.setSimulationSpeedFactorIndex(newIndex);
-        simulationManager.updateSimulationTimerPeriod();
-        simulationManager.updateSimulationControls();
-    }
-
-    private void decreaseSimulationSpeed() {
-        if (simulationContainer.simulationSpeedFactorIndex() <= 0) return;
-        int newIndex = simulationContainer.simulationSpeedFactorIndex() - 1;
-        simulationContainer.setSimulationSpeedFactorIndex(newIndex);
-        simulationManager.updateSimulationTimerPeriod();
-        simulationManager.updateSimulationControls();
-    }
-
     private void updateHeader() {
         // single-room layout for now; refresh here when room switching is added
         String s = "DATACENTER MAP";
@@ -210,11 +193,11 @@ public class Sketch extends PApplet {
             updateSelectedColumn(buttonCode.replace("btnSelectedColumn", ""));
         else if (buttonCode.startsWith("btnPlay")) {
             if (buttonCode.equals("btnPlayPlus")) {
-                increaseSimulationSpeed();
+                simulationManager.increaseSimulationSpeed();
                 return;
             }
             if (buttonCode.equals("btnPlayMinus")) {
-                decreaseSimulationSpeed();
+                simulationManager.decreaseSimulationSpeed();
                 return;
             }
         }
@@ -922,8 +905,8 @@ public class Sketch extends PApplet {
             if (simulationManager.isSyncingPlayToggle()) return;
             simulationManager.toggleSimulation();
         }
-        else if (keyCode == PLUS) increaseSimulationSpeed();
-        else if (keyCode == MINUS) decreaseSimulationSpeed();
+        else if (keyCode == PLUS) simulationManager.increaseSimulationSpeed();
+        else if (keyCode == MINUS) simulationManager.decreaseSimulationSpeed();
     }
 
 }
