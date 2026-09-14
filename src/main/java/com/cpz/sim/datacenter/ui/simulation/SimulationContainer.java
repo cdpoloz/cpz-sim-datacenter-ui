@@ -5,6 +5,8 @@ import com.cpz.sim.datacenter.cooling.CoolingConfiguration;
 import com.cpz.sim.datacenter.model.Datacenter;
 import com.cpz.sim.datacenter.model.Rack;
 import com.cpz.sim.datacenter.ui.config.HotAisleDefinition;
+import com.cpz.sim.datacenter.workload.WorkloadSource;
+import com.cpz.sim.foundation.time.SimulationClock;
 import com.cpz.utils.time.Timer;
 
 import java.util.List;
@@ -25,6 +27,8 @@ public class SimulationContainer {
     private Map<String, HotAisleDefinition> hotAisleByColumn;
     private CoolingConfiguration coolingConfiguration;
     private Map<String, Rack> racks;
+    private WorkloadSource workloadSource;
+    private SimulationClock clock;
 
     public Timer simulationTimer() {
         return simulationTimer;
@@ -104,5 +108,21 @@ public class SimulationContainer {
 
     public void setRacks(Map<String, Rack> racks) {
         this.racks = racks;
+    }
+
+    public WorkloadSource workloadSource() {
+        return workloadSource;
+    }
+
+    public void setWorkloadSource(WorkloadSource workloadSource) {
+        this.workloadSource = workloadSource;
+    }
+
+    public SimulationClock clock() {
+        return clock;
+    }
+
+    public void setClock(SimulationClock clock) {
+        this.clock = clock;
     }
 }
