@@ -53,6 +53,8 @@ public class SimulationContainer {
     private HealthSnapshotProvider healthSnapshotProvider;
     private HotAisleConfiguration hotAisleConfiguration;
     private DatacenterOperationalSnapshotProvider operationalSnapshotProvider;
+    private List<String> supplyToggleCodes;
+    private List<String> exhaustToggleCodes;
 
     public Timer simulationTimer() {
         return simulationTimer;
@@ -260,5 +262,21 @@ public class SimulationContainer {
 
     public void setOperationalSnapshotProvider(DatacenterOperationalSnapshotProvider operationalSnapshotProvider) {
         this.operationalSnapshotProvider = operationalSnapshotProvider;
+    }
+
+    public List<String> supplyToggleCodes() {
+        return supplyToggleCodes;
+    }
+
+    public void setSupplyToggleCodes(List<String> supplyToggleCodes) {
+        this.supplyToggleCodes = supplyToggleCodes;
+    }
+
+    public List<String> exhaustToggleCodes() {
+        return exhaustToggleCodes;
+    }
+
+    public void setExhaustToggleCodes(List<String> exhaustToggleCodes) {
+        this.exhaustToggleCodes = exhaustToggleCodes;
     }
 }
