@@ -16,7 +16,6 @@ import com.cpz.sim.datacenter.snapshot.*;
 import com.cpz.sim.datacenter.temperature.TemperatureSystemOptions;
 import com.cpz.sim.datacenter.ui.app.ApplicationBootstrap;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
-import com.cpz.sim.datacenter.ui.config.HotAisleConfiguration;
 import com.cpz.sim.datacenter.ui.config.HotAisleDefinition;
 import com.cpz.sim.datacenter.ui.controls.ControlManager;
 import com.cpz.sim.datacenter.ui.input.MainInputLayer;
@@ -56,7 +55,6 @@ public class Sketch extends PApplet {
     private int previousSecond, previousDay;
     private List<String> supplyToggleCodes, exhaustToggleCodes;
     private DatacenterOperationalSnapshot operationalSnapshot;
-    private DatacenterOperationalSnapshotProvider operationalSnapshotProvider;
     private EnergyConsumptionSnapshot energySnapshot;
     private HealthSnapshot healthSnapshot;
     private TemperatureSnapshot temperatureSnapshot;
@@ -115,9 +113,6 @@ public class Sketch extends PApplet {
         // app bootstrap
         ApplicationBootstrap bootstrap = new ApplicationBootstrap(context);
         bootstrap.initialize();
-        // operational groups
-        List<ServerGroupDefinition> operationalGroups = createOperationalGroups(simulationContainer.hotAisleConfiguration());
-        operationalSnapshotProvider = new DatacenterOperationalSnapshotProvider(simulationContainer.datacenter(), operationalGroups);
         // initial values
         selectedColumn = "C01";
         selectedRack = "R01";
@@ -209,24 +204,6 @@ public class Sketch extends PApplet {
         if (day() == previousDay) return;
         previousDay = day();
         uiComponentContainer.labels().get("lblDate").setText(String.format("%02d", day()) + "/" + String.format("%02d", month()) + "/" + year());
-    }
-
-    private List<ServerGroupDefinition> createOperationalGroups(HotAisleConfiguration configuration) {
-        Objects.requireNonNull(configuration, "configuration must not be null");
-        return configuration
-                .hotAisles()
-                .stream()
-                .map(hotAisle -> {
-                    Set<ServerLocation> serverLocations = simulationContainer.datacenter()
-                            .getServers()
-                            .stream()
-                            .map(Server::getLocation)
-                            .filter(location -> hotAisle.columns().contains(location.column()))
-                            .collect(Collectors.toUnmodifiableSet()
-                            );
-                    return new ServerGroupDefinition(hotAisle.code(), serverLocations);
-                })
-                .toList();
     }
 
     private void btnClicked(String buttonCode) {
@@ -422,7 +399,7 @@ public class Sketch extends PApplet {
         energySnapshot = simulationContainer.energySnapshotProvider().snapshot(simulationContainer.engine().currentTick());
         temperatureSnapshot = simulationContainer.temperatureSnapshotProvider().snapshot(simulationContainer.engine().currentTick());
         healthSnapshot = simulationContainer.healthSnapshotProvider().snapshot(simulationContainer.engine().currentTick());
-        operationalSnapshot = operationalSnapshotProvider.snapshot(energySnapshot, temperatureSnapshot, healthSnapshot);
+        operationalSnapshot = simulationContainer.operationalSnapshotProvider().snapshot(energySnapshot, temperatureSnapshot, healthSnapshot);
         updateSnapshots = false;
         updateUI = true;
     }
