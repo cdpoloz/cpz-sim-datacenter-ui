@@ -6,6 +6,7 @@ import com.cpz.sim.datacenter.model.Datacenter;
 import com.cpz.sim.datacenter.model.Rack;
 import com.cpz.sim.datacenter.ui.config.HotAisleDefinition;
 import com.cpz.sim.datacenter.workload.WorkloadSource;
+import com.cpz.sim.foundation.engine.SimulationEngine;
 import com.cpz.sim.foundation.time.SimulationClock;
 import com.cpz.utils.time.Timer;
 
@@ -29,6 +30,7 @@ public class SimulationContainer {
     private Map<String, Rack> racks;
     private WorkloadSource workloadSource;
     private SimulationClock clock;
+    private SimulationEngine engine;
 
     public Timer simulationTimer() {
         return simulationTimer;
@@ -124,5 +126,13 @@ public class SimulationContainer {
 
     public void setClock(SimulationClock clock) {
         this.clock = clock;
+    }
+
+    public SimulationEngine engine() {
+        return engine;
+    }
+
+    public void setEngine(SimulationEngine engine) {
+        this.engine = engine;
     }
 }
