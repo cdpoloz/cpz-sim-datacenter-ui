@@ -308,6 +308,21 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         simulationContainer.engine().step();
     }
 
+    public void updateSnapshots() {
+        simulationContainer.setEnergySnapshot(simulationContainer.energySnapshotProvider().snapshot(simulationContainer.engine().currentTick()));
+        simulationContainer.setTemperatureSnapshot(simulationContainer.temperatureSnapshotProvider().snapshot(simulationContainer.engine().currentTick()));
+        simulationContainer.setHealthSnapshot(simulationContainer.healthSnapshotProvider().snapshot(simulationContainer.engine().currentTick()));
+        simulationContainer.setOperationalSnapshot(
+                simulationContainer
+                        .operationalSnapshotProvider()
+                        .snapshot(
+                                simulationContainer.energySnapshot(),
+                                simulationContainer.temperatureSnapshot(),
+                                simulationContainer.healthSnapshot()
+                        )
+        );
+    }
+
     public void updateSimulationTimerPeriod() {
         double factor = simulationContainer.simulationSpeedFactors().get(simulationContainer.simulationSpeedFactorIndex());
         int periodMillis = (int) Math.round(simulationContainer.simulationBasePeriodMillis() / factor);
@@ -324,4 +339,5 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         if (btnPlayPlus != null)
             btnPlayPlus.setEnabled(simulationContainer.simulationSpeedFactorIndex() < simulationContainer.simulationSpeedFactors().size() - 1);
     }
+
 }
