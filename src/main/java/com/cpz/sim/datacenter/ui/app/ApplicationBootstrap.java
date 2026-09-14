@@ -1,11 +1,5 @@
 package com.cpz.sim.datacenter.ui.app;
 
-import com.cpz.sim.datacenter.ui.main.Sketch;
-import com.cpz.sim.datacenter.ui.resources.ResourceContainer;
-import com.cpz.sim.datacenter.ui.resources.ResourceManager;
-
-import java.util.List;
-
 /**
  * Initializes the application.
  *
@@ -17,10 +11,10 @@ import java.util.List;
  */
 public class ApplicationBootstrap {
 
-    private final ResourceManager resourceManager;
+    private final ApplicationContext context;
 
-    public ApplicationBootstrap(ApplicationContext context, ResourceContainer resourceContainer) {
-        resourceManager = new ResourceManager(context, resourceContainer);
+    public ApplicationBootstrap(ApplicationContext context) {
+        this.context = context;
     }
 
     public void initialize() {
@@ -44,7 +38,6 @@ public class ApplicationBootstrap {
     }
 
     private void bootstrapResources() {
-        resourceManager.initialize();
     }
 
     private void bootstrapDatacenter() {
