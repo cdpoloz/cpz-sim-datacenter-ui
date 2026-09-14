@@ -12,9 +12,9 @@ import com.cpz.sim.datacenter.factory.WorkloadFactorProviderFactory;
 import com.cpz.sim.datacenter.health.HealthThreshold;
 import com.cpz.sim.datacenter.health.ServerHealthOptions;
 import com.cpz.sim.datacenter.model.Rack;
-import com.cpz.sim.datacenter.snapshot.EnergyConsumptionSnapshotProvider;
-import com.cpz.sim.datacenter.snapshot.HealthSnapshotProvider;
-import com.cpz.sim.datacenter.snapshot.TemperatureSnapshotProvider;
+import com.cpz.sim.datacenter.model.Server;
+import com.cpz.sim.datacenter.model.ServerLocation;
+import com.cpz.sim.datacenter.snapshot.*;
 import com.cpz.sim.datacenter.system.*;
 import com.cpz.sim.datacenter.temperature.CoolingSnapshotTemperatureReferenceProvider;
 import com.cpz.sim.datacenter.temperature.SimpleServerTemperatureModel;
@@ -40,10 +40,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
 
@@ -74,6 +72,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         initializeSystems();
         initializeSnapshots();
         initializeHotAisles();
+        initializeOperationalSnapshots();
     }
 
     private void initializeTimer() {
@@ -246,6 +245,30 @@ public class SimulationManager extends ApplicationComponent implements Initializ
                     throw new IllegalArgumentException("Column '%s' is assigned to hot aisles '%s' and '%s'".formatted(column, previous.code(), hotAisle.code()));
             }
         }
+    }
+
+    private void initializeOperationalSnapshots() {
+        List<ServerGroupDefinition> operationalGroups = createOperationalGroups(simulationContainer.hotAisleConfiguration());
+        simulationContainer.setOperationalSnapshotProvider(new DatacenterOperationalSnapshotProvider(simulationContainer.datacenter(), operationalGroups));
+    }
+
+    private List<ServerGroupDefinition> createOperationalGroups(HotAisleConfiguration configuration) {
+        Objects.requireNonNull(configuration, "configuration must not be null");
+        return configuration
+                .hotAisles()
+                .stream()
+                .map(hotAisle -> {
+                            Set<ServerLocation> serverLocations =
+                                    simulationContainer.datacenter()
+                                            .getServers()
+                                            .stream()
+                                            .map(Server::getLocation)
+                                            .filter(location -> hotAisle.columns().contains(location.column()))
+                                            .collect(Collectors.toUnmodifiableSet());
+                            return new ServerGroupDefinition(hotAisle.code(), serverLocations);
+                        }
+                )
+                .toList();
     }
 
     public void updateSimulationTimerPeriod() {
