@@ -8,11 +8,11 @@ import com.cpz.processing.controls.core.input.InputManager;
 import com.cpz.processing.controls.core.input.PointerEvent;
 import com.cpz.processing.controls.core.overlay.OverlayManager;
 import com.cpz.processing.controls.input.ProcessingKeyboardAdapter;
-import com.cpz.sim.datacenter.cooling.*;
+import com.cpz.sim.datacenter.cooling.CoolingUnitType;
+import com.cpz.sim.datacenter.cooling.CoolingZoneDefinition;
 import com.cpz.sim.datacenter.health.ServerAlertReason;
 import com.cpz.sim.datacenter.model.*;
 import com.cpz.sim.datacenter.snapshot.*;
-import com.cpz.sim.datacenter.system.*;
 import com.cpz.sim.datacenter.temperature.TemperatureSystemOptions;
 import com.cpz.sim.datacenter.ui.app.ApplicationBootstrap;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
@@ -60,11 +60,8 @@ public class Sketch extends PApplet {
     private List<String> supplyToggleCodes, exhaustToggleCodes;
     private DatacenterOperationalSnapshot operationalSnapshot;
     private DatacenterOperationalSnapshotProvider operationalSnapshotProvider;
-    private EnergyConsumptionSnapshotProvider energySnapshotProvider;
     private EnergyConsumptionSnapshot energySnapshot;
-    private HealthSnapshotProvider healthSnapshotProvider;
     private HealthSnapshot healthSnapshot;
-    private TemperatureSnapshotProvider temperatureSnapshotProvider;
     private TemperatureSnapshot temperatureSnapshot;
     private String selectedColumn, selectedRack;
     private HotAisleConfiguration hotAisleConfiguration;
@@ -122,6 +119,7 @@ public class Sketch extends PApplet {
         // app bootstrap
         ApplicationBootstrap bootstrap = new ApplicationBootstrap(context);
         bootstrap.initialize();
+        /*
         // snapshots
         energySnapshotProvider = new EnergyConsumptionSnapshotProvider(
                 simulationContainer.datacenter(),
@@ -137,6 +135,7 @@ public class Sketch extends PApplet {
                 simulationContainer.healthSystem(),
                 simulationContainer.temperatureSystem()
         );
+        */
         // hot aisles
         Path configurationPath = Path.of(dataPath("config" + File.separator + "hot-aisle-mapping.json"));
         HotAisleConfigurationLoader loader = new HotAisleConfigurationLoader();
@@ -208,7 +207,8 @@ public class Sketch extends PApplet {
     }
 
     private void increaseSimulationSpeed() {
-        if (simulationContainer.simulationSpeedFactorIndex() >= simulationContainer.simulationSpeedFactors().size() - 1) return;
+        if (simulationContainer.simulationSpeedFactorIndex() >= simulationContainer.simulationSpeedFactors().size() - 1)
+            return;
         int newIndex = simulationContainer.simulationSpeedFactorIndex() + 1;
         simulationContainer.setSimulationSpeedFactorIndex(newIndex);
         simulationManager.updateSimulationTimerPeriod();
@@ -226,7 +226,8 @@ public class Sketch extends PApplet {
     private void updateHeader() {
         // single-room layout for now; refresh here when room switching is added
         String s = "DATACENTER MAP";
-        if (simulationContainer.roomName() != null && !simulationContainer.roomName().isEmpty()) s += (" - " + simulationContainer.roomName());
+        if (simulationContainer.roomName() != null && !simulationContainer.roomName().isEmpty())
+            s += (" - " + simulationContainer.roomName());
         uiComponentContainer.labels().get("lblRoom").setText(s);
         updateDateTime();
     }
@@ -459,9 +460,9 @@ public class Sketch extends PApplet {
 
     private void updateSnapshots() {
         if (!updateSnapshots) return;
-        energySnapshot = energySnapshotProvider.snapshot(simulationContainer.engine().currentTick());
-        temperatureSnapshot = temperatureSnapshotProvider.snapshot(simulationContainer.engine().currentTick());
-        healthSnapshot = healthSnapshotProvider.snapshot(simulationContainer.engine().currentTick());
+        energySnapshot = simulationContainer.energySnapshotProvider().snapshot(simulationContainer.engine().currentTick());
+        temperatureSnapshot = simulationContainer.temperatureSnapshotProvider().snapshot(simulationContainer.engine().currentTick());
+        healthSnapshot = simulationContainer.healthSnapshotProvider().snapshot(simulationContainer.engine().currentTick());
         operationalSnapshot = operationalSnapshotProvider.snapshot(energySnapshot, temperatureSnapshot, healthSnapshot);
         updateSnapshots = false;
         updateUI = true;
@@ -680,7 +681,7 @@ public class Sketch extends PApplet {
                 .orElseThrow(() ->
                         new IllegalStateException(
                                 "The aisle has installed servers, "
-                                        + "pero no informa la ubicación "
+                                        + "but does not report the location "
                                         + "of the maximum temperature: "
                                         + selectedHotAisle.code()
                         )
