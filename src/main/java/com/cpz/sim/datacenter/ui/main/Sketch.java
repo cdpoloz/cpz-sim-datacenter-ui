@@ -105,7 +105,7 @@ public class Sketch extends PApplet {
         simulationContainer = new SimulationContainer();
         simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
-        selectionManager = new  SelectionManager(context, simulationContainer, uiComponentContainer);
+        selectionManager = new SelectionManager(context, simulationContainer, uiComponentContainer);
         simulationManager.initialize();
         selectionManager.initialize();
         // app bootstrap
@@ -246,9 +246,9 @@ public class Sketch extends PApplet {
     }
 
     private void updateSelectedRackPanel() {
-        uiComponentContainer.labels().get("lblSelectedRackValue").setText(selectionManager.selectedColumn() + "-" + selectionManager.selectedRack());
+        uiComponentContainer.labels().get("lblSelectedRackValue").setText(selectedColumn() + "-" + selectedRack());
         Rack rack = resolveSelectedRack();
-        RackLocation rackLocation = new RackLocation(selectionManager.selectedColumn(), new RackCode(selectionManager.selectedRack()));
+        RackLocation rackLocation = new RackLocation(selectedColumn(), new RackCode(selectedRack()));
         RackOperationalSnapshot rackSnapshot = simulationContainer.operationalSnapshot()
                 .findRack(rackLocation)
                 .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for rack: " + rackLocation.code()
@@ -258,7 +258,7 @@ public class Sketch extends PApplet {
         Map<ServerLocation, ServerHealthSnapshot> healthByLocation = resolveHealthByLocation();
         for (String slot : rack.getSlotCodes()) {
             String slotNumber = slot.replace("S", "");
-            ServerLocation location = new ServerLocation(selectionManager.selectedColumn(), new RackCode(selectionManager.selectedRack()), slot);
+            ServerLocation location = new ServerLocation(selectedColumn(), new RackCode(selectedRack()), slot);
             Optional<Server> installedServer = simulationContainer.datacenter().getServer(location);
             Label slotTemperatureLabel = uiComponentContainer.labels().get("lblSlotTemperature" + slotNumber);
             Label slotLoadLabel = uiComponentContainer.labels().get("lblSlotLoad" + slotNumber);
@@ -392,27 +392,22 @@ public class Sketch extends PApplet {
         return simulationContainer
                 .datacenter()
                 .findRack(
-                        selectionManager.selectedColumn(),
-                        selectionManager.selectedRack()).orElseThrow(() -> new IllegalStateException(
-                                "Rack not found: "
-                                        + selectionManager.selectedColumn()
-                                        + "-"
-                                        + selectionManager.selectedRack()
-                        )
+                        selectedColumn(),
+                        selectedRack()).orElseThrow(() -> new IllegalStateException("Rack not found: " + selectedColumn() + "-" + selectedRack())
                 );
     }
 
     private void updateSelectedAislePanel() {
-        boolean leftEdgeAisleSelected = selectionManager.selectedColumn().equals(PROPS.getProperty("datacenter.first.column"));
-        boolean rightEdgeAisleSelected = selectionManager.selectedColumn().equals(PROPS.getProperty("datacenter.last.column"));
+        boolean leftEdgeAisleSelected = selectedColumn().equals(PROPS.getProperty("datacenter.first.column"));
+        boolean rightEdgeAisleSelected = selectedColumn().equals(PROPS.getProperty("datacenter.last.column"));
         uiComponentContainer.indicatorsNullAisle().get("indNullAisleLeft").setOn(leftEdgeAisleSelected);
         uiComponentContainer.indicators().get("indColdAirArrowsLeft").setOn(!leftEdgeAisleSelected);
         uiComponentContainer.indicatorsNullAisle().get("indNullAisleRight").setOn(rightEdgeAisleSelected);
         uiComponentContainer.indicators().get("indColdAirArrowsRight").setOn(!rightEdgeAisleSelected);
-        uiComponentContainer.labels().get("lblSelectedAisleValue").setText(selectionManager.selectedHotAisle().displayName());
+        uiComponentContainer.labels().get("lblSelectedAisleValue").setText(selectedHotAisle().displayName());
         // additional data
-        List<String> aisleZoneCodes = resolveAisleCoolingZoneCodes(selectionManager.selectedHotAisle());
-        CoolingZoneGroupSnapshot coolingGroupSnapshot = simulationContainer.coolingSnapshot().aggregateZones(selectionManager.selectedHotAisle().code(), aisleZoneCodes);
+        List<String> aisleZoneCodes = resolveAisleCoolingZoneCodes(selectedHotAisle());
+        CoolingZoneGroupSnapshot coolingGroupSnapshot = simulationContainer.coolingSnapshot().aggregateZones(selectedHotAisle().code(), aisleZoneCodes);
         double thermalCoverage = coolingGroupSnapshot.thermalCoverage();
         uiComponentContainer.labels().get("lblSelectedAisleThermalCoverageValue").setText(String.format(percentageFormat, thermalCoverage * 100.0));
         double deltaTinOut = coolingGroupSnapshot.airTemperatureRiseCelsius();
@@ -434,8 +429,8 @@ public class Sketch extends PApplet {
         uiComponentContainer.labels().get("lblSelectedAisleAirflowValue").setText(String.format(airflowFormat, supplyAirflow, exhaustAirflow));
         // installed servers
         ServerGroupOperationalSnapshot aisleSnapshot = simulationContainer.operationalSnapshot()
-                .findServerGroup(selectionManager.selectedHotAisle().code())
-                .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for aisle: " + selectionManager.selectedHotAisle().code()));
+                .findServerGroup(selectedHotAisle().code())
+                .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for aisle: " + selectedHotAisle().code()));
         Label averageTemperatureLabel = uiComponentContainer.labels().get("lblSelectedAisleAverageTemperatureValue");
         Label maxTemperatureLabel = uiComponentContainer.labels().get("lblSelectedAisleMaximumTemperatureValue");
         Label averageLoadLabel = uiComponentContainer.labels().get("lblSelectedAisleITLoadValue");
@@ -460,7 +455,7 @@ public class Sketch extends PApplet {
                                 "The aisle has installed servers, "
                                         + "but does not report the location "
                                         + "of the maximum temperature: "
-                                        + selectionManager.selectedHotAisle().code()
+                                        + selectedHotAisle().code()
                         )
                 );
         String maxTemperatureColumn = maxTemperatureLocation.column();
@@ -495,15 +490,15 @@ public class Sketch extends PApplet {
         }
         // hot aisle temperature gradient
         selectedHotAisleTemperatures = new ArrayList<>();
-        List<String> rackCodes = resolveAisleRackCodes(selectionManager.selectedHotAisle());
+        List<String> rackCodes = resolveAisleRackCodes(selectedHotAisle());
         for (String rackCode : rackCodes) {
             float averageRackTemperature = 0;
-            for (String column : selectionManager.selectedHotAisle().columns()) {
+            for (String column : selectedHotAisle().columns()) {
                 RackLocation rackLocation = new RackLocation(column, new RackCode(rackCode));
                 RackOperationalSnapshot rackSnapshot = simulationContainer.operationalSnapshot().findRack(rackLocation).orElseThrow();
                 averageRackTemperature += (float) rackSnapshot.representativeTemperatureCelsius();
             }
-            averageRackTemperature /= selectionManager.selectedHotAisle().columns().size();
+            averageRackTemperature /= selectedHotAisle().columns().size();
             selectedHotAisleTemperatures.add(averageRackTemperature);
         }
         float fColor = map(
@@ -737,6 +732,18 @@ public class Sketch extends PApplet {
         imageMode(CORNER);
         image(resourceContainer.staticOverlay(), 0, 0, width, height);
         popStyle();
+    }
+
+    private String selectedColumn() {
+        return selectionManager.selectedColumn();
+    }
+
+    private String selectedRack() {
+        return selectionManager.selectedRack();
+    }
+
+    private HotAisleDefinition selectedHotAisle() {
+        return selectionManager.selectedHotAisle();
     }
 
     // <editor-fold defaultstate="collapsed" desc="*** mouse events ***">
