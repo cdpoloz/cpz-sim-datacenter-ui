@@ -22,6 +22,9 @@ import com.cpz.sim.datacenter.temperature.TemperatureSystemOptions;
 import com.cpz.sim.datacenter.ui.app.ApplicationComponent;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.app.Initializable;
+import com.cpz.sim.datacenter.ui.config.HotAisleConfiguration;
+import com.cpz.sim.datacenter.ui.config.HotAisleConfigurationLoader;
+import com.cpz.sim.datacenter.ui.config.HotAisleDefinition;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 import com.cpz.sim.datacenter.workload.NoiseWorkloadSource;
 import com.cpz.sim.datacenter.workload.ScaledWorkloadSource;
@@ -33,6 +36,8 @@ import com.cpz.utils.noise.FractalNoise;
 import com.cpz.utils.noise.PerlinNoise;
 import com.cpz.utils.time.Timer;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Arrays;
@@ -68,6 +73,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         initializeEngine();
         initializeSystems();
         initializeSnapshots();
+        initializeHotAisles();
     }
 
     private void initializeTimer() {
@@ -217,6 +223,29 @@ public class SimulationManager extends ApplicationComponent implements Initializ
                         simulationContainer.temperatureSystem()
                 )
         );
+    }
+
+    private void initializeHotAisles() {
+        Path configurationPath = Path.of(sketch().dataPath("config" + File.separator + "hot-aisle-mapping.json"));
+        HotAisleConfigurationLoader loader = new HotAisleConfigurationLoader();
+        try {
+            HotAisleConfiguration configuration = loader.load(configurationPath);
+            simulationContainer.setHotAisleConfiguration(configuration);
+            initializeHotAisleMapping(configuration);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not load hot aisle configuration", e);
+        }
+    }
+
+    private void initializeHotAisleMapping(HotAisleConfiguration configuration) {
+        simulationContainer.hotAisleByColumn().clear();
+        for (HotAisleDefinition hotAisle : configuration.hotAisles()) {
+            for (String column : hotAisle.columns()) {
+                HotAisleDefinition previous = simulationContainer.hotAisleByColumn().put(column, hotAisle);
+                if (previous != null)
+                    throw new IllegalArgumentException("Column '%s' is assigned to hot aisles '%s' and '%s'".formatted(column, previous.code(), hotAisle.code()));
+            }
+        }
     }
 
     public void updateSimulationTimerPeriod() {
