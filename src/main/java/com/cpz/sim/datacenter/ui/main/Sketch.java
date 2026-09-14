@@ -77,7 +77,6 @@ public class Sketch extends PApplet {
     private boolean syncingCoolingToggles;
     private int previousSecond, previousDay;
     private List<String> supplyToggleCodes, exhaustToggleCodes;
-    //private SimulationEngine engine;
     private DatacenterOperationalSnapshot operationalSnapshot;
     private DatacenterOperationalSnapshotProvider operationalSnapshotProvider;
     private EnergyConsumptionSystem energySystem;
@@ -150,8 +149,6 @@ public class Sketch extends PApplet {
         // app bootstrap
         ApplicationBootstrap bootstrap = new ApplicationBootstrap(context);
         bootstrap.initialize();
-        // engine
-        //engine = new SimulationEngine(simulationContainer.clock());
         // systems
         energySystem = new EnergyConsumptionSystem(simulationContainer.datacenter());
         coolingSystem = new CoolingSystem(simulationContainer.coolingConfiguration());
@@ -246,21 +243,6 @@ public class Sketch extends PApplet {
         uiComponentContainer.labels().get("lblRoomOnlineServersValue").setText(String.valueOf(totalOnlineServers));
         uiComponentContainer.labels().get("lblDate").setText(String.format("%02d", day()) + "/" + String.format("%02d", month()) + "/" + year());
         uiComponentContainer.labels().get("lblTime").setText(String.format("%02d", hour()) + ":" + String.format("%02d", minute()) + ":" + String.format("%02d", second()));
-    }
-
-    private List<Double> parseSimulationSpeedFactors(String rawFactors) {
-        if (rawFactors == null || rawFactors.isBlank())
-            throw new IllegalArgumentException("simulation.timer.speed-factors must not be empty");
-        List<Double> factors = Arrays.stream(rawFactors.split(","))
-                .map(String::trim)
-                .filter(value -> !value.isEmpty())
-                .map(Double::parseDouble)
-                .toList();
-        if (factors.isEmpty())
-            throw new IllegalArgumentException("simulation.timer.speed-factors must contain at least one value");
-        if (factors.stream().anyMatch(factor -> factor <= 0.0))
-            throw new IllegalArgumentException("simulation.timer.speed-factors must contain only positive values");
-        return factors;
     }
 
     private void increaseSimulationSpeed() {
