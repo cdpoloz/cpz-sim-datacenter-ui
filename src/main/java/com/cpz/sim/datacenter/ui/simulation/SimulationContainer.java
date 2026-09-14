@@ -2,8 +2,16 @@ package com.cpz.sim.datacenter.ui.simulation;
 
 import com.cpz.sim.datacenter.config.definition.DatacenterDefinition;
 import com.cpz.sim.datacenter.cooling.CoolingConfiguration;
+import com.cpz.sim.datacenter.cooling.CoolingSnapshotCoordinator;
 import com.cpz.sim.datacenter.model.Datacenter;
 import com.cpz.sim.datacenter.model.Rack;
+import com.cpz.sim.datacenter.snapshot.CoolingSnapshot;
+import com.cpz.sim.datacenter.system.CoolingSystem;
+import com.cpz.sim.datacenter.system.EnergyConsumptionSystem;
+import com.cpz.sim.datacenter.system.ServerHealthSystem;
+import com.cpz.sim.datacenter.system.TemperatureSystem;
+import com.cpz.sim.datacenter.temperature.CoolingSnapshotTemperatureReferenceProvider;
+import com.cpz.sim.datacenter.temperature.TemperatureSystemOptions;
 import com.cpz.sim.datacenter.ui.config.HotAisleDefinition;
 import com.cpz.sim.datacenter.workload.WorkloadSource;
 import com.cpz.sim.foundation.engine.SimulationEngine;
@@ -31,6 +39,15 @@ public class SimulationContainer {
     private WorkloadSource workloadSource;
     private SimulationClock clock;
     private SimulationEngine engine;
+    private EnergyConsumptionSystem energySystem;
+    private CoolingSystem coolingSystem;
+    private CoolingSnapshotTemperatureReferenceProvider coolingTemperatureReferenceProvider;
+    private CoolingSnapshotCoordinator coolingSnapshotCoordinator;
+    private TemperatureSystemOptions temperatureOptions;
+    private TemperatureSystem temperatureSystem;
+    private ServerHealthSystem healthSystem;
+    private CoolingSnapshot coolingSnapshot;
+
 
     public Timer simulationTimer() {
         return simulationTimer;
@@ -134,5 +151,71 @@ public class SimulationContainer {
 
     public void setEngine(SimulationEngine engine) {
         this.engine = engine;
+    }
+
+    public EnergyConsumptionSystem energySystem() {
+        return energySystem;
+    }
+
+    public void setEnergySystem(EnergyConsumptionSystem energySystem) {
+        this.energySystem = energySystem;
+    }
+
+    public CoolingSystem coolingSystem() {
+        return coolingSystem;
+    }
+
+    public void setCoolingSystem(CoolingSystem coolingSystem) {
+        this.coolingSystem = coolingSystem;
+    }
+
+    public CoolingSnapshotTemperatureReferenceProvider coolingTemperatureReferenceProvider() {
+        return coolingTemperatureReferenceProvider;
+    }
+
+    public void setCoolingTemperatureReferenceProvider(
+            CoolingSnapshotTemperatureReferenceProvider coolingTemperatureReferenceProvider
+    ) {
+        this.coolingTemperatureReferenceProvider = coolingTemperatureReferenceProvider;
+    }
+
+    public CoolingSnapshotCoordinator coolingSnapshotCoordinator() {
+        return coolingSnapshotCoordinator;
+    }
+
+    public void setCoolingSnapshotCoordinator(CoolingSnapshotCoordinator coolingSnapshotCoordinator) {
+        this.coolingSnapshotCoordinator = coolingSnapshotCoordinator;
+    }
+
+    public TemperatureSystemOptions temperatureOptions() {
+        return temperatureOptions;
+    }
+
+    public void setTemperatureOptions(TemperatureSystemOptions temperatureOptions) {
+        this.temperatureOptions = temperatureOptions;
+    }
+
+    public TemperatureSystem temperatureSystem() {
+        return temperatureSystem;
+    }
+
+    public void setTemperatureSystem(TemperatureSystem temperatureSystem) {
+        this.temperatureSystem = temperatureSystem;
+    }
+
+    public ServerHealthSystem healthSystem() {
+        return healthSystem;
+    }
+
+    public void setHealthSystem(ServerHealthSystem healthSystem) {
+        this.healthSystem = healthSystem;
+    }
+
+    public CoolingSnapshot coolingSnapshot() {
+        return coolingSnapshot;
+    }
+
+    public void setCoolingSnapshot(CoolingSnapshot coolingSnapshot) {
+        this.coolingSnapshot = coolingSnapshot;
     }
 }
