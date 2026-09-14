@@ -4,6 +4,7 @@ import com.cpz.processing.controls.controls.button.Button;
 import com.cpz.sim.datacenter.config.definition.DatacenterDefinition;
 import com.cpz.sim.datacenter.config.json.JsonDatacenterConfigLoader;
 import com.cpz.sim.datacenter.cooling.CoolingSnapshotCoordinator;
+import com.cpz.sim.datacenter.cooling.CoolingUnitType;
 import com.cpz.sim.datacenter.cooling.DatacenterCoolingTickInputProvider;
 import com.cpz.sim.datacenter.factory.CoolingConfigurationFactory;
 import com.cpz.sim.datacenter.factory.DatacenterFactory;
@@ -269,6 +270,29 @@ public class SimulationManager extends ApplicationComponent implements Initializ
                         }
                 )
                 .toList();
+    }
+
+    public void initializeCoolingToggleGroups() {
+        List<String> supplyToggleCodes = new ArrayList<>();
+        simulationContainer.coolingSnapshot()
+                .units()
+                .stream()
+                .filter(unit -> unit.type() == CoolingUnitType.SUPPLY)
+                .forEach(unit -> {
+                    String toggleCode = unit.unitCode().replace("SUPPLY-", "tglSupply");
+                    supplyToggleCodes.add(toggleCode);
+                });
+        simulationContainer.setSupplyToggleCodes(supplyToggleCodes);
+        List<String> exhaustToggleCodes = new ArrayList<>();
+        simulationContainer.coolingSnapshot()
+                .units()
+                .stream()
+                .filter(unit -> unit.type() == CoolingUnitType.EXHAUST)
+                .forEach(unit -> {
+                    String toggleCode = unit.unitCode().replace("EXHAUST-", "tglExhaust");
+                    exhaustToggleCodes.add(toggleCode);
+                });
+        simulationContainer.setExhaustToggleCodes(exhaustToggleCodes);
     }
 
     public void updateSimulationTimerPeriod() {
