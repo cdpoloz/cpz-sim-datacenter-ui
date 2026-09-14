@@ -1,8 +1,6 @@
 package com.cpz.sim.datacenter.ui.main;
 
-import com.cpz.processing.controls.controls.Control;
 import com.cpz.processing.controls.controls.button.Button;
-import com.cpz.processing.controls.controls.config.ControlConfigLoader;
 import com.cpz.processing.controls.controls.indicator.Indicator;
 import com.cpz.processing.controls.controls.label.Label;
 import com.cpz.processing.controls.controls.toggle.Toggle;
@@ -10,18 +8,10 @@ import com.cpz.processing.controls.core.input.InputManager;
 import com.cpz.processing.controls.core.input.PointerEvent;
 import com.cpz.processing.controls.core.overlay.OverlayManager;
 import com.cpz.processing.controls.input.ProcessingKeyboardAdapter;
-import com.cpz.sim.datacenter.cooling.*;
-import com.cpz.sim.datacenter.ui.app.ApplicationBootstrap;
-import com.cpz.sim.datacenter.ui.app.ApplicationContext;
-import com.cpz.sim.datacenter.ui.config.HotAisleConfiguration;
-import com.cpz.sim.datacenter.ui.config.HotAisleConfigurationLoader;
-import com.cpz.sim.datacenter.ui.config.HotAisleDefinition;
-import com.cpz.sim.datacenter.ui.controls.ControlManager;
-import com.cpz.sim.datacenter.ui.input.MainInputLayer;
 import com.cpz.sim.datacenter.config.definition.DatacenterDefinition;
 import com.cpz.sim.datacenter.config.json.JsonDatacenterConfigLoader;
+import com.cpz.sim.datacenter.cooling.*;
 import com.cpz.sim.datacenter.factory.CoolingConfigurationFactory;
-import com.cpz.sim.datacenter.temperature.CoolingSnapshotTemperatureReferenceProvider;
 import com.cpz.sim.datacenter.factory.DatacenterFactory;
 import com.cpz.sim.datacenter.factory.TemperatureSystemOptionsFactory;
 import com.cpz.sim.datacenter.factory.WorkloadFactorProviderFactory;
@@ -31,8 +21,18 @@ import com.cpz.sim.datacenter.health.ServerHealthOptions;
 import com.cpz.sim.datacenter.model.*;
 import com.cpz.sim.datacenter.snapshot.*;
 import com.cpz.sim.datacenter.system.*;
+import com.cpz.sim.datacenter.temperature.CoolingSnapshotTemperatureReferenceProvider;
 import com.cpz.sim.datacenter.temperature.SimpleServerTemperatureModel;
 import com.cpz.sim.datacenter.temperature.TemperatureSystemOptions;
+import com.cpz.sim.datacenter.ui.app.ApplicationBootstrap;
+import com.cpz.sim.datacenter.ui.app.ApplicationContext;
+import com.cpz.sim.datacenter.ui.config.HotAisleConfiguration;
+import com.cpz.sim.datacenter.ui.config.HotAisleConfigurationLoader;
+import com.cpz.sim.datacenter.ui.config.HotAisleDefinition;
+import com.cpz.sim.datacenter.ui.controls.ControlManager;
+import com.cpz.sim.datacenter.ui.input.MainInputLayer;
+import com.cpz.sim.datacenter.ui.resources.ResourceContainer;
+import com.cpz.sim.datacenter.ui.resources.ResourceManager;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 import com.cpz.sim.datacenter.workload.NoiseWorkloadSource;
 import com.cpz.sim.datacenter.workload.ScaledWorkloadSource;
@@ -45,7 +45,6 @@ import com.cpz.utils.noise.FractalNoise;
 import com.cpz.utils.noise.PerlinNoise;
 import com.cpz.utils.time.Timer;
 import processing.core.PApplet;
-import processing.core.PImage;
 import processing.event.MouseEvent;
 import processing.opengl.PJOGL;
 
@@ -71,15 +70,7 @@ public class Sketch extends PApplet {
     private OverlayManager overlayManager;
     private ProcessingKeyboardAdapter processingKeyboardAdapter;
     private UiComponentContainer uiComponentContainer;
-    private Map<String, Control> controls;
-    private Map<String, Indicator> indicators, indicatorsAiSlot, indicatorsAlert;
-    private Map<String, Indicator> indicatorsSelectedAisleMaximumTemperatureServer, indicatorsSelectedRack, indicatorsNullAisle;
-    private Map<String, Indicator> indicatorsSelectedAisle, indicatorsRack, indicatorsRackCondition;
-    private Map<String, Button> buttonsSelectedAisleRack, buttonsColumn, buttonsPlay;
-    private Map<String, Label> labels;
-    private Map<String, Toggle> toggles;
-    private List<PImage> backgroundImages;
-    private PImage staticOverlay;
+    private ResourceContainer resourceContainer;
     private boolean showOverlay;
     private Timer simulationTimer;
     private int simulationBasePeriodMillis;
@@ -132,9 +123,14 @@ public class Sketch extends PApplet {
         frameRate(Integer.parseInt(PROPS.getProperty("sketch.fps")));
         getSurface().setTitle(PROPS.getProperty("window.title"));
         LOG.info("Finished initial setup");
-        // app context & bootstrap
+        // app context
         ApplicationContext context = new ApplicationContext(this);
-        ApplicationBootstrap bootstrap = new ApplicationBootstrap(context);
+        // resources
+        resourceContainer = new ResourceContainer();
+        ResourceManager resourceManager = new ResourceManager(context, resourceContainer);
+        resourceManager.initialize();
+        // app bootstrap
+        ApplicationBootstrap bootstrap = new ApplicationBootstrap(context, resourceContainer);
         bootstrap.initialize();
         // input manager
         inputManager = new InputManager();
@@ -156,18 +152,6 @@ public class Sketch extends PApplet {
         // input layer registration
         inputManager.registerLayer(mainInputLayer);
         //inputManager.registerLayer(new TooltipInputLayer(1000, tooltips));
-        // font
-        textFont(createFont("data" + File.separator + "font" + File.separator + "JetBrainsMono.ttf", 96, true));
-        // background images
-        backgroundImages = new ArrayList<>();
-        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_background.png"));
-        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_backgroundSelectedAisle.png"));
-        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_backgroundSelectedRack.png"));
-        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_backgroundRoom.png"));
-        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_backgroundHeader.png"));
-        backgroundImages.add(loadImage("data" + File.separator + "img" + File.separator + "ui_backgroundFooter.png"));
-        // static overlay
-        staticOverlay = loadImage("data" + File.separator + "img" + File.separator + "ui_overlay.png");
         // datacenter
         Path configPath = Path.of("data/config/datacenter-test-complete-rezoned-edge-cases-custom-v2.json");
         DatacenterDefinition definition = new JsonDatacenterConfigLoader().load(configPath);
@@ -307,14 +291,17 @@ public class Sketch extends PApplet {
     }
 
     private List<Double> parseSimulationSpeedFactors(String rawFactors) {
-        if (rawFactors == null || rawFactors.isBlank()) throw new IllegalArgumentException("simulation.timer.speed-factors must not be empty");
+        if (rawFactors == null || rawFactors.isBlank())
+            throw new IllegalArgumentException("simulation.timer.speed-factors must not be empty");
         List<Double> factors = Arrays.stream(rawFactors.split(","))
                 .map(String::trim)
                 .filter(value -> !value.isEmpty())
                 .map(Double::parseDouble)
                 .toList();
-        if (factors.isEmpty()) throw new IllegalArgumentException("simulation.timer.speed-factors must contain at least one value");
-        if (factors.stream().anyMatch(factor -> factor <= 0.0)) throw new IllegalArgumentException("simulation.timer.speed-factors must contain only positive values");
+        if (factors.isEmpty())
+            throw new IllegalArgumentException("simulation.timer.speed-factors must contain at least one value");
+        if (factors.stream().anyMatch(factor -> factor <= 0.0))
+            throw new IllegalArgumentException("simulation.timer.speed-factors must contain only positive values");
         return factors;
     }
 
@@ -461,7 +448,7 @@ public class Sketch extends PApplet {
         syncingCoolingToggles = true;
         try {
             for (String toggleCode : toggleCodes) {
-                Toggle toggle = toggles.get(toggleCode);
+                Toggle toggle = uiComponentContainer.toggles().get(toggleCode);
                 if (toggle == null) throw new IllegalStateException("Missing toggle: " + toggleCode);
                 toggle.setState(enabled ? 1 : 0);
                 updateCoolingUnit(toggle, enabled);
@@ -474,11 +461,11 @@ public class Sketch extends PApplet {
     private void updateMasterToggle(String masterToggleCode, List<String> childToggleCodes) {
         boolean anyEnabled = childToggleCodes
                 .stream()
-                .map(toggles::get)
+                .map(uiComponentContainer.toggles()::get)
                 .anyMatch(toggle -> toggle != null && toggle.getState() == 1);
         syncingCoolingToggles = true;
         try {
-            Toggle masterToggle = toggles.get(masterToggleCode);
+            Toggle masterToggle = uiComponentContainer.toggles().get(masterToggleCode);
             if (masterToggle == null) throw new IllegalStateException("Missing master toggle: " + masterToggleCode);
             masterToggle.setState(anyEnabled ? 1 : 0);
         } finally {
@@ -530,7 +517,8 @@ public class Sketch extends PApplet {
                 btn.setVisible(false);
             else btn.setVisible(!btn.getCode().equals(selectedButtonCode));
         }
-        for (Indicator ind : uiComponentContainer.indicatorsSelectedRack().values()) ind.setOn(ind.getCode().equals(selectedRackIndicatorCode));
+        for (Indicator ind : uiComponentContainer.indicatorsSelectedRack().values())
+            ind.setOn(ind.getCode().equals(selectedRackIndicatorCode));
     }
 
     private void showSelectedAisleHighlight() {
@@ -655,7 +643,8 @@ public class Sketch extends PApplet {
                 continue;
             }
             ServerTemperatureSnapshot temperature = temperatureByLocation.get(location);
-            if (temperature == null) throw new IllegalStateException("Missing temperature snapshot for server: " + location);
+            if (temperature == null)
+                throw new IllegalStateException("Missing temperature snapshot for server: " + location);
             ServerEnergySnapshot energy = energyByLocation.get(location);
             if (energy == null) throw new IllegalStateException("Missing energy snapshot for server: " + location);
             ServerHealthSnapshot health = healthByLocation.get(location);
@@ -834,7 +823,8 @@ public class Sketch extends PApplet {
         String rackNumber = maxTemperatureLocation.rackCode().value().replace("R", "");
         String indicatorCode = "indSelectedAisleMaximumTemperatureServer" + maxTemperatureSide + rackNumber;
         Indicator maxTemperatureIndicator = uiComponentContainer.indicatorsSelectedAisleMaximumTemperatureServer().get(indicatorCode);
-        if (maxTemperatureIndicator == null) throw new IllegalStateException("Missing maximum temperature indicator: " + indicatorCode);
+        if (maxTemperatureIndicator == null)
+            throw new IllegalStateException("Missing maximum temperature indicator: " + indicatorCode);
         maxTemperatureIndicator.setOnColor(maxTemperatureColor);
         maxTemperatureIndicator.setOn(true);
         /*
@@ -907,7 +897,8 @@ public class Sketch extends PApplet {
 
     private void resolveSelectedHotAisle() {
         selectedHotAisle = hotAisleByColumn.get(selectedColumn);
-        if (selectedHotAisle == null) throw new IllegalArgumentException("No hot aisle configured for column: " + selectedColumn);
+        if (selectedHotAisle == null)
+            throw new IllegalArgumentException("No hot aisle configured for column: " + selectedColumn);
     }
 
     private Map<ServerLocation, ServerEnergySnapshot> resolveEnergyByLocation() {
@@ -1010,7 +1001,8 @@ public class Sketch extends PApplet {
         background(COLOR_BACKGROUND);
         pushStyle();
         imageMode(CORNER);
-        backgroundImages.forEach(img -> image(img, 0, 0, width, height));
+        resourceContainer.backgroundImages().forEach(img -> image(img, 0, 0, width, height));
+        //backgroundImages.forEach(img -> image(img, 0, 0, width, height));
         popStyle();
     }
 
@@ -1100,7 +1092,7 @@ public class Sketch extends PApplet {
         if (!showOverlay) return;
         pushStyle();
         imageMode(CORNER);
-        image(staticOverlay, 0, 0, width, height);
+        image(resourceContainer.staticOverlay(), 0, 0, width, height);
         popStyle();
     }
 
