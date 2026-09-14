@@ -1,0 +1,115 @@
+package com.cpz.sim.datacenter.ui.ui.selection;
+
+import com.cpz.processing.controls.controls.button.Button;
+import com.cpz.processing.controls.controls.indicator.Indicator;
+import com.cpz.sim.datacenter.ui.app.ApplicationComponent;
+import com.cpz.sim.datacenter.ui.app.ApplicationContext;
+import com.cpz.sim.datacenter.ui.config.HotAisleDefinition;
+import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
+import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
+
+import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
+
+/**
+ * Handles room selection state and highlights.
+ *
+ * @author CPZ
+ */
+public class SelectionManager extends ApplicationComponent {
+
+    private final SimulationContainer simulationContainer;
+    private final UiComponentContainer uiComponentContainer;
+    private String selectedColumn;
+    private String selectedRack;
+    private HotAisleDefinition selectedHotAisle;
+
+    public SelectionManager(ApplicationContext context, SimulationContainer simulationContainer, UiComponentContainer uiComponentContainer) {
+        super(context);
+        this.simulationContainer = simulationContainer;
+        this.uiComponentContainer = uiComponentContainer;
+    }
+
+    public void initialize() {
+        selectedColumn = "C01";
+        selectedRack = "R01";
+        resolveSelectedHotAisle();
+        showSelectedRackHighlight();
+        showSelectedAisleHighlight();
+    }
+
+    public void updateSelectedRack(String clickedRack) {
+        selectedRack = "R"
+                + clickedRack
+                .toLowerCase()
+                .replace("right", "")
+                .replace("left", "");
+        if (!selectedColumn.equals(PROPS.getProperty("datacenter.first.column")) && !selectedColumn.equals(PROPS.getProperty("datacenter.last.column"))) {
+            if (clickedRack.toLowerCase().contains("left"))
+                selectedColumn = selectedHotAisle.columns().getFirst();
+            else if (clickedRack.toLowerCase().contains("right"))
+                selectedColumn = selectedHotAisle.columns().getLast();
+        }
+        showSelectedRackHighlight();
+    }
+
+    public void updateSelectedColumn(String selectedColumn) {
+        this.selectedColumn = selectedColumn;
+        resolveSelectedHotAisle();
+        showSelectedAisleHighlight();
+        showSelectedRackHighlight();
+    }
+
+    public String selectedColumn() {
+        return selectedColumn;
+    }
+
+    public String selectedRack() {
+        return selectedRack;
+    }
+
+    public HotAisleDefinition selectedHotAisle() {
+        return selectedHotAisle;
+    }
+
+    private void showSelectedRackHighlight() {
+        int columnIndex = Integer.parseInt(selectedColumn.replace("C", ""));
+        String side = columnIndex % 2 == 0 ? "Left" : "Right";
+        String selectedRackIndicatorCode = "indSelectedRack" + side + selectedRack.replace("R", "");
+        String selectedButtonCode = selectedRackIndicatorCode.replace("ind", "btn");
+        for (Button button : uiComponentContainer.buttonsSelectedAisleRack().values()) {
+            if (selectedColumn.equals(PROPS.getProperty("datacenter.first.column")) && button.getCode().toLowerCase().contains("left"))
+                button.setVisible(false);
+            else if (selectedColumn.equals(PROPS.getProperty("datacenter.last.column")) && button.getCode().toLowerCase().contains("right"))
+                button.setVisible(false);
+            else
+                button.setVisible(!button.getCode().equals(selectedButtonCode));
+        }
+        for (Indicator indicator : uiComponentContainer.indicatorsSelectedRack().values())
+            indicator.setOn(indicator.getCode().equals(selectedRackIndicatorCode));
+    }
+
+    private void showSelectedAisleHighlight() {
+        uiComponentContainer
+                .indicatorsSelectedAisle()
+                .values()
+                .forEach(indicator -> indicator.setOn(false));
+        String selectedAisleIndicatorCode = "indSelectedAisle";
+        switch (selectedHotAisle.code()) {
+            case "HA01" -> selectedAisleIndicatorCode += "C01";
+            case "HA02" -> selectedAisleIndicatorCode += "C02-C03";
+            case "HA03" -> selectedAisleIndicatorCode += "C04-C05";
+            case "HA04" -> selectedAisleIndicatorCode += "C06-C07";
+            case "HA05" -> selectedAisleIndicatorCode += "C08";
+            default -> {
+                return;
+            }
+        }
+        uiComponentContainer.indicatorsSelectedAisle().get(selectedAisleIndicatorCode).setOn(true);
+    }
+
+    private void resolveSelectedHotAisle() {
+        selectedHotAisle = simulationContainer.hotAisleByColumn().get(selectedColumn);
+        if (selectedHotAisle == null)
+            throw new IllegalArgumentException("No hot aisle configured for column: " + selectedColumn);
+    }
+}
