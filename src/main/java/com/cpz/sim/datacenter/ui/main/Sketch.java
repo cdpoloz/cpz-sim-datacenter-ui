@@ -33,6 +33,8 @@ import com.cpz.sim.datacenter.ui.controls.ControlManager;
 import com.cpz.sim.datacenter.ui.input.MainInputLayer;
 import com.cpz.sim.datacenter.ui.resources.ResourceContainer;
 import com.cpz.sim.datacenter.ui.resources.ResourceManager;
+import com.cpz.sim.datacenter.ui.simulation.SimulationContext;
+import com.cpz.sim.datacenter.ui.simulation.SimulationManager;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 import com.cpz.sim.datacenter.workload.NoiseWorkloadSource;
 import com.cpz.sim.datacenter.workload.ScaledWorkloadSource;
@@ -71,11 +73,8 @@ public class Sketch extends PApplet {
     private ProcessingKeyboardAdapter processingKeyboardAdapter;
     private UiComponentContainer uiComponentContainer;
     private ResourceContainer resourceContainer;
-    private boolean showOverlay;
-    private Timer simulationTimer;
-    private int simulationBasePeriodMillis;
-    private List<Double> simulationSpeedFactors;
-    private int simulationSpeedFactorIndex;
+    private SimulationContext simulationContext;
+    private SimulationManager simulationManager;
     private boolean updateSnapshots, updateUI, syncingPlayToggle;
     private boolean syncingCoolingToggles;
     private int previousSecond, previousDay;
@@ -125,18 +124,9 @@ public class Sketch extends PApplet {
         LOG.info("Finished initial setup");
         // app context
         ApplicationContext context = new ApplicationContext(this);
-        // resources
-        resourceContainer = new ResourceContainer();
-        ResourceManager resourceManager = new ResourceManager(context, resourceContainer);
-        resourceManager.initialize();
-        // app bootstrap
-        ApplicationBootstrap bootstrap = new ApplicationBootstrap(context, resourceContainer);
-        bootstrap.initialize();
         // input manager
         inputManager = new InputManager();
         MainInputLayer mainInputLayer = new MainInputLayer(0);
-        // overlay manager
-        overlayManager = new OverlayManager();
         // controls
         uiComponentContainer = new UiComponentContainer();
         ControlManager controlManager = new ControlManager(
@@ -152,6 +142,18 @@ public class Sketch extends PApplet {
         // input layer registration
         inputManager.registerLayer(mainInputLayer);
         //inputManager.registerLayer(new TooltipInputLayer(1000, tooltips));
+        // resources
+        resourceContainer = new ResourceContainer();
+        ResourceManager resourceManager = new ResourceManager(context, resourceContainer);
+        resourceManager.initialize();
+        // simulation manager
+        simulationContext = new SimulationContext();
+        simulationManager = new SimulationManager(context, simulationContext, uiComponentContainer);
+        // app bootstrap
+        ApplicationBootstrap bootstrap = new ApplicationBootstrap(context, resourceContainer);
+        bootstrap.initialize();
+        // overlay manager
+        overlayManager = new OverlayManager();
         // datacenter
         Path configPath = Path.of("data/config/datacenter-test-complete-rezoned-edge-cases-custom-v2.json");
         DatacenterDefinition definition = new JsonDatacenterConfigLoader().load(configPath);
@@ -223,13 +225,7 @@ public class Sketch extends PApplet {
         List<ServerGroupDefinition> operationalGroups = createOperationalGroups(hotAisleConfiguration);
         operationalSnapshotProvider = new DatacenterOperationalSnapshotProvider(datacenter, operationalGroups);
         // simulation timer
-        simulationBasePeriodMillis = Integer.parseInt(PROPS.getProperty("simulation.timer.base-period-ms"));
-        simulationSpeedFactors = parseSimulationSpeedFactors(PROPS.getProperty("simulation.timer.speed-factors"));
-        simulationSpeedFactorIndex = findSimulationSpeedFactorIndex(Double.parseDouble(PROPS.getProperty("simulation.timer.initial-speed-factor")));
-        simulationTimer = new Timer();
-        simulationTimer.setPeriodMillis(1000);
-        updateSimulationTimerPeriod();
-        updateSimulationControls();
+        simulationManager.initialize();
         // initial values
         selectedColumn = "C01";
         selectedRack = "R01";
@@ -286,8 +282,6 @@ public class Sketch extends PApplet {
         uiComponentContainer.labels().get("lblRoomOnlineServersValue").setText(String.valueOf(totalOnlineServers));
         uiComponentContainer.labels().get("lblDate").setText(String.format("%02d", day()) + "/" + String.format("%02d", month()) + "/" + year());
         uiComponentContainer.labels().get("lblTime").setText(String.format("%02d", hour()) + ":" + String.format("%02d", minute()) + ":" + String.format("%02d", second()));
-        // debug
-        showOverlay = true;
     }
 
     private List<Double> parseSimulationSpeedFactors(String rawFactors) {
@@ -305,47 +299,20 @@ public class Sketch extends PApplet {
         return factors;
     }
 
-    private int findSimulationSpeedFactorIndex(double initialFactor) {
-        for (int i = 0; i < simulationSpeedFactors.size(); i++) {
-            if (Double.compare(simulationSpeedFactors.get(i), initialFactor) == 0) return i;
-        }
-        throw new IllegalArgumentException("simulation.timer.initial-speed-factor must exist in simulation.timer.speed-factors");
-    }
-
-    private void updateSimulationTimerPeriod() {
-        double factor = simulationSpeedFactors.get(simulationSpeedFactorIndex);
-        int periodMillis = (int) Math.round(simulationBasePeriodMillis / factor);
-        simulationTimer.setPeriodMillis(periodMillis);
-    }
-
     private void increaseSimulationSpeed() {
-        if (simulationSpeedFactorIndex >= simulationSpeedFactors.size() - 1) return;
-        simulationSpeedFactorIndex++;
-        updateSimulationTimerPeriod();
-        updateSimulationControls();
+        if (simulationContext.simulationSpeedFactorIndex() >= simulationContext.simulationSpeedFactors().size() - 1) return;
+        int newIndex = simulationContext.simulationSpeedFactorIndex() + 1;
+        simulationContext.setSimulationSpeedFactorIndex(newIndex);
+        simulationManager.updateSimulationTimerPeriod();
+        simulationManager.updateSimulationControls();
     }
 
     private void decreaseSimulationSpeed() {
-        if (simulationSpeedFactorIndex <= 0) return;
-        simulationSpeedFactorIndex--;
-        updateSimulationTimerPeriod();
-        updateSimulationControls();
-    }
-
-    private void updateSimulationControls() {
-        boolean simulationRunning = simulationTimer.isRunning();
-        String speedLabel = formatSimulationSpeedFactor();
-        uiComponentContainer.labels().get("lblSimulationValue").setText(simulationRunning ? "Running " + speedLabel : "Stopped " + speedLabel);
-        Button btnPlayMinus = uiComponentContainer.buttonsPlay().get("btnPlayMinus");
-        if (btnPlayMinus != null) btnPlayMinus.setEnabled(simulationSpeedFactorIndex > 0);
-        Button btnPlayPlus = uiComponentContainer.buttonsPlay().get("btnPlayPlus");
-        if (btnPlayPlus != null) btnPlayPlus.setEnabled(simulationSpeedFactorIndex < simulationSpeedFactors.size() - 1);
-    }
-
-    private String formatSimulationSpeedFactor() {
-        double factor = simulationSpeedFactors.get(simulationSpeedFactorIndex);
-        if (factor == Math.rint(factor)) return "x" + (int) factor;
-        return "x" + factor;
+        if (simulationContext.simulationSpeedFactorIndex() <= 0) return;
+        int newIndex = simulationContext.simulationSpeedFactorIndex() - 1;
+        simulationContext.setSimulationSpeedFactorIndex(newIndex);
+        simulationManager.updateSimulationTimerPeriod();
+        simulationManager.updateSimulationControls();
     }
 
     private void updateHeader() {
@@ -411,14 +378,14 @@ public class Sketch extends PApplet {
     }
 
     private void toggleSimulation() {
-        simulationTimer.toggle();
+        simulationContext.simulationTimer().toggle();
         syncingPlayToggle = true;
         try {
-            uiComponentContainer.toggles().get("tglPlay").setState(simulationTimer.isRunning() ? 1 : 0);
+            uiComponentContainer.toggles().get("tglPlay").setState(simulationContext.simulationTimer().isRunning() ? 1 : 0);
         } finally {
             syncingPlayToggle = false;
         }
-        updateSimulationControls();
+        simulationManager.updateSimulationControls();
     }
 
     private void coolingToggleClicked(Toggle tgl, int state) {
@@ -576,8 +543,8 @@ public class Sketch extends PApplet {
     }
 
     private void updateClock() {
-        if (simulationTimer == null || engine == null) return;
-        if (!simulationTimer.pollPeriodPulse()) return;
+        if (simulationContext.simulationTimer() == null || engine == null) return;
+        if (!simulationContext.simulationTimer().pollPeriodPulse()) return;
         engine.step();
         updateSnapshots = true;
     }
@@ -1089,7 +1056,6 @@ public class Sketch extends PApplet {
 
     private void drawOverlay() {
         overlayManager.getActiveOverlays().forEach(entry -> entry.getRender().run());
-        if (!showOverlay) return;
         pushStyle();
         imageMode(CORNER);
         image(resourceContainer.staticOverlay(), 0, 0, width, height);
