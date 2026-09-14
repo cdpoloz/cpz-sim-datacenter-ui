@@ -10,23 +10,8 @@ import com.cpz.processing.controls.core.overlay.OverlayManager;
 import com.cpz.processing.controls.input.ProcessingKeyboardAdapter;
 import com.cpz.sim.datacenter.cooling.CoolingZoneDefinition;
 import com.cpz.sim.datacenter.health.ServerAlertReason;
-import com.cpz.sim.datacenter.model.Datacenter;
-import com.cpz.sim.datacenter.model.HardwareStatus;
-import com.cpz.sim.datacenter.model.Rack;
-import com.cpz.sim.datacenter.model.RackCode;
-import com.cpz.sim.datacenter.model.RackLocation;
-import com.cpz.sim.datacenter.model.Server;
-import com.cpz.sim.datacenter.model.ServerConfig;
-import com.cpz.sim.datacenter.model.ServerLocation;
-import com.cpz.sim.datacenter.model.ServerRole;
-import com.cpz.sim.datacenter.model.ServerThermalProperties;
-import com.cpz.sim.datacenter.snapshot.CoolingZoneGroupSnapshot;
-import com.cpz.sim.datacenter.snapshot.CoolingZoneSnapshot;
-import com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot;
-import com.cpz.sim.datacenter.snapshot.ServerEnergySnapshot;
-import com.cpz.sim.datacenter.snapshot.ServerGroupOperationalSnapshot;
-import com.cpz.sim.datacenter.snapshot.ServerHealthSnapshot;
-import com.cpz.sim.datacenter.snapshot.ServerTemperatureSnapshot;
+import com.cpz.sim.datacenter.model.*;
+import com.cpz.sim.datacenter.snapshot.*;
 import com.cpz.sim.datacenter.temperature.TemperatureSystemOptions;
 import com.cpz.sim.datacenter.ui.app.ApplicationBootstrap;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
@@ -39,6 +24,7 @@ import com.cpz.sim.datacenter.ui.resources.ResourceManager;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.simulation.SimulationManager;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
+import com.cpz.sim.datacenter.ui.ui.selection.SelectionManager;
 import com.cpz.utils.color.Colors;
 import processing.core.PApplet;
 import processing.event.MouseEvent;
@@ -66,10 +52,9 @@ public class Sketch extends PApplet {
     private SimulationContainer simulationContainer;
     private SimulationManager simulationManager;
     private CoolingToggleManager coolingToggleManager;
+    private SelectionManager selectionManager;
     private boolean updateSnapshots, updateUI;
     private int previousSecond, previousDay;
-    private String selectedColumn, selectedRack;
-    private HotAisleDefinition selectedHotAisle;
     private float minServerTemperatureCelsius, maxServerTemperatureCelsius; //*******
     private List<Float> selectedHotAisleTemperatures;
     private String temperatureFormat, simpleTemperatureFormat, percentageFormat, powerKwFormat, powerMwFormat, speedFormat, pressureFormat, airflowFormat;
@@ -120,7 +105,9 @@ public class Sketch extends PApplet {
         simulationContainer = new SimulationContainer();
         simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
+        selectionManager = new  SelectionManager(context, simulationContainer, uiComponentContainer);
         simulationManager.initialize();
+        selectionManager.initialize();
         // app bootstrap
         ApplicationBootstrap bootstrap = new ApplicationBootstrap(context);
         bootstrap.initialize();
@@ -133,12 +120,6 @@ public class Sketch extends PApplet {
         speedFormat = PROPS.getProperty("number.format.speed");
         pressureFormat = PROPS.getProperty("number.format.pressure");
         airflowFormat = PROPS.getProperty("number.format.airflow");
-        // default column and rack
-        selectedColumn = "C01";
-        selectedRack = "R01";
-        resolveSelectedHotAisle();
-        showSelectedRackHighlight();
-        showSelectedAisleHighlight();
         calculateTemperatureRange(simulationContainer.datacenter(), simulationContainer.temperatureOptions());
         simulationManager.initializeInitialSimulationState();
         // initial update
@@ -190,9 +171,9 @@ public class Sketch extends PApplet {
 
     private void btnClicked(String buttonCode) {
         if (buttonCode.startsWith("btnSelectedRack"))
-            updateSelectedRack(buttonCode.replace("btnSelectedRack", ""));
+            selectionManager.updateSelectedRack(buttonCode.replace("btnSelectedRack", ""));
         else if (buttonCode.startsWith("btnSelectedColumn"))
-            updateSelectedColumn(buttonCode.replace("btnSelectedColumn", ""));
+            selectionManager.updateSelectedColumn(buttonCode.replace("btnSelectedColumn", ""));
         else if (buttonCode.startsWith("btnPlay")) {
             if (buttonCode.equals("btnPlayPlus")) {
                 simulationManager.increaseSimulationSpeed();
@@ -214,54 +195,6 @@ public class Sketch extends PApplet {
             if (simulationManager.isSyncingPlayToggle()) return;
             simulationManager.toggleSimulation();
         }
-    }
-
-    private void updateSelectedRack(String clickedRack) {
-        selectedRack = "R" + clickedRack.toLowerCase().replace("right", "").replace("left", "");
-        if (!selectedColumn.equals(PROPS.getProperty("datacenter.first.column")) && !selectedColumn.equals(PROPS.getProperty("datacenter.last.column"))) {
-            if (clickedRack.toLowerCase().contains("left")) selectedColumn = selectedHotAisle.columns().getFirst();
-            else if (clickedRack.toLowerCase().contains("right")) selectedColumn = selectedHotAisle.columns().getLast();
-        }
-        showSelectedRackHighlight();
-    }
-
-    private void updateSelectedColumn(String selectedColumn) {
-        this.selectedColumn = selectedColumn;
-        resolveSelectedHotAisle();
-        showSelectedAisleHighlight();
-        showSelectedRackHighlight();
-    }
-
-    private void showSelectedRackHighlight() {
-        int i = Integer.parseInt(selectedColumn.replace("C", ""));
-        String side = i % 2 == 0 ? "Left" : "Right";
-        String selectedRackIndicatorCode = "indSelectedRack" + side + selectedRack.replace("R", "");
-        String selectedButtonCode = selectedRackIndicatorCode.replace("ind", "btn");
-        for (Button btn : uiComponentContainer.buttonsSelectedAisleRack().values()) {
-            if (selectedColumn.equals(PROPS.getProperty("datacenter.first.column")) && btn.getCode().toLowerCase().contains("left"))
-                btn.setVisible(false);
-            else if (selectedColumn.equals(PROPS.getProperty("datacenter.last.column")) && btn.getCode().toLowerCase().contains("right"))
-                btn.setVisible(false);
-            else btn.setVisible(!btn.getCode().equals(selectedButtonCode));
-        }
-        for (Indicator ind : uiComponentContainer.indicatorsSelectedRack().values())
-            ind.setOn(ind.getCode().equals(selectedRackIndicatorCode));
-    }
-
-    private void showSelectedAisleHighlight() {
-        uiComponentContainer.indicatorsSelectedAisle().values().forEach(ind -> ind.setOn(false));
-        String selectedAisleIndicatorCode = "indSelectedAisle";
-        switch (selectedHotAisle.code()) {
-            case "HA01" -> selectedAisleIndicatorCode += "C01";
-            case "HA02" -> selectedAisleIndicatorCode += "C02-C03";
-            case "HA03" -> selectedAisleIndicatorCode += "C04-C05";
-            case "HA04" -> selectedAisleIndicatorCode += "C06-C07";
-            case "HA05" -> selectedAisleIndicatorCode += "C08";
-            default -> {
-                return;
-            }
-        }
-        uiComponentContainer.indicatorsSelectedAisle().get(selectedAisleIndicatorCode).setOn(true);
     }
 
     private void calculateTemperatureRange(Datacenter datacenter, TemperatureSystemOptions temperatureOptions) {
@@ -313,9 +246,9 @@ public class Sketch extends PApplet {
     }
 
     private void updateSelectedRackPanel() {
-        uiComponentContainer.labels().get("lblSelectedRackValue").setText(selectedColumn + "-" + selectedRack);
+        uiComponentContainer.labels().get("lblSelectedRackValue").setText(selectionManager.selectedColumn() + "-" + selectionManager.selectedRack());
         Rack rack = resolveSelectedRack();
-        RackLocation rackLocation = new RackLocation(selectedColumn, new RackCode(selectedRack));
+        RackLocation rackLocation = new RackLocation(selectionManager.selectedColumn(), new RackCode(selectionManager.selectedRack()));
         RackOperationalSnapshot rackSnapshot = simulationContainer.operationalSnapshot()
                 .findRack(rackLocation)
                 .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for rack: " + rackLocation.code()
@@ -325,7 +258,7 @@ public class Sketch extends PApplet {
         Map<ServerLocation, ServerHealthSnapshot> healthByLocation = resolveHealthByLocation();
         for (String slot : rack.getSlotCodes()) {
             String slotNumber = slot.replace("S", "");
-            ServerLocation location = new ServerLocation(selectedColumn, new RackCode(selectedRack), slot);
+            ServerLocation location = new ServerLocation(selectionManager.selectedColumn(), new RackCode(selectionManager.selectedRack()), slot);
             Optional<Server> installedServer = simulationContainer.datacenter().getServer(location);
             Label slotTemperatureLabel = uiComponentContainer.labels().get("lblSlotTemperature" + slotNumber);
             Label slotLoadLabel = uiComponentContainer.labels().get("lblSlotLoad" + slotNumber);
@@ -456,21 +389,30 @@ public class Sketch extends PApplet {
     }
 
     private Rack resolveSelectedRack() {
-        return simulationContainer.datacenter().findRack(selectedColumn, selectedRack).orElseThrow(() -> new IllegalStateException("Rack not found: " + selectedColumn + "-" + selectedRack));
+        return simulationContainer
+                .datacenter()
+                .findRack(
+                        selectionManager.selectedColumn(),
+                        selectionManager.selectedRack()).orElseThrow(() -> new IllegalStateException(
+                                "Rack not found: "
+                                        + selectionManager.selectedColumn()
+                                        + "-"
+                                        + selectionManager.selectedRack()
+                        )
+                );
     }
 
     private void updateSelectedAislePanel() {
-        boolean leftEdgeAisleSelected = selectedColumn.equals(PROPS.getProperty("datacenter.first.column"));
-        boolean rightEdgeAisleSelected = selectedColumn.equals(PROPS.getProperty("datacenter.last.column"));
+        boolean leftEdgeAisleSelected = selectionManager.selectedColumn().equals(PROPS.getProperty("datacenter.first.column"));
+        boolean rightEdgeAisleSelected = selectionManager.selectedColumn().equals(PROPS.getProperty("datacenter.last.column"));
         uiComponentContainer.indicatorsNullAisle().get("indNullAisleLeft").setOn(leftEdgeAisleSelected);
         uiComponentContainer.indicators().get("indColdAirArrowsLeft").setOn(!leftEdgeAisleSelected);
         uiComponentContainer.indicatorsNullAisle().get("indNullAisleRight").setOn(rightEdgeAisleSelected);
         uiComponentContainer.indicators().get("indColdAirArrowsRight").setOn(!rightEdgeAisleSelected);
-        resolveSelectedHotAisle();
-        uiComponentContainer.labels().get("lblSelectedAisleValue").setText(selectedHotAisle.displayName());
+        uiComponentContainer.labels().get("lblSelectedAisleValue").setText(selectionManager.selectedHotAisle().displayName());
         // additional data
-        List<String> aisleZoneCodes = resolveAisleCoolingZoneCodes(selectedHotAisle);
-        CoolingZoneGroupSnapshot coolingGroupSnapshot = simulationContainer.coolingSnapshot().aggregateZones(selectedHotAisle.code(), aisleZoneCodes);
+        List<String> aisleZoneCodes = resolveAisleCoolingZoneCodes(selectionManager.selectedHotAisle());
+        CoolingZoneGroupSnapshot coolingGroupSnapshot = simulationContainer.coolingSnapshot().aggregateZones(selectionManager.selectedHotAisle().code(), aisleZoneCodes);
         double thermalCoverage = coolingGroupSnapshot.thermalCoverage();
         uiComponentContainer.labels().get("lblSelectedAisleThermalCoverageValue").setText(String.format(percentageFormat, thermalCoverage * 100.0));
         double deltaTinOut = coolingGroupSnapshot.airTemperatureRiseCelsius();
@@ -492,8 +434,8 @@ public class Sketch extends PApplet {
         uiComponentContainer.labels().get("lblSelectedAisleAirflowValue").setText(String.format(airflowFormat, supplyAirflow, exhaustAirflow));
         // installed servers
         ServerGroupOperationalSnapshot aisleSnapshot = simulationContainer.operationalSnapshot()
-                .findServerGroup(selectedHotAisle.code())
-                .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for aisle: " + selectedHotAisle.code()));
+                .findServerGroup(selectionManager.selectedHotAisle().code())
+                .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for aisle: " + selectionManager.selectedHotAisle().code()));
         Label averageTemperatureLabel = uiComponentContainer.labels().get("lblSelectedAisleAverageTemperatureValue");
         Label maxTemperatureLabel = uiComponentContainer.labels().get("lblSelectedAisleMaximumTemperatureValue");
         Label averageLoadLabel = uiComponentContainer.labels().get("lblSelectedAisleITLoadValue");
@@ -518,7 +460,7 @@ public class Sketch extends PApplet {
                                 "The aisle has installed servers, "
                                         + "but does not report the location "
                                         + "of the maximum temperature: "
-                                        + selectedHotAisle.code()
+                                        + selectionManager.selectedHotAisle().code()
                         )
                 );
         String maxTemperatureColumn = maxTemperatureLocation.column();
@@ -553,15 +495,15 @@ public class Sketch extends PApplet {
         }
         // hot aisle temperature gradient
         selectedHotAisleTemperatures = new ArrayList<>();
-        List<String> rackCodes = resolveAisleRackCodes(selectedHotAisle);
+        List<String> rackCodes = resolveAisleRackCodes(selectionManager.selectedHotAisle());
         for (String rackCode : rackCodes) {
             float averageRackTemperature = 0;
-            for (String column : selectedHotAisle.columns()) {
+            for (String column : selectionManager.selectedHotAisle().columns()) {
                 RackLocation rackLocation = new RackLocation(column, new RackCode(rackCode));
                 RackOperationalSnapshot rackSnapshot = simulationContainer.operationalSnapshot().findRack(rackLocation).orElseThrow();
                 averageRackTemperature += (float) rackSnapshot.representativeTemperatureCelsius();
             }
-            averageRackTemperature /= selectedHotAisle.columns().size();
+            averageRackTemperature /= selectionManager.selectedHotAisle().columns().size();
             selectedHotAisleTemperatures.add(averageRackTemperature);
         }
         float fColor = map(
@@ -602,12 +544,6 @@ public class Sketch extends PApplet {
         else if (temperature >= Float.parseFloat(PROPS.getProperty("simulation.health.temperature.warning-threshold-celsius")))
             return COLOR_YELLOW_LABEL;
         else return COLOR_GREEN_LABEL;
-    }
-
-    private void resolveSelectedHotAisle() {
-        selectedHotAisle = simulationContainer.hotAisleByColumn().get(selectedColumn);
-        if (selectedHotAisle == null)
-            throw new IllegalArgumentException("No hot aisle configured for column: " + selectedColumn);
     }
 
     private Map<ServerLocation, ServerEnergySnapshot> resolveEnergyByLocation() {
@@ -837,8 +773,7 @@ public class Sketch extends PApplet {
         if (keyCode == SPACE_BAR) {
             if (simulationManager.isSyncingPlayToggle()) return;
             simulationManager.toggleSimulation();
-        }
-        else if (keyCode == PLUS) simulationManager.increaseSimulationSpeed();
+        } else if (keyCode == PLUS) simulationManager.increaseSimulationSpeed();
         else if (keyCode == MINUS) simulationManager.decreaseSimulationSpeed();
     }
 
