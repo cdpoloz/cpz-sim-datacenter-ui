@@ -12,6 +12,9 @@ import com.cpz.sim.datacenter.factory.WorkloadFactorProviderFactory;
 import com.cpz.sim.datacenter.health.HealthThreshold;
 import com.cpz.sim.datacenter.health.ServerHealthOptions;
 import com.cpz.sim.datacenter.model.Rack;
+import com.cpz.sim.datacenter.snapshot.EnergyConsumptionSnapshotProvider;
+import com.cpz.sim.datacenter.snapshot.HealthSnapshotProvider;
+import com.cpz.sim.datacenter.snapshot.TemperatureSnapshotProvider;
 import com.cpz.sim.datacenter.system.*;
 import com.cpz.sim.datacenter.temperature.CoolingSnapshotTemperatureReferenceProvider;
 import com.cpz.sim.datacenter.temperature.SimpleServerTemperatureModel;
@@ -64,6 +67,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         initializeWorkloads();
         initializeEngine();
         initializeSystems();
+        initializeSnapshots();
     }
 
     private void initializeTimer() {
@@ -191,6 +195,28 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         simulationContainer.engine().register(simulationContainer.temperatureSystem());
         simulationContainer.engine().register(simulationContainer.healthSystem());
         simulationContainer.engine().register(simulationContainer.energySystem());
+    }
+
+    private void initializeSnapshots() {
+        simulationContainer.setEnergySnapshotProvider(
+                new EnergyConsumptionSnapshotProvider(simulationContainer.datacenter(),
+                        simulationContainer.energySystem()
+                )
+        );
+        simulationContainer.setTemperatureSnapshotProvider(
+                new TemperatureSnapshotProvider(
+                        simulationContainer.datacenter(),
+                        simulationContainer.temperatureSystem(),
+                        simulationContainer.temperatureOptions()
+                )
+        );
+        simulationContainer.setHealthSnapshotProvider(
+                new HealthSnapshotProvider(
+                        simulationContainer.datacenter(),
+                        simulationContainer.healthSystem(),
+                        simulationContainer.temperatureSystem()
+                )
+        );
     }
 
     public void updateSimulationTimerPeriod() {
