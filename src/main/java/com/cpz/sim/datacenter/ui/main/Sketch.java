@@ -145,7 +145,7 @@ public class Sketch extends PApplet {
         updateUI = true;
         updateSnapshots = true;
         updateSnapshots();
-        simulationManager.initializeCoolingToggleGroups();
+        coolingToggleManager.initialize();
         // initial values
         uiComponentContainer.labels().get("lblRoomTemperatureScale01").setText(String.format(simpleTemperatureFormat, minServerTemperatureCelsius));
         for (int i = 0; i < 5; i++) {
