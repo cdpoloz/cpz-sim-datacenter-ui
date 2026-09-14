@@ -76,7 +76,6 @@ public class Sketch extends PApplet {
     private boolean updateSnapshots, updateUI, syncingPlayToggle;
     private boolean syncingCoolingToggles;
     private int previousSecond, previousDay;
-    private String roomName;
     private List<String> supplyToggleCodes, exhaustToggleCodes;
     private SimulationEngine engine;
     private DatacenterOperationalSnapshot operationalSnapshot;
@@ -151,26 +150,8 @@ public class Sketch extends PApplet {
         // app bootstrap
         ApplicationBootstrap bootstrap = new ApplicationBootstrap(context);
         bootstrap.initialize();
-        // workloads
-        PerlinNoise perlinNoise = new PerlinNoise(1234L);
-        FractalNoise fractalNoise = new FractalNoise(
-                perlinNoise,
-                5,
-                1.0f,
-                2.0f,
-                0.5f
-        );
-        WorkloadSource baseWorkloadSource = new NoiseWorkloadSource(
-                fractalNoise,
-                0.001,
-                0.2f,
-                0.9f
-        );
-        ServerWorkloadFactorProvider factorProvider = new WorkloadFactorProviderFactory().create(simulationContainer.datacenterDefinition());
-        WorkloadSource workloadSource = new ScaledWorkloadSource(baseWorkloadSource, factorProvider);
-        SimulationClock clock = new SimulationClock(Duration.ofMinutes(1));
         // engine
-        engine = new SimulationEngine(clock);
+        engine = new SimulationEngine(simulationContainer.clock());
         // systems
         energySystem = new EnergyConsumptionSystem(simulationContainer.datacenter());
         coolingSystem = new CoolingSystem(simulationContainer.coolingConfiguration());
@@ -187,7 +168,7 @@ public class Sketch extends PApplet {
                 Double.parseDouble(PROPS.getProperty("simulation.health.temperature.recovery-threshold-celsius"))
         );
         healthSystem = new ServerHealthSystem(simulationContainer.datacenter(), temperatureSystem, new ServerHealthOptions(utilizationThreshold, temperatureThreshold));
-        engine.register(new WorkloadSystem(simulationContainer.datacenter(), workloadSource));
+        engine.register(new WorkloadSystem(simulationContainer.datacenter(), simulationContainer.workloadSource()));
         engine.register(new PowerConsumptionSystem(simulationContainer.datacenter()));
         engine.register(tick -> coolingSnapshot = coolingSnapshotCoordinator.update(tick));
         engine.register(temperatureSystem);
@@ -301,7 +282,7 @@ public class Sketch extends PApplet {
     private void updateHeader() {
         // single-room layout for now; refresh here when room switching is added
         String s = "DATACENTER MAP";
-        if (roomName != null && !roomName.isEmpty()) s += (" - " + roomName);
+        if (simulationContainer.roomName() != null && !simulationContainer.roomName().isEmpty()) s += (" - " + simulationContainer.roomName());
         uiComponentContainer.labels().get("lblRoom").setText(s);
         updateDateTime();
     }
