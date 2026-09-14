@@ -1,6 +1,7 @@
 package com.cpz.sim.datacenter.ui.simulation;
 
 import com.cpz.processing.controls.controls.button.Button;
+import com.cpz.processing.controls.controls.toggle.Toggle;
 import com.cpz.sim.datacenter.config.definition.DatacenterDefinition;
 import com.cpz.sim.datacenter.config.json.JsonDatacenterConfigLoader;
 import com.cpz.sim.datacenter.cooling.CoolingSnapshotCoordinator;
@@ -342,7 +343,9 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         simulationContainer.simulationTimer().toggle();
         syncingPlayToggle = true;
         try {
-            uiComponentContainer.toggles().get("tglPlay").setState(simulationContainer.simulationTimer().isRunning() ? 1 : 0);
+            Toggle playToggle = uiComponentContainer.toggles().get("tglPlay");
+            if (playToggle == null) throw new IllegalStateException("Missing toggle: tglPlay");
+            playToggle.setState(simulationContainer.simulationTimer().isRunning() ? 1 : 0);
         } finally {
             syncingPlayToggle = false;
         }
