@@ -312,15 +312,14 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         simulationContainer.setEnergySnapshot(simulationContainer.energySnapshotProvider().snapshot(simulationContainer.engine().currentTick()));
         simulationContainer.setTemperatureSnapshot(simulationContainer.temperatureSnapshotProvider().snapshot(simulationContainer.engine().currentTick()));
         simulationContainer.setHealthSnapshot(simulationContainer.healthSnapshotProvider().snapshot(simulationContainer.engine().currentTick()));
-        simulationContainer.setOperationalSnapshot(
-                simulationContainer
-                        .operationalSnapshotProvider()
-                        .snapshot(
-                                simulationContainer.energySnapshot(),
-                                simulationContainer.temperatureSnapshot(),
-                                simulationContainer.healthSnapshot()
-                        )
-        );
+        simulationContainer.setOperationalSnapshot(simulationContainer.operationalSnapshotProvider().snapshot(simulationContainer.energySnapshot(), simulationContainer.temperatureSnapshot(), simulationContainer.healthSnapshot()));
+    }
+
+    public boolean updateClock() {
+        if (simulationContainer.simulationTimer() == null || simulationContainer.engine() == null) return false;
+        if (!simulationContainer.simulationTimer().pollPeriodPulse()) return false;
+        simulationContainer.engine().step();
+        return true;
     }
 
     public void updateSimulationTimerPeriod() {
