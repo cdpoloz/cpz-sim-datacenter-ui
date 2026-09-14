@@ -1,11 +1,14 @@
 package com.cpz.sim.datacenter.ui.controls;
 
 import com.cpz.processing.controls.controls.toggle.Toggle;
+import com.cpz.sim.datacenter.cooling.CoolingUnitType;
 import com.cpz.sim.datacenter.ui.app.ApplicationComponent;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
+import com.cpz.sim.datacenter.ui.app.Initializable;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +16,7 @@ import java.util.List;
  *
  * @author CPZ
  */
-public class CoolingToggleManager extends ApplicationComponent {
+public class CoolingToggleManager extends ApplicationComponent implements Initializable {
 
     private final SimulationContainer simulationContainer;
     private final UiComponentContainer uiComponentContainer;
@@ -23,6 +26,36 @@ public class CoolingToggleManager extends ApplicationComponent {
         super(context);
         this.simulationContainer = simulationContainer;
         this.uiComponentContainer = uiComponentContainer;
+    }
+
+    @Override
+    public void initialize() {
+        initializeCoolingToggleGroups();
+    }
+
+    private void initializeCoolingToggleGroups() {
+        List<String> supplyToggleCodes = new ArrayList<>();
+        simulationContainer
+                .coolingSnapshot()
+                .units()
+                .stream()
+                .filter(unit -> unit.type() == CoolingUnitType.SUPPLY)
+                .forEach(unit -> {
+                    String toggleCode = unit.unitCode().replace("SUPPLY-", "tglSupply");
+                    supplyToggleCodes.add(toggleCode);
+                });
+        simulationContainer.setSupplyToggleCodes(supplyToggleCodes);
+        List<String> exhaustToggleCodes = new ArrayList<>();
+        simulationContainer
+                .coolingSnapshot()
+                .units()
+                .stream()
+                .filter(unit -> unit.type() == CoolingUnitType.EXHAUST)
+                .forEach(unit -> {
+                    String toggleCode = unit.unitCode().replace("EXHAUST-", "tglExhaust");
+                    exhaustToggleCodes.add(toggleCode);
+                });
+        simulationContainer.setExhaustToggleCodes(exhaustToggleCodes);
     }
 
     public void toggleCoolingUnit(Toggle toggle, int state) {
@@ -85,7 +118,9 @@ public class CoolingToggleManager extends ApplicationComponent {
         if (unitType.isEmpty()) return;
         boolean individualToggle = toggleCode.startsWith("tglSupplyC") || toggleCode.startsWith("tglExhaustC");
         if (!individualToggle) return;
-        String unitCode = unitType + "-" + toggleCode.replace("tglSupply", "").replace("tglExhaust", "");
+        String unitCode = unitType
+                + "-"
+                + toggleCode.replace("tglSupply", "").replace("tglExhaust", "");
         simulationContainer.coolingSystem().setEnabled(unitCode, enabled);
     }
 }
