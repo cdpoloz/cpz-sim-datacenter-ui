@@ -119,23 +119,6 @@ public class Sketch extends PApplet {
         // app bootstrap
         ApplicationBootstrap bootstrap = new ApplicationBootstrap(context);
         bootstrap.initialize();
-        /*
-        // snapshots
-        energySnapshotProvider = new EnergyConsumptionSnapshotProvider(
-                simulationContainer.datacenter(),
-                simulationContainer.energySystem()
-        );
-        temperatureSnapshotProvider = new TemperatureSnapshotProvider(
-                simulationContainer.datacenter(),
-                simulationContainer.temperatureSystem(),
-                simulationContainer.temperatureOptions()
-        );
-        healthSnapshotProvider = new HealthSnapshotProvider(
-                simulationContainer.datacenter(),
-                simulationContainer.healthSystem(),
-                simulationContainer.temperatureSystem()
-        );
-        */
         // hot aisles
         Path configurationPath = Path.of(dataPath("config" + File.separator + "hot-aisle-mapping.json"));
         HotAisleConfigurationLoader loader = new HotAisleConfigurationLoader();
