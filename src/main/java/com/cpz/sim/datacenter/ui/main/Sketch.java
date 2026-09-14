@@ -20,7 +20,13 @@ import com.cpz.sim.datacenter.model.ServerConfig;
 import com.cpz.sim.datacenter.model.ServerLocation;
 import com.cpz.sim.datacenter.model.ServerRole;
 import com.cpz.sim.datacenter.model.ServerThermalProperties;
-import com.cpz.sim.datacenter.snapshot.*;
+import com.cpz.sim.datacenter.snapshot.CoolingZoneGroupSnapshot;
+import com.cpz.sim.datacenter.snapshot.CoolingZoneSnapshot;
+import com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot;
+import com.cpz.sim.datacenter.snapshot.ServerEnergySnapshot;
+import com.cpz.sim.datacenter.snapshot.ServerGroupOperationalSnapshot;
+import com.cpz.sim.datacenter.snapshot.ServerHealthSnapshot;
+import com.cpz.sim.datacenter.snapshot.ServerTemperatureSnapshot;
 import com.cpz.sim.datacenter.temperature.TemperatureSystemOptions;
 import com.cpz.sim.datacenter.ui.app.ApplicationBootstrap;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
@@ -387,26 +393,7 @@ public class Sketch extends PApplet {
 
     private void updateSnapshots() {
         if (!updateSnapshots) return;
-        simulationContainer.setEnergySnapshot(
-                simulationContainer
-                        .energySnapshotProvider()
-                        .snapshot(simulationContainer.engine().currentTick())
-        );
-        simulationContainer.setTemperatureSnapshot(
-                simulationContainer
-                        .temperatureSnapshotProvider()
-                        .snapshot(simulationContainer.engine().currentTick())
-        );
-        simulationContainer.setHealthSnapshot(
-                simulationContainer
-                        .healthSnapshotProvider()
-                        .snapshot(simulationContainer.engine().currentTick())
-        );
-        simulationContainer.setOperationalSnapshot(
-                simulationContainer
-                        .operationalSnapshotProvider()
-                        .snapshot(simulationContainer.energySnapshot(), simulationContainer.temperatureSnapshot(), simulationContainer.healthSnapshot())
-        );
+        simulationManager.updateSnapshots();
         updateSnapshots = false;
         updateUI = true;
     }
