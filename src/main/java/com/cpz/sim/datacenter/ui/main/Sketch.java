@@ -64,7 +64,7 @@ public class Sketch extends PApplet {
     private ResourceContainer resourceContainer;
     private SimulationContainer simulationContainer;
     private SimulationManager simulationManager;
-    private boolean updateSnapshots, updateUI, syncingPlayToggle;
+    private boolean updateSnapshots, updateUI;
     private boolean syncingCoolingToggles;
     private int previousSecond, previousDay;
     private String selectedColumn, selectedRack;
@@ -225,20 +225,9 @@ public class Sketch extends PApplet {
         String toggleCode = tgl.getCode();
         if (toggleCode.startsWith("tglSupply") || toggleCode.startsWith("tglExhaust")) coolingToggleClicked(tgl, state);
         else if (toggleCode.equals("tglPlay")) {
-            if (syncingPlayToggle) return;
-            toggleSimulation();
+            if (simulationManager.isSyncingPlayToggle()) return;
+            simulationManager.toggleSimulation();
         }
-    }
-
-    private void toggleSimulation() {
-        simulationContainer.simulationTimer().toggle();
-        syncingPlayToggle = true;
-        try {
-            uiComponentContainer.toggles().get("tglPlay").setState(simulationContainer.simulationTimer().isRunning() ? 1 : 0);
-        } finally {
-            syncingPlayToggle = false;
-        }
-        simulationManager.updateSimulationControls();
     }
 
     private void coolingToggleClicked(Toggle tgl, int state) {
@@ -929,7 +918,10 @@ public class Sketch extends PApplet {
 
     @Override
     public void keyReleased() {
-        if (keyCode == SPACE_BAR) toggleSimulation();
+        if (keyCode == SPACE_BAR) {
+            if (simulationManager.isSyncingPlayToggle()) return;
+            simulationManager.toggleSimulation();
+        }
         else if (keyCode == PLUS) increaseSimulationSpeed();
         else if (keyCode == MINUS) decreaseSimulationSpeed();
     }
