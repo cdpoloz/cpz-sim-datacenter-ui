@@ -32,6 +32,7 @@ import com.cpz.sim.datacenter.ui.app.ApplicationBootstrap;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.config.HotAisleDefinition;
 import com.cpz.sim.datacenter.ui.controls.ControlManager;
+import com.cpz.sim.datacenter.ui.controls.CoolingToggleManager;
 import com.cpz.sim.datacenter.ui.input.MainInputLayer;
 import com.cpz.sim.datacenter.ui.resources.ResourceContainer;
 import com.cpz.sim.datacenter.ui.resources.ResourceManager;
@@ -64,8 +65,8 @@ public class Sketch extends PApplet {
     private ResourceContainer resourceContainer;
     private SimulationContainer simulationContainer;
     private SimulationManager simulationManager;
+    private CoolingToggleManager coolingToggleManager;
     private boolean updateSnapshots, updateUI;
-    private boolean syncingCoolingToggles;
     private int previousSecond, previousDay;
     private String selectedColumn, selectedRack;
     private HotAisleDefinition selectedHotAisle;
@@ -118,6 +119,7 @@ public class Sketch extends PApplet {
         // simulation manager
         simulationContainer = new SimulationContainer();
         simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
+        coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
         simulationManager.initialize();
         // app bootstrap
         ApplicationBootstrap bootstrap = new ApplicationBootstrap(context);
@@ -206,79 +208,12 @@ public class Sketch extends PApplet {
 
     private void tglChanged(Toggle tgl, int state) {
         String toggleCode = tgl.getCode();
-        if (toggleCode.startsWith("tglSupply") || toggleCode.startsWith("tglExhaust")) coolingToggleClicked(tgl, state);
+        if (toggleCode.startsWith("tglSupply") || toggleCode.startsWith("tglExhaust"))
+            coolingToggleManager.toggleCoolingUnit(tgl, state);
         else if (toggleCode.equals("tglPlay")) {
             if (simulationManager.isSyncingPlayToggle()) return;
             simulationManager.toggleSimulation();
         }
-    }
-
-    private void coolingToggleClicked(Toggle tgl, int state) {
-        if (syncingCoolingToggles) return;
-        String toggleCode = tgl.getCode();
-        boolean enabled = state == 1;
-        if (toggleCode.equals("tglSupply")) {
-            updateChildCoolingToggles(simulationContainer.supplyToggleCodes(), enabled);
-            return;
-        }
-        if (toggleCode.equals("tglExhaust")) {
-            updateChildCoolingToggles(simulationContainer.exhaustToggleCodes(), enabled);
-            return;
-        }
-        if (simulationContainer.supplyToggleCodes().contains(toggleCode)) {
-            updateCoolingUnit(tgl, enabled);
-            updateMasterToggle("tglSupply", simulationContainer.supplyToggleCodes());
-            return;
-        }
-        if (simulationContainer.exhaustToggleCodes().contains(toggleCode)) {
-            updateCoolingUnit(tgl, enabled);
-            updateMasterToggle("tglExhaust", simulationContainer.exhaustToggleCodes());
-        }
-    }
-
-    private void updateChildCoolingToggles(List<String> toggleCodes, boolean enabled) {
-        syncingCoolingToggles = true;
-        try {
-            for (String toggleCode : toggleCodes) {
-                Toggle toggle = uiComponentContainer.toggles().get(toggleCode);
-                if (toggle == null) throw new IllegalStateException("Missing toggle: " + toggleCode);
-                toggle.setState(enabled ? 1 : 0);
-                updateCoolingUnit(toggle, enabled);
-            }
-        } finally {
-            syncingCoolingToggles = false;
-        }
-    }
-
-    private void updateMasterToggle(String masterToggleCode, List<String> childToggleCodes) {
-        boolean anyEnabled = childToggleCodes
-                .stream()
-                .map(uiComponentContainer.toggles()::get)
-                .anyMatch(toggle -> toggle != null && toggle.getState() == 1);
-        syncingCoolingToggles = true;
-        try {
-            Toggle masterToggle = uiComponentContainer.toggles().get(masterToggleCode);
-            if (masterToggle == null) throw new IllegalStateException("Missing master toggle: " + masterToggleCode);
-            masterToggle.setState(anyEnabled ? 1 : 0);
-        } finally {
-            syncingCoolingToggles = false;
-        }
-    }
-
-    private void updateCoolingUnit(Toggle tgl, boolean enabled) {
-        String unitType = "";
-        String tglCode = tgl.getCode();
-        if (tglCode.startsWith("tglSupply")) unitType = "SUPPLY";
-        else if (tglCode.startsWith("tglExhaust")) unitType = "EXHAUST";
-        if (unitType.isEmpty()) return;
-        boolean individualToggle = tglCode.startsWith("tglSupplyC") || tglCode.startsWith("tglExhaustC");
-        if (!individualToggle) return;
-        String unitCode = unitType
-                + "-"
-                + tglCode
-                .replace("tglSupply", "")
-                .replace("tglExhaust", "");
-        simulationContainer.coolingSystem().setEnabled(unitCode, enabled);
     }
 
     private void updateSelectedRack(String clickedRack) {
@@ -603,9 +538,7 @@ public class Sketch extends PApplet {
             throw new IllegalStateException("Missing maximum temperature indicator: " + indicatorCode);
         maxTemperatureIndicator.setOnColor(maxTemperatureColor);
         maxTemperatureIndicator.setOn(true);
-        /*
-         * Averages only include online servers.
-         */
+        // averages only include online servers.
         if (aisleSnapshot.hasOnlineServers()) {
             double averageTemperature = aisleSnapshot.averageOnlineTemperatureCelsius();
             double averageLoad = aisleSnapshot.averageOnlineUtilization();
