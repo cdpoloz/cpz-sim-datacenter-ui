@@ -3,10 +3,19 @@ package com.cpz.sim.datacenter.ui.simulation;
 import com.cpz.processing.controls.controls.button.Button;
 import com.cpz.sim.datacenter.config.definition.DatacenterDefinition;
 import com.cpz.sim.datacenter.config.json.JsonDatacenterConfigLoader;
+import com.cpz.sim.datacenter.cooling.CoolingSnapshotCoordinator;
+import com.cpz.sim.datacenter.cooling.DatacenterCoolingTickInputProvider;
 import com.cpz.sim.datacenter.factory.CoolingConfigurationFactory;
 import com.cpz.sim.datacenter.factory.DatacenterFactory;
+import com.cpz.sim.datacenter.factory.TemperatureSystemOptionsFactory;
 import com.cpz.sim.datacenter.factory.WorkloadFactorProviderFactory;
+import com.cpz.sim.datacenter.health.HealthThreshold;
+import com.cpz.sim.datacenter.health.ServerHealthOptions;
 import com.cpz.sim.datacenter.model.Rack;
+import com.cpz.sim.datacenter.system.*;
+import com.cpz.sim.datacenter.temperature.CoolingSnapshotTemperatureReferenceProvider;
+import com.cpz.sim.datacenter.temperature.SimpleServerTemperatureModel;
+import com.cpz.sim.datacenter.temperature.TemperatureSystemOptions;
 import com.cpz.sim.datacenter.ui.app.ApplicationComponent;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.app.Initializable;
@@ -54,6 +63,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         initializeDatacenter();
         initializeWorkloads();
         initializeEngine();
+        initializeSystems();
     }
 
     private void initializeTimer() {
@@ -143,6 +153,44 @@ public class SimulationManager extends ApplicationComponent implements Initializ
 
     private void initializeEngine() {
         simulationContainer.setEngine(new SimulationEngine(simulationContainer.clock()));
+    }
+
+    private void initializeSystems() {
+        simulationContainer.setEnergySystem(new EnergyConsumptionSystem(simulationContainer.datacenter()));
+        simulationContainer.setCoolingSystem(new CoolingSystem(simulationContainer.coolingConfiguration()));
+        simulationContainer.setCoolingTemperatureReferenceProvider(new CoolingSnapshotTemperatureReferenceProvider(simulationContainer.coolingConfiguration()));
+        simulationContainer.setCoolingSnapshotCoordinator(
+                new CoolingSnapshotCoordinator(
+                        new DatacenterCoolingTickInputProvider(simulationContainer.datacenter()),
+                        simulationContainer.coolingSystem(),
+                        simulationContainer.coolingTemperatureReferenceProvider()
+                )
+        );
+        TemperatureSystemOptions temperatureOptions = new TemperatureSystemOptionsFactory().create(simulationContainer.datacenterDefinition());
+        simulationContainer.setTemperatureOptions(temperatureOptions);
+        simulationContainer.setTemperatureSystem(
+                new TemperatureSystem(
+                        simulationContainer.datacenter(),
+                        simulationContainer.temperatureOptions(),
+                        new SimpleServerTemperatureModel(),
+                        simulationContainer.coolingTemperatureReferenceProvider()
+                )
+        );
+        HealthThreshold utilizationThreshold = new HealthThreshold(
+                Double.parseDouble(PROPS.getProperty("simulation.health.utilization.alert-threshold")),
+                Double.parseDouble(PROPS.getProperty("simulation.health.utilization.recovery-threshold"))
+        );
+        HealthThreshold temperatureThreshold = new HealthThreshold(
+                Double.parseDouble(PROPS.getProperty("simulation.health.temperature.alert-threshold-celsius")),
+                Double.parseDouble(PROPS.getProperty("simulation.health.temperature.recovery-threshold-celsius"))
+        );
+        simulationContainer.setHealthSystem(new ServerHealthSystem(simulationContainer.datacenter(), simulationContainer.temperatureSystem(), new ServerHealthOptions(utilizationThreshold, temperatureThreshold)));
+        simulationContainer.engine().register(new WorkloadSystem(simulationContainer.datacenter(), simulationContainer.workloadSource()));
+        simulationContainer.engine().register(new PowerConsumptionSystem(simulationContainer.datacenter()));
+        simulationContainer.engine().register(tick -> simulationContainer.setCoolingSnapshot(simulationContainer.coolingSnapshotCoordinator().update(tick)));
+        simulationContainer.engine().register(simulationContainer.temperatureSystem());
+        simulationContainer.engine().register(simulationContainer.healthSystem());
+        simulationContainer.engine().register(simulationContainer.energySystem());
     }
 
     public void updateSimulationTimerPeriod() {
