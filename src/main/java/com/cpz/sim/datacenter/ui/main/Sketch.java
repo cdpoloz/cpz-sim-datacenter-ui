@@ -127,7 +127,7 @@ public class Sketch extends PApplet {
         showSelectedRackHighlight();
         showSelectedAisleHighlight();
         calculateTemperatureRange(simulationContainer.datacenter(), simulationContainer.temperatureOptions());
-        simulationContainer.engine().step();
+        simulationManager.initializeInitialSimulationState();
         // initial update
         updateUI = true;
         updateSnapshots = true;
