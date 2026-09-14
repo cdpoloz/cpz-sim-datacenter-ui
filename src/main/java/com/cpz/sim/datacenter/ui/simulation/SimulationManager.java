@@ -295,6 +295,10 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         simulationContainer.setExhaustToggleCodes(exhaustToggleCodes);
     }
 
+    public void initializeInitialSimulationState() {
+        simulationContainer.engine().step();
+    }
+
     public void updateSimulationTimerPeriod() {
         double factor = simulationContainer.simulationSpeedFactors().get(simulationContainer.simulationSpeedFactorIndex());
         int periodMillis = (int) Math.round(simulationContainer.simulationBasePeriodMillis() / factor);
