@@ -5,7 +5,15 @@ import com.cpz.sim.datacenter.cooling.CoolingConfiguration;
 import com.cpz.sim.datacenter.cooling.CoolingSnapshotCoordinator;
 import com.cpz.sim.datacenter.model.Datacenter;
 import com.cpz.sim.datacenter.model.Rack;
-import com.cpz.sim.datacenter.snapshot.*;
+import com.cpz.sim.datacenter.snapshot.CoolingSnapshot;
+import com.cpz.sim.datacenter.snapshot.EnergyConsumptionSnapshot;
+import com.cpz.sim.datacenter.snapshot.EnergyConsumptionSnapshotProvider;
+import com.cpz.sim.datacenter.snapshot.HealthSnapshot;
+import com.cpz.sim.datacenter.snapshot.HealthSnapshotProvider;
+import com.cpz.sim.datacenter.snapshot.TemperatureSnapshot;
+import com.cpz.sim.datacenter.snapshot.TemperatureSnapshotProvider;
+import com.cpz.sim.datacenter.snapshot.DatacenterOperationalSnapshot;
+import com.cpz.sim.datacenter.snapshot.DatacenterOperationalSnapshotProvider;
 import com.cpz.sim.datacenter.system.CoolingSystem;
 import com.cpz.sim.datacenter.system.EnergyConsumptionSystem;
 import com.cpz.sim.datacenter.system.ServerHealthSystem;
@@ -55,6 +63,10 @@ public class SimulationContainer {
     private DatacenterOperationalSnapshotProvider operationalSnapshotProvider;
     private List<String> supplyToggleCodes;
     private List<String> exhaustToggleCodes;
+    private DatacenterOperationalSnapshot operationalSnapshot;
+    private EnergyConsumptionSnapshot energySnapshot;
+    private HealthSnapshot healthSnapshot;
+    private TemperatureSnapshot temperatureSnapshot;
 
     public Timer simulationTimer() {
         return simulationTimer;
@@ -278,5 +290,37 @@ public class SimulationContainer {
 
     public void setExhaustToggleCodes(List<String> exhaustToggleCodes) {
         this.exhaustToggleCodes = exhaustToggleCodes;
+    }
+
+    public DatacenterOperationalSnapshot operationalSnapshot() {
+        return operationalSnapshot;
+    }
+
+    public void setOperationalSnapshot(DatacenterOperationalSnapshot operationalSnapshot) {
+        this.operationalSnapshot = operationalSnapshot;
+    }
+
+    public EnergyConsumptionSnapshot energySnapshot() {
+        return energySnapshot;
+    }
+
+    public void setEnergySnapshot(EnergyConsumptionSnapshot energySnapshot) {
+        this.energySnapshot = energySnapshot;
+    }
+
+    public HealthSnapshot healthSnapshot() {
+        return healthSnapshot;
+    }
+
+    public void setHealthSnapshot(HealthSnapshot healthSnapshot) {
+        this.healthSnapshot = healthSnapshot;
+    }
+
+    public TemperatureSnapshot temperatureSnapshot() {
+        return temperatureSnapshot;
+    }
+
+    public void setTemperatureSnapshot(TemperatureSnapshot temperatureSnapshot) {
+        this.temperatureSnapshot = temperatureSnapshot;
     }
 }
