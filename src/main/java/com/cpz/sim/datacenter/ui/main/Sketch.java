@@ -8,7 +8,6 @@ import com.cpz.processing.controls.core.input.InputManager;
 import com.cpz.processing.controls.core.input.PointerEvent;
 import com.cpz.processing.controls.core.overlay.OverlayManager;
 import com.cpz.processing.controls.input.ProcessingKeyboardAdapter;
-import com.cpz.sim.datacenter.cooling.CoolingUnitType;
 import com.cpz.sim.datacenter.cooling.CoolingZoneDefinition;
 import com.cpz.sim.datacenter.health.ServerAlertReason;
 import com.cpz.sim.datacenter.model.*;
@@ -53,7 +52,6 @@ public class Sketch extends PApplet {
     private boolean updateSnapshots, updateUI, syncingPlayToggle;
     private boolean syncingCoolingToggles;
     private int previousSecond, previousDay;
-    private List<String> supplyToggleCodes, exhaustToggleCodes;
     private DatacenterOperationalSnapshot operationalSnapshot;
     private EnergyConsumptionSnapshot energySnapshot;
     private HealthSnapshot healthSnapshot;
@@ -113,33 +111,7 @@ public class Sketch extends PApplet {
         // app bootstrap
         ApplicationBootstrap bootstrap = new ApplicationBootstrap(context);
         bootstrap.initialize();
-        // initial values
-        selectedColumn = "C01";
-        selectedRack = "R01";
-        resolveSelectedHotAisle();
-        showSelectedRackHighlight();
-        showSelectedAisleHighlight();
-        calculateTemperatureRange(simulationContainer.datacenter(), simulationContainer.temperatureOptions());
-        simulationContainer.engine().step();
-        updateUI = true;
-        updateSnapshots = true;
-        updateSnapshots();
-        supplyToggleCodes = new ArrayList<>();
-        simulationContainer.coolingSnapshot().units()
-                .stream()
-                .filter(unit -> unit.type() == CoolingUnitType.SUPPLY)
-                .forEach(unit -> {
-                    String tglCode = unit.unitCode().replace("SUPPLY-", "tglSupply");
-                    supplyToggleCodes.add(tglCode);
-                });
-        exhaustToggleCodes = new ArrayList<>();
-        simulationContainer.coolingSnapshot().units()
-                .stream()
-                .filter(unit -> unit.type() == CoolingUnitType.EXHAUST)
-                .forEach(unit -> {
-                    String tglCode = unit.unitCode().replace("EXHAUST-", "tglExhaust");
-                    exhaustToggleCodes.add(tglCode);
-                });
+        // number formats
         percentageFormat = PROPS.getProperty("number.format.percentage");
         temperatureFormat = PROPS.getProperty("number.format.temperature");
         simpleTemperatureFormat = PROPS.getProperty("number.format.temperature.simple");
@@ -148,6 +120,20 @@ public class Sketch extends PApplet {
         speedFormat = PROPS.getProperty("number.format.speed");
         pressureFormat = PROPS.getProperty("number.format.pressure");
         airflowFormat = PROPS.getProperty("number.format.airflow");
+        // default column and rack
+        selectedColumn = "C01";
+        selectedRack = "R01";
+        resolveSelectedHotAisle();
+        showSelectedRackHighlight();
+        showSelectedAisleHighlight();
+        calculateTemperatureRange(simulationContainer.datacenter(), simulationContainer.temperatureOptions());
+        simulationContainer.engine().step();
+        // initial update
+        updateUI = true;
+        updateSnapshots = true;
+        updateSnapshots();
+        simulationManager.initializeCoolingToggleGroups();
+        // initial values
         uiComponentContainer.labels().get("lblRoomTemperatureScale01").setText(String.format(simpleTemperatureFormat, minServerTemperatureCelsius));
         for (int i = 0; i < 5; i++) {
             float temperature = map(i, 0, 5, minServerTemperatureCelsius, maxServerTemperatureCelsius);
@@ -249,21 +235,21 @@ public class Sketch extends PApplet {
         String toggleCode = tgl.getCode();
         boolean enabled = state == 1;
         if (toggleCode.equals("tglSupply")) {
-            updateChildCoolingToggles(supplyToggleCodes, enabled);
+            updateChildCoolingToggles(simulationContainer.supplyToggleCodes(), enabled);
             return;
         }
         if (toggleCode.equals("tglExhaust")) {
-            updateChildCoolingToggles(exhaustToggleCodes, enabled);
+            updateChildCoolingToggles(simulationContainer.exhaustToggleCodes(), enabled);
             return;
         }
-        if (supplyToggleCodes.contains(toggleCode)) {
+        if (simulationContainer.supplyToggleCodes().contains(toggleCode)) {
             updateCoolingUnit(tgl, enabled);
-            updateMasterToggle("tglSupply", supplyToggleCodes);
+            updateMasterToggle("tglSupply", simulationContainer.supplyToggleCodes());
             return;
         }
-        if (exhaustToggleCodes.contains(toggleCode)) {
+        if (simulationContainer.exhaustToggleCodes().contains(toggleCode)) {
             updateCoolingUnit(tgl, enabled);
-            updateMasterToggle("tglExhaust", exhaustToggleCodes);
+            updateMasterToggle("tglExhaust", simulationContainer.exhaustToggleCodes());
         }
     }
 
