@@ -8,21 +8,11 @@ import com.cpz.processing.controls.core.input.InputManager;
 import com.cpz.processing.controls.core.input.PointerEvent;
 import com.cpz.processing.controls.core.overlay.OverlayManager;
 import com.cpz.processing.controls.input.ProcessingKeyboardAdapter;
-import com.cpz.sim.datacenter.config.definition.DatacenterDefinition;
-import com.cpz.sim.datacenter.config.json.JsonDatacenterConfigLoader;
 import com.cpz.sim.datacenter.cooling.*;
-import com.cpz.sim.datacenter.factory.CoolingConfigurationFactory;
-import com.cpz.sim.datacenter.factory.DatacenterFactory;
-import com.cpz.sim.datacenter.factory.TemperatureSystemOptionsFactory;
-import com.cpz.sim.datacenter.factory.WorkloadFactorProviderFactory;
-import com.cpz.sim.datacenter.health.HealthThreshold;
 import com.cpz.sim.datacenter.health.ServerAlertReason;
-import com.cpz.sim.datacenter.health.ServerHealthOptions;
 import com.cpz.sim.datacenter.model.*;
 import com.cpz.sim.datacenter.snapshot.*;
 import com.cpz.sim.datacenter.system.*;
-import com.cpz.sim.datacenter.temperature.CoolingSnapshotTemperatureReferenceProvider;
-import com.cpz.sim.datacenter.temperature.SimpleServerTemperatureModel;
 import com.cpz.sim.datacenter.temperature.TemperatureSystemOptions;
 import com.cpz.sim.datacenter.ui.app.ApplicationBootstrap;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
@@ -36,15 +26,7 @@ import com.cpz.sim.datacenter.ui.resources.ResourceManager;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.simulation.SimulationManager;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
-import com.cpz.sim.datacenter.workload.NoiseWorkloadSource;
-import com.cpz.sim.datacenter.workload.ScaledWorkloadSource;
-import com.cpz.sim.datacenter.workload.ServerWorkloadFactorProvider;
-import com.cpz.sim.datacenter.workload.WorkloadSource;
-import com.cpz.sim.foundation.engine.SimulationEngine;
-import com.cpz.sim.foundation.time.SimulationClock;
 import com.cpz.utils.color.Colors;
-import com.cpz.utils.noise.FractalNoise;
-import com.cpz.utils.noise.PerlinNoise;
 import processing.core.PApplet;
 import processing.event.MouseEvent;
 import processing.opengl.PJOGL;
@@ -52,7 +34,6 @@ import processing.opengl.PJOGL;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.time.Duration;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -79,25 +60,17 @@ public class Sketch extends PApplet {
     private List<String> supplyToggleCodes, exhaustToggleCodes;
     private DatacenterOperationalSnapshot operationalSnapshot;
     private DatacenterOperationalSnapshotProvider operationalSnapshotProvider;
-    private EnergyConsumptionSystem energySystem;
     private EnergyConsumptionSnapshotProvider energySnapshotProvider;
     private EnergyConsumptionSnapshot energySnapshot;
-    private ServerHealthSystem healthSystem;
     private HealthSnapshotProvider healthSnapshotProvider;
     private HealthSnapshot healthSnapshot;
-    private TemperatureSystem temperatureSystem;
     private TemperatureSnapshotProvider temperatureSnapshotProvider;
     private TemperatureSnapshot temperatureSnapshot;
     private String selectedColumn, selectedRack;
     private HotAisleConfiguration hotAisleConfiguration;
     private HotAisleDefinition selectedHotAisle;
-    private Map<String, Rack> racks;
     private float minServerTemperatureCelsius, maxServerTemperatureCelsius; //*******
     private List<Float> selectedHotAisleTemperatures;
-    private CoolingSystem coolingSystem;
-    private CoolingSnapshotCoordinator coolingSnapshotCoordinator;
-    private CoolingSnapshotTemperatureReferenceProvider coolingTemperatureReferenceProvider;
-    private CoolingSnapshot coolingSnapshot;
     private String temperatureFormat, simpleTemperatureFormat, percentageFormat, powerKwFormat, powerMwFormat, speedFormat, pressureFormat, airflowFormat;
 
     public void settings() {
@@ -149,32 +122,21 @@ public class Sketch extends PApplet {
         // app bootstrap
         ApplicationBootstrap bootstrap = new ApplicationBootstrap(context);
         bootstrap.initialize();
-        // systems
-        energySystem = new EnergyConsumptionSystem(simulationContainer.datacenter());
-        coolingSystem = new CoolingSystem(simulationContainer.coolingConfiguration());
-        coolingTemperatureReferenceProvider = new CoolingSnapshotTemperatureReferenceProvider(simulationContainer.coolingConfiguration());
-        coolingSnapshotCoordinator = new CoolingSnapshotCoordinator(new DatacenterCoolingTickInputProvider(simulationContainer.datacenter()), coolingSystem, coolingTemperatureReferenceProvider);
-        TemperatureSystemOptions temperatureOptions = new TemperatureSystemOptionsFactory().create(simulationContainer.datacenterDefinition());
-        temperatureSystem = new TemperatureSystem(simulationContainer.datacenter(), temperatureOptions, new SimpleServerTemperatureModel(), coolingTemperatureReferenceProvider);
-        HealthThreshold utilizationThreshold = new HealthThreshold(
-                Double.parseDouble(PROPS.getProperty("simulation.health.utilization.alert-threshold")),
-                Double.parseDouble(PROPS.getProperty("simulation.health.utilization.recovery-threshold"))
-        );
-        HealthThreshold temperatureThreshold = new HealthThreshold(
-                Double.parseDouble(PROPS.getProperty("simulation.health.temperature.alert-threshold-celsius")),
-                Double.parseDouble(PROPS.getProperty("simulation.health.temperature.recovery-threshold-celsius"))
-        );
-        healthSystem = new ServerHealthSystem(simulationContainer.datacenter(), temperatureSystem, new ServerHealthOptions(utilizationThreshold, temperatureThreshold));
-        simulationContainer.engine().register(new WorkloadSystem(simulationContainer.datacenter(), simulationContainer.workloadSource()));
-        simulationContainer.engine().register(new PowerConsumptionSystem(simulationContainer.datacenter()));
-        simulationContainer.engine().register(tick -> coolingSnapshot = coolingSnapshotCoordinator.update(tick));
-        simulationContainer.engine().register(temperatureSystem);
-        simulationContainer.engine().register(healthSystem);
-        simulationContainer.engine().register(energySystem);
         // snapshots
-        energySnapshotProvider = new EnergyConsumptionSnapshotProvider(simulationContainer.datacenter(), energySystem);
-        temperatureSnapshotProvider = new TemperatureSnapshotProvider(simulationContainer.datacenter(), temperatureSystem, temperatureOptions);
-        healthSnapshotProvider = new HealthSnapshotProvider(simulationContainer.datacenter(), healthSystem, temperatureSystem);
+        energySnapshotProvider = new EnergyConsumptionSnapshotProvider(
+                simulationContainer.datacenter(),
+                simulationContainer.energySystem()
+        );
+        temperatureSnapshotProvider = new TemperatureSnapshotProvider(
+                simulationContainer.datacenter(),
+                simulationContainer.temperatureSystem(),
+                simulationContainer.temperatureOptions()
+        );
+        healthSnapshotProvider = new HealthSnapshotProvider(
+                simulationContainer.datacenter(),
+                simulationContainer.healthSystem(),
+                simulationContainer.temperatureSystem()
+        );
         // hot aisles
         Path configurationPath = Path.of(dataPath("config" + File.separator + "hot-aisle-mapping.json"));
         HotAisleConfigurationLoader loader = new HotAisleConfigurationLoader();
@@ -193,13 +155,13 @@ public class Sketch extends PApplet {
         resolveSelectedHotAisle();
         showSelectedRackHighlight();
         showSelectedAisleHighlight();
-        calculateTemperatureRange(simulationContainer.datacenter(), temperatureOptions);
+        calculateTemperatureRange(simulationContainer.datacenter(), simulationContainer.temperatureOptions());
         simulationContainer.engine().step();
         updateUI = true;
         updateSnapshots = true;
         updateSnapshots();
         supplyToggleCodes = new ArrayList<>();
-        coolingSnapshot.units()
+        simulationContainer.coolingSnapshot().units()
                 .stream()
                 .filter(unit -> unit.type() == CoolingUnitType.SUPPLY)
                 .forEach(unit -> {
@@ -207,7 +169,7 @@ public class Sketch extends PApplet {
                     supplyToggleCodes.add(tglCode);
                 });
         exhaustToggleCodes = new ArrayList<>();
-        coolingSnapshot.units()
+        simulationContainer.coolingSnapshot().units()
                 .stream()
                 .filter(unit -> unit.type() == CoolingUnitType.EXHAUST)
                 .forEach(unit -> {
@@ -399,7 +361,7 @@ public class Sketch extends PApplet {
                 + tglCode
                 .replace("tglSupply", "")
                 .replace("tglExhaust", "");
-        coolingSystem.setEnabled(unitCode, enabled);
+        simulationContainer.coolingSystem().setEnabled(unitCode, enabled);
     }
 
     private void updateSelectedRack(String clickedRack) {
@@ -672,7 +634,7 @@ public class Sketch extends PApplet {
         uiComponentContainer.labels().get("lblSelectedAisleValue").setText(selectedHotAisle.displayName());
         // additional data
         List<String> aisleZoneCodes = resolveAisleCoolingZoneCodes(selectedHotAisle);
-        CoolingZoneGroupSnapshot coolingGroupSnapshot = coolingSnapshot.aggregateZones(selectedHotAisle.code(), aisleZoneCodes);
+        CoolingZoneGroupSnapshot coolingGroupSnapshot = simulationContainer.coolingSnapshot().aggregateZones(selectedHotAisle.code(), aisleZoneCodes);
         double thermalCoverage = coolingGroupSnapshot.thermalCoverage();
         uiComponentContainer.labels().get("lblSelectedAisleThermalCoverageValue").setText(String.format(percentageFormat, thermalCoverage * 100.0));
         double deltaTinOut = coolingGroupSnapshot.airTemperatureRiseCelsius();
@@ -680,14 +642,14 @@ public class Sketch extends PApplet {
         double recirculation = coolingGroupSnapshot.averageRecirculationFraction();
         uiComponentContainer.labels().get("lblSelectedAisleRecirculationValue").setText(String.format(percentageFormat, recirculation * 100.0));
         double supplyAirflow = aisleZoneCodes.stream()
-                .map(coolingSnapshot::findZone)
+                .map(simulationContainer.coolingSnapshot()::findZone)
                 .flatMap(Optional::stream)
                 .mapToDouble(CoolingZoneSnapshot::supplyAirflowCubicMetersPerSecond)
                 .sum();
         double exhaustAirflow =
                 aisleZoneCodes
                         .stream()
-                        .map(coolingSnapshot::findZone)
+                        .map(simulationContainer.coolingSnapshot()::findZone)
                         .flatMap(Optional::stream)
                         .mapToDouble(CoolingZoneSnapshot::exhaustAirflowCubicMetersPerSecond)
                         .sum();
