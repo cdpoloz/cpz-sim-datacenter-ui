@@ -352,13 +352,29 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         updateSimulationControls();
     }
 
-    public void updateSimulationTimerPeriod() {
+    public void increaseSimulationSpeed() {
+        if (simulationContainer.simulationSpeedFactorIndex() >= simulationContainer.simulationSpeedFactors().size() - 1) return;
+        int newIndex = simulationContainer.simulationSpeedFactorIndex() + 1;
+        simulationContainer.setSimulationSpeedFactorIndex(newIndex);
+        updateSimulationTimerPeriod();
+        updateSimulationControls();
+    }
+
+    public void decreaseSimulationSpeed() {
+        if (simulationContainer.simulationSpeedFactorIndex() <= 0) return;
+        int newIndex = simulationContainer.simulationSpeedFactorIndex() - 1;
+        simulationContainer.setSimulationSpeedFactorIndex(newIndex);
+        updateSimulationTimerPeriod();
+        updateSimulationControls();
+    }
+
+    private void updateSimulationTimerPeriod() {
         double factor = simulationContainer.simulationSpeedFactors().get(simulationContainer.simulationSpeedFactorIndex());
         int periodMillis = (int) Math.round(simulationContainer.simulationBasePeriodMillis() / factor);
         simulationContainer.simulationTimer().setPeriodMillis(periodMillis);
     }
 
-    public void updateSimulationControls() {
+    private void updateSimulationControls() {
         boolean simulationRunning = simulationContainer.simulationTimer().isRunning();
         String speedLabel = formatSimulationSpeedFactor();
         uiComponentContainer.labels().get("lblSimulationValue").setText(simulationRunning ? "Running " + speedLabel : "Stopped " + speedLabel);
