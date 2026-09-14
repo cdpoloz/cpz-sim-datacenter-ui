@@ -3,26 +3,25 @@ package com.cpz.sim.datacenter.ui.simulation;
 import com.cpz.processing.controls.controls.button.Button;
 import com.cpz.sim.datacenter.config.definition.DatacenterDefinition;
 import com.cpz.sim.datacenter.config.json.JsonDatacenterConfigLoader;
-import com.cpz.sim.datacenter.cooling.CoolingConfiguration;
 import com.cpz.sim.datacenter.factory.CoolingConfigurationFactory;
 import com.cpz.sim.datacenter.factory.DatacenterFactory;
-import com.cpz.sim.datacenter.model.Datacenter;
+import com.cpz.sim.datacenter.factory.WorkloadFactorProviderFactory;
 import com.cpz.sim.datacenter.model.Rack;
-import com.cpz.sim.datacenter.snapshot.EnergyConsumptionSnapshotProvider;
-import com.cpz.sim.datacenter.snapshot.HealthSnapshotProvider;
-import com.cpz.sim.datacenter.snapshot.TemperatureSnapshotProvider;
-import com.cpz.sim.datacenter.system.CoolingSystem;
-import com.cpz.sim.datacenter.system.EnergyConsumptionSystem;
-import com.cpz.sim.datacenter.system.ServerHealthSystem;
-import com.cpz.sim.datacenter.system.TemperatureSystem;
 import com.cpz.sim.datacenter.ui.app.ApplicationComponent;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.app.Initializable;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
-import com.cpz.sim.foundation.engine.SimulationEngine;
+import com.cpz.sim.datacenter.workload.NoiseWorkloadSource;
+import com.cpz.sim.datacenter.workload.ScaledWorkloadSource;
+import com.cpz.sim.datacenter.workload.ServerWorkloadFactorProvider;
+import com.cpz.sim.datacenter.workload.WorkloadSource;
+import com.cpz.sim.foundation.time.SimulationClock;
+import com.cpz.utils.noise.FractalNoise;
+import com.cpz.utils.noise.PerlinNoise;
 import com.cpz.utils.time.Timer;
 
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +51,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
     public void initialize() {
         initializeTimer();
         initializeDatacenter();
+        initializeWorkloads();
     }
 
     private void initializeTimer() {
@@ -110,6 +110,33 @@ public class SimulationManager extends ApplicationComponent implements Initializ
             racks.put(rack.getCode().value(), rack);
         simulationContainer.setRacks(racks);
         simulationContainer.setDatacenterDefinition(definition);
+    }
+
+    private void initializeWorkloads() {
+        PerlinNoise perlinNoise = new PerlinNoise(1234L);
+        FractalNoise fractalNoise = new FractalNoise(
+                perlinNoise,
+                5,
+                1.0f,
+                2.0f,
+                0.5f
+        );
+        WorkloadSource baseWorkloadSource = new NoiseWorkloadSource(
+                fractalNoise,
+                0.001,
+                0.2f,
+                0.9f
+        );
+        ServerWorkloadFactorProvider factorProvider =
+                new WorkloadFactorProviderFactory()
+                        .create(simulationContainer.datacenterDefinition());
+        simulationContainer.setWorkloadSource(
+                new ScaledWorkloadSource(
+                        baseWorkloadSource,
+                        factorProvider
+                )
+        );
+        simulationContainer.setClock(new SimulationClock(Duration.ofMinutes(1)));
     }
 
     public void updateSimulationTimerPeriod() {
