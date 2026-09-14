@@ -52,10 +52,6 @@ public class Sketch extends PApplet {
     private boolean updateSnapshots, updateUI, syncingPlayToggle;
     private boolean syncingCoolingToggles;
     private int previousSecond, previousDay;
-    private DatacenterOperationalSnapshot operationalSnapshot;
-    private EnergyConsumptionSnapshot energySnapshot;
-    private HealthSnapshot healthSnapshot;
-    private TemperatureSnapshot temperatureSnapshot;
     private String selectedColumn, selectedRack;
     private HotAisleDefinition selectedHotAisle;
     private float minServerTemperatureCelsius, maxServerTemperatureCelsius; //*******
@@ -141,12 +137,12 @@ public class Sketch extends PApplet {
             uiComponentContainer.labels().get(temperatureScaleLabelCode).setText(String.format(simpleTemperatureFormat, temperature));
         }
         uiComponentContainer.labels().get("lblRoomTemperatureScale06").setText(String.format(simpleTemperatureFormat, maxServerTemperatureCelsius));
-        int totalInstalledServers = operationalSnapshot.racks()
+        int totalInstalledServers = simulationContainer.operationalSnapshot().racks()
                 .values()
                 .stream()
                 .mapToInt(RackOperationalSnapshot::installedServerCount)
                 .sum();
-        int totalOnlineServers = operationalSnapshot.racks()
+        int totalOnlineServers = simulationContainer.operationalSnapshot().racks()
                 .values()
                 .stream()
                 .mapToInt(RackOperationalSnapshot::onlineServerCount)
@@ -382,10 +378,26 @@ public class Sketch extends PApplet {
 
     private void updateSnapshots() {
         if (!updateSnapshots) return;
-        energySnapshot = simulationContainer.energySnapshotProvider().snapshot(simulationContainer.engine().currentTick());
-        temperatureSnapshot = simulationContainer.temperatureSnapshotProvider().snapshot(simulationContainer.engine().currentTick());
-        healthSnapshot = simulationContainer.healthSnapshotProvider().snapshot(simulationContainer.engine().currentTick());
-        operationalSnapshot = simulationContainer.operationalSnapshotProvider().snapshot(energySnapshot, temperatureSnapshot, healthSnapshot);
+        simulationContainer.setEnergySnapshot(
+                simulationContainer
+                        .energySnapshotProvider()
+                        .snapshot(simulationContainer.engine().currentTick())
+        );
+        simulationContainer.setTemperatureSnapshot(
+                simulationContainer
+                        .temperatureSnapshotProvider()
+                        .snapshot(simulationContainer.engine().currentTick())
+        );
+        simulationContainer.setHealthSnapshot(
+                simulationContainer
+                        .healthSnapshotProvider()
+                        .snapshot(simulationContainer.engine().currentTick())
+        );
+        simulationContainer.setOperationalSnapshot(
+                simulationContainer
+                        .operationalSnapshotProvider()
+                        .snapshot(simulationContainer.energySnapshot(), simulationContainer.temperatureSnapshot(), simulationContainer.healthSnapshot())
+        );
         updateSnapshots = false;
         updateUI = true;
     }
@@ -403,7 +415,7 @@ public class Sketch extends PApplet {
         uiComponentContainer.labels().get("lblSelectedRackValue").setText(selectedColumn + "-" + selectedRack);
         Rack rack = resolveSelectedRack();
         RackLocation rackLocation = new RackLocation(selectedColumn, new RackCode(selectedRack));
-        RackOperationalSnapshot rackSnapshot = operationalSnapshot
+        RackOperationalSnapshot rackSnapshot = simulationContainer.operationalSnapshot()
                 .findRack(rackLocation)
                 .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for rack: " + rackLocation.code()
                 ));
@@ -578,7 +590,7 @@ public class Sketch extends PApplet {
                         .sum();
         uiComponentContainer.labels().get("lblSelectedAisleAirflowValue").setText(String.format(airflowFormat, supplyAirflow, exhaustAirflow));
         // installed servers
-        ServerGroupOperationalSnapshot aisleSnapshot = operationalSnapshot
+        ServerGroupOperationalSnapshot aisleSnapshot = simulationContainer.operationalSnapshot()
                 .findServerGroup(selectedHotAisle.code())
                 .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for aisle: " + selectedHotAisle.code()));
         Label averageTemperatureLabel = uiComponentContainer.labels().get("lblSelectedAisleAverageTemperatureValue");
@@ -647,7 +659,7 @@ public class Sketch extends PApplet {
             float averageRackTemperature = 0;
             for (String column : selectedHotAisle.columns()) {
                 RackLocation rackLocation = new RackLocation(column, new RackCode(rackCode));
-                RackOperationalSnapshot rackSnapshot = operationalSnapshot.findRack(rackLocation).orElseThrow();
+                RackOperationalSnapshot rackSnapshot = simulationContainer.operationalSnapshot().findRack(rackLocation).orElseThrow();
                 averageRackTemperature += (float) rackSnapshot.representativeTemperatureCelsius();
             }
             averageRackTemperature /= selectedHotAisle.columns().size();
@@ -700,13 +712,13 @@ public class Sketch extends PApplet {
     }
 
     private Map<ServerLocation, ServerEnergySnapshot> resolveEnergyByLocation() {
-        return energySnapshot.servers()
+        return simulationContainer.energySnapshot().servers()
                 .stream()
                 .collect(Collectors.toUnmodifiableMap(ServerEnergySnapshot::location, Function.identity()));
     }
 
     private Map<ServerLocation, ServerTemperatureSnapshot> resolveTemperatureByLocation() {
-        return temperatureSnapshot.servers()
+        return simulationContainer.temperatureSnapshot().servers()
                 .stream()
                 .collect(Collectors.toMap(
                         server -> new ServerLocation(server.column(), server.rackCode(), server.slot()),
@@ -715,7 +727,7 @@ public class Sketch extends PApplet {
     }
 
     private Map<ServerLocation, ServerHealthSnapshot> resolveHealthByLocation() {
-        return healthSnapshot.servers()
+        return simulationContainer.healthSnapshot().servers()
                 .stream()
                 .collect(Collectors.toMap(
                         server -> new ServerLocation(server.column(), server.rackCode(), server.slot()),
@@ -735,7 +747,7 @@ public class Sketch extends PApplet {
             Indicator rackIndicator = uiComponentContainer.indicatorsRack().get(rackIndicatorCode);
             if (rackIndicator == null) continue;
             List<Server> rackServers = simulationContainer.datacenter().getServers(location);
-            RackOperationalSnapshot rackSnapshot = operationalSnapshot.getRack(location);
+            RackOperationalSnapshot rackSnapshot = simulationContainer.operationalSnapshot().getRack(location);
             boolean emptyRack = !rackSnapshot.hasInstalledServers();
             boolean rackOffline = rackSnapshot.hasInstalledServers() && !rackSnapshot.hasOnlineServers();
             boolean aiRack = rackServers.stream().anyMatch(server -> server.getRole() == ServerRole.AI);
@@ -776,11 +788,11 @@ public class Sketch extends PApplet {
 
     private void updateRoomHotAisleIndicator(String hotAisleCode, String indicatorCode) {
         float averageTemperature =
-                (float) operationalSnapshot.findServerGroup(hotAisleCode)
+                (float) simulationContainer.operationalSnapshot().findServerGroup(hotAisleCode)
                         .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for aisle: " + hotAisleCode))
                         .averageOnlineTemperatureCelsius();
         float maxTemperature =
-                (float) operationalSnapshot.findServerGroup(hotAisleCode)
+                (float) simulationContainer.operationalSnapshot().findServerGroup(hotAisleCode)
                         .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for aisle: " + hotAisleCode))
                         .maximumTemperatureCelsius();
         float temperature = (maxTemperature + averageTemperature) * 0.5f;
