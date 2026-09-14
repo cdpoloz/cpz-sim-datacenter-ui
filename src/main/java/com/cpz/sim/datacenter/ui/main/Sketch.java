@@ -77,7 +77,7 @@ public class Sketch extends PApplet {
     private boolean syncingCoolingToggles;
     private int previousSecond, previousDay;
     private List<String> supplyToggleCodes, exhaustToggleCodes;
-    private SimulationEngine engine;
+    //private SimulationEngine engine;
     private DatacenterOperationalSnapshot operationalSnapshot;
     private DatacenterOperationalSnapshotProvider operationalSnapshotProvider;
     private EnergyConsumptionSystem energySystem;
@@ -151,7 +151,7 @@ public class Sketch extends PApplet {
         ApplicationBootstrap bootstrap = new ApplicationBootstrap(context);
         bootstrap.initialize();
         // engine
-        engine = new SimulationEngine(simulationContainer.clock());
+        //engine = new SimulationEngine(simulationContainer.clock());
         // systems
         energySystem = new EnergyConsumptionSystem(simulationContainer.datacenter());
         coolingSystem = new CoolingSystem(simulationContainer.coolingConfiguration());
@@ -168,12 +168,12 @@ public class Sketch extends PApplet {
                 Double.parseDouble(PROPS.getProperty("simulation.health.temperature.recovery-threshold-celsius"))
         );
         healthSystem = new ServerHealthSystem(simulationContainer.datacenter(), temperatureSystem, new ServerHealthOptions(utilizationThreshold, temperatureThreshold));
-        engine.register(new WorkloadSystem(simulationContainer.datacenter(), simulationContainer.workloadSource()));
-        engine.register(new PowerConsumptionSystem(simulationContainer.datacenter()));
-        engine.register(tick -> coolingSnapshot = coolingSnapshotCoordinator.update(tick));
-        engine.register(temperatureSystem);
-        engine.register(healthSystem);
-        engine.register(energySystem);
+        simulationContainer.engine().register(new WorkloadSystem(simulationContainer.datacenter(), simulationContainer.workloadSource()));
+        simulationContainer.engine().register(new PowerConsumptionSystem(simulationContainer.datacenter()));
+        simulationContainer.engine().register(tick -> coolingSnapshot = coolingSnapshotCoordinator.update(tick));
+        simulationContainer.engine().register(temperatureSystem);
+        simulationContainer.engine().register(healthSystem);
+        simulationContainer.engine().register(energySystem);
         // snapshots
         energySnapshotProvider = new EnergyConsumptionSnapshotProvider(simulationContainer.datacenter(), energySystem);
         temperatureSnapshotProvider = new TemperatureSnapshotProvider(simulationContainer.datacenter(), temperatureSystem, temperatureOptions);
@@ -197,7 +197,7 @@ public class Sketch extends PApplet {
         showSelectedRackHighlight();
         showSelectedAisleHighlight();
         calculateTemperatureRange(simulationContainer.datacenter(), temperatureOptions);
-        engine.step();
+        simulationContainer.engine().step();
         updateUI = true;
         updateSnapshots = true;
         updateSnapshots();
@@ -507,17 +507,17 @@ public class Sketch extends PApplet {
     }
 
     private void updateClock() {
-        if (simulationContainer.simulationTimer() == null || engine == null) return;
+        if (simulationContainer.simulationTimer() == null || simulationContainer.engine() == null) return;
         if (!simulationContainer.simulationTimer().pollPeriodPulse()) return;
-        engine.step();
+        simulationContainer.engine().step();
         updateSnapshots = true;
     }
 
     private void updateSnapshots() {
         if (!updateSnapshots) return;
-        energySnapshot = energySnapshotProvider.snapshot(engine.currentTick());
-        temperatureSnapshot = temperatureSnapshotProvider.snapshot(engine.currentTick());
-        healthSnapshot = healthSnapshotProvider.snapshot(engine.currentTick());
+        energySnapshot = energySnapshotProvider.snapshot(simulationContainer.engine().currentTick());
+        temperatureSnapshot = temperatureSnapshotProvider.snapshot(simulationContainer.engine().currentTick());
+        healthSnapshot = healthSnapshotProvider.snapshot(simulationContainer.engine().currentTick());
         operationalSnapshot = operationalSnapshotProvider.snapshot(energySnapshot, temperatureSnapshot, healthSnapshot);
         updateSnapshots = false;
         updateUI = true;
