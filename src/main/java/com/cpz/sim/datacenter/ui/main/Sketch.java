@@ -385,9 +385,7 @@ public class Sketch extends PApplet {
     }
 
     private void updateClock() {
-        if (simulationContainer.simulationTimer() == null || simulationContainer.engine() == null) return;
-        if (!simulationContainer.simulationTimer().pollPeriodPulse()) return;
-        simulationContainer.engine().step();
+        if (!simulationManager.updateClock()) return;
         updateSnapshots = true;
     }
 
