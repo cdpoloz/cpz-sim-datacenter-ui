@@ -37,16 +37,6 @@ public class SimulationManager extends ApplicationComponent implements Initializ
 
     private final SimulationContainer simulationContainer;
     private final UiComponentContainer uiComponentContainer;
-    private Datacenter datacenter;
-    private CoolingConfiguration coolingConfiguration;
-    private SimulationEngine engine;
-    private EnergyConsumptionSystem energySystem;
-    private CoolingSystem coolingSystem;
-    private TemperatureSystem temperatureSystem;
-    private ServerHealthSystem healthSystem;
-    private EnergyConsumptionSnapshotProvider energySnapshotProvider;
-    private TemperatureSnapshotProvider temperatureSnapshotProvider;
-    private HealthSnapshotProvider healthSnapshotProvider;
 
     public SimulationManager(
             ApplicationContext applicationContext,
