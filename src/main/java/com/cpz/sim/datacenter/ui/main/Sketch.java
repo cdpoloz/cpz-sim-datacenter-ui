@@ -17,7 +17,6 @@ import com.cpz.sim.datacenter.temperature.TemperatureSystemOptions;
 import com.cpz.sim.datacenter.ui.app.ApplicationBootstrap;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.config.HotAisleConfiguration;
-import com.cpz.sim.datacenter.ui.config.HotAisleConfigurationLoader;
 import com.cpz.sim.datacenter.ui.config.HotAisleDefinition;
 import com.cpz.sim.datacenter.ui.controls.ControlManager;
 import com.cpz.sim.datacenter.ui.input.MainInputLayer;
@@ -32,8 +31,6 @@ import processing.event.MouseEvent;
 import processing.opengl.PJOGL;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -64,7 +61,6 @@ public class Sketch extends PApplet {
     private HealthSnapshot healthSnapshot;
     private TemperatureSnapshot temperatureSnapshot;
     private String selectedColumn, selectedRack;
-    private HotAisleConfiguration hotAisleConfiguration;
     private HotAisleDefinition selectedHotAisle;
     private float minServerTemperatureCelsius, maxServerTemperatureCelsius; //*******
     private List<Float> selectedHotAisleTemperatures;
@@ -119,17 +115,8 @@ public class Sketch extends PApplet {
         // app bootstrap
         ApplicationBootstrap bootstrap = new ApplicationBootstrap(context);
         bootstrap.initialize();
-        // hot aisles
-        Path configurationPath = Path.of(dataPath("config" + File.separator + "hot-aisle-mapping.json"));
-        HotAisleConfigurationLoader loader = new HotAisleConfigurationLoader();
-        try {
-            hotAisleConfiguration = loader.load(configurationPath);
-            initializeHotAisleMapping(hotAisleConfiguration);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not load hot aisle configuration", e);
-        }
         // operational groups
-        List<ServerGroupDefinition> operationalGroups = createOperationalGroups(hotAisleConfiguration);
+        List<ServerGroupDefinition> operationalGroups = createOperationalGroups(simulationContainer.hotAisleConfiguration());
         operationalSnapshotProvider = new DatacenterOperationalSnapshotProvider(simulationContainer.datacenter(), operationalGroups);
         // initial values
         selectedColumn = "C01";
@@ -394,17 +381,6 @@ public class Sketch extends PApplet {
             }
         }
         uiComponentContainer.indicatorsSelectedAisle().get(selectedAisleIndicatorCode).setOn(true);
-    }
-
-    private void initializeHotAisleMapping(HotAisleConfiguration configuration) {
-        simulationContainer.hotAisleByColumn().clear();
-        for (HotAisleDefinition hotAisle : configuration.hotAisles()) {
-            for (String column : hotAisle.columns()) {
-                HotAisleDefinition previous = simulationContainer.hotAisleByColumn().put(column, hotAisle);
-                if (previous != null)
-                    throw new IllegalArgumentException("Column '%s' is assigned to hot aisles '%s' and '%s'".formatted(column, previous.code(), hotAisle.code()));
-            }
-        }
     }
 
     private void calculateTemperatureRange(Datacenter datacenter, TemperatureSystemOptions temperatureOptions) {
