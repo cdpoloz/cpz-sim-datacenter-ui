@@ -15,6 +15,7 @@ import com.cpz.sim.datacenter.system.ServerHealthSystem;
 import com.cpz.sim.datacenter.system.TemperatureSystem;
 import com.cpz.sim.datacenter.temperature.CoolingSnapshotTemperatureReferenceProvider;
 import com.cpz.sim.datacenter.temperature.TemperatureSystemOptions;
+import com.cpz.sim.datacenter.ui.config.HotAisleConfiguration;
 import com.cpz.sim.datacenter.ui.config.HotAisleDefinition;
 import com.cpz.sim.datacenter.workload.WorkloadSource;
 import com.cpz.sim.foundation.engine.SimulationEngine;
@@ -53,6 +54,7 @@ public class SimulationContainer {
     private EnergyConsumptionSnapshotProvider energySnapshotProvider;
     private TemperatureSnapshotProvider temperatureSnapshotProvider;
     private HealthSnapshotProvider healthSnapshotProvider;
+    private HotAisleConfiguration hotAisleConfiguration;
 
     public Timer simulationTimer() {
         return simulationTimer;
@@ -178,9 +180,7 @@ public class SimulationContainer {
         return coolingTemperatureReferenceProvider;
     }
 
-    public void setCoolingTemperatureReferenceProvider(
-            CoolingSnapshotTemperatureReferenceProvider coolingTemperatureReferenceProvider
-    ) {
+    public void setCoolingTemperatureReferenceProvider(CoolingSnapshotTemperatureReferenceProvider coolingTemperatureReferenceProvider) {
         this.coolingTemperatureReferenceProvider = coolingTemperatureReferenceProvider;
     }
 
@@ -246,5 +246,13 @@ public class SimulationContainer {
 
     public void setHealthSnapshotProvider(HealthSnapshotProvider healthSnapshotProvider) {
         this.healthSnapshotProvider = healthSnapshotProvider;
+    }
+
+    public HotAisleConfiguration hotAisleConfiguration() {
+        return hotAisleConfiguration;
+    }
+
+    public void setHotAisleConfiguration(HotAisleConfiguration hotAisleConfiguration) {
+        this.hotAisleConfiguration = hotAisleConfiguration;
     }
 }
