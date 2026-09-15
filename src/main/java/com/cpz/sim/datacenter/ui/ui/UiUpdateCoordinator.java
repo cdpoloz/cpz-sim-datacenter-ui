@@ -51,7 +51,6 @@ public class UiUpdateCoordinator {
                 uiFormatContainer.percentage(),
                 uiFormatContainer.powerKw()
         );
-
         uiStateContainer.setSelectedHotAisleTemperatures(
                 selectedAislePanelUpdater.update(
                         uiStateContainer.minServerTemperatureCelsius(),
@@ -66,5 +65,10 @@ public class UiUpdateCoordinator {
                 uiStateContainer.maxServerTemperatureCelsius()
         );
         uiStateContainer.setUpdateUI(false);
+    }
+
+    public void updateClock() {
+        if (!simulationManager.updateClock()) return;
+        uiStateContainer.setUpdateSnapshots(true);
     }
 }
