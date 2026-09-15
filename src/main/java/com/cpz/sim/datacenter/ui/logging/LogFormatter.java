@@ -8,11 +8,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
 
 /**
- * Logging infrastructure formatter ({@code logging} package) used by the configured handlers.
- * <p>
- * Extends {@link SimpleFormatter} to provide a deterministic, readable line format that includes
- * the timestamp, log level, and origin (class and method).
- * </p>
+ * Formats application log records with timestamp, level, source, and message.
  *
  * <p>Line format:</p>
  * <pre>
@@ -22,6 +18,10 @@ import java.util.logging.SimpleFormatter;
  * @author CPZ
  */
 public class LogFormatter extends SimpleFormatter {
+
+    /** Creates the stateless application log formatter. */
+    public LogFormatter() {
+    }
 
     /**
      * Formats a {@link LogRecord} according to the configured line pattern.

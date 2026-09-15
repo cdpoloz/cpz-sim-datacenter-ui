@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Defines a hot aisle and the datacenter columns associated with it.
+ * Defines the UI identity and physical column layout of one hot aisle.
  *
  * @param code stable identifier of the hot aisle
  * @param displayName text displayed in the user interface
@@ -21,7 +21,7 @@ public record HotAisleDefinition(
 ) {
 
     /**
-     * Creates a hot aisle definition.
+     * Validates and creates an immutable hot-aisle definition.
      */
     public HotAisleDefinition {
         if (code == null || code.isBlank()) throw new IllegalArgumentException("Hot aisle code must not be null or blank");

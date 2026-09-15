@@ -7,8 +7,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+
 /**
- * Loads hot aisle configuration from a JSON file.
+ * Strictly deserializes the UI-specific hot-aisle mapping from JSON.
+ *
+ * <p>Unknown, missing, and null creator properties are rejected so selection and operational
+ * server-group mappings cannot start from an ambiguous configuration.</p>
  *
  * @author CPZ
  */
@@ -16,6 +20,7 @@ public final class HotAisleConfigurationLoader {
 
     private final ObjectMapper objectMapper;
 
+    /** Creates a loader with strict Jackson deserialization settings. */
     public HotAisleConfigurationLoader() {
         objectMapper = new ObjectMapper();
         objectMapper.enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
