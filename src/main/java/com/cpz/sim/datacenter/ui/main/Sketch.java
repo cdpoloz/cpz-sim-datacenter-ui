@@ -24,8 +24,8 @@ import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 import com.cpz.sim.datacenter.ui.ui.panel.RoomPanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedAislePanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedRackPanelUpdater;
+import com.cpz.sim.datacenter.ui.ui.render.SelectedHotAisleTemperatureGradientRenderer;
 import com.cpz.sim.datacenter.ui.ui.selection.SelectionManager;
-import com.cpz.utils.color.Colors;
 import processing.core.PApplet;
 import processing.event.MouseEvent;
 import processing.opengl.PJOGL;
@@ -54,6 +54,7 @@ public class Sketch extends PApplet {
     private SelectedRackPanelUpdater selectedRackPanelUpdater;
     private SelectedAislePanelUpdater selectedAislePanelUpdater;
     private RoomPanelUpdater roomPanelUpdater;
+    private SelectedHotAisleTemperatureGradientRenderer selectedHotAisleTemperatureGradientRenderer;
     private boolean updateSnapshots, updateUI;
     private int previousSecond, previousDay;
     private float minServerTemperatureCelsius, maxServerTemperatureCelsius; //*******
@@ -110,6 +111,7 @@ public class Sketch extends PApplet {
         selectedRackPanelUpdater = new SelectedRackPanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
         selectedAislePanelUpdater = new SelectedAislePanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
         roomPanelUpdater = new RoomPanelUpdater(context, simulationContainer, uiComponentContainer);
+        selectedHotAisleTemperatureGradientRenderer = new SelectedHotAisleTemperatureGradientRenderer(context);
         simulationManager.initialize();
         selectionManager.initialize();
         // app bootstrap
@@ -224,7 +226,7 @@ public class Sketch extends PApplet {
         //draw
         drawBackground();
         drawControls();
-        drawSelectedHotAisleTemperatureGradient();
+        selectedHotAisleTemperatureGradientRenderer.draw(selectedHotAisleTemperatures, minServerTemperatureCelsius, maxServerTemperatureCelsius);
         drawOverlay();
     }
 
@@ -258,7 +260,6 @@ public class Sketch extends PApplet {
                         percentageFormat,
                         airflowFormat
                 );
-        //updateRoomPanel();
         roomPanelUpdater.update(minServerTemperatureCelsius, maxServerTemperatureCelsius);
         updateUI = false;
     }
@@ -286,71 +287,6 @@ public class Sketch extends PApplet {
         uiComponentContainer.buttonsColumn().values().forEach(Button::draw);
         uiComponentContainer.buttonsPlay().values().forEach(Button::draw);
         uiComponentContainer.toggles().values().forEach(Toggle::draw);
-    }
-
-    private void drawSelectedHotAisleTemperatureGradient() {
-        if (selectedHotAisleTemperatures == null || selectedHotAisleTemperatures.isEmpty()) return;
-        pushStyle();
-        noFill();
-        strokeWeight(1);
-        float y = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.y")) * height;
-        float h = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.height")) * height;
-        float totalH = y + selectedHotAisleTemperatures.size() * h;
-        float x = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.x")) * width;
-        float minW = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.min.width")) * height;
-        float maxW = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.max.width")) * height;
-        float minY = y;
-        float maxY = y + h;
-        float fColor = map(
-                selectedHotAisleTemperatures.getFirst(),
-                minServerTemperatureCelsius,
-                maxServerTemperatureCelsius,
-                0,
-                1);
-        int color = Colors.lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, fColor);
-        for (int j = (int) minY; j < (int) maxY; j++) {
-            float w = map(j, y, totalH, minW, maxW);
-            stroke(color);
-            line(x - w * 0.5f, j, x + w * 0.5f, j);
-        }
-        for (int i = 0; i < selectedHotAisleTemperatures.size() - 1; i++) {
-            float temperature = selectedHotAisleTemperatures.get(i);
-            float nextTemperature = selectedHotAisleTemperatures.get(i + 1);
-            minY = y + (i + 1) * h;
-            maxY = y + (i + 2) * h;
-            color = Colors.lerpColor(
-                    COLOR_MIN_TEMPERATURE,
-                    COLOR_MAX_TEMPERATURE,
-                    map(temperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1)
-            );
-            int nextColor = Colors.lerpColor(
-                    COLOR_MIN_TEMPERATURE,
-                    COLOR_MAX_TEMPERATURE,
-                    map(nextTemperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1)
-            );
-            for (int j = (int) minY; j < (int) maxY; j++) {
-                float w = map(j, y, totalH, minW, maxW);
-                fColor = map(j, minY, maxY, 0, 1);
-                int lineColor = Colors.lerpColor(color, nextColor, fColor);
-                stroke(lineColor);
-                line(x - w * 0.5f, j, x + w * 0.5f, j);
-            }
-        }
-        strokeWeight(Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.stroke.weigth")) * height);
-        stroke(COLOR_TEMPERATURE_GRADIENT_BORDER);
-        line(
-                Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.x.00")) * width,
-                Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.y.00")) * height,
-                Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.x.03")) * width,
-                Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.y.03")) * height
-        );
-        line(
-                Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.x.01")) * width,
-                Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.y.01")) * height,
-                Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.x.02")) * width,
-                Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.y.02")) * height
-        );
-        popStyle();
     }
 
     private void drawOverlay() {
