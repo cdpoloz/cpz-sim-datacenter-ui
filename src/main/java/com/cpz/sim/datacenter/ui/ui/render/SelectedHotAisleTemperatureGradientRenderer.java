@@ -7,9 +7,7 @@ import com.cpz.utils.color.Colors;
 import java.util.List;
 
 import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
-import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_MAX_TEMPERATURE;
-import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_MIN_TEMPERATURE;
-import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_TEMPERATURE_GRADIENT_BORDER;
+import static com.cpz.sim.datacenter.ui.util.Constants.*;
 
 /**
  * Renders the selected hot aisle temperature gradient.
@@ -27,7 +25,7 @@ public class SelectedHotAisleTemperatureGradientRenderer extends ApplicationComp
         sketch().pushStyle();
         sketch().noFill();
         sketch().strokeWeight(1);
-        float y = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.y"))* sketch().height;
+        float y = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.y")) * sketch().height;
         float height = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.height")) * sketch().height;
         float totalHeight = y + selectedHotAisleTemperatures.size() * height;
         float x = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.x")) * sketch().width;
@@ -99,7 +97,7 @@ public class SelectedHotAisleTemperatureGradientRenderer extends ApplicationComp
             float minY = y + (i + 1) * segmentHeight;
             float maxY = y + (i + 2) * segmentHeight;
             int color = Colors.lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, temperatureFactor(temperature, minServerTemperatureCelsius, maxServerTemperatureCelsius));
-            int nextColor = Colors.lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, temperatureFactor( nextTemperature, minServerTemperatureCelsius, maxServerTemperatureCelsius));
+            int nextColor = Colors.lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, temperatureFactor(nextTemperature, minServerTemperatureCelsius, maxServerTemperatureCelsius));
             for (int currentY = (int) minY; currentY < (int) maxY; currentY++) {
                 float width = sketch().map(currentY, y, totalHeight, minWidth, maxWidth);
                 float factor = sketch().map(currentY, minY, maxY, 0, 1);
