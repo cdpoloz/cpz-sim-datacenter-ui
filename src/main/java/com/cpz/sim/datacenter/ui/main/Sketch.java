@@ -25,6 +25,7 @@ import com.cpz.sim.datacenter.ui.ui.panel.RoomPanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedAislePanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedRackPanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.render.SelectedHotAisleTemperatureGradientRenderer;
+import com.cpz.sim.datacenter.ui.ui.render.StaticUiRenderer;
 import com.cpz.sim.datacenter.ui.ui.selection.SelectionManager;
 import processing.core.PApplet;
 import processing.event.MouseEvent;
@@ -55,6 +56,7 @@ public class Sketch extends PApplet {
     private SelectedAislePanelUpdater selectedAislePanelUpdater;
     private RoomPanelUpdater roomPanelUpdater;
     private SelectedHotAisleTemperatureGradientRenderer selectedHotAisleTemperatureGradientRenderer;
+    private StaticUiRenderer staticUiRenderer;
     private boolean updateSnapshots, updateUI;
     private int previousSecond, previousDay;
     private float minServerTemperatureCelsius, maxServerTemperatureCelsius; //*******
@@ -103,7 +105,7 @@ public class Sketch extends PApplet {
         resourceContainer = new ResourceContainer();
         ResourceManager resourceManager = new ResourceManager(context, resourceContainer);
         resourceManager.initialize();
-        // simulation manager
+        // managers, updaters & renderers
         simulationContainer = new SimulationContainer();
         simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
@@ -112,6 +114,7 @@ public class Sketch extends PApplet {
         selectedAislePanelUpdater = new SelectedAislePanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
         roomPanelUpdater = new RoomPanelUpdater(context, simulationContainer, uiComponentContainer);
         selectedHotAisleTemperatureGradientRenderer = new SelectedHotAisleTemperatureGradientRenderer(context);
+        staticUiRenderer = new StaticUiRenderer(context, resourceContainer, overlayManager);
         simulationManager.initialize();
         selectionManager.initialize();
         // app bootstrap
@@ -224,10 +227,12 @@ public class Sketch extends PApplet {
         updateSnapshots();
         updateControls();
         //draw
-        drawBackground();
+        staticUiRenderer.drawBackground();
+        //drawBackground();
         drawControls();
         selectedHotAisleTemperatureGradientRenderer.draw(selectedHotAisleTemperatures, minServerTemperatureCelsius, maxServerTemperatureCelsius);
-        drawOverlay();
+        //drawOverlay();
+        staticUiRenderer.drawOverlay();
     }
 
     private void updateClock() {
@@ -264,14 +269,6 @@ public class Sketch extends PApplet {
         updateUI = false;
     }
 
-    private void drawBackground() {
-        background(COLOR_BACKGROUND);
-        pushStyle();
-        imageMode(CORNER);
-        resourceContainer.backgroundImages().forEach(img -> image(img, 0, 0, width, height));
-        popStyle();
-    }
-
     private void drawControls() {
         uiComponentContainer.indicatorsAlert().values().forEach(Indicator::draw);
         uiComponentContainer.labels().values().forEach(Label::draw);
@@ -287,14 +284,6 @@ public class Sketch extends PApplet {
         uiComponentContainer.buttonsColumn().values().forEach(Button::draw);
         uiComponentContainer.buttonsPlay().values().forEach(Button::draw);
         uiComponentContainer.toggles().values().forEach(Toggle::draw);
-    }
-
-    private void drawOverlay() {
-        overlayManager.getActiveOverlays().forEach(entry -> entry.getRender().run());
-        pushStyle();
-        imageMode(CORNER);
-        image(resourceContainer.staticOverlay(), 0, 0, width, height);
-        popStyle();
     }
 
     // <editor-fold defaultstate="collapsed" desc="*** mouse events ***">
