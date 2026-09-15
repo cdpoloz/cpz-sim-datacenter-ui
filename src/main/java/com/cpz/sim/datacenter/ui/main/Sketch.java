@@ -17,10 +17,7 @@ import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.simulation.SimulationManager;
 import com.cpz.sim.datacenter.ui.simulation.TemperatureRange;
 import com.cpz.sim.datacenter.ui.simulation.TemperatureRangeCalculator;
-import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
-import com.cpz.sim.datacenter.ui.ui.UiFormatContainer;
-import com.cpz.sim.datacenter.ui.ui.UiFormatLoader;
-import com.cpz.sim.datacenter.ui.ui.UiStateInitializer;
+import com.cpz.sim.datacenter.ui.ui.*;
 import com.cpz.sim.datacenter.ui.ui.panel.RoomPanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedAislePanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedRackPanelUpdater;
@@ -51,6 +48,7 @@ public class Sketch extends PApplet {
     private ResourceContainer resourceContainer;
     private SimulationContainer simulationContainer;
     private UiStateInitializer uiStateInitializer;
+    private HeaderUpdater headerUpdater;
     private UiFormatContainer uiFormatContainer;
     private UiFormatLoader uiFormatLoader;
     private TemperatureRangeCalculator temperatureRangeCalculator;
@@ -64,7 +62,6 @@ public class Sketch extends PApplet {
     private StaticUiRenderer staticUiRenderer;
     private ControlRenderer controlRenderer;
     private boolean updateSnapshots, updateUI;
-    private int previousSecond, previousDay;
     private float minServerTemperatureCelsius, maxServerTemperatureCelsius; //*******
     private List<Float> selectedHotAisleTemperatures;
 
@@ -117,6 +114,7 @@ public class Sketch extends PApplet {
         simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
         selectionManager = new SelectionManager(context, simulationContainer, uiComponentContainer);
+        headerUpdater = new HeaderUpdater(context, simulationContainer, uiComponentContainer);
         temperatureRangeCalculator = new TemperatureRangeCalculator();
         selectedRackPanelUpdater = new SelectedRackPanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
         selectedAislePanelUpdater = new SelectedAislePanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
@@ -135,7 +133,6 @@ public class Sketch extends PApplet {
         TemperatureRange temperatureRange = temperatureRangeCalculator.calculate(simulationContainer.datacenter(), simulationContainer.temperatureOptions());
         minServerTemperatureCelsius = temperatureRange.minServerTemperatureCelsius();
         maxServerTemperatureCelsius = temperatureRange.maxServerTemperatureCelsius();
-        //calculateTemperatureRange(simulationContainer.datacenter(), simulationContainer.temperatureOptions());
         simulationManager.initializeInitialSimulationState();
         // initial update
         updateUI = true;
@@ -145,9 +142,10 @@ public class Sketch extends PApplet {
         // initial values
         uiStateInitializer.initialize(minServerTemperatureCelsius, maxServerTemperatureCelsius, uiFormatContainer.simpleTemperature());
     }
-    
+
     public void draw() {
         // update
+        headerUpdater.update();
         updateClock();
         updateSnapshots();
         updateControls();
@@ -172,7 +170,6 @@ public class Sketch extends PApplet {
 
     private void updateControls() {
         if (!updateUI) return;
-        updateHeader();
         selectedRackPanelUpdater.update(
                 minServerTemperatureCelsius,
                 maxServerTemperatureCelsius,
@@ -190,24 +187,6 @@ public class Sketch extends PApplet {
                 );
         roomPanelUpdater.update(minServerTemperatureCelsius, maxServerTemperatureCelsius);
         updateUI = false;
-    }
-
-    private void updateHeader() {
-        // single-room layout for now; refresh here when room switching is added
-        String s = "DATACENTER MAP";
-        if (simulationContainer.roomName() != null && !simulationContainer.roomName().isEmpty())
-            s += (" - " + simulationContainer.roomName());
-        uiComponentContainer.labels().get("lblRoom").setText(s);
-        updateDateTime();
-    }
-
-    private void updateDateTime() {
-        if (second() == previousSecond) return;
-        previousSecond = second();
-        uiComponentContainer.labels().get("lblTime").setText(String.format("%02d", hour()) + ":" + String.format("%02d", minute()) + ":" + String.format("%02d", second()));
-        if (day() == previousDay) return;
-        previousDay = day();
-        uiComponentContainer.labels().get("lblDate").setText(String.format("%02d", day()) + "/" + String.format("%02d", month()) + "/" + year());
     }
 
     private void btnClicked(String buttonCode) {
