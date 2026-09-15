@@ -5,7 +5,6 @@ import com.cpz.processing.controls.core.input.InputManager;
 import com.cpz.processing.controls.core.input.PointerEvent;
 import com.cpz.processing.controls.core.overlay.OverlayManager;
 import com.cpz.processing.controls.input.ProcessingKeyboardAdapter;
-
 import com.cpz.sim.datacenter.ui.app.ApplicationBootstrap;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.controls.ControlManager;
@@ -30,7 +29,6 @@ import processing.event.MouseEvent;
 import processing.opengl.PJOGL;
 
 import java.io.File;
-import java.util.List;
 
 import static com.cpz.sim.datacenter.ui.main.Launcher.LOG;
 import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
@@ -47,6 +45,7 @@ public class Sketch extends PApplet {
     private UiComponentContainer uiComponentContainer;
     private ResourceContainer resourceContainer;
     private SimulationContainer simulationContainer;
+    private UiStateContainer uiStateContainer;
     private UiStateInitializer uiStateInitializer;
     private HeaderUpdater headerUpdater;
     private UiFormatContainer uiFormatContainer;
@@ -61,9 +60,6 @@ public class Sketch extends PApplet {
     private SelectedHotAisleTemperatureGradientRenderer selectedHotAisleTemperatureGradientRenderer;
     private StaticUiRenderer staticUiRenderer;
     private ControlRenderer controlRenderer;
-    private boolean updateSnapshots, updateUI;
-    private float minServerTemperatureCelsius, maxServerTemperatureCelsius; //*******
-    private List<Float> selectedHotAisleTemperatures;
 
     public void settings() {
         LOG.info("Starting settings");
@@ -102,6 +98,7 @@ public class Sketch extends PApplet {
         controlManager.initialize();
         uiFormatContainer = new UiFormatContainer();
         uiFormatLoader = new UiFormatLoader();
+        uiStateContainer = new UiStateContainer();
         // input layer registration
         inputManager.registerLayer(mainInputLayer);
         //inputManager.registerLayer(new TooltipInputLayer(1000, tooltips));
@@ -130,17 +127,25 @@ public class Sketch extends PApplet {
         bootstrap.initialize();
         // number formats
         uiFormatLoader.loadInto(uiFormatContainer);
-        TemperatureRange temperatureRange = temperatureRangeCalculator.calculate(simulationContainer.datacenter(), simulationContainer.temperatureOptions());
-        minServerTemperatureCelsius = temperatureRange.minServerTemperatureCelsius();
-        maxServerTemperatureCelsius = temperatureRange.maxServerTemperatureCelsius();
+        TemperatureRange temperatureRange =
+                temperatureRangeCalculator.calculate(
+                        simulationContainer.datacenter(),
+                        simulationContainer.temperatureOptions()
+                );
+        uiStateContainer.setMinServerTemperatureCelsius(temperatureRange.minServerTemperatureCelsius());
+        uiStateContainer.setMaxServerTemperatureCelsius(temperatureRange.maxServerTemperatureCelsius());
         simulationManager.initializeInitialSimulationState();
         // initial update
-        updateUI = true;
-        updateSnapshots = true;
+        uiStateContainer.setUpdateUI(true);
+        uiStateContainer.setUpdateSnapshots(true);
         updateSnapshots();
         coolingToggleManager.initialize();
         // initial values
-        uiStateInitializer.initialize(minServerTemperatureCelsius, maxServerTemperatureCelsius, uiFormatContainer.simpleTemperature());
+        uiStateInitializer.initialize(
+                uiStateContainer.minServerTemperatureCelsius(),
+                uiStateContainer.maxServerTemperatureCelsius(),
+                uiFormatContainer.simpleTemperature()
+        );
     }
 
     public void draw() {
@@ -152,41 +157,49 @@ public class Sketch extends PApplet {
         // draw
         staticUiRenderer.drawBackground();
         controlRenderer.draw();
-        selectedHotAisleTemperatureGradientRenderer.draw(selectedHotAisleTemperatures, minServerTemperatureCelsius, maxServerTemperatureCelsius);
+        selectedHotAisleTemperatureGradientRenderer.draw(
+                uiStateContainer.selectedHotAisleTemperatures(),
+                uiStateContainer.minServerTemperatureCelsius(),
+                uiStateContainer.maxServerTemperatureCelsius()
+        );
         staticUiRenderer.drawOverlay();
     }
 
     private void updateClock() {
         if (!simulationManager.updateClock()) return;
-        updateSnapshots = true;
+        uiStateContainer.setUpdateSnapshots(true);
     }
 
     private void updateSnapshots() {
-        if (!updateSnapshots) return;
+        if (!uiStateContainer.updateSnapshots()) return;
         simulationManager.updateSnapshots();
-        updateSnapshots = false;
-        updateUI = true;
+        uiStateContainer.setUpdateSnapshots(false);
+        uiStateContainer.setUpdateUI(true);
     }
 
     private void updateControls() {
-        if (!updateUI) return;
+        if (!uiStateContainer.updateUI()) return;
         selectedRackPanelUpdater.update(
-                minServerTemperatureCelsius,
-                maxServerTemperatureCelsius,
+                uiStateContainer.minServerTemperatureCelsius(),
+                uiStateContainer.maxServerTemperatureCelsius(),
                 uiFormatContainer.temperature(),
                 uiFormatContainer.percentage(),
                 uiFormatContainer.powerKw()
         );
-        selectedHotAisleTemperatures =
+        uiStateContainer.setSelectedHotAisleTemperatures(
                 selectedAislePanelUpdater.update(
-                        minServerTemperatureCelsius,
-                        maxServerTemperatureCelsius,
+                        uiStateContainer.minServerTemperatureCelsius(),
+                        uiStateContainer.maxServerTemperatureCelsius(),
                         uiFormatContainer.temperature(),
                         uiFormatContainer.percentage(),
                         uiFormatContainer.airflow()
-                );
-        roomPanelUpdater.update(minServerTemperatureCelsius, maxServerTemperatureCelsius);
-        updateUI = false;
+                )
+        );
+        roomPanelUpdater.update(
+                uiStateContainer.minServerTemperatureCelsius(),
+                uiStateContainer.maxServerTemperatureCelsius()
+        );
+        uiStateContainer.setUpdateUI(false);
     }
 
     private void btnClicked(String buttonCode) {
@@ -204,7 +217,7 @@ public class Sketch extends PApplet {
                 return;
             }
         }
-        updateUI = true;
+        uiStateContainer.setUpdateUI(true);
     }
 
     private void tglChanged(Toggle tgl, int state) {
