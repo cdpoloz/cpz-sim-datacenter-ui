@@ -21,6 +21,7 @@ import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.simulation.SimulationManager;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 import com.cpz.sim.datacenter.ui.ui.UiFormatContainer;
+import com.cpz.sim.datacenter.ui.ui.UiFormatLoader;
 import com.cpz.sim.datacenter.ui.ui.UiStateInitializer;
 import com.cpz.sim.datacenter.ui.ui.panel.RoomPanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedAislePanelUpdater;
@@ -53,6 +54,7 @@ public class Sketch extends PApplet {
     private SimulationContainer simulationContainer;
     private UiStateInitializer uiStateInitializer;
     private UiFormatContainer uiFormatContainer;
+    private UiFormatLoader uiFormatLoader;
     private SimulationManager simulationManager;
     private CoolingToggleManager coolingToggleManager;
     private SelectionManager selectionManager;
@@ -102,6 +104,8 @@ public class Sketch extends PApplet {
                 this::tglChanged
         );
         controlManager.initialize();
+        uiFormatContainer = new UiFormatContainer();
+        uiFormatLoader = new UiFormatLoader();
         // input layer registration
         inputManager.registerLayer(mainInputLayer);
         //inputManager.registerLayer(new TooltipInputLayer(1000, tooltips));
@@ -121,21 +125,13 @@ public class Sketch extends PApplet {
         selectedHotAisleTemperatureGradientRenderer = new SelectedHotAisleTemperatureGradientRenderer(context);
         staticUiRenderer = new StaticUiRenderer(context, resourceContainer, overlayManager);
         controlRenderer = new ControlRenderer(uiComponentContainer);
-        uiFormatContainer = new UiFormatContainer();
         simulationManager.initialize();
         selectionManager.initialize();
         // app bootstrap
         ApplicationBootstrap bootstrap = new ApplicationBootstrap(context);
         bootstrap.initialize();
         // number formats
-        uiFormatContainer.setPercentage(PROPS.getProperty("number.format.percentage"));
-        uiFormatContainer.setTemperature(PROPS.getProperty("number.format.temperature"));
-        uiFormatContainer.setSimpleTemperature(PROPS.getProperty("number.format.temperature.simple"));
-        uiFormatContainer.setPowerKw(PROPS.getProperty("number.format.power.kw"));
-        uiFormatContainer.setPowerMw(PROPS.getProperty("number.format.power.mw"));
-        uiFormatContainer.setSpeed(PROPS.getProperty("number.format.speed"));
-        uiFormatContainer.setPressure(PROPS.getProperty("number.format.pressure"));
-        uiFormatContainer.setAirflow(PROPS.getProperty("number.format.airflow"));
+        uiFormatLoader.loadInto(uiFormatContainer);
         calculateTemperatureRange(simulationContainer.datacenter(), simulationContainer.temperatureOptions());
         simulationManager.initializeInitialSimulationState();
         // initial update
