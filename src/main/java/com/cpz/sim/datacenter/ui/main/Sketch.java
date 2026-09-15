@@ -163,7 +163,7 @@ public class Sketch extends PApplet {
     public void draw() {
         // update
         headerUpdater.update();
-        updateClock();
+        uiUpdateCoordinator.updateClock();
         uiUpdateCoordinator.updateSnapshotsIfNeeded();
         uiUpdateCoordinator.updateControlsIfNeeded();
         // draw
@@ -175,11 +175,6 @@ public class Sketch extends PApplet {
                 uiStateContainer.maxServerTemperatureCelsius()
         );
         staticUiRenderer.drawOverlay();
-    }
-
-    private void updateClock() {
-        if (!simulationManager.updateClock()) return;
-        uiStateContainer.setUpdateSnapshots(true);
     }
 
     private void btnClicked(String buttonCode) {
