@@ -103,3 +103,11 @@ See [Development notes](docs/development.md) for extension guidelines and invari
 The project is licensed under Apache License 2.0; see `LICENSE`. JetBrains Mono is distributed under the SIL Open Font License 1.1; see `data/font/OFL.txt`.
 
 Related projects: [cpz-sim-foundation](https://github.com/cdpoloz/cpz-sim-foundation), [cpz-sim-runtime](https://github.com/cdpoloz/cpz-sim-runtime), [cpz-sim-datacenter](https://github.com/cdpoloz/cpz-sim-datacenter), [cpz-mvvm-processing-controls](https://github.com/cdpoloz/cpz-mvvm-processing-controls), and [cpz-utils](https://github.com/cdpoloz/cpz-utils).
+
+---
+
+## Author
+
+**Carlos Polo Zamora**  
+GitHub: https://github.com/cdpoloz  
+Alias: CPZ / cepezeta / cdpoloz
