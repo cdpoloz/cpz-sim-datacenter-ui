@@ -22,10 +22,22 @@ import java.util.Map;
  */
 public class ControlLoader extends ApplicationComponent {
 
+    /**
+     * Creates a loader that supplies the active Processing sketch to control configuration.
+     *
+     * @param context application context containing the sketch
+     */
     public ControlLoader(ApplicationContext context) {
         super(context);
     }
 
+    /**
+     * Loads only Labels from a control configuration file.
+     *
+     * @param loader configured controls-library loader
+     * @param path JSON file path
+     * @return Labels indexed by stable control code
+     */
     public Map<String, Label> loadLabels(ControlConfigLoader loader, String path) {
         Map<String, Control> controls = loader.load(path);
         Map<String, Label> result = new HashMap<>();
@@ -37,6 +49,13 @@ public class ControlLoader extends ApplicationComponent {
         return result;
     }
 
+    /**
+     * Loads only Indicators from a control configuration file.
+     *
+     * @param loader configured controls-library loader
+     * @param path JSON file path
+     * @return Indicators indexed by stable control code
+     */
     public Map<String, Indicator> loadIndicators(ControlConfigLoader loader, String path) {
         Map<String, Control> controls = loader.load(path);
         Map<String, Indicator> result = new HashMap<>();
@@ -49,6 +68,13 @@ public class ControlLoader extends ApplicationComponent {
 
     }
 
+    /**
+     * Loads only Buttons from a control configuration file.
+     *
+     * @param loader configured controls-library loader
+     * @param path JSON file path
+     * @return Buttons indexed by stable control code
+     */
     public Map<String, Button> loadButtons(ControlConfigLoader loader, String path) {
         Map<String, Control> controls = loader.load(path);
         Map<String, Button> result = new HashMap<>();
@@ -61,6 +87,13 @@ public class ControlLoader extends ApplicationComponent {
 
     }
 
+    /**
+     * Loads only Toggles from a control configuration file.
+     *
+     * @param loader configured controls-library loader
+     * @param path JSON file path
+     * @return Toggles indexed by stable control code
+     */
     public Map<String, Toggle> loadToggles(ControlConfigLoader loader, String path) {
         Map<String, Control> controls = loader.load(path);
         Map<String, Toggle> result = new HashMap<>();

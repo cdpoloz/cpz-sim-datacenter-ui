@@ -10,16 +10,28 @@ import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
 import static com.cpz.sim.datacenter.ui.util.Constants.*;
 
 /**
- * Renders the selected hot aisle temperature gradient.
+ * Renders a tapered, row-by-row temperature gradient for the selected hot aisle.
  *
  * @author CPZ
  */
 public class SelectedHotAisleTemperatureGradientRenderer extends ApplicationComponent {
 
+    /**
+     * Creates a renderer that issues drawing calls through the active sketch.
+     *
+     * @param context Processing drawing and coordinate-mapping access
+     */
     public SelectedHotAisleTemperatureGradientRenderer(ApplicationContext context) {
         super(context);
     }
 
+    /**
+     * Draws the current gradient, or nothing until aisle temperatures are available.
+     *
+     * @param selectedHotAisleTemperatures representative temperatures in rack-code order
+     * @param minServerTemperatureCelsius lower color-scale bound
+     * @param maxServerTemperatureCelsius upper color-scale bound
+     */
     public void draw(List<Float> selectedHotAisleTemperatures, float minServerTemperatureCelsius, float maxServerTemperatureCelsius) {
         if (selectedHotAisleTemperatures == null || selectedHotAisleTemperatures.isEmpty()) return;
         sketch().pushStyle();
@@ -31,6 +43,7 @@ public class SelectedHotAisleTemperatureGradientRenderer extends ApplicationComp
         float x = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.x")) * sketch().width;
         float minWidth = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.min.width")) * sketch().height;
         float maxWidth = Float.parseFloat(PROPS.getProperty("ui.temperature.gradient.max.width")) * sketch().height;
+        // The first row has no preceding value, so it is filled with a single endpoint color.
         drawFirstSegment(
                 selectedHotAisleTemperatures,
                 minServerTemperatureCelsius,

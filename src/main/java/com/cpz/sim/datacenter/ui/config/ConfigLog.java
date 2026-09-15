@@ -16,19 +16,18 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 
 /**
- * Bootstrap configuration ({@code config} package) for the logging infrastructure.
- * <p>
- * Provides preconfigured handlers for file and console output. This class contains no business
- * logic and is used by {@link Log}.
- * </p>
+ * Creates the file and console handlers used by the application logger.
  *
  * @author CPZ
  */
 public class ConfigLog {
 
+    /** Creates a logging configuration helper. */
+    public ConfigLog() {
+    }
+
     /**
-     * Creates a {@link FileHandler} that writes to the {@code log} folder using the current date
-     * in the file name.
+     * Creates a {@link FileHandler} that appends to a date-based file in {@code log}.
      * <p>
      * Uses {@link LogFormatter} and sets the handler level to {@link Level#INFO}.
      * </p>
@@ -43,6 +42,7 @@ public class ConfigLog {
                 Files.createDirectories(folder);
             }
             LocalDate currentDate = LocalDate.now();
+            // The legacy ProcessingTemplate prefix is retained for log-file compatibility.
             String fileName
                     = "ProcessingTemplate_"
                     + currentDate.getYear()
@@ -62,7 +62,7 @@ public class ConfigLog {
     }
 
     /**
-     * Creates a {@link ConsoleHandler} for stdout logging.
+     * Creates a {@link ConsoleHandler} for process-console logging.
      * <p>
      * Uses {@link LogFormatter} and sets the handler level to {@link Level#CONFIG}.
      * </p>

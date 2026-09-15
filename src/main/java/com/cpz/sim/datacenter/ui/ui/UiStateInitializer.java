@@ -6,7 +6,7 @@ import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 
 /**
- * Initializes static UI state.
+ * Initializes labels that are derived once after the first backend snapshot is available.
  *
  * @author CPZ
  */
@@ -15,12 +15,26 @@ public class UiStateInitializer extends ApplicationComponent {
     private final SimulationContainer simulationContainer;
     private final UiComponentContainer uiComponentContainer;
 
+    /**
+     * Creates the one-time UI state initializer.
+     *
+     * @param context Processing time and mapping access
+     * @param simulationContainer source of initial operational totals
+     * @param uiComponentContainer controls to populate
+     */
     public UiStateInitializer(ApplicationContext context, SimulationContainer simulationContainer, UiComponentContainer uiComponentContainer) {
         super(context);
         this.simulationContainer = simulationContainer;
         this.uiComponentContainer = uiComponentContainer;
     }
 
+    /**
+     * Populates the temperature legend, server totals, and wall-clock labels.
+     *
+     * @param minServerTemperatureCelsius scale lower bound
+     * @param maxServerTemperatureCelsius scale upper bound
+     * @param simpleTemperatureFormat format used by integer-like legend labels
+     */
     public void initialize(float minServerTemperatureCelsius, float maxServerTemperatureCelsius, String simpleTemperatureFormat) {
         initializeTemperatureScale(minServerTemperatureCelsius, maxServerTemperatureCelsius, simpleTemperatureFormat);
         initializeRoomServerTotals();

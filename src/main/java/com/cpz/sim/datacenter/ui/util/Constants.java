@@ -3,9 +3,15 @@ package com.cpz.sim.datacenter.ui.util;
 import com.cpz.utils.color.Colors;
 
 /**
+ * Shared Processing color values and keyboard codes used by the active UI.
+ *
  * @author CPZ
  */
 public class Constants {
+
+    /** Creates a constants holder; values are normally accessed statically. */
+    public Constants() {
+    }
 
     public static int COLOR_BACKGROUND = Colors.rgb(4, 7, 11);
     public static int COLOR_WHITE_LABEL = Colors.rgb(242, 235, 231);

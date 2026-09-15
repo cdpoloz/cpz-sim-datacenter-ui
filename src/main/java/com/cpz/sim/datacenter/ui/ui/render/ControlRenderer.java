@@ -7,7 +7,7 @@ import com.cpz.processing.controls.controls.toggle.Toggle;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 
 /**
- * Renders UI controls.
+ * Draws configured control groups in their visual stacking order.
  *
  * @author CPZ
  */
@@ -15,10 +15,16 @@ public class ControlRenderer {
 
     private final UiComponentContainer uiComponentContainer;
 
+    /**
+     * Creates a renderer for controls already loaded into the shared container.
+     *
+     * @param uiComponentContainer controls to draw
+     */
     public ControlRenderer(UiComponentContainer uiComponentContainer) {
         this.uiComponentContainer = uiComponentContainer;
     }
 
+    /** Draws all control groups; later groups can appear above earlier groups. */
     public void draw() {
         uiComponentContainer.indicatorsAlert().values().forEach(Indicator::draw);
         uiComponentContainer.labels().values().forEach(Label::draw);

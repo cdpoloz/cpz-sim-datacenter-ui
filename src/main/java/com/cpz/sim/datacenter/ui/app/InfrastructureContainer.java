@@ -7,7 +7,10 @@ import com.cpz.sim.datacenter.ui.input.MainInputLayer;
 import com.cpz.sim.datacenter.ui.input.MouseInputDispatcher;
 
 /**
- * Holds application infrastructure components.
+ * Holds input and overlay infrastructure shared by the Processing callbacks and controls.
+ *
+ * <p>The {@link ProcessingKeyboardAdapter} slot is available for controls-library integration;
+ * the active application currently handles keyboard releases directly in the sketch.</p>
  *
  * @author CPZ
  */
@@ -19,6 +22,7 @@ public class InfrastructureContainer {
     private ProcessingKeyboardAdapter processingKeyboardAdapter;
     private MouseInputDispatcher mouseInputDispatcher;
 
+    /** Creates an empty container populated by {@link InfrastructureInitializer}. */
     public InfrastructureContainer() {
     }
 

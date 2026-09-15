@@ -47,6 +47,12 @@ import java.util.stream.Collectors;
 import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
 
 /**
+ * Builds and drives the backend simulation used by the UI.
+ *
+ * <p>The manager loads the backend definition, creates systems in dependency order, registers
+ * their tick sequence, advances the engine from a UI timer, and captures immutable snapshots for
+ * panel updaters. It also owns play/pause and speed-control synchronization.</p>
+ *
  * @author CPZ
  */
 public class SimulationManager extends ApplicationComponent implements Initializable {
@@ -55,12 +61,22 @@ public class SimulationManager extends ApplicationComponent implements Initializ
     private final UiComponentContainer uiComponentContainer;
     private boolean syncingPlayToggle;
 
+    /**
+     * Creates the backend integration manager.
+     *
+     * @param applicationContext Processing context used to resolve data paths
+     * @param simulationContainer destination for backend services and snapshots
+     * @param uiComponentContainer controls updated by play and speed changes
+     */
     public SimulationManager(ApplicationContext applicationContext, SimulationContainer simulationContainer, UiComponentContainer uiComponentContainer) {
         super(applicationContext);
         this.simulationContainer = simulationContainer;
         this.uiComponentContainer = uiComponentContainer;
     }
 
+    /**
+     * Constructs the complete simulation graph and snapshot infrastructure.
+     */
     @Override
     public void initialize() {
         initializeTimer();
@@ -192,6 +208,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
                 Double.parseDouble(PROPS.getProperty("simulation.health.temperature.recovery-threshold-celsius"))
         );
         simulationContainer.setHealthSystem(new ServerHealthSystem(simulationContainer.datacenter(), simulationContainer.temperatureSystem(), new ServerHealthOptions(utilizationThreshold, temperatureThreshold)));
+        // Registration order is the backend tick pipeline: each stage consumes earlier results.
         simulationContainer.engine().register(new WorkloadSystem(simulationContainer.datacenter(), simulationContainer.workloadSource()));
         simulationContainer.engine().register(new PowerConsumptionSystem(simulationContainer.datacenter()));
         simulationContainer.engine().register(tick -> simulationContainer.setCoolingSnapshot(simulationContainer.coolingSnapshotCoordinator().update(tick)));
@@ -238,6 +255,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         simulationContainer.hotAisleByColumn().clear();
         for (HotAisleDefinition hotAisle : configuration.hotAisles()) {
             for (String column : hotAisle.columns()) {
+                // Selection starts with a column; this inverse map resolves its UI aisle.
                 HotAisleDefinition previous = simulationContainer.hotAisleByColumn().put(column, hotAisle);
                 if (previous != null)
                     throw new IllegalArgumentException("Column '%s' is assigned to hot aisles '%s' and '%s'".formatted(column, previous.code(), hotAisle.code()));
@@ -269,10 +287,16 @@ public class SimulationManager extends ApplicationComponent implements Initializ
                 .toList();
     }
 
+    /**
+     * Advances the engine once so cooling and other tick-produced state exists at startup.
+     */
     public void initializeInitialSimulationState() {
         simulationContainer.engine().step();
     }
 
+    /**
+     * Captures energy, temperature, health, and derived operational snapshots for one tick.
+     */
     public void updateSnapshots() {
         simulationContainer.setEnergySnapshot(
                 simulationContainer
@@ -289,6 +313,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
                         .healthSnapshotProvider()
                         .snapshot(simulationContainer.engine().currentTick())
         );
+        // Operational aggregation depends on the three domain snapshots captured above.
         simulationContainer.setOperationalSnapshot(
                 simulationContainer
                         .operationalSnapshotProvider()
@@ -300,6 +325,11 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         );
     }
 
+    /**
+     * Advances the engine when the real-time timer emits a period pulse.
+     *
+     * @return {@code true} only when an engine step occurred and snapshots are now stale
+     */
     public boolean updateClock() {
         if (simulationContainer.simulationTimer() == null || simulationContainer.engine() == null) return false;
         if (!simulationContainer.simulationTimer().pollPeriodPulse()) return false;
@@ -307,12 +337,19 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         return true;
     }
 
+    /**
+     * Indicates that the play Toggle is being changed programmatically.
+     *
+     * @return whether its listener must suppress re-entry
+     */
     public boolean isSyncingPlayToggle() {
         return syncingPlayToggle;
     }
 
+    /** Toggles timer execution and synchronizes the {@code tglPlay} control. */
     public void toggleSimulation() {
         simulationContainer.simulationTimer().toggle();
+        // setState notifies listeners; guard against toggling the Timer back immediately.
         syncingPlayToggle = true;
         try {
             Toggle playToggle = uiComponentContainer.toggles().get("tglPlay");
@@ -324,6 +361,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         updateSimulationControls();
     }
 
+    /** Selects the next configured speed factor, if one exists. */
     public void increaseSimulationSpeed() {
         if (simulationContainer.simulationSpeedFactorIndex() >= simulationContainer.simulationSpeedFactors().size() - 1) return;
         int newIndex = simulationContainer.simulationSpeedFactorIndex() + 1;
@@ -332,6 +370,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         updateSimulationControls();
     }
 
+    /** Selects the previous configured speed factor, if one exists. */
     public void decreaseSimulationSpeed() {
         if (simulationContainer.simulationSpeedFactorIndex() <= 0) return;
         int newIndex = simulationContainer.simulationSpeedFactorIndex() - 1;

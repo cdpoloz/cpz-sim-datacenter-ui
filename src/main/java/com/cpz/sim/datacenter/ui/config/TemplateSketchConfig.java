@@ -30,21 +30,26 @@ import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
 import static processing.core.PConstants.P2D;
 
 /**
+ * Configuration helpers for the intentionally preserved {@link TemplateSketch} reference.
+ *
+ * <p>This class demonstrates controls beyond the Button, Label, and Toggle types used by the
+ * active {@code Sketch}. It is not part of the active application startup path.</p>
+ *
  * @author CPZ
  */
 public class TemplateSketchConfig {
 
+    /** Applies reference-sketch surface settings. */
     public static void settings(TemplateSketch sk) {
         if (sk == null) return;
         LOG.info("Starting settings");
         PJOGL.setIcon("data" + File.separator + "img" + File.separator + PROPS.getProperty("window.icon"));
-        // window size
         sk.size(Integer.parseInt(PROPS.getProperty("sketch.width")), Integer.parseInt(PROPS.getProperty("sketch.height")), P2D);
-        // smoothing
         sk.smooth(Integer.parseInt(PROPS.getProperty("sketch.smoothing")));
         LOG.info("Finished settings");
     }
 
+    /** Applies frame rate and title settings to the reference sketch. */
     public static void initialSetup(TemplateSketch sk) {
         if (sk == null) return;
         LOG.info("Starting initial setup");
@@ -53,6 +58,7 @@ public class TemplateSketchConfig {
         LOG.info("Finished initial setup");
     }
 
+    /** Loads reference controls and binds their example callbacks. */
     public static Map<String, Control> setupControls(TemplateSketch sk, OverlayManager overlayManager, InputManager inputManager) {
         if (sk == null || overlayManager == null || inputManager == null) return null;
         String templateConfigPath = "data" + File.separator + "config" + File.separator + "template-sketch.json";
@@ -101,6 +107,7 @@ public class TemplateSketchConfig {
         return controlsByCode;
     }
 
+    /** Returns Button controls indexed by code. */
     public static Map<String, Button> filterButtons(Map<String, Control> controlsByCode) {
         if (controlsByCode == null) return null;
         Map<String, Button> buttons = new HashMap<>();
@@ -108,6 +115,7 @@ public class TemplateSketchConfig {
         return buttons;
     }
 
+    /** Returns Checkbox controls indexed by code. */
     public static Map<String, Checkbox> filterCheckboxes(Map<String, Control> controlsByCode) {
         if (controlsByCode == null) return null;
         Map<String, Checkbox> checkboxes = new HashMap<>();
@@ -115,6 +123,7 @@ public class TemplateSketchConfig {
         return checkboxes;
     }
 
+    /** Returns DropDown controls indexed by code. */
     public static Map<String, DropDown> filterDropdowns(Map<String, Control> controlsByCode) {
         if (controlsByCode == null) return null;
         Map<String, DropDown> dropdowns = new HashMap<>();
@@ -122,6 +131,7 @@ public class TemplateSketchConfig {
         return dropdowns;
     }
 
+    /** Returns Indicator controls indexed by code. */
     public static Map<String, Indicator> filterIndicators(Map<String, Control> controlsByCode) {
         if (controlsByCode == null) return null;
         Map<String, Indicator> indicators = new HashMap<>();
@@ -129,6 +139,7 @@ public class TemplateSketchConfig {
         return indicators;
     }
 
+    /** Returns Label controls indexed by code. */
     public static Map<String, Label> filterLabels(Map<String, Control> controlsByCode) {
         if (controlsByCode == null) return null;
         Map<String, Label> labels = new HashMap<>();
@@ -136,6 +147,7 @@ public class TemplateSketchConfig {
         return labels;
     }
 
+    /** Returns NumericField controls indexed by code. */
     public static Map<String, NumericField> filterNumericfields(Map<String, Control> controlsByCode) {
         if (controlsByCode == null) return null;
         Map<String, NumericField> numericfields = new HashMap<>();
@@ -143,6 +155,7 @@ public class TemplateSketchConfig {
         return numericfields;
     }
 
+    /** Returns ProgressBar controls indexed by code. */
     public static Map<String, ProgressBar> filterProgressbars(Map<String, Control> controlsByCode) {
         if (controlsByCode == null) return null;
         Map<String, ProgressBar> progressbars = new HashMap<>();
@@ -150,6 +163,7 @@ public class TemplateSketchConfig {
         return progressbars;
     }
 
+    /** Returns RadioGroup controls indexed by code. */
     public static Map<String, RadioGroup> filterRadiogroups(Map<String, Control> controlsByCode) {
         if (controlsByCode == null) return null;
         Map<String, RadioGroup> radiogroups = new HashMap<>();
@@ -157,6 +171,7 @@ public class TemplateSketchConfig {
         return radiogroups;
     }
 
+    /** Returns Slider controls indexed by code. */
     public static Map<String, Slider> filterSliders(Map<String, Control> controlsByCode) {
         if (controlsByCode == null) return null;
         Map<String, Slider> sliders = new HashMap<>();
@@ -164,6 +179,7 @@ public class TemplateSketchConfig {
         return sliders;
     }
 
+    /** Returns TextField controls indexed by code. */
     public static Map<String, TextField> filterTextfields(Map<String, Control> controlsByCode) {
         if (controlsByCode == null) return null;
         Map<String, TextField> textfields = new HashMap<>();
@@ -171,6 +187,7 @@ public class TemplateSketchConfig {
         return textfields;
     }
 
+    /** Returns Toggle controls indexed by code. */
     public static Map<String, Toggle> filterToggles(Map<String, Control> controlsByCode) {
         if (controlsByCode == null) return null;
         Map<String, Toggle> toggles = new HashMap<>();
@@ -178,14 +195,15 @@ public class TemplateSketchConfig {
         return toggles;
     }
 
+    /** Creates reference tooltip examples for a custom area and selected controls. */
     public static TooltipOverlayController setupTooltips(TemplateSketch sk, OverlayManager overlayManager, Map<String, Control> controls) {
         if (sk == null) return null;
         TooltipOverlayController tooltips = new TooltipOverlayController(sk, overlayManager);
-        // custom area tooltips
+        // Demonstrates a tooltip whose target is not itself a Control.
         TooltipArea customTooltipArea = new TooltipArea(750, 350.0f, 200.0f, 100.0f)
                 .setTooltip(TooltipFactory.loadFromJson(sk, "data/config/custom-area-tooltip.json"));
         tooltips.registerTarget(customTooltipArea);
-        // tooltips over Control objects (examples)
+        // Demonstrates tooltips whose targets are different Control implementations.
         tooltips.registerTarget((Button) controls.get("btnTemplate"));
         tooltips.registerTarget((Slider) controls.get("sldTemplate"));
         tooltips.registerTarget((Indicator) controls.get("indTemplate"));

@@ -1,14 +1,14 @@
 package com.cpz.sim.datacenter.ui.app;
 
 /**
- * Defines a component that participates in the application bootstrap process.
+ * Defines a component with an explicit, order-sensitive startup phase.
  *
  * @author CPZ
  */
 public interface Initializable {
 
     /**
-     * Initializes the component.
+     * Initializes resources or registrations after constructor dependencies are available.
      */
     void initialize();
 

@@ -6,11 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Logging infrastructure component ({@code logging} package) that configures the handlers defined
- * in {@link ConfigLog} and exposes a preconfigured {@link Logger}.
- * <p>
- * This class does not participate in MVVM logic. It only centralizes logging configuration.
- * </p>
+ * Application logger configured with the handlers provided by {@link ConfigLog}.
  *
  * @author CPZ
  */

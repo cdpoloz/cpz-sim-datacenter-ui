@@ -9,10 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Loads and provides access to the graphical resources used by the UI.
- *
- * <p>This manager is responsible for initializing fonts, images and other
- * static assets required by the application.</p>
+ * Loads fonts and full-canvas image layers through the active Processing sketch.
  *
  * @author CPZ
  */
@@ -20,11 +17,18 @@ public class ResourceManager extends ApplicationComponent implements Initializab
 
     private final ResourceContainer container;
 
+    /**
+     * Creates a resource manager that populates the supplied container.
+     *
+     * @param context Processing resource-loading access
+     * @param container destination for loaded resources
+     */
     public ResourceManager(ApplicationContext context, ResourceContainer container) {
         super(context);
         this.container = container;
     }
 
+    /** Loads and installs the font, then loads background and overlay images. */
     @Override
     public void initialize() {
         loadFont();

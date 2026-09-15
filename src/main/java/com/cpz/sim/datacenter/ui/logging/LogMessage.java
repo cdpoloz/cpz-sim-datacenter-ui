@@ -3,15 +3,15 @@ package com.cpz.sim.datacenter.ui.logging;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Logging infrastructure utility ({@code logging} package) that provides standardized error
- * messages for application bootstrap and I/O operations.
- * <p>
- * This is a stateless utility and contains no business logic.
- * </p>
+ * Provides standardized messages for startup and I/O failures.
  *
  * @author CPZ
  */
 public class LogMessage {
+
+    /** Creates a logging-message helper. */
+    public LogMessage() {
+    }
 
     /**
      * Builds a message indicating that a file could not be loaded.

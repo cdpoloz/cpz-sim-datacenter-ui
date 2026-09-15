@@ -6,6 +6,8 @@ import processing.core.PImage;
 import java.util.List;
 
 /**
+ * Stores Processing resources loaded once during setup and reused by renderers.
+ *
  * @author CPZ
  */
 public class ResourceContainer {
@@ -13,6 +15,10 @@ public class ResourceContainer {
     private PFont defaultFont;
     private List<PImage> backgroundImages;
     private PImage staticOverlay;
+
+    /** Creates an empty resource container populated during setup. */
+    public ResourceContainer() {
+    }
 
     public PFont defaultFont() {
         return defaultFont;

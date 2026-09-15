@@ -12,7 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Handles cooling toggle interactions.
+ * Synchronizes cooling controls with enabled state in the backend {@code CoolingSystem}.
+ *
+ * <p>Individual SUPPLY/EXHAUST controls map to backend unit codes. Master controls update all
+ * children of one type and reflect whether any child remains enabled.</p>
  *
  * @author CPZ
  */
@@ -22,12 +25,20 @@ public class CoolingToggleManager extends ApplicationComponent implements Initia
     private final UiComponentContainer uiComponentContainer;
     private boolean syncingCoolingToggles;
 
+    /**
+     * Creates a manager for cooling-unit and master toggle state.
+     *
+     * @param context Processing application context
+     * @param simulationContainer backend cooling state and derived toggle groups
+     * @param uiComponentContainer code-indexed Toggle controls
+     */
     public CoolingToggleManager(ApplicationContext context, SimulationContainer simulationContainer, UiComponentContainer uiComponentContainer) {
         super(context);
         this.simulationContainer = simulationContainer;
         this.uiComponentContainer = uiComponentContainer;
     }
 
+    /** Derives SUPPLY and EXHAUST child control codes from the initial cooling snapshot. */
     @Override
     public void initialize() {
         initializeCoolingToggleGroups();
@@ -41,6 +52,7 @@ public class CoolingToggleManager extends ApplicationComponent implements Initia
                 .stream()
                 .filter(unit -> unit.type() == CoolingUnitType.SUPPLY)
                 .forEach(unit -> {
+                    // Backend SUPPLY-C01-C02 and UI tglSupplyC01-C02 share the location suffix.
                     String toggleCode = unit.unitCode().replace("SUPPLY-", "tglSupply");
                     supplyToggleCodes.add(toggleCode);
                 });
@@ -52,13 +64,21 @@ public class CoolingToggleManager extends ApplicationComponent implements Initia
                 .stream()
                 .filter(unit -> unit.type() == CoolingUnitType.EXHAUST)
                 .forEach(unit -> {
+                    // Backend EXHAUST-C01 and UI tglExhaustC01 share the location suffix.
                     String toggleCode = unit.unitCode().replace("EXHAUST-", "tglExhaust");
                     exhaustToggleCodes.add(toggleCode);
                 });
         simulationContainer.setExhaustToggleCodes(exhaustToggleCodes);
     }
 
+    /**
+     * Applies a user-originated toggle change to a master group or one backend cooling unit.
+     *
+     * @param toggle changed control
+     * @param state controls-library state ({@code 1} means enabled)
+     */
     public void toggleCoolingUnit(Toggle toggle, int state) {
+        // Programmatic master/child synchronization also fires listeners; ignore that re-entry.
         if (syncingCoolingToggles) return;
         String toggleCode = toggle.getCode();
         boolean enabled = state == 1;
@@ -82,6 +102,7 @@ public class CoolingToggleManager extends ApplicationComponent implements Initia
     }
 
     private void updateChildCoolingToggles(List<String> toggleCodes, boolean enabled) {
+        // Hold the guard across both setState and backend updates for the complete group change.
         syncingCoolingToggles = true;
         try {
             for (String toggleCode : toggleCodes) {
@@ -96,6 +117,7 @@ public class CoolingToggleManager extends ApplicationComponent implements Initia
     }
 
     private void updateMasterToggle(String masterToggleCode, List<String> childToggleCodes) {
+        // A master means "at least one enabled", not "all enabled".
         boolean anyEnabled = childToggleCodes
                 .stream()
                 .map(uiComponentContainer.toggles()::get)
@@ -118,6 +140,7 @@ public class CoolingToggleManager extends ApplicationComponent implements Initia
         if (unitType.isEmpty()) return;
         boolean individualToggle = toggleCode.startsWith("tglSupplyC") || toggleCode.startsWith("tglExhaustC");
         if (!individualToggle) return;
+        // Restore the backend prefix while preserving the configured column/zone suffix.
         String unitCode = unitType
                 + "-"
                 + toggleCode.replace("tglSupply", "").replace("tglExhaust", "");

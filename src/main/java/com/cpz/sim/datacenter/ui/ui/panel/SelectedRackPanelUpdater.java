@@ -25,7 +25,10 @@ import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
 import static com.cpz.sim.datacenter.ui.util.Constants.*;
 
 /**
- * Updates the selected rack panel.
+ * Projects per-server and aggregate snapshots into the selected rack panel.
+ *
+ * <p>Energy, temperature, and health snapshots are joined by {@link ServerLocation} so each
+ * physical slot is updated from the same engine tick.</p>
  *
  * @author CPZ
  */
@@ -35,6 +38,14 @@ public class SelectedRackPanelUpdater extends ApplicationComponent {
     private final UiComponentContainer uiComponentContainer;
     private final SelectionManager selectionManager;
 
+    /**
+     * Creates an updater that resolves the current rack through {@link SelectionManager}.
+     *
+     * @param context Processing color and bar mapping access
+     * @param simulationContainer backend model and current snapshots
+     * @param uiComponentContainer selected-rack controls
+     * @param selectionManager source of the active column and rack
+     */
     public SelectedRackPanelUpdater(
             ApplicationContext context,
             SimulationContainer simulationContainer,
@@ -47,6 +58,15 @@ public class SelectedRackPanelUpdater extends ApplicationComponent {
         this.selectionManager = selectionManager;
     }
 
+    /**
+     * Updates slot values, status/alert Indicators, and aggregate rack metrics.
+     *
+     * @param minServerTemperatureCelsius lower color-scale bound
+     * @param maxServerTemperatureCelsius upper color-scale bound
+     * @param temperatureFormat temperature label format
+     * @param percentageFormat utilization label format
+     * @param powerKwFormat power label format
+     */
     public void update(
             float minServerTemperatureCelsius,
             float maxServerTemperatureCelsius,
@@ -56,6 +76,7 @@ public class SelectedRackPanelUpdater extends ApplicationComponent {
     ) {
         uiComponentContainer.labels().get("lblSelectedRackValue").setText(selectedColumn() + "-" + selectedRack());
         Rack rack = resolveSelectedRack();
+        // Resolve every domain snapshot against the same physical column/rack selection.
         RackLocation rackLocation = new RackLocation(selectedColumn(), new RackCode(selectedRack()));
         RackOperationalSnapshot rackSnapshot =
                 simulationContainer
@@ -193,7 +214,7 @@ public class SelectedRackPanelUpdater extends ApplicationComponent {
                         0,
                         1
                 );
-
+        // Values beyond the calculated scale retain an endpoint color instead of extrapolating.
         fColor = Math.clamp(fColor, 0, 1);
 
         int colorSlot =

@@ -31,6 +31,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Shared object graph and latest-snapshot store for the backend datacenter simulation.
+ *
+ * <p>{@link SimulationManager} populates this passive container during startup and snapshot
+ * refreshes. UI managers and panel updaters receive the same instance so they observe one
+ * coherent backend state without locating services through the Processing sketch.</p>
+ *
  * @author CPZ
  */
 public class SimulationContainer {
@@ -67,6 +73,10 @@ public class SimulationContainer {
     private EnergyConsumptionSnapshot energySnapshot;
     private HealthSnapshot healthSnapshot;
     private TemperatureSnapshot temperatureSnapshot;
+
+    /** Creates an empty backend container populated by {@link SimulationManager}. */
+    public SimulationContainer() {
+    }
 
     public Timer simulationTimer() {
         return simulationTimer;

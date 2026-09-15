@@ -31,6 +31,12 @@ import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
 import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_BACKGROUND;
 
 /**
+ * Active Processing sketch and composition root for the datacenter UI.
+ *
+ * <p>Processing invokes the lifecycle and input callback methods on this class. Startup-only
+ * collaborators remain local to {@link #setup()}; fields are reserved for objects used by
+ * {@link #draw()} or by a later Processing callback.</p>
+ *
  * @author CPZ
  */
 public class Sketch extends PApplet {
@@ -44,36 +50,43 @@ public class Sketch extends PApplet {
     private StaticUiRenderer staticUiRenderer;
     private ControlRenderer controlRenderer;
 
+    /**
+     * Configures the Processing surface before it is created.
+     */
+    @Override
     public void settings() {
         LOG.info("Starting settings");
         PJOGL.setIcon("data" + File.separator + "img" + File.separator + PROPS.getProperty("window.icon"));
-        // window size
         size(Integer.parseInt(PROPS.getProperty("sketch.width")), Integer.parseInt(PROPS.getProperty("sketch.height")), P2D);
-        // smoothing
         smooth(Integer.parseInt(PROPS.getProperty("sketch.smoothing")));
         LOG.info("Finished settings");
     }
 
+    /**
+     * Builds the application graph and prepares the first complete UI snapshot.
+     *
+     * <p>Construction order is intentional: controls and resources must exist before managers
+     * update them, and the simulation must take an initial step before snapshot-backed panels
+     * can be populated.</p>
+     */
+    @Override
     public void setup() {
         LOG.info("Starting initial setup");
         background(COLOR_BACKGROUND);
         frameRate(Integer.parseInt(PROPS.getProperty("sketch.fps")));
         getSurface().setTitle(PROPS.getProperty("window.title"));
         LOG.info("Finished initial setup");
-        // app context
+        // The context is the narrow bridge used by Processing-dependent components.
         ApplicationContext context = new ApplicationContext(this);
-        // infrastructure
         infrastructureContainer = new InfrastructureContainer();
         InfrastructureInitializer infrastructureInitializer = new InfrastructureInitializer(infrastructureContainer);
         infrastructureInitializer.initialize();
-        // UI containers
         UiComponentContainer uiComponentContainer = new UiComponentContainer();
         UiFormatContainer uiFormatContainer = new UiFormatContainer();
         uiStateContainer = new UiStateContainer();
         UiFormatLoader uiFormatLoader = new UiFormatLoader();
         UiContainersInitializer uiContainersInitializer = new UiContainersInitializer(uiComponentContainer, uiFormatContainer, uiStateContainer, uiFormatLoader);
         uiContainersInitializer.initialize();
-        // controls
         ControlManager controlManager =
                 new ControlManager(
                         context,
@@ -85,11 +98,10 @@ public class Sketch extends PApplet {
                         this::tglChanged
                 );
         controlManager.initialize();
-        // resources
         ResourceContainer resourceContainer = new ResourceContainer();
         ResourceManager resourceManager = new ResourceManager(context, resourceContainer);
         resourceManager.initialize();
-        // containers, managers, updaters, initializers & renderers
+        // These setup locals remain reachable through the runtime coordinators that own them.
         SimulationContainer simulationContainer = new SimulationContainer();
         SimulationManager simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         CoolingToggleManager coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
@@ -107,27 +119,30 @@ public class Sketch extends PApplet {
         controlRenderer = new ControlRenderer(uiComponentContainer);
         simulationManager.initialize();
         selectionManager.initialize();
-        // temperatures
+        // Use one backend-derived temperature scale for panels, room colors, and the gradient.
         TemperatureRange temperatureRange = temperatureRangeCalculator.calculate(simulationContainer.datacenter(), simulationContainer.temperatureOptions());
         uiStateContainer.setMinServerTemperatureCelsius(temperatureRange.minServerTemperatureCelsius());
         uiStateContainer.setMaxServerTemperatureCelsius(temperatureRange.maxServerTemperatureCelsius());
         simulationManager.initializeInitialSimulationState();
-        // initial update
+        // Reuse the normal invalidation path to produce the first internally consistent frame.
         uiStateContainer.setUpdateUI(true);
         uiStateContainer.setUpdateSnapshots(true);
         uiUpdateCoordinator.updateSnapshotsIfNeeded();
         coolingToggleManager.initialize();
-        // initial values
         uiStateInitializer.initialize(uiStateContainer.minServerTemperatureCelsius(), uiStateContainer.maxServerTemperatureCelsius(), uiFormatContainer.simpleTemperature());
     }
 
+    /**
+     * Updates invalidated state and renders one frame in the required layer order.
+     */
+    @Override
     public void draw() {
-        // update
+        // Update order keeps controls aligned with the engine state advanced in this frame.
         headerUpdater.update();
         uiUpdateCoordinator.updateClock();
         uiUpdateCoordinator.updateSnapshotsIfNeeded();
         uiUpdateCoordinator.updateControlsIfNeeded();
-        // draw
+        // The gradient must sit above controls but below active/static foreground overlays.
         staticUiRenderer.drawBackground();
         controlRenderer.draw();
         selectedHotAisleTemperatureGradientRenderer.draw(
@@ -146,7 +161,7 @@ public class Sketch extends PApplet {
         uiInteractionController.handleToggleChange(toggle, state);
     }
 
-    // <editor-fold defaultstate="collapsed" desc="*** Processing mouse events ***">
+    // Processing discovers these input callbacks on the PApplet subclass.
     @Override
     public void mouseMoved() {
         infrastructureContainer.mouseInputDispatcher().mouseMoved(mouseX, mouseY, mouseButton);
@@ -173,11 +188,8 @@ public class Sketch extends PApplet {
         infrastructureContainer.mouseInputDispatcher().mouseWheel(mouseX, mouseY, mouseButton, event.getCount(), event.isShiftDown(), event.isControlDown());
     }
 
-    // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="*** Processing keyboard events ***">
     @Override
     public void keyReleased() {
         uiInteractionController.handleKeyReleased(keyCode);
     }
-    // </editor-fold>
 }

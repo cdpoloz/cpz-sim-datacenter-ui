@@ -4,15 +4,13 @@ import com.cpz.processing.controls.controls.button.Button;
 import com.cpz.processing.controls.controls.indicator.Indicator;
 import com.cpz.processing.controls.controls.label.Label;
 import com.cpz.processing.controls.controls.toggle.Toggle;
-import com.cpz.sim.datacenter.ui.app.ApplicationComponent;
-
 import java.util.Map;
 
 /**
  * Stores all UI components created during application startup.
  *
- * <p>This container acts as the central owner of the user interface
- * controls and their lookup maps.</p>
+ * <p>Controls are grouped by role and indexed by their stable JSON {@code code}. Panel updaters,
+ * renderers, and interaction managers share these exact instances.</p>
  *
  * @author CPZ
  */
@@ -33,6 +31,7 @@ public class UiComponentContainer {
     private Map<String, Button> buttonsPlay;
     private Map<String, Toggle> toggles;
 
+    /** Creates an empty control container populated by {@code ControlManager}. */
     public UiComponentContainer() {
     }
 

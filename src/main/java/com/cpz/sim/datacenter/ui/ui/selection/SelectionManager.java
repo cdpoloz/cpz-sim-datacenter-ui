@@ -11,7 +11,7 @@ import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
 
 /**
- * Handles room selection state and highlights.
+ * Owns selected column/rack/hot-aisle state and keeps selection controls highlighted.
  *
  * @author CPZ
  */
@@ -23,12 +23,20 @@ public class SelectionManager extends ApplicationComponent {
     private String selectedRack;
     private HotAisleDefinition selectedHotAisle;
 
+    /**
+     * Creates the selection manager.
+     *
+     * @param context Processing context
+     * @param simulationContainer column-to-hot-aisle mapping and datacenter model
+     * @param uiComponentContainer selection Buttons and Indicators
+     */
     public SelectionManager(ApplicationContext context, SimulationContainer simulationContainer, UiComponentContainer uiComponentContainer) {
         super(context);
         this.simulationContainer = simulationContainer;
         this.uiComponentContainer = uiComponentContainer;
     }
 
+    /** Selects {@code C01-R01}, resolves its hot aisle, and applies initial highlights. */
     public void initialize() {
         selectedColumn = "C01";
         selectedRack = "R01";
@@ -37,6 +45,11 @@ public class SelectionManager extends ApplicationComponent {
         showSelectedAisleHighlight();
     }
 
+    /**
+     * Selects the rack row and, for shared aisles, the column represented by its left/right side.
+     *
+     * @param clickedRack suffix extracted from a {@code btnSelectedRack...} control code
+     */
     public void updateSelectedRack(String clickedRack) {
         selectedRack = "R"
                 + clickedRack
@@ -44,6 +57,7 @@ public class SelectionManager extends ApplicationComponent {
                 .replace("right", "")
                 .replace("left", "");
         if (!selectedColumn.equals(PROPS.getProperty("datacenter.first.column")) && !selectedColumn.equals(PROPS.getProperty("datacenter.last.column"))) {
+            // Shared aisles list the left-side column first and right-side column last.
             if (clickedRack.toLowerCase().contains("left"))
                 selectedColumn = selectedHotAisle.columns().getFirst();
             else if (clickedRack.toLowerCase().contains("right"))
@@ -52,6 +66,11 @@ public class SelectionManager extends ApplicationComponent {
         showSelectedRackHighlight();
     }
 
+    /**
+     * Selects a column, resolves its configured hot aisle, and moves both highlights.
+     *
+     * @param selectedColumn column code such as {@code C04}
+     */
     public void updateSelectedColumn(String selectedColumn) {
         this.selectedColumn = selectedColumn;
         resolveSelectedHotAisle();
@@ -59,20 +78,36 @@ public class SelectionManager extends ApplicationComponent {
         showSelectedRackHighlight();
     }
 
+    /**
+     * Returns the column used to resolve the selected rack.
+     *
+     * @return selected column code
+     */
     public String selectedColumn() {
         return selectedColumn;
     }
 
+    /**
+     * Returns the selected rack code within the selected column.
+     *
+     * @return selected rack code
+     */
     public String selectedRack() {
         return selectedRack;
     }
 
+    /**
+     * Returns the hot aisle containing the selected column.
+     *
+     * @return selected hot-aisle definition
+     */
     public HotAisleDefinition selectedHotAisle() {
         return selectedHotAisle;
     }
 
     private void showSelectedRackHighlight() {
         int columnIndex = Integer.parseInt(selectedColumn.replace("C", ""));
+        // Even columns appear on the left of shared aisles; odd columns appear on the right.
         String side = columnIndex % 2 == 0 ? "Left" : "Right";
         String selectedRackIndicatorCode = "indSelectedRack" + side + selectedRack.replace("R", "");
         String selectedButtonCode = selectedRackIndicatorCode.replace("ind", "btn");
@@ -108,6 +143,7 @@ public class SelectionManager extends ApplicationComponent {
     }
 
     private void resolveSelectedHotAisle() {
+        // Selection state is column-oriented; aisle metrics use the resolved group definition.
         selectedHotAisle = simulationContainer.hotAisleByColumn().get(selectedColumn);
         if (selectedHotAisle == null)
             throw new IllegalArgumentException("No hot aisle configured for column: " + selectedColumn);

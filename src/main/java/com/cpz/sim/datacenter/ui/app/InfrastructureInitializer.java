@@ -6,7 +6,7 @@ import com.cpz.sim.datacenter.ui.input.MainInputLayer;
 import com.cpz.sim.datacenter.ui.input.MouseInputDispatcher;
 
 /**
- * Initializes application infrastructure components.
+ * Creates the input pipeline and overlay manager used by configured controls.
  *
  * @author CPZ
  */
@@ -14,10 +14,18 @@ public class InfrastructureInitializer implements Initializable {
 
     private final InfrastructureContainer infrastructureContainer;
 
+    /**
+     * Creates an initializer for the container populated during startup.
+     *
+     * @param infrastructureContainer destination for initialized infrastructure
+     */
     public InfrastructureInitializer(InfrastructureContainer infrastructureContainer) {
         this.infrastructureContainer = infrastructureContainer;
     }
 
+    /**
+     * Creates and registers the main input layer, mouse dispatcher, and overlay manager.
+     */
     @Override
     public void initialize() {
         initializeInput();

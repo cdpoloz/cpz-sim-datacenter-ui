@@ -1,7 +1,7 @@
 package com.cpz.sim.datacenter.ui.ui;
 
 /**
- * Holds UI number formats.
+ * Holds {@link String#format(String, Object...)} patterns used by panel updaters.
  *
  * @author CPZ
  */
@@ -16,6 +16,7 @@ public class UiFormatContainer {
     private String pressure;
     private String airflow;
 
+    /** Creates an empty format container populated by {@link UiFormatLoader}. */
     public UiFormatContainer() {
     }
 

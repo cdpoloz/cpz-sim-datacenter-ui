@@ -31,7 +31,9 @@ import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_MIN_TEMPERATURE;
 import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_WHITE_LABEL;
 
 /**
- * Updates the selected aisle panel.
+ * Projects operational and cooling snapshots into the selected hot-aisle panel.
+ *
+ * <p>The returned rack-row temperatures are also the data source for the dynamic gradient.</p>
  *
  * @author CPZ
  */
@@ -41,6 +43,14 @@ public class SelectedAislePanelUpdater extends ApplicationComponent {
     private final UiComponentContainer uiComponentContainer;
     private final SelectionManager selectionManager;
 
+    /**
+     * Creates an updater that resolves the active aisle through {@link SelectionManager}.
+     *
+     * @param context Processing color-mapping access
+     * @param simulationContainer operational/cooling snapshots and configuration
+     * @param uiComponentContainer selected-aisle controls
+     * @param selectionManager source of the selected column and hot aisle
+     */
     public SelectedAislePanelUpdater(
             ApplicationContext context,
             SimulationContainer simulationContainer,
@@ -53,6 +63,16 @@ public class SelectedAislePanelUpdater extends ApplicationComponent {
         this.selectionManager = selectionManager;
     }
 
+    /**
+     * Updates edge state, cooling metrics, installed-server metrics, and gradient data.
+     *
+     * @param minServerTemperatureCelsius lower color-scale bound
+     * @param maxServerTemperatureCelsius upper color-scale bound
+     * @param temperatureFormat temperature label format
+     * @param percentageFormat percentage label format
+     * @param airflowFormat paired supply/exhaust airflow format
+     * @return representative temperatures ordered by rack code
+     */
     public List<Float> update(
             float minServerTemperatureCelsius,
             float maxServerTemperatureCelsius,
@@ -193,6 +213,7 @@ public class SelectedAislePanelUpdater extends ApplicationComponent {
         String maxTemperatureColumn = maxTemperatureLocation.column();
         String maxTemperatureSide;
 
+        // Wall aisles have one inward-facing side; shared aisles follow column parity.
         if (maxTemperatureColumn.equals(PROPS.getProperty("datacenter.first.column"))) maxTemperatureSide = "Right";
         else if (maxTemperatureColumn.equals(PROPS.getProperty("datacenter.last.column"))) maxTemperatureSide = "Left";
         else {
@@ -241,6 +262,7 @@ public class SelectedAislePanelUpdater extends ApplicationComponent {
                 RackOperationalSnapshot rackSnapshot = simulationContainer.operationalSnapshot().findRack(rackLocation).orElseThrow();
                 averageRackTemperature += (float) rackSnapshot.representativeTemperatureCelsius();
             }
+            // Shared aisles contribute one row value by averaging corresponding column racks.
             averageRackTemperature /= selectedHotAisle().columns().size();
             temperatures.add(averageRackTemperature);
         }
@@ -267,6 +289,7 @@ public class SelectedAislePanelUpdater extends ApplicationComponent {
                 .zones()
                 .stream()
                 .filter(zone ->
+                        // A zone belongs to the view when it serves any server in an aisle column.
                         zone.serverLocations()
                                 .stream()
                                 .anyMatch(location -> aisleColumns.contains(location.column()))

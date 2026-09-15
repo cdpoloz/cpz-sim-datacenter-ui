@@ -21,7 +21,7 @@ import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_MAX_TEMPERATURE;
 import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_MIN_TEMPERATURE;
 
 /**
- * Updates the room panel.
+ * Projects rack and aisle operational snapshots into the full-room map.
  *
  * @author CPZ
  */
@@ -30,6 +30,13 @@ public class RoomPanelUpdater extends ApplicationComponent {
     private final SimulationContainer simulationContainer;
     private final UiComponentContainer uiComponentContainer;
 
+    /**
+     * Creates a room updater for the backend model and configured room Indicators.
+     *
+     * @param context Processing color-mapping access
+     * @param simulationContainer model and operational snapshots
+     * @param uiComponentContainer room Indicators to update
+     */
     public RoomPanelUpdater(
             ApplicationContext context,
             SimulationContainer simulationContainer,
@@ -40,6 +47,12 @@ public class RoomPanelUpdater extends ApplicationComponent {
         this.uiComponentContainer = uiComponentContainer;
     }
 
+    /**
+     * Updates every fixed hot-aisle region and all configured rack Indicators.
+     *
+     * @param minServerTemperatureCelsius lower color-scale bound
+     * @param maxServerTemperatureCelsius upper color-scale bound
+     */
     public void update(
             float minServerTemperatureCelsius,
             float maxServerTemperatureCelsius
@@ -99,6 +112,7 @@ public class RoomPanelUpdater extends ApplicationComponent {
                         .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for aisle: " + hotAisleCode));
         float averageTemperature = (float) aisleSnapshot.averageOnlineTemperatureCelsius();
         float maxTemperature = (float) aisleSnapshot.maximumTemperatureCelsius();
+        // Blend typical and worst-case temperature so the room view exposes both signals.
         float temperature = (maxTemperature + averageTemperature) * 0.5f;
         float factor = sketch().map(temperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1);
         factor = Math.clamp(factor, 0, 1);

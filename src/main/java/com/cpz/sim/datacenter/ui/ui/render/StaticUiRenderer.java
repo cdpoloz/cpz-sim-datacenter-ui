@@ -9,7 +9,7 @@ import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_BACKGROUND;
 import static processing.core.PConstants.CORNER;
 
 /**
- * Renders static UI layers.
+ * Draws full-canvas background layers and the foreground overlay stack.
  *
  * @author CPZ
  */
@@ -18,12 +18,20 @@ public class StaticUiRenderer extends ApplicationComponent {
     private final ResourceContainer resourceContainer;
     private final OverlayManager overlayManager;
 
+    /**
+     * Creates the static layer renderer.
+     *
+     * @param context Processing drawing access
+     * @param resourceContainer background and static overlay images
+     * @param overlayManager source of active control overlays
+     */
     public StaticUiRenderer(ApplicationContext context, ResourceContainer resourceContainer, OverlayManager overlayManager) {
         super(context);
         this.resourceContainer = resourceContainer;
         this.overlayManager = overlayManager;
     }
 
+    /** Clears the frame and draws background images in configured list order. */
     public void drawBackground() {
         sketch().background(COLOR_BACKGROUND);
         sketch().pushStyle();
@@ -34,6 +42,7 @@ public class StaticUiRenderer extends ApplicationComponent {
         sketch().popStyle();
     }
 
+    /** Draws active library overlays followed by the static full-canvas foreground. */
     public void drawOverlay() {
         overlayManager.getActiveOverlays().forEach(entry -> entry.getRender().run());
         sketch().pushStyle();

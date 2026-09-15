@@ -14,6 +14,11 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
+ * Loads active UI controls, stores them by code, and wires interactive controls to input.
+ *
+ * <p>Labels and Indicators are render/update targets. Buttons and Toggles additionally register
+ * with {@link MainInputLayer} and forward listener callbacks to the sketch boundary.</p>
+ *
  * @author CPZ
  */
 public class ControlManager extends ApplicationComponent implements Initializable {
@@ -27,6 +32,17 @@ public class ControlManager extends ApplicationComponent implements Initializabl
     private final Consumer<String> buttonClickHandler;
     private final BiConsumer<Toggle, Integer> toggleChangeHandler;
 
+    /**
+     * Creates the startup manager for control loading and listener registration.
+     *
+     * @param context Processing access used by the JSON loader
+     * @param container destination for code-indexed control groups
+     * @param overlayManager overlay service supplied to interactive controls
+     * @param inputManager layered input manager supplied to interactive controls
+     * @param mainInputLayer layer on which Buttons and Toggles are registered
+     * @param buttonClickHandler callback receiving stable Button codes
+     * @param toggleChangeHandler callback receiving a Toggle and its new integer state
+     */
     public ControlManager(
             ApplicationContext context,
             UiComponentContainer container,
@@ -46,6 +62,7 @@ public class ControlManager extends ApplicationComponent implements Initializabl
         loader = new ControlLoader(context);
     }
 
+    /** Loads every active control group and registers interactive controls. */
     @Override
     public void initialize() {
         loadLabels();
