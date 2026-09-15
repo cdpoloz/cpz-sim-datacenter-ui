@@ -47,6 +47,7 @@ public class Sketch extends PApplet {
     private UiInteractionController uiInteractionController;
     private UiFormatContainer uiFormatContainer;
     private UiFormatLoader uiFormatLoader;
+    private UiContainersInitializer uiContainersInitializer;
     private TemperatureRangeCalculator temperatureRangeCalculator;
     private SimulationManager simulationManager;
     private CoolingToggleManager coolingToggleManager;
@@ -80,13 +81,22 @@ public class Sketch extends PApplet {
         infrastructureContainer = new InfrastructureContainer();
         InfrastructureInitializer infrastructureInitializer = new InfrastructureInitializer(infrastructureContainer);
         infrastructureInitializer.initialize();
-        // controls
+        // UI containers
         uiComponentContainer = new UiComponentContainer();
-        ControlManager controlManager = new ControlManager(context, uiComponentContainer, infrastructureContainer.overlayManager(), infrastructureContainer.inputManager(), infrastructureContainer.mainInputLayer(), this::btnClicked, this::tglChanged);
-        controlManager.initialize();
         uiFormatContainer = new UiFormatContainer();
-        uiFormatLoader = new UiFormatLoader();
         uiStateContainer = new UiStateContainer();
+        uiFormatLoader = new UiFormatLoader();
+        uiContainersInitializer =
+                new UiContainersInitializer(
+                        uiComponentContainer,
+                        uiFormatContainer,
+                        uiStateContainer,
+                        uiFormatLoader
+                );
+        uiContainersInitializer.initialize();
+        // controls
+        ControlManager controlManager = new ControlManager(context, uiComponentContainer, infrastructureContainer.overlayManager(), infrastructureContainer.inputManager(), infrastructureContainer.mainInputLayer(), this::btnClicked, this::tglChanged); //**
+        controlManager.initialize();
         // input layer registration
         infrastructureContainer.inputManager().registerLayer(infrastructureContainer.mainInputLayer());
         // resources
@@ -114,8 +124,6 @@ public class Sketch extends PApplet {
         // app bootstrap
         ApplicationBootstrap bootstrap = new ApplicationBootstrap(context);
         bootstrap.initialize();
-        // number formats
-        uiFormatLoader.loadInto(uiFormatContainer);
         TemperatureRange temperatureRange = temperatureRangeCalculator.calculate(simulationContainer.datacenter(), simulationContainer.temperatureOptions());
         uiStateContainer.setMinServerTemperatureCelsius(temperatureRange.minServerTemperatureCelsius());
         uiStateContainer.setMaxServerTemperatureCelsius(temperatureRange.maxServerTemperatureCelsius());
