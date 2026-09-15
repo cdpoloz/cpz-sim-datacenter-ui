@@ -1,15 +1,12 @@
 package com.cpz.sim.datacenter.ui.main;
 
 import com.cpz.processing.controls.controls.toggle.Toggle;
-import com.cpz.processing.controls.core.input.InputManager;
-import com.cpz.processing.controls.core.overlay.OverlayManager;
 import com.cpz.sim.datacenter.ui.app.ApplicationBootstrap;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.app.InfrastructureContainer;
+import com.cpz.sim.datacenter.ui.app.InfrastructureInitializer;
 import com.cpz.sim.datacenter.ui.controls.ControlManager;
 import com.cpz.sim.datacenter.ui.controls.CoolingToggleManager;
-import com.cpz.sim.datacenter.ui.input.MainInputLayer;
-import com.cpz.sim.datacenter.ui.input.MouseInputDispatcher;
 import com.cpz.sim.datacenter.ui.resources.ResourceContainer;
 import com.cpz.sim.datacenter.ui.resources.ResourceManager;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
@@ -81,10 +78,8 @@ public class Sketch extends PApplet {
         ApplicationContext context = new ApplicationContext(this);
         // infrastructure
         infrastructureContainer = new InfrastructureContainer();
-        infrastructureContainer.setInputManager(new InputManager());
-        infrastructureContainer.setMainInputLayer(new MainInputLayer(0));
-        infrastructureContainer.setMouseInputDispatcher(new MouseInputDispatcher(infrastructureContainer.inputManager()));
-        infrastructureContainer.setOverlayManager(new OverlayManager());
+        InfrastructureInitializer infrastructureInitializer = new InfrastructureInitializer(infrastructureContainer);
+        infrastructureInitializer.initialize();
         // controls
         uiComponentContainer = new UiComponentContainer();
         ControlManager controlManager = new ControlManager(context, uiComponentContainer, infrastructureContainer.overlayManager(), infrastructureContainer.inputManager(), infrastructureContainer.mainInputLayer(), this::btnClicked, this::tglChanged);
