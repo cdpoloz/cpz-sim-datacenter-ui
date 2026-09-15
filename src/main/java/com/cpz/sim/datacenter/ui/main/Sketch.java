@@ -72,12 +72,7 @@ public class Sketch extends PApplet {
         UiFormatContainer uiFormatContainer = new UiFormatContainer();
         uiStateContainer = new UiStateContainer();
         UiFormatLoader uiFormatLoader = new UiFormatLoader();
-        UiContainersInitializer uiContainersInitializer = new UiContainersInitializer(
-                uiComponentContainer,
-                uiFormatContainer,
-                uiStateContainer,
-                uiFormatLoader
-        );
+        UiContainersInitializer uiContainersInitializer = new UiContainersInitializer(uiComponentContainer, uiFormatContainer, uiStateContainer, uiFormatLoader);
         uiContainersInitializer.initialize();
         // controls
         ControlManager controlManager =
@@ -138,7 +133,11 @@ public class Sketch extends PApplet {
         // draw
         staticUiRenderer.drawBackground();
         controlRenderer.draw();
-        selectedHotAisleTemperatureGradientRenderer.draw(uiStateContainer.selectedHotAisleTemperatures(), uiStateContainer.minServerTemperatureCelsius(), uiStateContainer.maxServerTemperatureCelsius());
+        selectedHotAisleTemperatureGradientRenderer.draw(
+                uiStateContainer.selectedHotAisleTemperatures(),
+                uiStateContainer.minServerTemperatureCelsius(),
+                uiStateContainer.maxServerTemperatureCelsius()
+        );
         staticUiRenderer.drawOverlay();
     }
 
