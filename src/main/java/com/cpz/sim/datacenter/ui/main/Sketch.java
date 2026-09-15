@@ -16,13 +16,7 @@ import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.simulation.SimulationManager;
 import com.cpz.sim.datacenter.ui.simulation.TemperatureRange;
 import com.cpz.sim.datacenter.ui.simulation.TemperatureRangeCalculator;
-import com.cpz.sim.datacenter.ui.ui.HeaderUpdater;
-import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
-import com.cpz.sim.datacenter.ui.ui.UiFormatContainer;
-import com.cpz.sim.datacenter.ui.ui.UiFormatLoader;
-import com.cpz.sim.datacenter.ui.ui.UiStateContainer;
-import com.cpz.sim.datacenter.ui.ui.UiStateInitializer;
-import com.cpz.sim.datacenter.ui.ui.UiUpdateCoordinator;
+import com.cpz.sim.datacenter.ui.ui.*;
 import com.cpz.sim.datacenter.ui.ui.panel.RoomPanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedAislePanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedRackPanelUpdater;
@@ -55,6 +49,7 @@ public class Sketch extends PApplet {
     private UiStateInitializer uiStateInitializer;
     private HeaderUpdater headerUpdater;
     private UiUpdateCoordinator uiUpdateCoordinator;
+    private UiInteractionController uiInteractionController;
     private UiFormatContainer uiFormatContainer;
     private UiFormatLoader uiFormatLoader;
     private TemperatureRangeCalculator temperatureRangeCalculator;
@@ -118,6 +113,7 @@ public class Sketch extends PApplet {
         simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
         selectionManager = new SelectionManager(context, simulationContainer, uiComponentContainer);
+        uiInteractionController = new UiInteractionController(uiStateContainer, simulationManager, coolingToggleManager, selectionManager);
         headerUpdater = new HeaderUpdater(context, simulationContainer, uiComponentContainer);
         temperatureRangeCalculator = new TemperatureRangeCalculator();
         selectedRackPanelUpdater = new SelectedRackPanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
@@ -187,31 +183,11 @@ public class Sketch extends PApplet {
     }
 
     private void btnClicked(String buttonCode) {
-        if (buttonCode.startsWith("btnSelectedRack"))
-            selectionManager.updateSelectedRack(buttonCode.replace("btnSelectedRack", ""));
-        else if (buttonCode.startsWith("btnSelectedColumn"))
-            selectionManager.updateSelectedColumn(buttonCode.replace("btnSelectedColumn", ""));
-        else if (buttonCode.startsWith("btnPlay")) {
-            if (buttonCode.equals("btnPlayPlus")) {
-                simulationManager.increaseSimulationSpeed();
-                return;
-            }
-            if (buttonCode.equals("btnPlayMinus")) {
-                simulationManager.decreaseSimulationSpeed();
-                return;
-            }
-        }
-        uiStateContainer.setUpdateUI(true);
+        uiInteractionController.handleButtonClick(buttonCode);
     }
 
-    private void tglChanged(Toggle tgl, int state) {
-        String toggleCode = tgl.getCode();
-        if (toggleCode.startsWith("tglSupply") || toggleCode.startsWith("tglExhaust"))
-            coolingToggleManager.toggleCoolingUnit(tgl, state);
-        else if (toggleCode.equals("tglPlay")) {
-            if (simulationManager.isSyncingPlayToggle()) return;
-            simulationManager.toggleSimulation();
-        }
+    private void tglChanged(Toggle toggle, int state) {
+        uiInteractionController.handleToggleChange(toggle, state);
     }
 
     // <editor-fold defaultstate="collapsed" desc="*** mouse events ***">
@@ -245,11 +221,7 @@ public class Sketch extends PApplet {
 
     @Override
     public void keyReleased() {
-        if (keyCode == SPACE_BAR) {
-            if (simulationManager.isSyncingPlayToggle()) return;
-            simulationManager.toggleSimulation();
-        } else if (keyCode == PLUS) simulationManager.increaseSimulationSpeed();
-        else if (keyCode == MINUS) simulationManager.decreaseSimulationSpeed();
+        uiInteractionController.handleKeyReleased(keyCode);
     }
 
 }
