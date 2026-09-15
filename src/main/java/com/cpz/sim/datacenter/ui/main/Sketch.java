@@ -5,8 +5,10 @@ import com.cpz.processing.controls.core.input.InputManager;
 import com.cpz.processing.controls.core.input.PointerEvent;
 import com.cpz.processing.controls.core.overlay.OverlayManager;
 import com.cpz.processing.controls.input.ProcessingKeyboardAdapter;
-import com.cpz.sim.datacenter.model.*;
-import com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot;
+import com.cpz.sim.datacenter.model.Datacenter;
+import com.cpz.sim.datacenter.model.Server;
+import com.cpz.sim.datacenter.model.ServerConfig;
+import com.cpz.sim.datacenter.model.ServerThermalProperties;
 import com.cpz.sim.datacenter.temperature.TemperatureSystemOptions;
 import com.cpz.sim.datacenter.ui.app.ApplicationBootstrap;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
@@ -18,6 +20,7 @@ import com.cpz.sim.datacenter.ui.resources.ResourceManager;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.simulation.SimulationManager;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
+import com.cpz.sim.datacenter.ui.ui.UiStateInitializer;
 import com.cpz.sim.datacenter.ui.ui.panel.RoomPanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedAislePanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedRackPanelUpdater;
@@ -30,7 +33,7 @@ import processing.event.MouseEvent;
 import processing.opengl.PJOGL;
 
 import java.io.File;
-import java.util.*;
+import java.util.List;
 
 import static com.cpz.sim.datacenter.ui.main.Launcher.LOG;
 import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
@@ -47,6 +50,7 @@ public class Sketch extends PApplet {
     private UiComponentContainer uiComponentContainer;
     private ResourceContainer resourceContainer;
     private SimulationContainer simulationContainer;
+    private UiStateInitializer uiStateInitializer;
     private SimulationManager simulationManager;
     private CoolingToggleManager coolingToggleManager;
     private SelectionManager selectionManager;
@@ -104,7 +108,7 @@ public class Sketch extends PApplet {
         resourceContainer = new ResourceContainer();
         ResourceManager resourceManager = new ResourceManager(context, resourceContainer);
         resourceManager.initialize();
-        // managers, updaters & renderers
+        // containers, managers, updaters, initializers & renderers
         simulationContainer = new SimulationContainer();
         simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
@@ -112,6 +116,7 @@ public class Sketch extends PApplet {
         selectedRackPanelUpdater = new SelectedRackPanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
         selectedAislePanelUpdater = new SelectedAislePanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
         roomPanelUpdater = new RoomPanelUpdater(context, simulationContainer, uiComponentContainer);
+        uiStateInitializer = new UiStateInitializer(context, simulationContainer, uiComponentContainer);
         selectedHotAisleTemperatureGradientRenderer = new SelectedHotAisleTemperatureGradientRenderer(context);
         staticUiRenderer = new StaticUiRenderer(context, resourceContainer, overlayManager);
         controlRenderer = new ControlRenderer(uiComponentContainer);
@@ -137,27 +142,7 @@ public class Sketch extends PApplet {
         updateSnapshots();
         coolingToggleManager.initialize();
         // initial values
-        uiComponentContainer.labels().get("lblRoomTemperatureScale01").setText(String.format(simpleTemperatureFormat, minServerTemperatureCelsius));
-        for (int i = 0; i < 5; i++) {
-            float temperature = map(i, 0, 5, minServerTemperatureCelsius, maxServerTemperatureCelsius);
-            String temperatureScaleLabelCode = "lblRoomTemperatureScale0" + (i + 1);
-            uiComponentContainer.labels().get(temperatureScaleLabelCode).setText(String.format(simpleTemperatureFormat, temperature));
-        }
-        uiComponentContainer.labels().get("lblRoomTemperatureScale06").setText(String.format(simpleTemperatureFormat, maxServerTemperatureCelsius));
-        int totalInstalledServers = simulationContainer.operationalSnapshot().racks()
-                .values()
-                .stream()
-                .mapToInt(RackOperationalSnapshot::installedServerCount)
-                .sum();
-        int totalOnlineServers = simulationContainer.operationalSnapshot().racks()
-                .values()
-                .stream()
-                .mapToInt(RackOperationalSnapshot::onlineServerCount)
-                .sum();
-        uiComponentContainer.labels().get("lblRoomTotalServersValue").setText(String.valueOf(totalInstalledServers));
-        uiComponentContainer.labels().get("lblRoomOnlineServersValue").setText(String.valueOf(totalOnlineServers));
-        uiComponentContainer.labels().get("lblDate").setText(String.format("%02d", day()) + "/" + String.format("%02d", month()) + "/" + year());
-        uiComponentContainer.labels().get("lblTime").setText(String.format("%02d", hour()) + ":" + String.format("%02d", minute()) + ":" + String.format("%02d", second()));
+        uiStateInitializer.initialize(minServerTemperatureCelsius, maxServerTemperatureCelsius, simpleTemperatureFormat);
     }
 
     private void updateHeader() {
