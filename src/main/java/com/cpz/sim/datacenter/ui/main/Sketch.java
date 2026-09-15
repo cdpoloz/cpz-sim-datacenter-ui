@@ -9,7 +9,6 @@ import com.cpz.processing.controls.core.input.PointerEvent;
 import com.cpz.processing.controls.core.overlay.OverlayManager;
 import com.cpz.processing.controls.input.ProcessingKeyboardAdapter;
 import com.cpz.sim.datacenter.cooling.CoolingZoneDefinition;
-import com.cpz.sim.datacenter.health.ServerAlertReason;
 import com.cpz.sim.datacenter.model.*;
 import com.cpz.sim.datacenter.snapshot.*;
 import com.cpz.sim.datacenter.temperature.TemperatureSystemOptions;
@@ -24,6 +23,7 @@ import com.cpz.sim.datacenter.ui.resources.ResourceManager;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.simulation.SimulationManager;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
+import com.cpz.sim.datacenter.ui.ui.panel.SelectedRackPanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.selection.SelectionManager;
 import com.cpz.utils.color.Colors;
 import processing.core.PApplet;
@@ -32,8 +32,6 @@ import processing.opengl.PJOGL;
 
 import java.io.File;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static com.cpz.sim.datacenter.ui.main.Launcher.LOG;
 import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
@@ -53,6 +51,7 @@ public class Sketch extends PApplet {
     private SimulationManager simulationManager;
     private CoolingToggleManager coolingToggleManager;
     private SelectionManager selectionManager;
+    private SelectedRackPanelUpdater selectedRackPanelUpdater;
     private boolean updateSnapshots, updateUI;
     private int previousSecond, previousDay;
     private float minServerTemperatureCelsius, maxServerTemperatureCelsius; //*******
@@ -106,6 +105,7 @@ public class Sketch extends PApplet {
         simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
         selectionManager = new SelectionManager(context, simulationContainer, uiComponentContainer);
+        selectedRackPanelUpdater = new SelectedRackPanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
         simulationManager.initialize();
         selectionManager.initialize();
         // app bootstrap
@@ -239,162 +239,16 @@ public class Sketch extends PApplet {
     private void updateControls() {
         if (!updateUI) return;
         updateHeader();
-        updateSelectedRackPanel();
+        selectedRackPanelUpdater.update(
+                minServerTemperatureCelsius,
+                maxServerTemperatureCelsius,
+                temperatureFormat,
+                percentageFormat,
+                powerKwFormat
+        );
         updateSelectedAislePanel();
         updateRoomPanel();
         updateUI = false;
-    }
-
-    private void updateSelectedRackPanel() {
-        uiComponentContainer.labels().get("lblSelectedRackValue").setText(selectedColumn() + "-" + selectedRack());
-        Rack rack = resolveSelectedRack();
-        RackLocation rackLocation = new RackLocation(selectedColumn(), new RackCode(selectedRack()));
-        RackOperationalSnapshot rackSnapshot = simulationContainer.operationalSnapshot()
-                .findRack(rackLocation)
-                .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for rack: " + rackLocation.code()
-                ));
-        Map<ServerLocation, ServerEnergySnapshot> energyByLocation = resolveEnergyByLocation();
-        Map<ServerLocation, ServerTemperatureSnapshot> temperatureByLocation = resolveTemperatureByLocation();
-        Map<ServerLocation, ServerHealthSnapshot> healthByLocation = resolveHealthByLocation();
-        for (String slot : rack.getSlotCodes()) {
-            String slotNumber = slot.replace("S", "");
-            ServerLocation location = new ServerLocation(selectedColumn(), new RackCode(selectedRack()), slot);
-            Optional<Server> installedServer = simulationContainer.datacenter().getServer(location);
-            Label slotTemperatureLabel = uiComponentContainer.labels().get("lblSlotTemperature" + slotNumber);
-            Label slotLoadLabel = uiComponentContainer.labels().get("lblSlotLoad" + slotNumber);
-            Label slotPowerLabel = uiComponentContainer.labels().get("lblSlotPower" + slotNumber);
-            Indicator indSlot = uiComponentContainer.indicators().get("indSlot" + slotNumber);
-            Indicator emptySlotIndicator = uiComponentContainer.indicators().get("indSlotEmpty" + slotNumber);
-            Indicator indSlotOffline = uiComponentContainer.indicators().get("indSlotOffline" + slotNumber);
-            Indicator okSlotStatusIndicator = uiComponentContainer.indicators().get("indSlotOk" + slotNumber);
-            Indicator alertSlotStatusIndicator = uiComponentContainer.indicators().get("indSlotAlert" + slotNumber);
-            Indicator alertIndicator = uiComponentContainer.indicatorsAlert().get("indAlert" + slotNumber);
-            Indicator aiSlotIndicator1 = uiComponentContainer.indicatorsAiSlot().get("indSlotAI" + slotNumber + "-1");
-            Indicator aiSlotIndicator2 = uiComponentContainer.indicators().get("indSlotAI" + slotNumber + "-2");
-            if (installedServer.isEmpty()) {
-                showEmptySlot(indSlot,
-                        slotTemperatureLabel,
-                        slotLoadLabel,
-                        slotPowerLabel,
-                        emptySlotIndicator,
-                        indSlotOffline,
-                        okSlotStatusIndicator,
-                        alertSlotStatusIndicator,
-                        alertIndicator,
-                        aiSlotIndicator1,
-                        aiSlotIndicator2
-                );
-                continue;
-            }
-            ServerTemperatureSnapshot temperature = temperatureByLocation.get(location);
-            if (temperature == null)
-                throw new IllegalStateException("Missing temperature snapshot for server: " + location);
-            ServerEnergySnapshot energy = energyByLocation.get(location);
-            if (energy == null) throw new IllegalStateException("Missing energy snapshot for server: " + location);
-            ServerHealthSnapshot health = healthByLocation.get(location);
-            if (health == null) throw new IllegalStateException("Missing health snapshot for server: " + location);
-            updateSlotColor(indSlot, (float) temperature.temperatureCelsius());
-            slotTemperatureLabel.setText(String.format(temperatureFormat, temperature.temperatureCelsius()));
-            slotLoadLabel.setText(String.format(percentageFormat, energy.utilization() * 100));
-            slotPowerLabel.setText(String.format(powerKwFormat, energy.currentPowerWatts() / 1000));
-            HardwareStatus status = health.status();
-            okSlotStatusIndicator.setOn(status == HardwareStatus.OK);
-            alertSlotStatusIndicator.setOn(status == HardwareStatus.ALERT);
-            alertIndicator.setOn(status == HardwareStatus.ALERT);
-            boolean loadAlert = health.hasAlertReason(ServerAlertReason.HIGH_UTILIZATION);
-            slotLoadLabel.setTextColor(loadAlert ? COLOR_MAGENTA_LABEL : COLOR_BLUE_LABEL);
-            boolean temperatureAlert = health.hasAlertReason(ServerAlertReason.HIGH_TEMPERATURE);
-            updateTemperatureLabelColor(temperatureAlert, slotTemperatureLabel, temperature.temperatureCelsius());
-            emptySlotIndicator.setOn(false);
-            indSlotOffline.setOn(status == HardwareStatus.OFFLINE);
-            boolean aiServer = installedServer.orElseThrow().getRole() == ServerRole.AI;
-            aiSlotIndicator1.setOn(aiServer);
-            aiSlotIndicator2.setOn(aiServer);
-        }
-        Label averageTemperatureLabel = uiComponentContainer.labels().get("lblRackAverageTemperatureValue");
-        Label averageLoadLabel = uiComponentContainer.labels().get("lblRackAverageLoadValue");
-        if (rackSnapshot.hasOnlineServers()) {
-            averageTemperatureLabel.setTextColor(COLOR_YELLOW_LABEL);
-            averageTemperatureLabel.setText(String.format(temperatureFormat, rackSnapshot.averageOnlineTemperatureCelsius()));
-            averageLoadLabel.setText(String.format(percentageFormat, rackSnapshot.averageOnlineUtilization() * 100));
-        } else {
-            averageTemperatureLabel.setTextColor(COLOR_WHITE_LABEL);
-            averageTemperatureLabel.setText("--");
-            averageLoadLabel.setText("--");
-        }
-        uiComponentContainer.labels().get("lblRackCurrentPowerValue").setText(String.format(powerKwFormat, rackSnapshot.currentPowerWatts() / 1000));
-        updateBar("SelectedRackPowerBar", rackSnapshot.currentPowerWatts(), rackSnapshot.idlePowerWatts(), rackSnapshot.maxPowerWatts());
-    }
-
-    private void updateSlotColor(Indicator indSlot, float temperature) {
-        Objects.requireNonNull(indSlot);
-        float fColor = map(temperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1);
-        fColor = Math.clamp(fColor, 0, 1);
-        int colorSlot = Colors.lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, fColor);
-        indSlot.setOnColor(colorSlot);
-        indSlot.setOn(true);
-    }
-
-    private void showEmptySlot(
-            Indicator indSlot,
-            Label slotTemperatureLabel,
-            Label slotLoadLabel,
-            Label slotPowerLabel,
-            Indicator emptySlotIndicator,
-            Indicator indSlotOffline,
-            Indicator okSlotStatusIndicator,
-            Indicator alertSlotStatusIndicator,
-            Indicator alertIndicator,
-            Indicator aiSlotIndicator1,
-            Indicator aiSlotIndicator2
-    ) {
-        Objects.requireNonNull(indSlot);
-        Objects.requireNonNull(slotTemperatureLabel);
-        Objects.requireNonNull(slotLoadLabel);
-        Objects.requireNonNull(slotPowerLabel);
-        Objects.requireNonNull(emptySlotIndicator);
-        Objects.requireNonNull(indSlotOffline);
-        Objects.requireNonNull(okSlotStatusIndicator);
-        Objects.requireNonNull(alertSlotStatusIndicator);
-        Objects.requireNonNull(alertIndicator);
-        Objects.requireNonNull(aiSlotIndicator1);
-        Objects.requireNonNull(aiSlotIndicator2);
-        slotTemperatureLabel.setTextColor(COLOR_WHITE_LABEL);
-        slotLoadLabel.setTextColor(COLOR_WHITE_LABEL);
-        slotTemperatureLabel.setText("--");
-        slotLoadLabel.setText("--");
-        slotPowerLabel.setText("--");
-        indSlot.setOn(false);
-        emptySlotIndicator.setOn(true);
-        indSlotOffline.setOn(false);
-        okSlotStatusIndicator.setOn(false);
-        alertSlotStatusIndicator.setOn(false);
-        alertIndicator.setOn(false);
-        aiSlotIndicator1.setOn(false);
-        aiSlotIndicator2.setOn(false);
-    }
-
-    private void updateTemperatureLabelColor(boolean alert, Label label, double temperature) {
-        if (alert) label.setTextColor(COLOR_MAGENTA_LABEL);
-        else if (temperature >= Double.parseDouble(PROPS.getProperty("simulation.health.temperature.warning-threshold-celsius")))
-            label.setTextColor(COLOR_YELLOW_LABEL);
-        else label.setTextColor(COLOR_GREEN_LABEL);
-    }
-
-    private void updateBar(String type, double value, double minValue, double maxValue) {
-        if (type == null || type.isEmpty()) return;
-        String key = "ind" + type;
-        int iMax = (int) map((float) value, (float) minValue, (float) maxValue, 1, 6);
-        for (int i = 0; i < 6; i++) uiComponentContainer.indicators().get(key + (i + 1)).setOn(i < iMax);
-    }
-
-    private Rack resolveSelectedRack() {
-        return simulationContainer
-                .datacenter()
-                .findRack(
-                        selectedColumn(),
-                        selectedRack()).orElseThrow(() -> new IllegalStateException("Rack not found: " + selectedColumn() + "-" + selectedRack())
-                );
     }
 
     private void updateSelectedAislePanel() {
@@ -539,30 +393,6 @@ public class Sketch extends PApplet {
         else if (temperature >= Float.parseFloat(PROPS.getProperty("simulation.health.temperature.warning-threshold-celsius")))
             return COLOR_YELLOW_LABEL;
         else return COLOR_GREEN_LABEL;
-    }
-
-    private Map<ServerLocation, ServerEnergySnapshot> resolveEnergyByLocation() {
-        return simulationContainer.energySnapshot().servers()
-                .stream()
-                .collect(Collectors.toUnmodifiableMap(ServerEnergySnapshot::location, Function.identity()));
-    }
-
-    private Map<ServerLocation, ServerTemperatureSnapshot> resolveTemperatureByLocation() {
-        return simulationContainer.temperatureSnapshot().servers()
-                .stream()
-                .collect(Collectors.toMap(
-                        server -> new ServerLocation(server.column(), server.rackCode(), server.slot()),
-                        Function.identity()
-                ));
-    }
-
-    private Map<ServerLocation, ServerHealthSnapshot> resolveHealthByLocation() {
-        return simulationContainer.healthSnapshot().servers()
-                .stream()
-                .collect(Collectors.toMap(
-                        server -> new ServerLocation(server.column(), server.rackCode(), server.slot()),
-                        Function.identity()
-                ));
     }
 
     private void updateRoomPanel() {
