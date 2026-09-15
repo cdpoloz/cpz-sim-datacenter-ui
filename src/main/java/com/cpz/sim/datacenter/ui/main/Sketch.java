@@ -1,7 +1,6 @@
 package com.cpz.sim.datacenter.ui.main;
 
 import com.cpz.processing.controls.controls.toggle.Toggle;
-import com.cpz.sim.datacenter.ui.app.ApplicationBootstrap;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.app.InfrastructureContainer;
 import com.cpz.sim.datacenter.ui.app.InfrastructureInitializer;
@@ -108,9 +107,7 @@ public class Sketch extends PApplet {
         controlRenderer = new ControlRenderer(uiComponentContainer);
         simulationManager.initialize();
         selectionManager.initialize();
-        // app bootstrap
-        ApplicationBootstrap bootstrap = new ApplicationBootstrap(context);
-        bootstrap.initialize();
+        // temperatures
         TemperatureRange temperatureRange = temperatureRangeCalculator.calculate(simulationContainer.datacenter(), simulationContainer.temperatureOptions());
         uiStateContainer.setMinServerTemperatureCelsius(temperatureRange.minServerTemperatureCelsius());
         uiStateContainer.setMaxServerTemperatureCelsius(temperatureRange.maxServerTemperatureCelsius());
