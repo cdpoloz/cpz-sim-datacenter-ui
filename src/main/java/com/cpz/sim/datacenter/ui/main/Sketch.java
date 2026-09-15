@@ -10,6 +10,7 @@ import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.controls.ControlManager;
 import com.cpz.sim.datacenter.ui.controls.CoolingToggleManager;
 import com.cpz.sim.datacenter.ui.input.MainInputLayer;
+import com.cpz.sim.datacenter.ui.input.MouseInputDispatcher;
 import com.cpz.sim.datacenter.ui.resources.ResourceContainer;
 import com.cpz.sim.datacenter.ui.resources.ResourceManager;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
@@ -42,6 +43,7 @@ public class Sketch extends PApplet {
     private InputManager inputManager;
     private OverlayManager overlayManager;
     private ProcessingKeyboardAdapter processingKeyboardAdapter;
+    private MouseInputDispatcher mouseInputDispatcher;
     private UiComponentContainer uiComponentContainer;
     private ResourceContainer resourceContainer;
     private SimulationContainer simulationContainer;
@@ -83,6 +85,7 @@ public class Sketch extends PApplet {
         ApplicationContext context = new ApplicationContext(this);
         // input manager
         inputManager = new InputManager();
+        mouseInputDispatcher = new MouseInputDispatcher(inputManager);
         MainInputLayer mainInputLayer = new MainInputLayer(0);
         // overlay manager
         overlayManager = new OverlayManager();
@@ -185,38 +188,48 @@ public class Sketch extends PApplet {
         uiInteractionController.handleToggleChange(toggle, state);
     }
 
-    // <editor-fold defaultstate="collapsed" desc="*** mouse events ***">
+    // <editor-fold defaultstate="collapsed" desc="*** Processing mouse events ***">
     @Override
     public void mouseMoved() {
-        inputManager.dispatchPointer(new PointerEvent(PointerEvent.Type.MOVE, (float) mouseX, (float) mouseY, mouseButton));
+        mouseInputDispatcher.mouseMoved(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public void mouseDragged() {
-        inputManager.dispatchPointer(new PointerEvent(PointerEvent.Type.DRAG, (float) mouseX, (float) mouseY, mouseButton));
+        mouseInputDispatcher.mouseDragged(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public void mousePressed() {
-        inputManager.dispatchPointer(new PointerEvent(PointerEvent.Type.PRESS, (float) mouseX, (float) mouseY, mouseButton));
+        mouseInputDispatcher.mousePressed(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public void mouseReleased() {
-        inputManager.dispatchPointer(new PointerEvent(PointerEvent.Type.RELEASE, (float) mouseX, (float) mouseY, mouseButton));
+        mouseInputDispatcher.mouseReleased(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public void mouseWheel(MouseEvent event) {
         if (event == null) return;
-        inputManager.dispatchPointer(new PointerEvent(PointerEvent.Type.WHEEL, (float) mouseX, (float) mouseY, mouseButton, (float) event.getCount(), event.isShiftDown(), event.isControlDown()));
+        inputManager.dispatchPointer(
+                new PointerEvent(
+                        PointerEvent.Type.WHEEL,
+                        (float) mouseX,
+                        (float) mouseY,
+                        mouseButton,
+                        (float) event.getCount(),
+                        event.isShiftDown(),
+                        event.isControlDown()
+                )
+        );
     }
 
     // </editor-fold>
-
+    // <editor-fold defaultstate="collapsed" desc="*** Processing keyboard events ***">
     @Override
     public void keyReleased() {
         uiInteractionController.handleKeyReleased(keyCode);
     }
-
+    // </editor-fold>
 }
