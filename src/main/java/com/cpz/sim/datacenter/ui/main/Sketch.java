@@ -20,6 +20,7 @@ import com.cpz.sim.datacenter.ui.resources.ResourceManager;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.simulation.SimulationManager;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
+import com.cpz.sim.datacenter.ui.ui.UiFormatContainer;
 import com.cpz.sim.datacenter.ui.ui.UiStateInitializer;
 import com.cpz.sim.datacenter.ui.ui.panel.RoomPanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedAislePanelUpdater;
@@ -51,6 +52,7 @@ public class Sketch extends PApplet {
     private ResourceContainer resourceContainer;
     private SimulationContainer simulationContainer;
     private UiStateInitializer uiStateInitializer;
+    private UiFormatContainer uiFormatContainer;
     private SimulationManager simulationManager;
     private CoolingToggleManager coolingToggleManager;
     private SelectionManager selectionManager;
@@ -64,7 +66,6 @@ public class Sketch extends PApplet {
     private int previousSecond, previousDay;
     private float minServerTemperatureCelsius, maxServerTemperatureCelsius; //*******
     private List<Float> selectedHotAisleTemperatures;
-    private String temperatureFormat, simpleTemperatureFormat, percentageFormat, powerKwFormat, powerMwFormat, speedFormat, pressureFormat, airflowFormat;
 
     public void settings() {
         LOG.info("Starting settings");
@@ -120,20 +121,21 @@ public class Sketch extends PApplet {
         selectedHotAisleTemperatureGradientRenderer = new SelectedHotAisleTemperatureGradientRenderer(context);
         staticUiRenderer = new StaticUiRenderer(context, resourceContainer, overlayManager);
         controlRenderer = new ControlRenderer(uiComponentContainer);
+        uiFormatContainer = new UiFormatContainer();
         simulationManager.initialize();
         selectionManager.initialize();
         // app bootstrap
         ApplicationBootstrap bootstrap = new ApplicationBootstrap(context);
         bootstrap.initialize();
         // number formats
-        percentageFormat = PROPS.getProperty("number.format.percentage");
-        temperatureFormat = PROPS.getProperty("number.format.temperature");
-        simpleTemperatureFormat = PROPS.getProperty("number.format.temperature.simple");
-        powerKwFormat = PROPS.getProperty("number.format.power.kw");
-        powerMwFormat = PROPS.getProperty("number.format.power.mw");
-        speedFormat = PROPS.getProperty("number.format.speed");
-        pressureFormat = PROPS.getProperty("number.format.pressure");
-        airflowFormat = PROPS.getProperty("number.format.airflow");
+        uiFormatContainer.setPercentage(PROPS.getProperty("number.format.percentage"));
+        uiFormatContainer.setTemperature(PROPS.getProperty("number.format.temperature"));
+        uiFormatContainer.setSimpleTemperature(PROPS.getProperty("number.format.temperature.simple"));
+        uiFormatContainer.setPowerKw(PROPS.getProperty("number.format.power.kw"));
+        uiFormatContainer.setPowerMw(PROPS.getProperty("number.format.power.mw"));
+        uiFormatContainer.setSpeed(PROPS.getProperty("number.format.speed"));
+        uiFormatContainer.setPressure(PROPS.getProperty("number.format.pressure"));
+        uiFormatContainer.setAirflow(PROPS.getProperty("number.format.airflow"));
         calculateTemperatureRange(simulationContainer.datacenter(), simulationContainer.temperatureOptions());
         simulationManager.initializeInitialSimulationState();
         // initial update
@@ -142,7 +144,68 @@ public class Sketch extends PApplet {
         updateSnapshots();
         coolingToggleManager.initialize();
         // initial values
-        uiStateInitializer.initialize(minServerTemperatureCelsius, maxServerTemperatureCelsius, simpleTemperatureFormat);
+        uiStateInitializer.initialize(minServerTemperatureCelsius, maxServerTemperatureCelsius, uiFormatContainer.simpleTemperature());
+    }
+
+    private void calculateTemperatureRange(Datacenter datacenter, TemperatureSystemOptions temperatureOptions) {
+        double ambientTemperature = temperatureOptions.ambientTemperatureCelsius();
+        double globalHeatDissipation = temperatureOptions.heatDissipationWattsPerCelsius();
+        double highestEquilibriumTemperature = ambientTemperature;
+        for (Server server : datacenter.getServers()) {
+            ServerConfig config = server.getConfig();
+            ServerThermalProperties thermalProperties = config.thermalProperties();
+            double heatDissipation = thermalProperties != null ? thermalProperties.heatDissipationWattsPerCelsius() : globalHeatDissipation;
+            double equilibriumTemperature = ambientTemperature + config.maxPowerWatts() / heatDissipation;
+            highestEquilibriumTemperature = Math.max(highestEquilibriumTemperature, equilibriumTemperature);
+        }
+        minServerTemperatureCelsius = (float) ambientTemperature;
+        maxServerTemperatureCelsius = (float) Math.ceil(highestEquilibriumTemperature);
+    }
+
+    public void draw() {
+        // update
+        updateClock();
+        updateSnapshots();
+        updateControls();
+        // draw
+        staticUiRenderer.drawBackground();
+        controlRenderer.draw();
+        selectedHotAisleTemperatureGradientRenderer.draw(selectedHotAisleTemperatures, minServerTemperatureCelsius, maxServerTemperatureCelsius);
+        staticUiRenderer.drawOverlay();
+    }
+
+    private void updateClock() {
+        if (!simulationManager.updateClock()) return;
+        updateSnapshots = true;
+    }
+
+    private void updateSnapshots() {
+        if (!updateSnapshots) return;
+        simulationManager.updateSnapshots();
+        updateSnapshots = false;
+        updateUI = true;
+    }
+
+    private void updateControls() {
+        if (!updateUI) return;
+        updateHeader();
+        selectedRackPanelUpdater.update(
+                minServerTemperatureCelsius,
+                maxServerTemperatureCelsius,
+                uiFormatContainer.temperature(),
+                uiFormatContainer.percentage(),
+                uiFormatContainer.powerKw()
+        );
+        selectedHotAisleTemperatures =
+                selectedAislePanelUpdater.update(
+                        minServerTemperatureCelsius,
+                        maxServerTemperatureCelsius,
+                        uiFormatContainer.temperature(),
+                        uiFormatContainer.percentage(),
+                        uiFormatContainer.airflow()
+                );
+        roomPanelUpdater.update(minServerTemperatureCelsius, maxServerTemperatureCelsius);
+        updateUI = false;
     }
 
     private void updateHeader() {
@@ -189,67 +252,6 @@ public class Sketch extends PApplet {
             if (simulationManager.isSyncingPlayToggle()) return;
             simulationManager.toggleSimulation();
         }
-    }
-
-    private void calculateTemperatureRange(Datacenter datacenter, TemperatureSystemOptions temperatureOptions) {
-        double ambientTemperature = temperatureOptions.ambientTemperatureCelsius();
-        double globalHeatDissipation = temperatureOptions.heatDissipationWattsPerCelsius();
-        double highestEquilibriumTemperature = ambientTemperature;
-        for (Server server : datacenter.getServers()) {
-            ServerConfig config = server.getConfig();
-            ServerThermalProperties thermalProperties = config.thermalProperties();
-            double heatDissipation = thermalProperties != null ? thermalProperties.heatDissipationWattsPerCelsius() : globalHeatDissipation;
-            double equilibriumTemperature = ambientTemperature + config.maxPowerWatts() / heatDissipation;
-            highestEquilibriumTemperature = Math.max(highestEquilibriumTemperature, equilibriumTemperature);
-        }
-        minServerTemperatureCelsius = (float) ambientTemperature;
-        maxServerTemperatureCelsius = (float) Math.ceil(highestEquilibriumTemperature);
-    }
-
-    public void draw() {
-        // update
-        updateClock();
-        updateSnapshots();
-        updateControls();
-        //draw
-        staticUiRenderer.drawBackground();
-        controlRenderer.draw();
-        selectedHotAisleTemperatureGradientRenderer.draw(selectedHotAisleTemperatures, minServerTemperatureCelsius, maxServerTemperatureCelsius);
-        staticUiRenderer.drawOverlay();
-    }
-
-    private void updateClock() {
-        if (!simulationManager.updateClock()) return;
-        updateSnapshots = true;
-    }
-
-    private void updateSnapshots() {
-        if (!updateSnapshots) return;
-        simulationManager.updateSnapshots();
-        updateSnapshots = false;
-        updateUI = true;
-    }
-
-    private void updateControls() {
-        if (!updateUI) return;
-        updateHeader();
-        selectedRackPanelUpdater.update(
-                minServerTemperatureCelsius,
-                maxServerTemperatureCelsius,
-                temperatureFormat,
-                percentageFormat,
-                powerKwFormat
-        );
-        selectedHotAisleTemperatures =
-                selectedAislePanelUpdater.update(
-                        minServerTemperatureCelsius,
-                        maxServerTemperatureCelsius,
-                        temperatureFormat,
-                        percentageFormat,
-                        airflowFormat
-                );
-        roomPanelUpdater.update(minServerTemperatureCelsius, maxServerTemperatureCelsius);
-        updateUI = false;
     }
 
     // <editor-fold defaultstate="collapsed" desc="*** mouse events ***">
