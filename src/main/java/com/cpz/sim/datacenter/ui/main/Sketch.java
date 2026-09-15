@@ -5,11 +5,7 @@ import com.cpz.processing.controls.core.input.InputManager;
 import com.cpz.processing.controls.core.input.PointerEvent;
 import com.cpz.processing.controls.core.overlay.OverlayManager;
 import com.cpz.processing.controls.input.ProcessingKeyboardAdapter;
-import com.cpz.sim.datacenter.model.Datacenter;
-import com.cpz.sim.datacenter.model.Server;
-import com.cpz.sim.datacenter.model.ServerConfig;
-import com.cpz.sim.datacenter.model.ServerThermalProperties;
-import com.cpz.sim.datacenter.temperature.TemperatureSystemOptions;
+
 import com.cpz.sim.datacenter.ui.app.ApplicationBootstrap;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.controls.ControlManager;
@@ -19,6 +15,8 @@ import com.cpz.sim.datacenter.ui.resources.ResourceContainer;
 import com.cpz.sim.datacenter.ui.resources.ResourceManager;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.simulation.SimulationManager;
+import com.cpz.sim.datacenter.ui.simulation.TemperatureRange;
+import com.cpz.sim.datacenter.ui.simulation.TemperatureRangeCalculator;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 import com.cpz.sim.datacenter.ui.ui.UiFormatContainer;
 import com.cpz.sim.datacenter.ui.ui.UiFormatLoader;
@@ -55,6 +53,7 @@ public class Sketch extends PApplet {
     private UiStateInitializer uiStateInitializer;
     private UiFormatContainer uiFormatContainer;
     private UiFormatLoader uiFormatLoader;
+    private TemperatureRangeCalculator temperatureRangeCalculator;
     private SimulationManager simulationManager;
     private CoolingToggleManager coolingToggleManager;
     private SelectionManager selectionManager;
@@ -118,6 +117,7 @@ public class Sketch extends PApplet {
         simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
         selectionManager = new SelectionManager(context, simulationContainer, uiComponentContainer);
+        temperatureRangeCalculator = new TemperatureRangeCalculator();
         selectedRackPanelUpdater = new SelectedRackPanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
         selectedAislePanelUpdater = new SelectedAislePanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
         roomPanelUpdater = new RoomPanelUpdater(context, simulationContainer, uiComponentContainer);
@@ -132,7 +132,10 @@ public class Sketch extends PApplet {
         bootstrap.initialize();
         // number formats
         uiFormatLoader.loadInto(uiFormatContainer);
-        calculateTemperatureRange(simulationContainer.datacenter(), simulationContainer.temperatureOptions());
+        TemperatureRange temperatureRange = temperatureRangeCalculator.calculate(simulationContainer.datacenter(), simulationContainer.temperatureOptions());
+        minServerTemperatureCelsius = temperatureRange.minServerTemperatureCelsius();
+        maxServerTemperatureCelsius = temperatureRange.maxServerTemperatureCelsius();
+        //calculateTemperatureRange(simulationContainer.datacenter(), simulationContainer.temperatureOptions());
         simulationManager.initializeInitialSimulationState();
         // initial update
         updateUI = true;
@@ -142,22 +145,7 @@ public class Sketch extends PApplet {
         // initial values
         uiStateInitializer.initialize(minServerTemperatureCelsius, maxServerTemperatureCelsius, uiFormatContainer.simpleTemperature());
     }
-
-    private void calculateTemperatureRange(Datacenter datacenter, TemperatureSystemOptions temperatureOptions) {
-        double ambientTemperature = temperatureOptions.ambientTemperatureCelsius();
-        double globalHeatDissipation = temperatureOptions.heatDissipationWattsPerCelsius();
-        double highestEquilibriumTemperature = ambientTemperature;
-        for (Server server : datacenter.getServers()) {
-            ServerConfig config = server.getConfig();
-            ServerThermalProperties thermalProperties = config.thermalProperties();
-            double heatDissipation = thermalProperties != null ? thermalProperties.heatDissipationWattsPerCelsius() : globalHeatDissipation;
-            double equilibriumTemperature = ambientTemperature + config.maxPowerWatts() / heatDissipation;
-            highestEquilibriumTemperature = Math.max(highestEquilibriumTemperature, equilibriumTemperature);
-        }
-        minServerTemperatureCelsius = (float) ambientTemperature;
-        maxServerTemperatureCelsius = (float) Math.ceil(highestEquilibriumTemperature);
-    }
-
+    
     public void draw() {
         // update
         updateClock();
