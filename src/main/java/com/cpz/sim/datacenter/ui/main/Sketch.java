@@ -21,6 +21,7 @@ import com.cpz.sim.datacenter.ui.resources.ResourceManager;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.simulation.SimulationManager;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
+import com.cpz.sim.datacenter.ui.ui.panel.RoomPanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedAislePanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedRackPanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.selection.SelectionManager;
@@ -52,6 +53,7 @@ public class Sketch extends PApplet {
     private SelectionManager selectionManager;
     private SelectedRackPanelUpdater selectedRackPanelUpdater;
     private SelectedAislePanelUpdater selectedAislePanelUpdater;
+    private RoomPanelUpdater roomPanelUpdater;
     private boolean updateSnapshots, updateUI;
     private int previousSecond, previousDay;
     private float minServerTemperatureCelsius, maxServerTemperatureCelsius; //*******
@@ -107,6 +109,7 @@ public class Sketch extends PApplet {
         selectionManager = new SelectionManager(context, simulationContainer, uiComponentContainer);
         selectedRackPanelUpdater = new SelectedRackPanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
         selectedAislePanelUpdater = new SelectedAislePanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
+        roomPanelUpdater = new RoomPanelUpdater(context, simulationContainer, uiComponentContainer);
         simulationManager.initialize();
         selectionManager.initialize();
         // app bootstrap
@@ -255,80 +258,9 @@ public class Sketch extends PApplet {
                         percentageFormat,
                         airflowFormat
                 );
-        updateRoomPanel();
+        //updateRoomPanel();
+        roomPanelUpdater.update(minServerTemperatureCelsius, maxServerTemperatureCelsius);
         updateUI = false;
-    }
-
-    private void updateRoomPanel() {
-        updateRoomHotAisleIndicator("HA01", "indRoomHotAisleC01");
-        updateRoomHotAisleIndicator("HA02", "indRoomHotAisleC02-C03");
-        updateRoomHotAisleIndicator("HA03", "indRoomHotAisleC04-C05");
-        updateRoomHotAisleIndicator("HA04", "indRoomHotAisleC06-C07");
-        updateRoomHotAisleIndicator("HA05", "indRoomHotAisleC08");
-        for (Rack rack : simulationContainer.datacenter().getRacks()) {
-            RackLocation location = rack.getLocation();
-            String rackIndicatorCode = "indRack" + rack.getColumn() + rack.getRow();
-            Indicator rackIndicator = uiComponentContainer.indicatorsRack().get(rackIndicatorCode);
-            if (rackIndicator == null) continue;
-            List<Server> rackServers = simulationContainer.datacenter().getServers(location);
-            RackOperationalSnapshot rackSnapshot = simulationContainer.operationalSnapshot().getRack(location);
-            boolean emptyRack = !rackSnapshot.hasInstalledServers();
-            boolean rackOffline = rackSnapshot.hasInstalledServers() && !rackSnapshot.hasOnlineServers();
-            boolean aiRack = rackServers.stream().anyMatch(server -> server.getRole() == ServerRole.AI);
-            float averageTemperature = (float) rackSnapshot.averageOnlineTemperatureCelsius();
-            boolean rackHotspot = averageTemperature > maxServerTemperatureCelsius;
-            int rackColor;
-            if (emptyRack) rackColor = COLOR_EMPTY_RACK;
-            else if (rackOffline) rackColor = COLOR_MIN_TEMPERATURE; // OFFLINE_RACK_COLOR
-            else if (rackHotspot) rackColor = COLOR_HOTSPOT_RACK;
-            else rackColor = calculateRackColor(averageTemperature);
-            rackIndicator.setOnColor(rackColor);
-            updateRackConditionIndicators(rackIndicatorCode, rackOffline, emptyRack, rackHotspot, aiRack);
-        }
-    }
-
-    private int calculateRackColor(float temperature) {
-        float fColor = map(temperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1);
-        fColor = Math.clamp(fColor, 0, 1);
-        return Colors.lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, fColor);
-    }
-
-    private void updateRackConditionIndicators(
-            String rackIndicatorCode,
-            boolean rackOffline,
-            boolean emptyRack,
-            boolean rackHotspot,
-            boolean aiRack
-    ) {
-        Indicator offlineIndicator = uiComponentContainer.indicatorsRackCondition().get(rackIndicatorCode.replace("indRack", "indRackOffline"));
-        Indicator emptyIndicator = uiComponentContainer.indicatorsRackCondition().get(rackIndicatorCode.replace("indRack", "indRackEmpty"));
-        Indicator hotspotIndicator = uiComponentContainer.indicatorsRackCondition().get(rackIndicatorCode.replace("indRack", "indRackHotspot"));
-        Indicator aiIndicator = uiComponentContainer.indicatorsRackCondition().get(rackIndicatorCode.replace("indRack", "indRackAI"));
-        offlineIndicator.setOn(rackOffline);
-        emptyIndicator.setOn(emptyRack);
-        hotspotIndicator.setOn(rackHotspot);
-        aiIndicator.setOn(aiRack);
-    }
-
-    private void updateRoomHotAisleIndicator(String hotAisleCode, String indicatorCode) {
-        float averageTemperature =
-                (float) simulationContainer.operationalSnapshot().findServerGroup(hotAisleCode)
-                        .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for aisle: " + hotAisleCode))
-                        .averageOnlineTemperatureCelsius();
-        float maxTemperature =
-                (float) simulationContainer.operationalSnapshot().findServerGroup(hotAisleCode)
-                        .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for aisle: " + hotAisleCode))
-                        .maximumTemperatureCelsius();
-        float temperature = (maxTemperature + averageTemperature) * 0.5f;
-        float f = map(temperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1);
-        f = Math.clamp(f, 0, 1);
-        int hotAisleColor = lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, f);
-        int a = (int) map(temperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 96);
-        a = Math.clamp(a, 0, 128);
-        int r = Colors.red(hotAisleColor);
-        int g = Colors.green(hotAisleColor);
-        int b = Colors.blue(hotAisleColor);
-        uiComponentContainer.indicators().get(indicatorCode).setOnColor(Colors.argb(a, r, g, b));
     }
 
     private void drawBackground() {
@@ -357,6 +289,7 @@ public class Sketch extends PApplet {
     }
 
     private void drawSelectedHotAisleTemperatureGradient() {
+        if (selectedHotAisleTemperatures == null || selectedHotAisleTemperatures.isEmpty()) return;
         pushStyle();
         noFill();
         strokeWeight(1);
