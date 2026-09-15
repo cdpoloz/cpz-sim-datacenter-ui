@@ -2,11 +2,10 @@ package com.cpz.sim.datacenter.ui.main;
 
 import com.cpz.processing.controls.controls.toggle.Toggle;
 import com.cpz.processing.controls.core.input.InputManager;
-import com.cpz.processing.controls.core.input.PointerEvent;
 import com.cpz.processing.controls.core.overlay.OverlayManager;
-import com.cpz.processing.controls.input.ProcessingKeyboardAdapter;
 import com.cpz.sim.datacenter.ui.app.ApplicationBootstrap;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
+import com.cpz.sim.datacenter.ui.app.InfrastructureContainer;
 import com.cpz.sim.datacenter.ui.controls.ControlManager;
 import com.cpz.sim.datacenter.ui.controls.CoolingToggleManager;
 import com.cpz.sim.datacenter.ui.input.MainInputLayer;
@@ -33,17 +32,14 @@ import java.io.File;
 
 import static com.cpz.sim.datacenter.ui.main.Launcher.LOG;
 import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
-import static com.cpz.sim.datacenter.ui.util.Constants.*;
+import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_BACKGROUND;
 
 /**
  * @author CPZ
  */
 public class Sketch extends PApplet {
 
-    private InputManager inputManager;
-    private OverlayManager overlayManager;
-    private ProcessingKeyboardAdapter processingKeyboardAdapter;
-    private MouseInputDispatcher mouseInputDispatcher;
+    private InfrastructureContainer infrastructureContainer;
     private UiComponentContainer uiComponentContainer;
     private ResourceContainer resourceContainer;
     private SimulationContainer simulationContainer;
@@ -83,30 +79,21 @@ public class Sketch extends PApplet {
         LOG.info("Finished initial setup");
         // app context
         ApplicationContext context = new ApplicationContext(this);
-        // input manager
-        inputManager = new InputManager();
-        mouseInputDispatcher = new MouseInputDispatcher(inputManager);
-        MainInputLayer mainInputLayer = new MainInputLayer(0);
-        // overlay manager
-        overlayManager = new OverlayManager();
+        // infrastructure
+        infrastructureContainer = new InfrastructureContainer();
+        infrastructureContainer.setInputManager(new InputManager());
+        infrastructureContainer.setMainInputLayer(new MainInputLayer(0));
+        infrastructureContainer.setMouseInputDispatcher(new MouseInputDispatcher(infrastructureContainer.inputManager()));
+        infrastructureContainer.setOverlayManager(new OverlayManager());
         // controls
         uiComponentContainer = new UiComponentContainer();
-        ControlManager controlManager = new ControlManager(
-                context,
-                uiComponentContainer,
-                overlayManager,
-                inputManager,
-                mainInputLayer,
-                this::btnClicked,
-                this::tglChanged
-        );
+        ControlManager controlManager = new ControlManager(context, uiComponentContainer, infrastructureContainer.overlayManager(), infrastructureContainer.inputManager(), infrastructureContainer.mainInputLayer(), this::btnClicked, this::tglChanged);
         controlManager.initialize();
         uiFormatContainer = new UiFormatContainer();
         uiFormatLoader = new UiFormatLoader();
         uiStateContainer = new UiStateContainer();
         // input layer registration
-        inputManager.registerLayer(mainInputLayer);
-        //inputManager.registerLayer(new TooltipInputLayer(1000, tooltips));
+        infrastructureContainer.inputManager().registerLayer(infrastructureContainer.mainInputLayer());
         // resources
         resourceContainer = new ResourceContainer();
         ResourceManager resourceManager = new ResourceManager(context, resourceContainer);
@@ -122,18 +109,10 @@ public class Sketch extends PApplet {
         selectedRackPanelUpdater = new SelectedRackPanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
         selectedAislePanelUpdater = new SelectedAislePanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
         roomPanelUpdater = new RoomPanelUpdater(context, simulationContainer, uiComponentContainer);
-        uiUpdateCoordinator =
-                new UiUpdateCoordinator(
-                        uiStateContainer,
-                        uiFormatContainer,
-                        simulationManager,
-                        selectedRackPanelUpdater,
-                        selectedAislePanelUpdater,
-                        roomPanelUpdater
-                );
+        uiUpdateCoordinator = new UiUpdateCoordinator(uiStateContainer, uiFormatContainer, simulationManager, selectedRackPanelUpdater, selectedAislePanelUpdater, roomPanelUpdater);
         uiStateInitializer = new UiStateInitializer(context, simulationContainer, uiComponentContainer);
         selectedHotAisleTemperatureGradientRenderer = new SelectedHotAisleTemperatureGradientRenderer(context);
-        staticUiRenderer = new StaticUiRenderer(context, resourceContainer, overlayManager);
+        staticUiRenderer = new StaticUiRenderer(context, resourceContainer, infrastructureContainer.overlayManager());
         controlRenderer = new ControlRenderer(uiComponentContainer);
         simulationManager.initialize();
         selectionManager.initialize();
@@ -142,11 +121,7 @@ public class Sketch extends PApplet {
         bootstrap.initialize();
         // number formats
         uiFormatLoader.loadInto(uiFormatContainer);
-        TemperatureRange temperatureRange =
-                temperatureRangeCalculator.calculate(
-                        simulationContainer.datacenter(),
-                        simulationContainer.temperatureOptions()
-                );
+        TemperatureRange temperatureRange = temperatureRangeCalculator.calculate(simulationContainer.datacenter(), simulationContainer.temperatureOptions());
         uiStateContainer.setMinServerTemperatureCelsius(temperatureRange.minServerTemperatureCelsius());
         uiStateContainer.setMaxServerTemperatureCelsius(temperatureRange.maxServerTemperatureCelsius());
         simulationManager.initializeInitialSimulationState();
@@ -156,11 +131,7 @@ public class Sketch extends PApplet {
         uiUpdateCoordinator.updateSnapshotsIfNeeded();
         coolingToggleManager.initialize();
         // initial values
-        uiStateInitializer.initialize(
-                uiStateContainer.minServerTemperatureCelsius(),
-                uiStateContainer.maxServerTemperatureCelsius(),
-                uiFormatContainer.simpleTemperature()
-        );
+        uiStateInitializer.initialize(uiStateContainer.minServerTemperatureCelsius(), uiStateContainer.maxServerTemperatureCelsius(), uiFormatContainer.simpleTemperature());
     }
 
     public void draw() {
@@ -172,11 +143,7 @@ public class Sketch extends PApplet {
         // draw
         staticUiRenderer.drawBackground();
         controlRenderer.draw();
-        selectedHotAisleTemperatureGradientRenderer.draw(
-                uiStateContainer.selectedHotAisleTemperatures(),
-                uiStateContainer.minServerTemperatureCelsius(),
-                uiStateContainer.maxServerTemperatureCelsius()
-        );
+        selectedHotAisleTemperatureGradientRenderer.draw(uiStateContainer.selectedHotAisleTemperatures(), uiStateContainer.minServerTemperatureCelsius(), uiStateContainer.maxServerTemperatureCelsius());
         staticUiRenderer.drawOverlay();
     }
 
@@ -191,38 +158,28 @@ public class Sketch extends PApplet {
     // <editor-fold defaultstate="collapsed" desc="*** Processing mouse events ***">
     @Override
     public void mouseMoved() {
-        mouseInputDispatcher.mouseMoved(mouseX, mouseY, mouseButton);
+        infrastructureContainer.mouseInputDispatcher().mouseMoved(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public void mouseDragged() {
-        mouseInputDispatcher.mouseDragged(mouseX, mouseY, mouseButton);
+        infrastructureContainer.mouseInputDispatcher().mouseDragged(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public void mousePressed() {
-        mouseInputDispatcher.mousePressed(mouseX, mouseY, mouseButton);
+        infrastructureContainer.mouseInputDispatcher().mousePressed(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public void mouseReleased() {
-        mouseInputDispatcher.mouseReleased(mouseX, mouseY, mouseButton);
+        infrastructureContainer.mouseInputDispatcher().mouseReleased(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public void mouseWheel(MouseEvent event) {
         if (event == null) return;
-        inputManager.dispatchPointer(
-                new PointerEvent(
-                        PointerEvent.Type.WHEEL,
-                        (float) mouseX,
-                        (float) mouseY,
-                        mouseButton,
-                        (float) event.getCount(),
-                        event.isShiftDown(),
-                        event.isControlDown()
-                )
-        );
+        infrastructureContainer.mouseInputDispatcher().mouseWheel(mouseX, mouseY, mouseButton, event.getCount(), event.isShiftDown(), event.isControlDown());
     }
 
     // </editor-fold>
