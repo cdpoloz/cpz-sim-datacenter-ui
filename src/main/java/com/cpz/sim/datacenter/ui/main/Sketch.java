@@ -16,7 +16,13 @@ import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.simulation.SimulationManager;
 import com.cpz.sim.datacenter.ui.simulation.TemperatureRange;
 import com.cpz.sim.datacenter.ui.simulation.TemperatureRangeCalculator;
-import com.cpz.sim.datacenter.ui.ui.*;
+import com.cpz.sim.datacenter.ui.ui.HeaderUpdater;
+import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
+import com.cpz.sim.datacenter.ui.ui.UiFormatContainer;
+import com.cpz.sim.datacenter.ui.ui.UiFormatLoader;
+import com.cpz.sim.datacenter.ui.ui.UiStateContainer;
+import com.cpz.sim.datacenter.ui.ui.UiStateInitializer;
+import com.cpz.sim.datacenter.ui.ui.UiUpdateCoordinator;
 import com.cpz.sim.datacenter.ui.ui.panel.RoomPanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedAislePanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedRackPanelUpdater;
@@ -48,6 +54,7 @@ public class Sketch extends PApplet {
     private UiStateContainer uiStateContainer;
     private UiStateInitializer uiStateInitializer;
     private HeaderUpdater headerUpdater;
+    private UiUpdateCoordinator uiUpdateCoordinator;
     private UiFormatContainer uiFormatContainer;
     private UiFormatLoader uiFormatLoader;
     private TemperatureRangeCalculator temperatureRangeCalculator;
@@ -116,6 +123,15 @@ public class Sketch extends PApplet {
         selectedRackPanelUpdater = new SelectedRackPanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
         selectedAislePanelUpdater = new SelectedAislePanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
         roomPanelUpdater = new RoomPanelUpdater(context, simulationContainer, uiComponentContainer);
+        uiUpdateCoordinator =
+                new UiUpdateCoordinator(
+                        uiStateContainer,
+                        uiFormatContainer,
+                        simulationManager,
+                        selectedRackPanelUpdater,
+                        selectedAislePanelUpdater,
+                        roomPanelUpdater
+                );
         uiStateInitializer = new UiStateInitializer(context, simulationContainer, uiComponentContainer);
         selectedHotAisleTemperatureGradientRenderer = new SelectedHotAisleTemperatureGradientRenderer(context);
         staticUiRenderer = new StaticUiRenderer(context, resourceContainer, overlayManager);
@@ -138,7 +154,7 @@ public class Sketch extends PApplet {
         // initial update
         uiStateContainer.setUpdateUI(true);
         uiStateContainer.setUpdateSnapshots(true);
-        updateSnapshots();
+        uiUpdateCoordinator.updateSnapshotsIfNeeded();
         coolingToggleManager.initialize();
         // initial values
         uiStateInitializer.initialize(
@@ -152,8 +168,8 @@ public class Sketch extends PApplet {
         // update
         headerUpdater.update();
         updateClock();
-        updateSnapshots();
-        updateControls();
+        uiUpdateCoordinator.updateSnapshotsIfNeeded();
+        uiUpdateCoordinator.updateControlsIfNeeded();
         // draw
         staticUiRenderer.drawBackground();
         controlRenderer.draw();
@@ -168,38 +184,6 @@ public class Sketch extends PApplet {
     private void updateClock() {
         if (!simulationManager.updateClock()) return;
         uiStateContainer.setUpdateSnapshots(true);
-    }
-
-    private void updateSnapshots() {
-        if (!uiStateContainer.updateSnapshots()) return;
-        simulationManager.updateSnapshots();
-        uiStateContainer.setUpdateSnapshots(false);
-        uiStateContainer.setUpdateUI(true);
-    }
-
-    private void updateControls() {
-        if (!uiStateContainer.updateUI()) return;
-        selectedRackPanelUpdater.update(
-                uiStateContainer.minServerTemperatureCelsius(),
-                uiStateContainer.maxServerTemperatureCelsius(),
-                uiFormatContainer.temperature(),
-                uiFormatContainer.percentage(),
-                uiFormatContainer.powerKw()
-        );
-        uiStateContainer.setSelectedHotAisleTemperatures(
-                selectedAislePanelUpdater.update(
-                        uiStateContainer.minServerTemperatureCelsius(),
-                        uiStateContainer.maxServerTemperatureCelsius(),
-                        uiFormatContainer.temperature(),
-                        uiFormatContainer.percentage(),
-                        uiFormatContainer.airflow()
-                )
-        );
-        roomPanelUpdater.update(
-                uiStateContainer.minServerTemperatureCelsius(),
-                uiStateContainer.maxServerTemperatureCelsius()
-        );
-        uiStateContainer.setUpdateUI(false);
     }
 
     private void btnClicked(String buttonCode) {
