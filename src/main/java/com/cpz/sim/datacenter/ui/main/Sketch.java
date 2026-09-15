@@ -1,8 +1,5 @@
 package com.cpz.sim.datacenter.ui.main;
 
-import com.cpz.processing.controls.controls.button.Button;
-import com.cpz.processing.controls.controls.indicator.Indicator;
-import com.cpz.processing.controls.controls.label.Label;
 import com.cpz.processing.controls.controls.toggle.Toggle;
 import com.cpz.processing.controls.core.input.InputManager;
 import com.cpz.processing.controls.core.input.PointerEvent;
@@ -24,6 +21,7 @@ import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 import com.cpz.sim.datacenter.ui.ui.panel.RoomPanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedAislePanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedRackPanelUpdater;
+import com.cpz.sim.datacenter.ui.ui.render.ControlRenderer;
 import com.cpz.sim.datacenter.ui.ui.render.SelectedHotAisleTemperatureGradientRenderer;
 import com.cpz.sim.datacenter.ui.ui.render.StaticUiRenderer;
 import com.cpz.sim.datacenter.ui.ui.selection.SelectionManager;
@@ -57,6 +55,7 @@ public class Sketch extends PApplet {
     private RoomPanelUpdater roomPanelUpdater;
     private SelectedHotAisleTemperatureGradientRenderer selectedHotAisleTemperatureGradientRenderer;
     private StaticUiRenderer staticUiRenderer;
+    private ControlRenderer controlRenderer;
     private boolean updateSnapshots, updateUI;
     private int previousSecond, previousDay;
     private float minServerTemperatureCelsius, maxServerTemperatureCelsius; //*******
@@ -115,6 +114,7 @@ public class Sketch extends PApplet {
         roomPanelUpdater = new RoomPanelUpdater(context, simulationContainer, uiComponentContainer);
         selectedHotAisleTemperatureGradientRenderer = new SelectedHotAisleTemperatureGradientRenderer(context);
         staticUiRenderer = new StaticUiRenderer(context, resourceContainer, overlayManager);
+        controlRenderer = new ControlRenderer(uiComponentContainer);
         simulationManager.initialize();
         selectionManager.initialize();
         // app bootstrap
@@ -228,10 +228,8 @@ public class Sketch extends PApplet {
         updateControls();
         //draw
         staticUiRenderer.drawBackground();
-        //drawBackground();
-        drawControls();
+        controlRenderer.draw();
         selectedHotAisleTemperatureGradientRenderer.draw(selectedHotAisleTemperatures, minServerTemperatureCelsius, maxServerTemperatureCelsius);
-        //drawOverlay();
         staticUiRenderer.drawOverlay();
     }
 
@@ -267,23 +265,6 @@ public class Sketch extends PApplet {
                 );
         roomPanelUpdater.update(minServerTemperatureCelsius, maxServerTemperatureCelsius);
         updateUI = false;
-    }
-
-    private void drawControls() {
-        uiComponentContainer.indicatorsAlert().values().forEach(Indicator::draw);
-        uiComponentContainer.labels().values().forEach(Label::draw);
-        uiComponentContainer.indicators().values().forEach(Indicator::draw);
-        uiComponentContainer.indicatorsSelectedAisle().values().forEach(Indicator::draw);
-        uiComponentContainer.indicatorsSelectedAisleMaximumTemperatureServer().values().forEach(Indicator::draw);
-        uiComponentContainer.indicatorsSelectedRack().values().forEach(Indicator::draw);
-        uiComponentContainer.indicatorsRack().values().forEach(Indicator::draw);
-        uiComponentContainer.indicatorsNullAisle().values().forEach(Indicator::draw);
-        uiComponentContainer.indicatorsAiSlot().values().forEach(Indicator::draw);
-        uiComponentContainer.indicatorsRackCondition().values().forEach(Indicator::draw);
-        uiComponentContainer.buttonsSelectedAisleRack().values().forEach(Button::draw);
-        uiComponentContainer.buttonsColumn().values().forEach(Button::draw);
-        uiComponentContainer.buttonsPlay().values().forEach(Button::draw);
-        uiComponentContainer.toggles().values().forEach(Toggle::draw);
     }
 
     // <editor-fold defaultstate="collapsed" desc="*** mouse events ***">
