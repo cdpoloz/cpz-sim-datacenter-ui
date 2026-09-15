@@ -37,24 +37,10 @@ import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_BACKGROUND;
 public class Sketch extends PApplet {
 
     private InfrastructureContainer infrastructureContainer;
-    private UiComponentContainer uiComponentContainer;
-    private ResourceContainer resourceContainer;
-    private SimulationContainer simulationContainer;
     private UiStateContainer uiStateContainer;
-    private UiStateInitializer uiStateInitializer;
     private HeaderUpdater headerUpdater;
     private UiUpdateCoordinator uiUpdateCoordinator;
     private UiInteractionController uiInteractionController;
-    private UiFormatContainer uiFormatContainer;
-    private UiFormatLoader uiFormatLoader;
-    private UiContainersInitializer uiContainersInitializer;
-    private TemperatureRangeCalculator temperatureRangeCalculator;
-    private SimulationManager simulationManager;
-    private CoolingToggleManager coolingToggleManager;
-    private SelectionManager selectionManager;
-    private SelectedRackPanelUpdater selectedRackPanelUpdater;
-    private SelectedAislePanelUpdater selectedAislePanelUpdater;
-    private RoomPanelUpdater roomPanelUpdater;
     private SelectedHotAisleTemperatureGradientRenderer selectedHotAisleTemperatureGradientRenderer;
     private StaticUiRenderer staticUiRenderer;
     private ControlRenderer controlRenderer;
@@ -82,40 +68,46 @@ public class Sketch extends PApplet {
         InfrastructureInitializer infrastructureInitializer = new InfrastructureInitializer(infrastructureContainer);
         infrastructureInitializer.initialize();
         // UI containers
-        uiComponentContainer = new UiComponentContainer();
-        uiFormatContainer = new UiFormatContainer();
+        UiComponentContainer uiComponentContainer = new UiComponentContainer();
+        UiFormatContainer uiFormatContainer = new UiFormatContainer();
         uiStateContainer = new UiStateContainer();
-        uiFormatLoader = new UiFormatLoader();
-        uiContainersInitializer =
-                new UiContainersInitializer(
-                        uiComponentContainer,
-                        uiFormatContainer,
-                        uiStateContainer,
-                        uiFormatLoader
-                );
+        UiFormatLoader uiFormatLoader = new UiFormatLoader();
+        UiContainersInitializer uiContainersInitializer = new UiContainersInitializer(
+                uiComponentContainer,
+                uiFormatContainer,
+                uiStateContainer,
+                uiFormatLoader
+        );
         uiContainersInitializer.initialize();
         // controls
-        ControlManager controlManager = new ControlManager(context, uiComponentContainer, infrastructureContainer.overlayManager(), infrastructureContainer.inputManager(), infrastructureContainer.mainInputLayer(), this::btnClicked, this::tglChanged); //**
+        ControlManager controlManager =
+                new ControlManager(
+                        context,
+                        uiComponentContainer,
+                        infrastructureContainer.overlayManager(),
+                        infrastructureContainer.inputManager(),
+                        infrastructureContainer.mainInputLayer(),
+                        this::btnClicked,
+                        this::tglChanged
+                );
         controlManager.initialize();
-        // input layer registration
-        infrastructureContainer.inputManager().registerLayer(infrastructureContainer.mainInputLayer());
         // resources
-        resourceContainer = new ResourceContainer();
+        ResourceContainer resourceContainer = new ResourceContainer();
         ResourceManager resourceManager = new ResourceManager(context, resourceContainer);
         resourceManager.initialize();
         // containers, managers, updaters, initializers & renderers
-        simulationContainer = new SimulationContainer();
-        simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
-        coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
-        selectionManager = new SelectionManager(context, simulationContainer, uiComponentContainer);
+        SimulationContainer simulationContainer = new SimulationContainer();
+        SimulationManager simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
+        CoolingToggleManager coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
+        SelectionManager selectionManager = new SelectionManager(context, simulationContainer, uiComponentContainer);
         uiInteractionController = new UiInteractionController(uiStateContainer, simulationManager, coolingToggleManager, selectionManager);
         headerUpdater = new HeaderUpdater(context, simulationContainer, uiComponentContainer);
-        temperatureRangeCalculator = new TemperatureRangeCalculator();
-        selectedRackPanelUpdater = new SelectedRackPanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
-        selectedAislePanelUpdater = new SelectedAislePanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
-        roomPanelUpdater = new RoomPanelUpdater(context, simulationContainer, uiComponentContainer);
+        TemperatureRangeCalculator temperatureRangeCalculator = new TemperatureRangeCalculator();
+        SelectedRackPanelUpdater selectedRackPanelUpdater = new SelectedRackPanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
+        SelectedAislePanelUpdater selectedAislePanelUpdater = new SelectedAislePanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
+        RoomPanelUpdater roomPanelUpdater = new RoomPanelUpdater(context, simulationContainer, uiComponentContainer);
         uiUpdateCoordinator = new UiUpdateCoordinator(uiStateContainer, uiFormatContainer, simulationManager, selectedRackPanelUpdater, selectedAislePanelUpdater, roomPanelUpdater);
-        uiStateInitializer = new UiStateInitializer(context, simulationContainer, uiComponentContainer);
+        UiStateInitializer uiStateInitializer = new UiStateInitializer(context, simulationContainer, uiComponentContainer);
         selectedHotAisleTemperatureGradientRenderer = new SelectedHotAisleTemperatureGradientRenderer(context);
         staticUiRenderer = new StaticUiRenderer(context, resourceContainer, infrastructureContainer.overlayManager());
         controlRenderer = new ControlRenderer(uiComponentContainer);
