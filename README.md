@@ -1,5 +1,10 @@
 # CPZ SIM Datacenter UI
 
+![Java](https://img.shields.io/badge/Java-26+-orange)
+![Status](https://img.shields.io/badge/status-active-brightgreen)
+![License](https://img.shields.io/badge/license-Apache--2.0-lightgrey)
+[![GitHub](https://img.shields.io/badge/GitHub-cdpoloz-181717?logo=github)](https://github.com/cdpoloz)
+
 `cpz-sim-datacenter-ui` is the Processing-based desktop user interface for the CPZ datacenter simulation. It visualizes rack health, temperature, power, workload, cooling, and hot-aisle metrics while driving the simulation engine supplied by the separate `cpz-sim-datacenter` backend project.
 
 The UI is intentionally thin: backend domain objects and systems produce immutable snapshots, and this project translates those snapshots into Processing controls and rendered layers.
