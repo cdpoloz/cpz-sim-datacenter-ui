@@ -12,6 +12,9 @@ import com.cpz.sim.datacenter.factory.TemperatureSystemOptionsFactory;
 import com.cpz.sim.datacenter.factory.WorkloadFactorProviderFactory;
 import com.cpz.sim.datacenter.health.HealthThreshold;
 import com.cpz.sim.datacenter.health.ServerHealthOptions;
+import com.cpz.sim.datacenter.history.DatacenterSimulationHistory;
+import com.cpz.sim.datacenter.history.DatacenterSimulationHistoryRecorder;
+import com.cpz.sim.datacenter.history.DatacenterSimulationStepSnapshot;
 import com.cpz.sim.datacenter.model.Rack;
 import com.cpz.sim.datacenter.model.Server;
 import com.cpz.sim.datacenter.model.ServerLocation;
@@ -87,6 +90,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         initializeSnapshots();
         initializeHotAisles();
         initializeOperationalSnapshots();
+        initializeHistory();
     }
 
     private void initializeTimer() {
@@ -287,6 +291,20 @@ public class SimulationManager extends ApplicationComponent implements Initializ
                 .toList();
     }
 
+    private void initializeHistory() {
+        simulationContainer.setSimulationHistory(new DatacenterSimulationHistory());
+        simulationContainer.setSimulationHistoryRecorder(
+                new DatacenterSimulationHistoryRecorder(
+                        simulationContainer.energySnapshotProvider(),
+                        simulationContainer.temperatureSnapshotProvider(),
+                        simulationContainer.healthSnapshotProvider(),
+                        simulationContainer.operationalSnapshotProvider(),
+                        () -> Optional.ofNullable(simulationContainer.coolingSnapshot()),
+                        simulationContainer.simulationHistory()
+                )
+        );
+    }
+
     /**
      * Advances the engine once so cooling and other tick-produced state exists at startup.
      */
@@ -298,30 +316,41 @@ public class SimulationManager extends ApplicationComponent implements Initializ
      * Captures energy, temperature, health, and derived operational snapshots for one tick.
      */
     public void updateSnapshots() {
-        simulationContainer.setEnergySnapshot(
+        DatacenterSimulationStepSnapshot stepSnapshot =
                 simulationContainer
-                        .energySnapshotProvider()
-                        .snapshot(simulationContainer.engine().currentTick())
-        );
-        simulationContainer.setTemperatureSnapshot(
-                simulationContainer
-                        .temperatureSnapshotProvider()
-                        .snapshot(simulationContainer.engine().currentTick())
-        );
-        simulationContainer.setHealthSnapshot(
-                simulationContainer
-                        .healthSnapshotProvider()
-                        .snapshot(simulationContainer.engine().currentTick())
-        );
-        // Operational aggregation depends on the three domain snapshots captured above.
-        simulationContainer.setOperationalSnapshot(
-                simulationContainer
-                        .operationalSnapshotProvider()
-                        .snapshot(
-                                simulationContainer.energySnapshot(),
-                                simulationContainer.temperatureSnapshot(),
-                                simulationContainer.healthSnapshot()
-                        )
+                        .simulationHistoryRecorder()
+                        .record(simulationContainer.engine().currentTick());
+
+        simulationContainer.setEnergySnapshot(stepSnapshot.energySnapshot());
+        simulationContainer.setTemperatureSnapshot(stepSnapshot.temperatureSnapshot());
+        simulationContainer.setHealthSnapshot(stepSnapshot.healthSnapshot());
+        simulationContainer.setOperationalSnapshot(stepSnapshot.operationalSnapshot());
+        // debug
+        //printHistorySnapshot(stepSnapshot);
+    }
+
+    private void printHistorySnapshot(DatacenterSimulationStepSnapshot snapshot) {
+        String coolingSummary = snapshot
+                .coolingSnapshot()
+                .map(cooling -> String.format(
+                        Locale.US,
+                        "heat=%.2fkW deficit=%.2fkW",
+                        cooling.totalGeneratedHeatWatts() / 1000.0,
+                        cooling.totalCoolingDeficitWatts() / 1000.0
+                ))
+                .orElse("cooling=n/a");
+
+        System.out.printf(
+                Locale.US,
+                "[history] size=%d tick=%d elapsed=%.0fs it=%.2fkW avgTemp=%.2fC maxTemp=%.2fC alerts=%d %s%n",
+                simulationContainer.simulationHistory().size(),
+                snapshot.tickIndex(),
+                snapshot.elapsedSeconds(),
+                snapshot.energySnapshot().totalItPowerWatts() / 1000.0,
+                snapshot.temperatureSnapshot().averageTemperatureCelsius(),
+                snapshot.temperatureSnapshot().maxTemperatureCelsius(),
+                snapshot.healthSnapshot().alertServerCount(),
+                coolingSummary
         );
     }
 

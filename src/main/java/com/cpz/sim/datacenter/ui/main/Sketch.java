@@ -1,6 +1,8 @@
 package com.cpz.sim.datacenter.ui.main;
 
 import com.cpz.processing.controls.controls.toggle.Toggle;
+import com.cpz.sim.datacenter.history.DatacenterSimulationStepSnapshot;
+import com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.app.InfrastructureContainer;
 import com.cpz.sim.datacenter.ui.app.InfrastructureInitializer;
@@ -25,10 +27,13 @@ import processing.event.MouseEvent;
 import processing.opengl.PJOGL;
 
 import java.io.File;
+import java.util.List;
+import java.util.Optional;
 
 import static com.cpz.sim.datacenter.ui.main.Launcher.LOG;
 import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
 import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_BACKGROUND;
+import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_BLUE_LABEL;
 
 /**
  * Active Processing sketch and composition root for the datacenter UI.
@@ -49,6 +54,9 @@ public class Sketch extends PApplet {
     private SelectedHotAisleTemperatureGradientRenderer selectedHotAisleTemperatureGradientRenderer;
     private StaticUiRenderer staticUiRenderer;
     private ControlRenderer controlRenderer;
+
+    private UiComponentContainer uiComponentContainer;
+    private SimulationContainer simulationContainer;
 
     /**
      * Configures the Processing surface before it is created.
@@ -81,7 +89,7 @@ public class Sketch extends PApplet {
         infrastructureContainer = new InfrastructureContainer();
         InfrastructureInitializer infrastructureInitializer = new InfrastructureInitializer(infrastructureContainer);
         infrastructureInitializer.initialize();
-        UiComponentContainer uiComponentContainer = new UiComponentContainer();
+        uiComponentContainer = new UiComponentContainer();
         UiFormatContainer uiFormatContainer = new UiFormatContainer();
         uiStateContainer = new UiStateContainer();
         UiFormatLoader uiFormatLoader = new UiFormatLoader();
@@ -102,7 +110,7 @@ public class Sketch extends PApplet {
         ResourceManager resourceManager = new ResourceManager(context, resourceContainer);
         resourceManager.initialize();
         // These setup locals remain reachable through the runtime coordinators that own them.
-        SimulationContainer simulationContainer = new SimulationContainer();
+        simulationContainer = new SimulationContainer();
         SimulationManager simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         CoolingToggleManager coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
         SelectionManager selectionManager = new SelectionManager(context, simulationContainer, uiComponentContainer);
@@ -142,6 +150,9 @@ public class Sketch extends PApplet {
         uiUpdateCoordinator.updateClock();
         uiUpdateCoordinator.updateSnapshotsIfNeeded();
         uiUpdateCoordinator.updateControlsIfNeeded();
+        //***
+        updateGlobalOverview();
+        //***
         // The gradient must sit above controls but below active/static foreground overlays.
         staticUiRenderer.drawBackground();
         controlRenderer.draw();
@@ -150,7 +161,85 @@ public class Sketch extends PApplet {
                 uiStateContainer.minServerTemperatureCelsius(),
                 uiStateContainer.maxServerTemperatureCelsius()
         );
+        //***
+        // room average temperature graph
+        float minX = Float.parseFloat(PROPS.getProperty("ui.average.room.temperature.min.x"));
+        float maxX = Float.parseFloat(PROPS.getProperty("ui.average.room.temperature.max.x"));
+        float minY = Float.parseFloat(PROPS.getProperty("ui.average.room.temperature.min.y"));
+        float maxY = Float.parseFloat(PROPS.getProperty("ui.average.room.temperature.max.y"));
+        int n = (int) ((maxX - minX) * width);
+        List<Double> latestAverageRoomTemperatures = latestAverageRoomTemperatures(n);
+        float minServerTemperatureCelsius = uiStateContainer.minServerTemperatureCelsius();
+        float maxServerTemperatureCelsius = uiStateContainer.maxServerTemperatureCelsius();
+        pushStyle();
+        strokeWeight(Float.parseFloat(PROPS.getProperty("ui.average.room.temperature.stroke.weigth")) * height);
+        stroke(COLOR_BLUE_LABEL);
+        for (int i = 1; i < latestAverageRoomTemperatures.size(); i++) {
+            double previousAverageTemperature = latestAverageRoomTemperatures.get(i - 1);
+            double averageTemperature = latestAverageRoomTemperatures.get(i);
+            float x = minX * width + i;
+            float y = map((float) averageTemperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, maxY * height, minY * height);
+            y = Math.max(y, minY * height);
+            float previousX = minX * width + i - 1;
+            float previousY = map((float) previousAverageTemperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, maxY * height, minY * height);
+            previousY = Math.max(previousY, minY * height);
+            line(x, y, previousX, previousY);
+        }
+        popStyle();
+        //***
         staticUiRenderer.drawOverlay();
+    }
+
+    private void updateGlobalOverview() {
+        // room average temperature
+        if (simulationContainer == null || simulationContainer.operationalSnapshot() == null) return;
+        if (uiComponentContainer == null) return;
+        if (!uiComponentContainer.labels().containsKey("lblRoomTemperatureValue")) return;
+        double averageRoomTemperatureCelsius = allAverageRoomTemperatures().getLast();
+        uiComponentContainer.labels().get("lblRoomTemperatureValue").setText(String.format("%.1f°C", averageRoomTemperatureCelsius));
+    }
+
+    private List<Double> allAverageRoomTemperatures() {
+        if (simulationContainer == null) return List.of();
+        if (simulationContainer.simulationHistory() == null) return List.of();
+        return simulationContainer
+                .simulationHistory()
+                .snapshots()
+                .stream()
+                .map(this::averageRoomTemperatureCelsius)
+                .toList();
+    }
+
+    private List<Double> latestAverageRoomTemperatures(int n) {
+        return simulationContainer
+                .simulationHistory()
+                .latest(n)
+                .stream()
+                .map(this::averageRoomTemperatureCelsius)
+                .toList();
+    }
+
+    private double averageRoomTemperatureCelsius(DatacenterSimulationStepSnapshot snapshot) {
+        int onlineServerCount = snapshot
+                .operationalSnapshot()
+                .racks()
+                .values()
+                .stream()
+                .mapToInt(RackOperationalSnapshot::onlineServerCount)
+                .sum();
+        double temperatureSumCelsius = snapshot
+                .operationalSnapshot()
+                .racks()
+                .values()
+                .stream()
+                .filter(RackOperationalSnapshot::hasOnlineServers)
+                .mapToDouble(rackSnapshot ->
+                        rackSnapshot.averageOnlineTemperatureCelsius()
+                                * rackSnapshot.onlineServerCount()
+                )
+                .sum();
+        if (onlineServerCount == 0) return snapshot.operationalSnapshot().roomTemperatureCelsius();
+        return temperatureSumCelsius / onlineServerCount;
     }
 
     private void btnClicked(String buttonCode) {
