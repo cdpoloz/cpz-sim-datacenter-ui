@@ -49,6 +49,7 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
         drawDisplayedRoomMaximumRackTemperatureGraph();
         drawDisplayedRoomAverageItLoadGraph();
         drawDisplayedRoomHvacLoadGraph();
+        drawDisplayedRoomEstimatedPowerLoadGraph();
         sketch().popStyle();
     }
 
@@ -214,12 +215,7 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
         float minY = Float.parseFloat(PROPS.getProperty("ui.hvac.load.min.y"));
         float maxY = Float.parseFloat(PROPS.getProperty("ui.hvac.load.max.y"));
         int sampleCount = (int) ((maxX - minX) * sketch().width);
-        drawPercentageSeries(
-                latestDisplayedRoomHvacLoads(sampleCount),
-                minX,
-                minY,
-                maxY
-        );
+        drawPercentageSeries(latestDisplayedRoomHvacLoads(sampleCount), minX, minY, maxY);
     }
 
     private List<Double> latestDisplayedRoomHvacLoads(int n) {
@@ -251,5 +247,64 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
                 .mapToDouble(CoolingZoneSnapshot::usedCoolingCapacityWatts)
                 .sum();
         return usedCoolingCapacityWatts / availableCoolingCapacityWatts * 100.0;
+    }
+
+    private void drawDisplayedRoomEstimatedPowerLoadGraph() {
+        float minX = Float.parseFloat(PROPS.getProperty("ui.total.electrical.load.min.x"));
+        float maxX = Float.parseFloat(PROPS.getProperty("ui.total.electrical.load.max.x"));
+        float minY = Float.parseFloat(PROPS.getProperty("ui.total.electrical.load.min.y"));
+        float maxY = Float.parseFloat(PROPS.getProperty("ui.total.electrical.load.max.y"));
+        int sampleCount = (int) ((maxX - minX) * sketch().width);
+        drawMegawattSeries(latestDisplayedRoomEstimatedPowerLoads(sampleCount), minX, minY, maxY);
+    }
+
+    private List<Double> latestDisplayedRoomEstimatedPowerLoads(int n) {
+        return simulationContainer
+                .simulationHistory()
+                .latest(n)
+                .stream()
+                .map(this::displayedRoomEstimatedPowerLoadMegawatts)
+                .toList();
+    }
+
+    private double displayedRoomEstimatedPowerLoadMegawatts(DatacenterSimulationStepSnapshot snapshot) {
+        double TEMPORARY_HVAC_COP = 3.0;
+        double itPowerWatts = snapshot
+                .operationalSnapshot()
+                .racks()
+                .values()
+                .stream()
+                .mapToDouble(RackOperationalSnapshot::currentPowerWatts)
+                .sum();
+        double usedCoolingCapacityWatts = snapshot
+                .coolingSnapshot()
+                .map(coolingSnapshot -> coolingSnapshot
+                        .zones()
+                        .stream()
+                        .mapToDouble(CoolingZoneSnapshot::usedCoolingCapacityWatts)
+                        .sum())
+                .orElse(0.0);
+        double estimatedHvacElectricalPowerWatts = usedCoolingCapacityWatts / TEMPORARY_HVAC_COP;
+        return (itPowerWatts + estimatedHvacElectricalPowerWatts) / 1_000_000.0;
+    }
+
+    private void drawMegawattSeries(List<Double> megawatts, float minX, float minY, float maxY) {
+        sketch().strokeWeight(Float.parseFloat(PROPS.getProperty("ui.global.overview.graph.stroke.weigth")) * sketch().height);
+        sketch().stroke(COLOR_BLUE_LABEL);
+        for (int i = 1; i < megawatts.size(); i++) {
+            double previousMegawatts = megawatts.get(i - 1);
+            double currentMegawatts = megawatts.get(i);
+            if (!Double.isFinite(previousMegawatts) || !Double.isFinite(currentMegawatts)) continue;
+            float x = minX * sketch().width + i;
+            float y = yForMegawatts(currentMegawatts, minY, maxY);
+            float previousX = minX * sketch().width + i - 1;
+            float previousY = yForMegawatts(previousMegawatts, minY, maxY);
+            sketch().line(x, y, previousX, previousY);
+        }
+    }
+
+    private float yForMegawatts(double megawatts, float minY, float maxY) {
+        float y = sketch().map((float) megawatts, 0.0f, 0.35f, maxY * sketch().height, minY * sketch().height);
+        return Math.clamp(y, minY * sketch().height, maxY * sketch().height);
     }
 }
