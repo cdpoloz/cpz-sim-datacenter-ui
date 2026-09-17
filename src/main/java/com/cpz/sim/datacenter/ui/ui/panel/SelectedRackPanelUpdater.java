@@ -196,15 +196,18 @@ public class SelectedRackPanelUpdater extends ApplicationComponent {
                 .labels()
                 .get("lblRackCurrentPowerValue")
                 .setText(String.format(powerKwFormat, rackSnapshot.currentPowerWatts() / 1000));
-        updateBar("SelectedRackPowerBar", rackSnapshot.currentPowerWatts(), rackSnapshot.idlePowerWatts(), rackSnapshot.maxPowerWatts());
+        String key = "indSelectedRackPowerBar";
+        int iMax = (int) sketch().map(
+                (float) rackSnapshot.currentPowerWatts(),
+                (float) rackSnapshot.idlePowerWatts(),
+                (float) rackSnapshot.maxPowerWatts(),
+                1,
+                6);
+        for (int i = 0; i < 6; i++)
+            uiComponentContainer.indicators().get(key + (i + 1)).setOn(i < iMax);
     }
 
-    private void updateSlotColor(
-            Indicator indSlot,
-            float temperature,
-            float minServerTemperatureCelsius,
-            float maxServerTemperatureCelsius
-    ) {
+    private void updateSlotColor(Indicator indSlot, float temperature, float minServerTemperatureCelsius, float maxServerTemperatureCelsius) {
         Objects.requireNonNull(indSlot);
         float fColor =
                 sketch().map(
@@ -270,33 +273,13 @@ public class SelectedRackPanelUpdater extends ApplicationComponent {
         aiSlotIndicator2.setOn(false);
     }
 
-    private void updateTemperatureLabelColor(
-            boolean alert,
-            Label label,
-            double temperature
-    ) {
-        if (alert) {
+    private void updateTemperatureLabelColor(boolean alert, Label label, double temperature) {
+        if (alert)
             label.setTextColor(COLOR_MAGENTA_LABEL);
-        } else if (temperature >= Double.parseDouble(
-                PROPS.getProperty("simulation.health.temperature.warning-threshold-celsius")
-        )) {
+        else if (temperature >= Double.parseDouble(PROPS.getProperty("simulation.health.temperature.warning-threshold-celsius")))
             label.setTextColor(COLOR_YELLOW_LABEL);
-        } else {
+        else
             label.setTextColor(COLOR_GREEN_LABEL);
-        }
-    }
-
-    private void updateBar(
-            String type,
-            double value,
-            double minValue,
-            double maxValue
-    ) {
-        if (type == null || type.isEmpty()) return;
-        String key = "ind" + type;
-        int iMax = (int) sketch().map((float) value, (float) minValue, (float) maxValue, 1, 6);
-        for (int i = 0; i < 6; i++)
-            uiComponentContainer.indicators().get(key + (i + 1)).setOn(i < iMax);
     }
 
     private Rack resolveSelectedRack() {
