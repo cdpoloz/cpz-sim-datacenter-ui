@@ -3524,6 +3524,56 @@
         "alignY": "top",
         "disabledAlpha": 80
       }
+    },
+    {
+      "type": "label",
+      "code": "lblRoomHvacLoad",
+      "text": "HVAC LOAD",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2444416667,
+        "y": 0.7078111782,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblRoomHvacLoadValue",
+      "text": "VALUE",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2444416667,
+        "y": 0.7447381672,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.02114803625
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#00ffcc",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
     }
   ]
 }
