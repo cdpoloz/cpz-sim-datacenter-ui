@@ -168,11 +168,11 @@ public class Sketch extends PApplet {
         float minY = Float.parseFloat(PROPS.getProperty("ui.average.room.temperature.min.y"));
         float maxY = Float.parseFloat(PROPS.getProperty("ui.average.room.temperature.max.y"));
         int n = (int) ((maxX - minX) * width);
-        List<Double> latestAverageRoomTemperatures = latestAverageRoomTemperatures(n);
+        List<Double> latestAverageRoomTemperatures = latestDisplayedRoomAverageTemperatures(n);
         float minServerTemperatureCelsius = uiStateContainer.minServerTemperatureCelsius();
         float maxServerTemperatureCelsius = uiStateContainer.maxServerTemperatureCelsius();
         pushStyle();
-        strokeWeight(Float.parseFloat(PROPS.getProperty("ui.average.room.temperature.stroke.weigth")) * height);
+        strokeWeight(Float.parseFloat(PROPS.getProperty("ui.global.overview.graph.stroke.weigth")) * height);
         stroke(COLOR_BLUE_LABEL);
         for (int i = 1; i < latestAverageRoomTemperatures.size(); i++) {
             double previousAverageTemperature = latestAverageRoomTemperatures.get(i - 1);
@@ -185,18 +185,83 @@ public class Sketch extends PApplet {
             previousY = Math.max(previousY, minY * height);
             line(x, y, previousX, previousY);
         }
+        // maximum rack temperature graph
+        float maxRackTempMinX = Float.parseFloat(PROPS.getProperty("ui.maximum.rack.temperature.min.x"));
+        float maxRackTempMaxX = Float.parseFloat(PROPS.getProperty("ui.maximum.rack.temperature.max.x"));
+        float maxRackTempMinY = Float.parseFloat(PROPS.getProperty("ui.maximum.rack.temperature.min.y"));
+        float maxRackTempMaxY = Float.parseFloat(PROPS.getProperty("ui.maximum.rack.temperature.max.y"));
+        int maxRackTempN = (int) ((maxRackTempMaxX - maxRackTempMinX) * width);
+        List<Double> latestMaximumRackTemperatures = latestDisplayedRoomMaximumRackTemperatures(maxRackTempN);
+        strokeWeight(Float.parseFloat(PROPS.getProperty("ui.global.overview.graph.stroke.weigth")) * height);
+        stroke(COLOR_BLUE_LABEL);
+        for (int i = 1; i < latestMaximumRackTemperatures.size(); i++) {
+            double previousMaximumRackTemperature = latestMaximumRackTemperatures.get(i - 1);
+            double maximumRackTemperature = latestMaximumRackTemperatures.get(i);
+            if (!Double.isFinite(previousMaximumRackTemperature) || !Double.isFinite(maximumRackTemperature)) continue;
+            float x = maxRackTempMinX * width + i;
+            float y = map(
+                    (float) maximumRackTemperature,
+                    minServerTemperatureCelsius,
+                    maxServerTemperatureCelsius,
+                    maxRackTempMaxY * height,
+                    maxRackTempMinY * height
+            );
+            y = Math.clamp(y, maxRackTempMinY * height, maxRackTempMaxY * height);
+            float previousX = maxRackTempMinX * width + i - 1;
+            float previousY = map(
+                    (float) previousMaximumRackTemperature,
+                    minServerTemperatureCelsius,
+                    maxServerTemperatureCelsius,
+                    maxRackTempMaxY * height,
+                    maxRackTempMinY * height
+            );
+            previousY = Math.clamp(previousY, maxRackTempMinY * height, maxRackTempMaxY * height);
+            line(x, y, previousX, previousY);
+        }
         popStyle();
         //***
         staticUiRenderer.drawOverlay();
     }
 
+    private List<Double> latestDisplayedRoomMaximumRackTemperatures(int n) {
+        if (simulationContainer == null) return List.of();
+        if (simulationContainer.simulationHistory() == null) return List.of();
+        return simulationContainer
+                .simulationHistory()
+                .latest(n)
+                .stream()
+                .map(this::displayedRoomMaximumRackTemperatureCelsius)
+                .toList();
+    }
+
+    private double displayedRoomMaximumRackTemperatureCelsius(DatacenterSimulationStepSnapshot snapshot) {
+        return snapshot.operationalSnapshot().hottestRackAverageTemperatureCelsius();
+    }
+
     private void updateGlobalOverview() {
-        // room average temperature
         if (simulationContainer == null || simulationContainer.operationalSnapshot() == null) return;
         if (uiComponentContainer == null) return;
+        // room average temperature
         if (!uiComponentContainer.labels().containsKey("lblRoomTemperatureValue")) return;
         double averageRoomTemperatureCelsius = allAverageRoomTemperatures().getLast();
         uiComponentContainer.labels().get("lblRoomTemperatureValue").setText(String.format("%.1f°C", averageRoomTemperatureCelsius));
+        // maximum rack temperature
+        if (!uiComponentContainer.labels().containsKey("lblRoomMaximumRackTemperatureValue") ||
+                !uiComponentContainer.labels().containsKey("lblRoomMaximumRackTemperatureLocation")) return;
+        simulationContainer
+                .operationalSnapshot()
+                .hottestRackLocation()
+                .ifPresent(
+                        location -> {
+                            double maximumRackTemperature = simulationContainer
+                                    .operationalSnapshot()
+                                    .hottestRackAverageTemperatureCelsius();
+                            String columnCode = location.column();
+                            String rackCode = location.rackCode().value();
+                            uiComponentContainer.labels().get("lblRoomMaximumRackTemperatureValue").setText(String.format("%.1f°C", maximumRackTemperature));
+                            uiComponentContainer.labels().get("lblRoomMaximumRackTemperatureLocation").setText(columnCode + "-" + rackCode);
+                        }
+                );
     }
 
     private List<Double> allAverageRoomTemperatures() {
@@ -210,13 +275,36 @@ public class Sketch extends PApplet {
                 .toList();
     }
 
-    private List<Double> latestAverageRoomTemperatures(int n) {
+    private List<Double> latestDisplayedRoomAverageTemperatures(int n) {
         return simulationContainer
                 .simulationHistory()
                 .latest(n)
                 .stream()
-                .map(this::averageRoomTemperatureCelsius)
+                .map(this::displayedRoomAverageTemperatureCelsius)
                 .toList();
+    }
+
+    private double displayedRoomAverageTemperatureCelsius(DatacenterSimulationStepSnapshot snapshot) {
+        int onlineServerCount = snapshot
+                .operationalSnapshot()
+                .racks()
+                .values()
+                .stream()
+                .mapToInt(RackOperationalSnapshot::onlineServerCount)
+                .sum();
+        double temperatureSumCelsius = snapshot
+                .operationalSnapshot()
+                .racks()
+                .values()
+                .stream()
+                .filter(RackOperationalSnapshot::hasOnlineServers)
+                .mapToDouble(rackSnapshot ->
+                        rackSnapshot.averageOnlineTemperatureCelsius()
+                                * rackSnapshot.onlineServerCount()
+                )
+                .sum();
+        if (onlineServerCount == 0) return snapshot.operationalSnapshot().roomTemperatureCelsius();
+        return temperatureSumCelsius / onlineServerCount;
     }
 
     private double averageRoomTemperatureCelsius(DatacenterSimulationStepSnapshot snapshot) {
