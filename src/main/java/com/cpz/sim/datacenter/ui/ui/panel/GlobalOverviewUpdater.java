@@ -4,6 +4,7 @@ import com.cpz.sim.datacenter.history.DatacenterSimulationStepSnapshot;
 import com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
+import com.cpz.sim.datacenter.ui.ui.UiFormatContainer;
 
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ public class GlobalOverviewUpdater {
 
     private final SimulationContainer simulationContainer;
     private final UiComponentContainer uiComponentContainer;
+    private final UiFormatContainer uiFormatContainer;
 
     /**
      * Creates an updater for Global Overview labels.
@@ -25,10 +27,12 @@ public class GlobalOverviewUpdater {
      */
     public GlobalOverviewUpdater(
             SimulationContainer simulationContainer,
-            UiComponentContainer uiComponentContainer
+            UiComponentContainer uiComponentContainer,
+            UiFormatContainer uiFormatContainer
     ) {
         this.simulationContainer = simulationContainer;
         this.uiComponentContainer = uiComponentContainer;
+        this.uiFormatContainer = uiFormatContainer;
     }
 
     /** Updates all currently available Global Overview labels. */
@@ -37,6 +41,7 @@ public class GlobalOverviewUpdater {
         if (uiComponentContainer == null) return;
         updateDisplayedRoomTemperature();
         updateDisplayedRoomMaximumRackTemperature();
+        updateDisplayedRoomAverageItLoad();
     }
 
     private void updateDisplayedRoomTemperature() {
@@ -46,7 +51,7 @@ public class GlobalOverviewUpdater {
                         uiComponentContainer
                                 .labels()
                                 .get("lblRoomTemperatureValue")
-                                .setText(String.format("%.1f°C", averageRoomTemperatureCelsius))
+                                .setText(String.format(uiFormatContainer.temperature(), averageRoomTemperatureCelsius))
                 );
     }
 
@@ -65,7 +70,7 @@ public class GlobalOverviewUpdater {
                     uiComponentContainer
                             .labels()
                             .get("lblRoomMaximumRackTemperatureValue")
-                            .setText(String.format("%.1f°C", maximumRackTemperature));
+                            .setText(String.format(uiFormatContainer.temperature(), maximumRackTemperature));
                     uiComponentContainer
                             .labels()
                             .get("lblRoomMaximumRackTemperatureLocation")
@@ -102,5 +107,36 @@ public class GlobalOverviewUpdater {
                 .sum();
         if (onlineServerCount == 0) return snapshot.operationalSnapshot().roomTemperatureCelsius();
         return temperatureSumCelsius / onlineServerCount;
+    }
+
+    private void updateDisplayedRoomAverageItLoad() {
+        if (!uiComponentContainer.labels().containsKey("lblRoomItLoadValue")) return;
+        double averageItLoadPercentage = displayedRoomAverageItLoadPercentage();
+        uiComponentContainer
+                .labels()
+                .get("lblRoomItLoadValue")
+                .setText(String.format(uiFormatContainer.percentage(), averageItLoadPercentage));
+    }
+
+    private double displayedRoomAverageItLoadPercentage() {
+        int onlineServerCount = simulationContainer
+                .operationalSnapshot()
+                .racks()
+                .values()
+                .stream()
+                .mapToInt(RackOperationalSnapshot::onlineServerCount)
+                .sum();
+        if (onlineServerCount == 0) return 0.0;
+        return simulationContainer
+                .operationalSnapshot()
+                .racks()
+                .values()
+                .stream()
+                .filter(RackOperationalSnapshot::hasOnlineServers)
+                .mapToDouble(rackSnapshot ->
+                        rackSnapshot.averageOnlineUtilization()
+                                * rackSnapshot.onlineServerCount()
+                )
+                .sum() / onlineServerCount * 100.0;
     }
 }
