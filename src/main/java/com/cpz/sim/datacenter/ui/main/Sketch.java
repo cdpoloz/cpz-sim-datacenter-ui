@@ -121,7 +121,7 @@ public class Sketch extends PApplet {
         selectedHotAisleTemperatureGradientRenderer = new SelectedHotAisleTemperatureGradientRenderer(context);
         staticUiRenderer = new StaticUiRenderer(context, resourceContainer, infrastructureContainer.overlayManager());
         controlRenderer = new ControlRenderer(uiComponentContainer);
-        globalOverviewUpdater = new GlobalOverviewUpdater(simulationContainer, uiComponentContainer, uiFormatContainer);
+        globalOverviewUpdater = new GlobalOverviewUpdater(context, simulationContainer, uiComponentContainer, uiFormatContainer);
         globalOverviewRenderer = new GlobalOverviewRenderer(context, simulationContainer, uiStateContainer);
         simulationManager.initialize();
         selectionManager.initialize();
