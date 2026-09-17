@@ -3352,8 +3352,8 @@
     },
     {
       "type": "label",
-      "code": "lblRoomTemperature",
-      "text": "ROOM AVG TEMP",
+      "code": "lblAverageServerTemperature",
+      "text": "AVG SERVER TEMP",
       "bounds": {
         "mode": "relative",
         "x": 0.06354817708,
@@ -3377,7 +3377,7 @@
     },
     {
       "type": "label",
-      "code": "lblRoomTemperatureValue",
+      "code": "lblAverageServerTemperatureValue",
       "text": "VALUE",
       "bounds": {
         "mode": "relative",
@@ -3621,6 +3621,156 @@
         "textColor": "#ffcc00",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblRoomCoolingMode",
+      "text": "COOLING MODE",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.3651132813,
+        "y": 0.7078111782,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblRoomCoolingModeValue",
+      "text": "MANUAL",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.3651132813,
+        "y": 0.8023590131,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01510574018
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblRoomPue",
+      "text": "PUE",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4255382813,
+        "y": 0.7078111782,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblRoomPueValue",
+      "text": "VALUE",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4255382813,
+        "y": 0.7447381672,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.02114803625
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#00ffcc",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSystemStatus",
+      "text": "SYSTEM STATUS",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.05395520833,
+        "y": 0.8657457200,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblSystemStatusValue",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.1154377604,
+        "y": 0.8657457200,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#00ffcc",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
         "alignY": "top",
         "disabledAlpha": 80
       }
