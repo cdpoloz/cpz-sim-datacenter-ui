@@ -3474,6 +3474,56 @@
         "alignY": "top",
         "disabledAlpha": 80
       }
+    },
+    {
+      "type": "label",
+      "code": "lblRoomItLoad",
+      "text": "IT LOAD",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.1841421875,
+        "y": 0.7078111782,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblRoomItLoadValue",
+      "text": "VALUE",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.1841421875,
+        "y": 0.7447381672,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.02114803625
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#5cb4c6",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
     }
   ]
 }
