@@ -1,8 +1,6 @@
 package com.cpz.sim.datacenter.ui.main;
 
 import com.cpz.processing.controls.controls.toggle.Toggle;
-import com.cpz.sim.datacenter.history.DatacenterSimulationStepSnapshot;
-import com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.app.InfrastructureContainer;
 import com.cpz.sim.datacenter.ui.app.InfrastructureInitializer;
@@ -15,10 +13,12 @@ import com.cpz.sim.datacenter.ui.simulation.SimulationManager;
 import com.cpz.sim.datacenter.ui.simulation.TemperatureRange;
 import com.cpz.sim.datacenter.ui.simulation.TemperatureRangeCalculator;
 import com.cpz.sim.datacenter.ui.ui.*;
+import com.cpz.sim.datacenter.ui.ui.panel.GlobalOverviewUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.RoomPanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedAislePanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.panel.SelectedRackPanelUpdater;
 import com.cpz.sim.datacenter.ui.ui.render.ControlRenderer;
+import com.cpz.sim.datacenter.ui.ui.render.GlobalOverviewRenderer;
 import com.cpz.sim.datacenter.ui.ui.render.SelectedHotAisleTemperatureGradientRenderer;
 import com.cpz.sim.datacenter.ui.ui.render.StaticUiRenderer;
 import com.cpz.sim.datacenter.ui.ui.selection.SelectionManager;
@@ -27,13 +27,10 @@ import processing.event.MouseEvent;
 import processing.opengl.PJOGL;
 
 import java.io.File;
-import java.util.List;
-import java.util.Optional;
 
 import static com.cpz.sim.datacenter.ui.main.Launcher.LOG;
 import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
 import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_BACKGROUND;
-import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_BLUE_LABEL;
 
 /**
  * Active Processing sketch and composition root for the datacenter UI.
@@ -54,9 +51,8 @@ public class Sketch extends PApplet {
     private SelectedHotAisleTemperatureGradientRenderer selectedHotAisleTemperatureGradientRenderer;
     private StaticUiRenderer staticUiRenderer;
     private ControlRenderer controlRenderer;
-
-    private UiComponentContainer uiComponentContainer;
-    private SimulationContainer simulationContainer;
+    private GlobalOverviewUpdater globalOverviewUpdater;
+    private GlobalOverviewRenderer globalOverviewRenderer;
 
     /**
      * Configures the Processing surface before it is created.
@@ -89,7 +85,7 @@ public class Sketch extends PApplet {
         infrastructureContainer = new InfrastructureContainer();
         InfrastructureInitializer infrastructureInitializer = new InfrastructureInitializer(infrastructureContainer);
         infrastructureInitializer.initialize();
-        uiComponentContainer = new UiComponentContainer();
+        UiComponentContainer uiComponentContainer = new UiComponentContainer();
         UiFormatContainer uiFormatContainer = new UiFormatContainer();
         uiStateContainer = new UiStateContainer();
         UiFormatLoader uiFormatLoader = new UiFormatLoader();
@@ -110,7 +106,7 @@ public class Sketch extends PApplet {
         ResourceManager resourceManager = new ResourceManager(context, resourceContainer);
         resourceManager.initialize();
         // These setup locals remain reachable through the runtime coordinators that own them.
-        simulationContainer = new SimulationContainer();
+        SimulationContainer simulationContainer = new SimulationContainer();
         SimulationManager simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         CoolingToggleManager coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
         SelectionManager selectionManager = new SelectionManager(context, simulationContainer, uiComponentContainer);
@@ -125,6 +121,8 @@ public class Sketch extends PApplet {
         selectedHotAisleTemperatureGradientRenderer = new SelectedHotAisleTemperatureGradientRenderer(context);
         staticUiRenderer = new StaticUiRenderer(context, resourceContainer, infrastructureContainer.overlayManager());
         controlRenderer = new ControlRenderer(uiComponentContainer);
+        globalOverviewUpdater = new GlobalOverviewUpdater(simulationContainer, uiComponentContainer);
+        globalOverviewRenderer = new GlobalOverviewRenderer(context, simulationContainer, uiStateContainer);
         simulationManager.initialize();
         selectionManager.initialize();
         // Use one backend-derived temperature scale for panels, room colors, and the gradient.
@@ -150,9 +148,7 @@ public class Sketch extends PApplet {
         uiUpdateCoordinator.updateClock();
         uiUpdateCoordinator.updateSnapshotsIfNeeded();
         uiUpdateCoordinator.updateControlsIfNeeded();
-        //***
-        updateGlobalOverview();
-        //***
+        globalOverviewUpdater.update();
         // The gradient must sit above controls but below active/static foreground overlays.
         staticUiRenderer.drawBackground();
         controlRenderer.draw();
@@ -161,173 +157,8 @@ public class Sketch extends PApplet {
                 uiStateContainer.minServerTemperatureCelsius(),
                 uiStateContainer.maxServerTemperatureCelsius()
         );
-        //***
-        // room average temperature graph
-        float minX = Float.parseFloat(PROPS.getProperty("ui.average.room.temperature.min.x"));
-        float maxX = Float.parseFloat(PROPS.getProperty("ui.average.room.temperature.max.x"));
-        float minY = Float.parseFloat(PROPS.getProperty("ui.average.room.temperature.min.y"));
-        float maxY = Float.parseFloat(PROPS.getProperty("ui.average.room.temperature.max.y"));
-        int n = (int) ((maxX - minX) * width);
-        List<Double> latestAverageRoomTemperatures = latestDisplayedRoomAverageTemperatures(n);
-        float minServerTemperatureCelsius = uiStateContainer.minServerTemperatureCelsius();
-        float maxServerTemperatureCelsius = uiStateContainer.maxServerTemperatureCelsius();
-        pushStyle();
-        strokeWeight(Float.parseFloat(PROPS.getProperty("ui.global.overview.graph.stroke.weigth")) * height);
-        stroke(COLOR_BLUE_LABEL);
-        for (int i = 1; i < latestAverageRoomTemperatures.size(); i++) {
-            double previousAverageTemperature = latestAverageRoomTemperatures.get(i - 1);
-            double averageTemperature = latestAverageRoomTemperatures.get(i);
-            float x = minX * width + i;
-            float y = map((float) averageTemperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, maxY * height, minY * height);
-            y = Math.max(y, minY * height);
-            float previousX = minX * width + i - 1;
-            float previousY = map((float) previousAverageTemperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, maxY * height, minY * height);
-            previousY = Math.max(previousY, minY * height);
-            line(x, y, previousX, previousY);
-        }
-        // maximum rack temperature graph
-        float maxRackTempMinX = Float.parseFloat(PROPS.getProperty("ui.maximum.rack.temperature.min.x"));
-        float maxRackTempMaxX = Float.parseFloat(PROPS.getProperty("ui.maximum.rack.temperature.max.x"));
-        float maxRackTempMinY = Float.parseFloat(PROPS.getProperty("ui.maximum.rack.temperature.min.y"));
-        float maxRackTempMaxY = Float.parseFloat(PROPS.getProperty("ui.maximum.rack.temperature.max.y"));
-        int maxRackTempN = (int) ((maxRackTempMaxX - maxRackTempMinX) * width);
-        List<Double> latestMaximumRackTemperatures = latestDisplayedRoomMaximumRackTemperatures(maxRackTempN);
-        strokeWeight(Float.parseFloat(PROPS.getProperty("ui.global.overview.graph.stroke.weigth")) * height);
-        stroke(COLOR_BLUE_LABEL);
-        for (int i = 1; i < latestMaximumRackTemperatures.size(); i++) {
-            double previousMaximumRackTemperature = latestMaximumRackTemperatures.get(i - 1);
-            double maximumRackTemperature = latestMaximumRackTemperatures.get(i);
-            if (!Double.isFinite(previousMaximumRackTemperature) || !Double.isFinite(maximumRackTemperature)) continue;
-            float x = maxRackTempMinX * width + i;
-            float y = map(
-                    (float) maximumRackTemperature,
-                    minServerTemperatureCelsius,
-                    maxServerTemperatureCelsius,
-                    maxRackTempMaxY * height,
-                    maxRackTempMinY * height
-            );
-            y = Math.clamp(y, maxRackTempMinY * height, maxRackTempMaxY * height);
-            float previousX = maxRackTempMinX * width + i - 1;
-            float previousY = map(
-                    (float) previousMaximumRackTemperature,
-                    minServerTemperatureCelsius,
-                    maxServerTemperatureCelsius,
-                    maxRackTempMaxY * height,
-                    maxRackTempMinY * height
-            );
-            previousY = Math.clamp(previousY, maxRackTempMinY * height, maxRackTempMaxY * height);
-            line(x, y, previousX, previousY);
-        }
-        popStyle();
-        //***
+        globalOverviewRenderer.draw();
         staticUiRenderer.drawOverlay();
-    }
-
-    private List<Double> latestDisplayedRoomMaximumRackTemperatures(int n) {
-        if (simulationContainer == null) return List.of();
-        if (simulationContainer.simulationHistory() == null) return List.of();
-        return simulationContainer
-                .simulationHistory()
-                .latest(n)
-                .stream()
-                .map(this::displayedRoomMaximumRackTemperatureCelsius)
-                .toList();
-    }
-
-    private double displayedRoomMaximumRackTemperatureCelsius(DatacenterSimulationStepSnapshot snapshot) {
-        return snapshot.operationalSnapshot().hottestRackAverageTemperatureCelsius();
-    }
-
-    private void updateGlobalOverview() {
-        if (simulationContainer == null || simulationContainer.operationalSnapshot() == null) return;
-        if (uiComponentContainer == null) return;
-        // room average temperature
-        if (!uiComponentContainer.labels().containsKey("lblRoomTemperatureValue")) return;
-        double averageRoomTemperatureCelsius = allAverageRoomTemperatures().getLast();
-        uiComponentContainer.labels().get("lblRoomTemperatureValue").setText(String.format("%.1f°C", averageRoomTemperatureCelsius));
-        // maximum rack temperature
-        if (!uiComponentContainer.labels().containsKey("lblRoomMaximumRackTemperatureValue") ||
-                !uiComponentContainer.labels().containsKey("lblRoomMaximumRackTemperatureLocation")) return;
-        simulationContainer
-                .operationalSnapshot()
-                .hottestRackLocation()
-                .ifPresent(
-                        location -> {
-                            double maximumRackTemperature = simulationContainer
-                                    .operationalSnapshot()
-                                    .hottestRackAverageTemperatureCelsius();
-                            String columnCode = location.column();
-                            String rackCode = location.rackCode().value();
-                            uiComponentContainer.labels().get("lblRoomMaximumRackTemperatureValue").setText(String.format("%.1f°C", maximumRackTemperature));
-                            uiComponentContainer.labels().get("lblRoomMaximumRackTemperatureLocation").setText(columnCode + "-" + rackCode);
-                        }
-                );
-    }
-
-    private List<Double> allAverageRoomTemperatures() {
-        if (simulationContainer == null) return List.of();
-        if (simulationContainer.simulationHistory() == null) return List.of();
-        return simulationContainer
-                .simulationHistory()
-                .snapshots()
-                .stream()
-                .map(this::averageRoomTemperatureCelsius)
-                .toList();
-    }
-
-    private List<Double> latestDisplayedRoomAverageTemperatures(int n) {
-        return simulationContainer
-                .simulationHistory()
-                .latest(n)
-                .stream()
-                .map(this::displayedRoomAverageTemperatureCelsius)
-                .toList();
-    }
-
-    private double displayedRoomAverageTemperatureCelsius(DatacenterSimulationStepSnapshot snapshot) {
-        int onlineServerCount = snapshot
-                .operationalSnapshot()
-                .racks()
-                .values()
-                .stream()
-                .mapToInt(RackOperationalSnapshot::onlineServerCount)
-                .sum();
-        double temperatureSumCelsius = snapshot
-                .operationalSnapshot()
-                .racks()
-                .values()
-                .stream()
-                .filter(RackOperationalSnapshot::hasOnlineServers)
-                .mapToDouble(rackSnapshot ->
-                        rackSnapshot.averageOnlineTemperatureCelsius()
-                                * rackSnapshot.onlineServerCount()
-                )
-                .sum();
-        if (onlineServerCount == 0) return snapshot.operationalSnapshot().roomTemperatureCelsius();
-        return temperatureSumCelsius / onlineServerCount;
-    }
-
-    private double averageRoomTemperatureCelsius(DatacenterSimulationStepSnapshot snapshot) {
-        int onlineServerCount = snapshot
-                .operationalSnapshot()
-                .racks()
-                .values()
-                .stream()
-                .mapToInt(RackOperationalSnapshot::onlineServerCount)
-                .sum();
-        double temperatureSumCelsius = snapshot
-                .operationalSnapshot()
-                .racks()
-                .values()
-                .stream()
-                .filter(RackOperationalSnapshot::hasOnlineServers)
-                .mapToDouble(rackSnapshot ->
-                        rackSnapshot.averageOnlineTemperatureCelsius()
-                                * rackSnapshot.onlineServerCount()
-                )
-                .sum();
-        if (onlineServerCount == 0) return snapshot.operationalSnapshot().roomTemperatureCelsius();
-        return temperatureSumCelsius / onlineServerCount;
     }
 
     private void btnClicked(String buttonCode) {
