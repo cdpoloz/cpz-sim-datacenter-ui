@@ -44,6 +44,7 @@ public class GlobalOverviewUpdater {
         updateDisplayedRoomMaximumRackTemperature();
         updateDisplayedRoomAverageItLoad();
         updateDisplayedRoomHvacLoad();
+        updateDisplayedRoomTotalElectricalLoad();
     }
 
     private void updateDisplayedRoomTemperature() {
@@ -167,5 +168,38 @@ public class GlobalOverviewUpdater {
                 .mapToDouble(CoolingZoneSnapshot::usedCoolingCapacityWatts)
                 .sum();
         return usedCoolingCapacityWatts / availableCoolingCapacityWatts * 100.0;
+    }
+
+    private void updateDisplayedRoomTotalElectricalLoad() {
+        // TODO Backend should provide total electrical load, including IT, SUPPLY and EXHAUST electrical power.
+        if (!uiComponentContainer.labels().containsKey("lblRoomTotalElectricalLoadValue")) return;
+        double totalLoadMegawatts = displayedRoomTotalElectricalLoadMegawatts();
+        uiComponentContainer
+                .labels()
+                .get("lblRoomTotalElectricalLoadValue")
+                .setText(String.format("%.2f MW", totalLoadMegawatts));
+    }
+
+    private double displayedRoomTotalElectricalLoadMegawatts() {
+        double TEMPORARY_HVAC_COP = 3.0;
+        double itPowerWatts = simulationContainer
+                .operationalSnapshot()
+                .racks()
+                .values()
+                .stream()
+                .mapToDouble(RackOperationalSnapshot::currentPowerWatts)
+                .sum();
+
+        double usedCoolingCapacityWatts = 0.0;
+        if (simulationContainer.coolingSnapshot() != null) {
+            usedCoolingCapacityWatts = simulationContainer
+                    .coolingSnapshot()
+                    .zones()
+                    .stream()
+                    .mapToDouble(CoolingZoneSnapshot::usedCoolingCapacityWatts)
+                    .sum();
+        }
+        double estimatedHvacElectricalPowerWatts = usedCoolingCapacityWatts / TEMPORARY_HVAC_COP;
+        return (itPowerWatts + estimatedHvacElectricalPowerWatts) / 1_000_000.0;
     }
 }
