@@ -132,7 +132,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
     }
 
     private void initializeDatacenter() {
-        Path configPath = Path.of("data/config/datacenter-test-complete-rezoned-edge-cases-custom-v2.json");
+        Path configPath = Path.of("data/config/datacenter.json");
         DatacenterDefinition definition = new JsonDatacenterConfigLoader().load(configPath);
         simulationContainer.setDatacenter(new DatacenterFactory().create(definition));
         simulationContainer.setRoomName(definition.layout().room().name());
