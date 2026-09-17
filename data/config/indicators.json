@@ -1891,6 +1891,226 @@
           "path": "data/img/ind/indRoomHotAisle.png"
         }
       }
+    },
+    {
+      "type": "indicator",
+      "code": "indCoolingMode",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.3582640625,
+        "y": 0.7377985901,
+        "width": 0.02605337362,
+        "height": 0.02977291037
+      },
+      "on": true,
+      "onColor": "#5cb5c6",
+      "offColor": "#000066ff",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRoomPueBar1",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4142080729,
+        "y": 0.7916107754,
+        "width": 0.006294058409,
+        "height": 0.006294058409
+      },
+      "on": false,
+      "onColor": "#77c19a",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indBarElement.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRoomPueBar2",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4180893229,
+        "y": 0.7916107754,
+        "width": 0.006294058409,
+        "height": 0.006294058409
+      },
+      "on": false,
+      "onColor": "#77c19a",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indBarElement.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRoomPueBar3",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4219705729,
+        "y": 0.7916107754,
+        "width": 0.006294058409,
+        "height": 0.006294058409
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indBarElement.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRoomPueBar4",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4258520833,
+        "y": 0.7916107754,
+        "width": 0.006294058409,
+        "height": 0.006294058409
+      },
+      "on": false,
+      "onColor": "#ffcc00",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indBarElement.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRoomPueBar5",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4297333333,
+        "y": 0.7916107754,
+        "width": 0.006294058409,
+        "height": 0.006294058409
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indBarElement.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRoomPueBar6",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.4336148438,
+        "y": 0.7916107754,
+        "width": 0.006294058409,
+        "height": 0.006294058409
+      },
+      "on": false,
+      "onColor": "#ff0066",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 1.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indBarElement.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSystemStatus",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.04379895833,
+        "y": 0.8624627392,
+        "width": 0.01460221551,
+        "height": 0.01460221551
+      },
+      "on": true,
+      "onColor": "#f2ebe7",
+      "offColor": "#01131d",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSystemStatus.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSystemStatusNormal",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.1052815104,
+        "y": 0.8624627392,
+        "width": 0.01460221551,
+        "height": 0.01460221551
+      },
+      "on": false,
+      "onColor": "#ff00ffcc",
+      "offColor": "#0001131d",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSystemStatusNormal.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSystemStatusWatch",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.1052815104,
+        "y": 0.8624627392,
+        "width": 0.01460221551,
+        "height": 0.01460221551
+      },
+      "on": false,
+      "onColor": "#ffffcc00",
+      "offColor": "#0001131d",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSystemStatusWatch.svg"
+        }
+      }
     }
   ]
 }
