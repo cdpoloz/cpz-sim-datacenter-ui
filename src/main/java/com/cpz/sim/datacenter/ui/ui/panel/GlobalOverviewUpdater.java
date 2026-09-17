@@ -1,6 +1,7 @@
 package com.cpz.sim.datacenter.ui.ui.panel;
 
 import com.cpz.sim.datacenter.history.DatacenterSimulationStepSnapshot;
+import com.cpz.sim.datacenter.snapshot.CoolingZoneSnapshot;
 import com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
@@ -42,6 +43,7 @@ public class GlobalOverviewUpdater {
         updateDisplayedRoomTemperature();
         updateDisplayedRoomMaximumRackTemperature();
         updateDisplayedRoomAverageItLoad();
+        updateDisplayedRoomHvacLoad();
     }
 
     private void updateDisplayedRoomTemperature() {
@@ -138,5 +140,32 @@ public class GlobalOverviewUpdater {
                                 * rackSnapshot.onlineServerCount()
                 )
                 .sum() / onlineServerCount * 100.0;
+    }
+
+    private void updateDisplayedRoomHvacLoad() {
+        if (!uiComponentContainer.labels().containsKey("lblRoomHvacLoadValue")) return;
+        double hvacLoadPercentage = displayedRoomHvacLoadPercentage();
+        uiComponentContainer
+                .labels()
+                .get("lblRoomHvacLoadValue")
+                .setText(String.format(uiFormatContainer.percentage(), hvacLoadPercentage));
+    }
+
+    private double displayedRoomHvacLoadPercentage() {
+        if (simulationContainer.coolingSnapshot() == null) return 0.0;
+        double availableCoolingCapacityWatts = simulationContainer
+                .coolingSnapshot()
+                .zones()
+                .stream()
+                .mapToDouble(CoolingZoneSnapshot::availableCoolingCapacityWatts)
+                .sum();
+        if (availableCoolingCapacityWatts == 0.0) return 0.0;
+        double usedCoolingCapacityWatts = simulationContainer
+                .coolingSnapshot()
+                .zones()
+                .stream()
+                .mapToDouble(CoolingZoneSnapshot::usedCoolingCapacityWatts)
+                .sum();
+        return usedCoolingCapacityWatts / availableCoolingCapacityWatts * 100.0;
     }
 }
