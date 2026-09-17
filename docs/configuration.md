@@ -34,7 +34,7 @@ The JSON files also reference assets below `data/img`. Changing control bounds o
 
 ## Datacenter backend configuration
 
-`SimulationManager.initializeDatacenter()` currently loads `data/config/datacenter-test-complete-rezoned-edge-cases-custom-v2.json`. `JsonDatacenterConfigLoader` and factories from `cpz-sim-datacenter` turn this JSON into the `Datacenter`, workload factors, cooling configuration, and temperature options. The other `datacenter-*.json` files are alternative/test datasets present in the repository; they are not selected dynamically by a property in the current implementation.
+`SimulationManager.initializeDatacenter()` currently loads `../data/config/datacenter.json`. `JsonDatacenterConfigLoader` and factories from `cpz-sim-datacenter` turn this JSON into the `Datacenter`, workload factors, cooling configuration, and temperature options. The other `datacenter-*.json` files are alternative/test datasets present in the repository; they are not selected dynamically by a property in the current implementation.
 
 Changes must preserve the assumptions encoded by the UI: rack/column codes, available rack rows/slots, cooling unit codes, and cooling zones must continue to match configured controls and aisle mapping.
 
