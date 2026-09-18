@@ -1,8 +1,10 @@
-package com.cpz.sim.datacenter.ui.ui;
+package com.cpz.sim.datacenter.ui.ui.panel;
 
 import com.cpz.sim.datacenter.ui.app.ApplicationComponent;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
+import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
+import processing.core.PApplet;
 
 /**
  * Updates the room title and wall-clock labels independently of simulation time.
@@ -33,6 +35,7 @@ public class HeaderUpdater extends ApplicationComponent {
     public void update() {
         updateRoomLabel();
         updateDateTime();
+        updateSimulationTimeAndStatus();
     }
 
     private void updateRoomLabel() {
@@ -43,31 +46,31 @@ public class HeaderUpdater extends ApplicationComponent {
     }
 
     private void updateDateTime() {
-        if (sketch().second() == previousSecond) {
-            return;
-        }
-        previousSecond = sketch().second();
-        uiComponentContainer
-                .labels()
-                .get("lblTime")
-                .setText(
-                        String.format("%02d", sketch().hour())
-                                + ":"
-                                + String.format("%02d", sketch().minute())
-                                + ":"
-                                + String.format("%02d", sketch().second())
-                );
-        if (sketch().day() == previousDay) return;
-        previousDay = sketch().day();
-        uiComponentContainer
-                .labels()
-                .get("lblDate")
-                .setText(
-                        String.format("%02d", sketch().day())
-                                + "/"
-                                + String.format("%02d", sketch().month())
-                                + "/"
-                                + sketch().year()
-                );
+        if (PApplet.second() == previousSecond) return;
+        previousSecond = PApplet.second();
+        uiComponentContainer.labels().get("lblTime").setText(getCurrentTime());
+        if (PApplet.day() == previousDay) return;
+        previousDay = PApplet.day();
+        uiComponentContainer.labels().get("lblDate").setText(getCurrentDate());
+    }
+
+    private String getCurrentTime() {
+        return String.format("%02d", PApplet.hour())
+                + ":"
+                + String.format("%02d", PApplet.minute())
+                + ":"
+                + String.format("%02d", PApplet.second());
+    }
+
+    private String getCurrentDate() {
+        return String.format("%02d", PApplet.day())
+                + "/"
+                + String.format("%02d", PApplet.month())
+                + "/"
+                + PApplet.year();
+    }
+
+    private void updateSimulationTimeAndStatus() {
+        //uiComponentContainer.indicators().get("indSimulationRunning").setOn()
     }
 }

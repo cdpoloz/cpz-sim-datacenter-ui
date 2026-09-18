@@ -15,8 +15,7 @@ import com.cpz.utils.color.Colors;
 
 import java.util.Optional;
 
-import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_GREEN_LABEL;
-import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_YELLOW_LABEL;
+import static com.cpz.sim.datacenter.ui.util.Constants.*;
 
 /**
  * Projects simulation summary values into the Global Overview panel labels.
@@ -265,15 +264,18 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
         Label lblSystemStatusValue = uiComponentContainer.labels().get("lblSystemStatusValue");
         String status = displayedRoomSystemStatus();
         lblSystemStatusValue.setText(status);
-        int c = Colors.argb(0, 0, 0, 0);
-        if (status.equals("NORMAL")) c = COLOR_GREEN_LABEL;
-        else if (status.equals("WATCH")) c = COLOR_YELLOW_LABEL;
-        // CONTINUAR AQUÍ ******************************************
-        // MEJORAR ICONO WATCH, DEFINIR ICONOS ADICIONALES
-        // *********************************************************
+        int c = switch (status) {
+            case "NORMAL" -> COLOR_GREEN_LABEL;
+            case "WATCH" -> COLOR_BLUE_LABEL;
+            case "WARNING" -> COLOR_YELLOW_LABEL;
+            case "CRITICAL" -> COLOR_MAGENTA_LABEL;
+            default -> Colors.argb(0, 0, 0, 0);
+        };
         lblSystemStatusValue.setTextColor(c);
         uiComponentContainer.indicators().get("indSystemStatusNormal").setOn(status.equals("NORMAL"));
         uiComponentContainer.indicators().get("indSystemStatusWatch").setOn(status.equals("WATCH"));
+        uiComponentContainer.indicators().get("indSystemStatusWarning").setOn(status.equals("WARNING"));
+        uiComponentContainer.indicators().get("indSystemStatusCritical").setOn(status.equals("CRITICAL"));
     }
 
     private String displayedRoomSystemStatus() {

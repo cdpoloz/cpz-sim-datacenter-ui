@@ -2101,7 +2101,7 @@
         "height": 0.01460221551
       },
       "on": false,
-      "onColor": "#ffffcc00",
+      "onColor": "#ff5cb4c6",
       "offColor": "#0001131d",
       "style": {
         "strokeColor": "#2e3c4a",
@@ -2109,6 +2109,72 @@
         "renderer": {
           "type": "svg",
           "path": "data/img/ind/indSystemStatusWatch.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSystemStatusWarning",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.1052815104,
+        "y": 0.8624627392,
+        "width": 0.01460221551,
+        "height": 0.01460221551
+      },
+      "on": false,
+      "onColor": "#ffffcc00",
+      "offColor": "#0001131d",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSystemStatusWarning.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSystemStatusCritical",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.1052815104,
+        "y": 0.8624627392,
+        "width": 0.01460221551,
+        "height": 0.01460221551
+      },
+      "on": false,
+      "onColor": "#ffff0066",
+      "offColor": "#0001131d",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indSystemStatusWarning.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indSimulationRunning",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.785352083,
+        "y": 0.028280463,
+        "width": 0.020140987,
+        "height": 0.020140987
+      },
+      "on": false,
+      "onColor": "#008066",
+      "offColor": "#00ffcc",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCircle.svg"
         }
       }
     }
