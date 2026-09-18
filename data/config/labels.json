@@ -3774,6 +3774,31 @@
         "alignY": "top",
         "disabledAlpha": 80
       }
+    },
+    {
+      "type": "label",
+      "code": "lblSimulationTime",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.82943776,
+        "y": 0.033000504,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.014098691
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#7a9dbe",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
     }
   ]
 }
