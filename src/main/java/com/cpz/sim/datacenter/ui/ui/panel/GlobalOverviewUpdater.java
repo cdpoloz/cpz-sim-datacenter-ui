@@ -1,6 +1,5 @@
 package com.cpz.sim.datacenter.ui.ui.panel;
 
-import com.cpz.processing.controls.controls.indicator.Indicator;
 import com.cpz.processing.controls.controls.label.Label;
 import com.cpz.sim.datacenter.history.DatacenterSimulationStepSnapshot;
 import com.cpz.sim.datacenter.snapshot.CoolingZoneSnapshot;
@@ -12,6 +11,7 @@ import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 import com.cpz.sim.datacenter.ui.ui.UiFormatContainer;
 import com.cpz.utils.color.Colors;
+import processing.core.PApplet;
 
 import java.util.Optional;
 
@@ -221,7 +221,7 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
         String text = Double.isFinite(pue) ? String.format("%.2f", pue) : "--";
         uiComponentContainer.labels().get("lblRoomPueValue").setText(text);
         String key = "indRoomPueBar";
-        int iMax = (int) sketch().map((float) pue, 1.0f, 2.2f, 1, 6);
+        int iMax = (int) PApplet.map((float) pue, 1.0f, 2.2f, 1, 6);
         for (int i = 0; i < 6; i++)
             uiComponentContainer.indicators().get(key + (i + 1)).setOn(i < iMax);
     }
