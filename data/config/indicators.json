@@ -2167,8 +2167,8 @@
         "height": 0.020140987
       },
       "on": false,
-      "onColor": "#008066",
-      "offColor": "#00ffcc",
+      "onColor": "#00ffcc",
+      "offColor": "#008066",
       "style": {
         "strokeColor": "#2e3c4a",
         "strokeWeight": 0.0,
