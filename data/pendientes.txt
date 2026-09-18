@@ -1,0 +1,10 @@
+Modelo de temperatura
+    - rampas de temperatura al activar solo SUPPPLY o solo EXHAUST
+
+Global Overview - HVAC
+    - EXHAUST no influye en carga
+    - 1 solo SUPPLY hace que la carga suba de 0% a 46%, SUPPLYs adicionales solo lo suben hasta 46%
+
+Global Overview - Total Power Load
+    - EXHAUST no influye en carga
+

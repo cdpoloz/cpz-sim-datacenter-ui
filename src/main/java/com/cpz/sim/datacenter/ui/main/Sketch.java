@@ -13,10 +13,9 @@ import com.cpz.sim.datacenter.ui.simulation.SimulationManager;
 import com.cpz.sim.datacenter.ui.simulation.TemperatureRange;
 import com.cpz.sim.datacenter.ui.simulation.TemperatureRangeCalculator;
 import com.cpz.sim.datacenter.ui.ui.*;
-import com.cpz.sim.datacenter.ui.ui.panel.RoomPanelUpdater;
-import com.cpz.sim.datacenter.ui.ui.panel.SelectedAislePanelUpdater;
-import com.cpz.sim.datacenter.ui.ui.panel.SelectedRackPanelUpdater;
+import com.cpz.sim.datacenter.ui.ui.panel.*;
 import com.cpz.sim.datacenter.ui.ui.render.ControlRenderer;
+import com.cpz.sim.datacenter.ui.ui.render.GlobalOverviewRenderer;
 import com.cpz.sim.datacenter.ui.ui.render.SelectedHotAisleTemperatureGradientRenderer;
 import com.cpz.sim.datacenter.ui.ui.render.StaticUiRenderer;
 import com.cpz.sim.datacenter.ui.ui.selection.SelectionManager;
@@ -49,6 +48,8 @@ public class Sketch extends PApplet {
     private SelectedHotAisleTemperatureGradientRenderer selectedHotAisleTemperatureGradientRenderer;
     private StaticUiRenderer staticUiRenderer;
     private ControlRenderer controlRenderer;
+    private GlobalOverviewUpdater globalOverviewUpdater;
+    private GlobalOverviewRenderer globalOverviewRenderer;
 
     /**
      * Configures the Processing surface before it is created.
@@ -117,6 +118,8 @@ public class Sketch extends PApplet {
         selectedHotAisleTemperatureGradientRenderer = new SelectedHotAisleTemperatureGradientRenderer(context);
         staticUiRenderer = new StaticUiRenderer(context, resourceContainer, infrastructureContainer.overlayManager());
         controlRenderer = new ControlRenderer(uiComponentContainer);
+        globalOverviewUpdater = new GlobalOverviewUpdater(context, simulationContainer, uiComponentContainer, uiFormatContainer);
+        globalOverviewRenderer = new GlobalOverviewRenderer(context, simulationContainer, uiStateContainer);
         simulationManager.initialize();
         selectionManager.initialize();
         // Use one backend-derived temperature scale for panels, room colors, and the gradient.
@@ -142,6 +145,7 @@ public class Sketch extends PApplet {
         uiUpdateCoordinator.updateClock();
         uiUpdateCoordinator.updateSnapshotsIfNeeded();
         uiUpdateCoordinator.updateControlsIfNeeded();
+        globalOverviewUpdater.update();
         // The gradient must sit above controls but below active/static foreground overlays.
         staticUiRenderer.drawBackground();
         controlRenderer.draw();
@@ -150,6 +154,7 @@ public class Sketch extends PApplet {
                 uiStateContainer.minServerTemperatureCelsius(),
                 uiStateContainer.maxServerTemperatureCelsius()
         );
+        globalOverviewRenderer.draw();
         staticUiRenderer.drawOverlay();
     }
 

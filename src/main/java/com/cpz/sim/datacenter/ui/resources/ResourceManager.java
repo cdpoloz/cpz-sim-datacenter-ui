@@ -55,6 +55,7 @@ public class ResourceManager extends ApplicationComponent implements Initializab
         images.add(sketch().loadImage("data/img/ui_backgroundRoom.png"));
         images.add(sketch().loadImage("data/img/ui_backgroundHeader.png"));
         images.add(sketch().loadImage("data/img/ui_backgroundFooter.png"));
+        images.add(sketch().loadImage("data/img/ui_backgroundOverview.png"));
         container.setBackgroundImages(images);
     }
 

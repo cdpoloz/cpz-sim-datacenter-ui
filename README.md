@@ -76,7 +76,7 @@ The project currently has no `src/test` test suite. `mvn test` still performs co
 
 ## Configuration
 
-`data/config.properties` controls the window, frame rate, number formats, boundary columns, health thresholds, simulation speed factors, and selected-aisle gradient geometry. JSON files under `data/config` define the control layout and backend datacenter model. The active backend input is currently `datacenter-test-complete-rezoned-edge-cases-custom-v2.json`; `SimulationManager` selects it directly.
+`data/config.properties` controls the window, frame rate, number formats, boundary columns, health thresholds, simulation speed factors, and selected-aisle gradient geometry. JSON files under `data/config` define the control layout and backend datacenter model. The active backend input is currently `datacenter.json`; `SimulationManager` selects it directly.
 
 `hot-aisle-mapping.json` maps columns such as `C02` and `C03` to UI hot aisles such as `HA02`. Control codes in the JSON files are integration identifiers and must stay aligned with the code that resolves buttons, toggles, labels, and indicators.
 
