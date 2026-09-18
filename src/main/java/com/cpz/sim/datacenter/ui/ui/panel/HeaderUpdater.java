@@ -72,7 +72,7 @@ public class HeaderUpdater extends ApplicationComponent {
 
     private void updateSimulationTimeAndStatus() {
         uiComponentContainer.indicators().get("indSimulationRunning").setOn(isSimulationRunning());
-        long ticks = simulationContainer.engine().currentTick().index();
+        long ticks = simulationContainer.engine().currentTick().index() - 1;
         uiComponentContainer.labels().get("lblSimulationTime").setText(formatTicksAsDaysHoursMinutes(ticks));
     }
 
