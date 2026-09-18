@@ -71,6 +71,20 @@ public class HeaderUpdater extends ApplicationComponent {
     }
 
     private void updateSimulationTimeAndStatus() {
-        //uiComponentContainer.indicators().get("indSimulationRunning").setOn()
+        uiComponentContainer.indicators().get("indSimulationRunning").setOn(isSimulationRunning());
+        long ticks = simulationContainer.engine().currentTick().index();
+        uiComponentContainer.labels().get("lblSimulationTime").setText(formatTicksAsDaysHoursMinutes(ticks));
+    }
+
+    public boolean isSimulationRunning() {
+        return simulationContainer.simulationTimer() != null && simulationContainer.simulationTimer().isRunning();
+    }
+
+    private String formatTicksAsDaysHoursMinutes(long ticks) {
+        long days = ticks / (24 * 60);
+        long remainingMinutes = ticks % (24 * 60);
+        long hours = remainingMinutes / 60;
+        long minutes = remainingMinutes % 60;
+        return String.format("%02dd %02d:%02d", days, hours, minutes);
     }
 }
