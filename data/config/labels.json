@@ -3799,6 +3799,31 @@
         "alignY": "top",
         "disabledAlpha": 80
       }
+    },
+    {
+      "type": "label",
+      "code": "lblDataInputMode",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.7697270833,
+        "y": 0.03300050352,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01409869084
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#7a9dbe",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "end",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
     }
   ]
 }
