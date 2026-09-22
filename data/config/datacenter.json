@@ -9869,6 +9869,7 @@
       {
         "code": "SUPPLY-C01-C02",
         "ratedAirflowCubicMetersPerSecond": 8.0,
+        "ratedElectricalPowerWatts": 33333.3333333333,
         "ratedCoolingCapacityWatts": 100000.0,
         "supplyAirTemperatureCelsius": 18.0,
         "influences": [
@@ -9918,6 +9919,7 @@
       {
         "code": "SUPPLY-C03-C04",
         "ratedAirflowCubicMetersPerSecond": 8.0,
+        "ratedElectricalPowerWatts": 33333.3333333333,
         "ratedCoolingCapacityWatts": 100000.0,
         "supplyAirTemperatureCelsius": 18.0,
         "influences": [
@@ -9963,6 +9965,7 @@
       {
         "code": "SUPPLY-C05-C06",
         "ratedAirflowCubicMetersPerSecond": 8.0,
+        "ratedElectricalPowerWatts": 33333.3333333333,
         "ratedCoolingCapacityWatts": 100000.0,
         "supplyAirTemperatureCelsius": 18.0,
         "influences": [
@@ -10012,6 +10015,7 @@
       {
         "code": "SUPPLY-C07-C08",
         "ratedAirflowCubicMetersPerSecond": 8.0,
+        "ratedElectricalPowerWatts": 33333.3333333333,
         "ratedCoolingCapacityWatts": 100000.0,
         "supplyAirTemperatureCelsius": 18.0,
         "influences": [
@@ -10063,6 +10067,7 @@
       {
         "code": "EXHAUST-C01",
         "ratedAirflowCubicMetersPerSecond": 8.0,
+        "ratedElectricalPowerWatts": 5000.0,
         "influences": [
           {
             "zoneCode": "ZONE-C01-TOP",
@@ -10090,6 +10095,7 @@
       {
         "code": "EXHAUST-C02-C03",
         "ratedAirflowCubicMetersPerSecond": 8.0,
+        "ratedElectricalPowerWatts": 5000.0,
         "influences": [
           {
             "zoneCode": "ZONE-C02-TOP",
@@ -10137,6 +10143,7 @@
       {
         "code": "EXHAUST-C04-C05",
         "ratedAirflowCubicMetersPerSecond": 8.0,
+        "ratedElectricalPowerWatts": 5000.0,
         "influences": [
           {
             "zoneCode": "ZONE-C04-TOP",
@@ -10180,6 +10187,7 @@
       {
         "code": "EXHAUST-C06-C07",
         "ratedAirflowCubicMetersPerSecond": 8.0,
+        "ratedElectricalPowerWatts": 5000.0,
         "influences": [
           {
             "zoneCode": "ZONE-C06-TOP",
@@ -10227,6 +10235,7 @@
       {
         "code": "EXHAUST-C08",
         "ratedAirflowCubicMetersPerSecond": 8.0,
+        "ratedElectricalPowerWatts": 5000.0,
         "influences": [
           {
             "zoneCode": "ZONE-C08-TOP",
