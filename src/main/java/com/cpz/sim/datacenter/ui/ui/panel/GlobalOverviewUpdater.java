@@ -183,7 +183,6 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
     }
 
     private void updateDisplayedRoomTotalElectricalLoad() {
-        // TODO Backend should provide total electrical load, including IT, SUPPLY and EXHAUST electrical power.
         if (!uiComponentContainer.labels().containsKey("lblRoomTotalElectricalLoadValue")) return;
         double totalLoadMegawatts = displayedRoomTotalElectricalLoadMegawatts();
         uiComponentContainer
