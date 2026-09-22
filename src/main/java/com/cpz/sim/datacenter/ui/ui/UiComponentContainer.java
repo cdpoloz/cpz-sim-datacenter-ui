@@ -26,6 +26,7 @@ public class UiComponentContainer {
     private Map<String, Indicator> indicatorsRack;
     private Map<String, Indicator> indicatorsRackCondition;
     private Map<String, Indicator> indicatorsSelectedAisleMaximumTemperatureServer;
+    private Map<String, Indicator> indicatorsPlay;
     private Map<String, Button> buttonsSelectedAisleRack;
     private Map<String, Button> buttonsColumn;
     private Map<String, Button> buttonsPlay;
@@ -145,5 +146,13 @@ public class UiComponentContainer {
 
     public Map<String, Indicator> indicatorsRackCondition() {
         return indicatorsRackCondition;
+    }
+
+    public Map<String, Indicator> indicatorsPlay() {
+        return indicatorsPlay;
+    }
+
+    public void setIndicatorsPlay(Map<String, Indicator> indicatorsPlay) {
+        this.indicatorsPlay = indicatorsPlay;
     }
 }
