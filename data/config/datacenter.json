@@ -1,5 +1,6 @@
 {
   "name": "Complete 8x12 UI Test Datacenter",
+  "dataInputMode": "UTILIZATION_DRIVEN",
   "layout": {
     "room": {
       "code": "ROOM-01",
