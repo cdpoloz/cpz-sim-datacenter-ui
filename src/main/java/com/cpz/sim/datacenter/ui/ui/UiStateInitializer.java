@@ -38,7 +38,22 @@ public class UiStateInitializer extends ApplicationComponent {
     public void initialize(float minServerTemperatureCelsius, float maxServerTemperatureCelsius, String simpleTemperatureFormat) {
         initializeTemperatureScale(minServerTemperatureCelsius, maxServerTemperatureCelsius, simpleTemperatureFormat);
         initializeRoomServerTotals();
+        initializeDataInputMode();
         initializeDateTime();
+    }
+
+    private void initializeDataInputMode() {
+        uiComponentContainer.labels().get("lblDataInputMode").setText(formatDataInputMode());
+    }
+
+    private String formatDataInputMode() {
+        String dataInputMode = "DATA INPUT MODE: ";
+        switch (simulationContainer.datacenterDefinition().dataInputMode()) {
+            case UTILIZATION_DRIVEN -> dataInputMode += "UTILIZATION DRIVEN";
+            case POWER_DRIVEN -> dataInputMode += "POWER DRIVEN";
+            case TEMPERATURE_DRIVEN -> dataInputMode += "TEMPERATURE DRIVEN";
+        }
+        return dataInputMode;
     }
 
     private void initializeTemperatureScale(float minServerTemperatureCelsius, float maxServerTemperatureCelsius, String simpleTemperatureFormat) {
