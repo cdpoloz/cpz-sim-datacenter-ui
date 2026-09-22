@@ -24,6 +24,11 @@ public class ControlRenderer {
         this.uiComponentContainer = uiComponentContainer;
     }
 
+    public void updateIndicatorsPlay(boolean playMinus, boolean playPlus) {
+        uiComponentContainer.indicatorsPlay().get("indPlayPlus").setOn(playPlus);
+        uiComponentContainer.indicatorsPlay().get("indPlayMinus").setOn(playMinus);
+    }
+
     /** Draws all control groups; later groups can appear above earlier groups. */
     public void draw() {
         uiComponentContainer.indicatorsAlert().values().forEach(Indicator::draw);
@@ -40,5 +45,6 @@ public class ControlRenderer {
         uiComponentContainer.buttonsColumn().values().forEach(Button::draw);
         uiComponentContainer.buttonsPlay().values().forEach(Button::draw);
         uiComponentContainer.toggles().values().forEach(Toggle::draw);
+        uiComponentContainer.indicatorsPlay().values().forEach(Indicator::draw);
     }
 }
