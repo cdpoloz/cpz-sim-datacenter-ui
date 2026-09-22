@@ -419,10 +419,16 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         String speedLabel = formatSimulationSpeedFactor();
         uiComponentContainer.labels().get("lblSimulationValue").setText(simulationRunning ? "Running " + speedLabel : "Stopped " + speedLabel);
         Button btnPlayMinus = uiComponentContainer.buttonsPlay().get("btnPlayMinus");
-        if (btnPlayMinus != null) btnPlayMinus.setEnabled(simulationContainer.simulationSpeedFactorIndex() > 0);
+        if (btnPlayMinus != null) btnPlayMinus.setEnabled(canDecreaseSimulationSpeed());
         Button btnPlayPlus = uiComponentContainer.buttonsPlay().get("btnPlayPlus");
-        if (btnPlayPlus != null)
-            btnPlayPlus.setEnabled(simulationContainer.simulationSpeedFactorIndex() < simulationContainer.simulationSpeedFactors().size() - 1);
+        if (btnPlayPlus != null) btnPlayPlus.setEnabled(canIncreaseSimulationSpeed());
     }
 
+    public boolean canIncreaseSimulationSpeed() {
+        return simulationContainer.simulationSpeedFactorIndex() < simulationContainer.simulationSpeedFactors().size() - 1;
+    }
+
+    public boolean canDecreaseSimulationSpeed() {
+        return simulationContainer.simulationSpeedFactorIndex() > 0;
+    }
 }
