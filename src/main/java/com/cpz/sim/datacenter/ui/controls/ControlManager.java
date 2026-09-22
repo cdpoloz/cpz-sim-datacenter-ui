@@ -87,6 +87,7 @@ public class ControlManager extends ApplicationComponent implements Initializabl
         container.setIndicatorsRack(loader.loadIndicators(controlConfigLoader, CONFIG_PATH + "indicatorsRack.json"));
         container.setIndicatorsRackCondition(loader.loadIndicators(controlConfigLoader, CONFIG_PATH + "indicatorsRackCondition.json"));
         container.setIndicatorsSelectedAisleMaximumTemperatureServer(loader.loadIndicators(controlConfigLoader, CONFIG_PATH + "indicatorsSelectedAisleMaximumTemperatureServer.json"));
+        container.setIndicatorsPlay(loader.loadIndicators(controlConfigLoader, CONFIG_PATH + "indicatorsPlay.json"));
     }
 
     private void loadButtons() {
