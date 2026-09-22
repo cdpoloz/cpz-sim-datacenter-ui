@@ -329,31 +329,6 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         //printHistorySnapshot(stepSnapshot);
     }
 
-    private void printHistorySnapshot(DatacenterSimulationStepSnapshot snapshot) {
-        String coolingSummary = snapshot
-                .coolingSnapshot()
-                .map(cooling -> String.format(
-                        Locale.US,
-                        "heat=%.2fkW deficit=%.2fkW",
-                        cooling.totalGeneratedHeatWatts() / 1000.0,
-                        cooling.totalCoolingDeficitWatts() / 1000.0
-                ))
-                .orElse("cooling=n/a");
-
-        System.out.printf(
-                Locale.US,
-                "[history] size=%d tick=%d elapsed=%.0fs it=%.2fkW avgTemp=%.2fC maxTemp=%.2fC alerts=%d %s%n",
-                simulationContainer.simulationHistory().size(),
-                snapshot.tickIndex(),
-                snapshot.elapsedSeconds(),
-                snapshot.energySnapshot().totalItPowerWatts() / 1000.0,
-                snapshot.temperatureSnapshot().averageTemperatureCelsius(),
-                snapshot.temperatureSnapshot().maxTemperatureCelsius(),
-                snapshot.healthSnapshot().alertServerCount(),
-                coolingSummary
-        );
-    }
-
     /**
      * Advances the engine when the real-time timer emits a period pulse.
      *
