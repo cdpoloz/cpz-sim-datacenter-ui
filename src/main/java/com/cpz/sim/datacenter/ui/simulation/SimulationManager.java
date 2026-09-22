@@ -15,6 +15,9 @@ import com.cpz.sim.datacenter.health.ServerHealthOptions;
 import com.cpz.sim.datacenter.history.DatacenterSimulationHistory;
 import com.cpz.sim.datacenter.history.DatacenterSimulationHistoryRecorder;
 import com.cpz.sim.datacenter.history.DatacenterSimulationStepSnapshot;
+import com.cpz.sim.datacenter.input.DatacenterDataInputMode;
+import com.cpz.sim.datacenter.input.NoiseServerPowerInputSource;
+import com.cpz.sim.datacenter.input.ServerPowerInputSource;
 import com.cpz.sim.datacenter.model.Rack;
 import com.cpz.sim.datacenter.model.Server;
 import com.cpz.sim.datacenter.model.ServerLocation;
@@ -47,6 +50,7 @@ import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.cpz.sim.datacenter.input.DatacenterDataInputMode.TEMPERATURE_DRIVEN;
 import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
 
 /**
@@ -152,30 +156,30 @@ public class SimulationManager extends ApplicationComponent implements Initializ
     }
 
     private void initializeWorkloads() {
-        PerlinNoise perlinNoise = new PerlinNoise(1234L);
-        FractalNoise fractalNoise = new FractalNoise(
-                perlinNoise,
-                5,
-                1.0f,
-                2.0f,
-                0.5f
-        );
-        WorkloadSource baseWorkloadSource = new NoiseWorkloadSource(
-                fractalNoise,
-                0.001,
-                0.2f,
-                0.9f
-        );
-        ServerWorkloadFactorProvider factorProvider =
-                new WorkloadFactorProviderFactory()
-                        .create(simulationContainer.datacenterDefinition());
-        simulationContainer.setWorkloadSource(
-                new ScaledWorkloadSource(
-                        baseWorkloadSource,
-                        factorProvider
-                )
-        );
+        FractalNoise fractalNoise = createFractalNoise();
+        DatacenterDataInputMode dataInputMode = simulationContainer.datacenterDefinition().dataInputMode();
+        switch (dataInputMode) {
+            case UTILIZATION_DRIVEN -> initializeUtilizationDrivenInput(fractalNoise);
+            case POWER_DRIVEN -> initializePowerDrivenInput(fractalNoise);
+            case TEMPERATURE_DRIVEN -> throw new UnsupportedOperationException("TEMPERATURE_DRIVEN is declared but not implemented yet.");
+        }
         simulationContainer.setClock(new SimulationClock(Duration.ofMinutes(1)));
+    }
+
+    private FractalNoise createFractalNoise() {
+        PerlinNoise perlinNoise = new PerlinNoise(1234L);
+        return new FractalNoise(perlinNoise, 5, 1.0f, 2.0f, 0.5f);
+    }
+
+    private void initializeUtilizationDrivenInput(FractalNoise fractalNoise) {
+        WorkloadSource baseWorkloadSource = new NoiseWorkloadSource(fractalNoise, 0.001, 0.2f, 0.9f);
+        ServerWorkloadFactorProvider factorProvider = new WorkloadFactorProviderFactory().create(simulationContainer.datacenterDefinition());
+        simulationContainer.setWorkloadSource(new ScaledWorkloadSource(baseWorkloadSource, factorProvider));
+    }
+
+    private void initializePowerDrivenInput(FractalNoise fractalNoise) {
+        ServerPowerInputSource powerInputSource = new NoiseServerPowerInputSource(fractalNoise, 0.001, 0.20, 0.85);
+        simulationContainer.setPowerInputSource(powerInputSource);
     }
 
     private void initializeEngine() {
@@ -213,12 +217,25 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         );
         simulationContainer.setHealthSystem(new ServerHealthSystem(simulationContainer.datacenter(), simulationContainer.temperatureSystem(), new ServerHealthOptions(utilizationThreshold, temperatureThreshold)));
         // Registration order is the backend tick pipeline: each stage consumes earlier results.
-        simulationContainer.engine().register(new WorkloadSystem(simulationContainer.datacenter(), simulationContainer.workloadSource()));
-        simulationContainer.engine().register(new PowerConsumptionSystem(simulationContainer.datacenter()));
+        registerInputModeSystems();
         simulationContainer.engine().register(tick -> simulationContainer.setCoolingSnapshot(simulationContainer.coolingSnapshotCoordinator().update(tick)));
         simulationContainer.engine().register(simulationContainer.temperatureSystem());
         simulationContainer.engine().register(simulationContainer.healthSystem());
         simulationContainer.engine().register(simulationContainer.energySystem());
+    }
+
+    private void registerInputModeSystems() {
+        DatacenterDataInputMode dataInputMode = simulationContainer.datacenterDefinition().dataInputMode();
+        switch (dataInputMode) {
+            case UTILIZATION_DRIVEN -> {
+                simulationContainer.engine().register(new WorkloadSystem(simulationContainer.datacenter(), simulationContainer.workloadSource()));
+                simulationContainer.engine().register(new PowerConsumptionSystem(simulationContainer.datacenter()));
+            }
+            case POWER_DRIVEN -> simulationContainer.engine().register(new PowerInputSystem(simulationContainer.datacenter(), simulationContainer.powerInputSource()));
+            case TEMPERATURE_DRIVEN -> throw new UnsupportedOperationException(
+                    "TEMPERATURE_DRIVEN is declared but not implemented yet."
+            );
+        }
     }
 
     private void initializeSnapshots() {
