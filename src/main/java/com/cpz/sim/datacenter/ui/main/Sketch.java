@@ -27,7 +27,7 @@ import java.io.File;
 
 import static com.cpz.sim.datacenter.ui.main.Launcher.LOG;
 import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
-import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_BACKGROUND;
+import static com.cpz.sim.datacenter.ui.util.Constants.*;
 
 /**
  * Active Processing sketch and composition root for the datacenter UI.
@@ -42,6 +42,7 @@ public class Sketch extends PApplet {
 
     private InfrastructureContainer infrastructureContainer;
     private UiStateContainer uiStateContainer;
+    private SimulationManager simulationManager;
     private HeaderUpdater headerUpdater;
     private UiUpdateCoordinator uiUpdateCoordinator;
     private UiInteractionController uiInteractionController;
@@ -104,7 +105,7 @@ public class Sketch extends PApplet {
         resourceManager.initialize();
         // These setup locals remain reachable through the runtime coordinators that own them.
         SimulationContainer simulationContainer = new SimulationContainer();
-        SimulationManager simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
+        simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         CoolingToggleManager coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
         SelectionManager selectionManager = new SelectionManager(context, simulationContainer, uiComponentContainer);
         uiInteractionController = new UiInteractionController(uiStateContainer, simulationManager, coolingToggleManager, selectionManager);
@@ -146,6 +147,7 @@ public class Sketch extends PApplet {
         uiUpdateCoordinator.updateSnapshotsIfNeeded();
         uiUpdateCoordinator.updateControlsIfNeeded();
         globalOverviewUpdater.update();
+        updateKeyboardPlayIndicators();
         // The gradient must sit above controls but below active/static foreground overlays.
         staticUiRenderer.drawBackground();
         controlRenderer.draw();
@@ -156,6 +158,13 @@ public class Sketch extends PApplet {
         );
         globalOverviewRenderer.draw();
         staticUiRenderer.drawOverlay();
+    }
+
+    private void updateKeyboardPlayIndicators() {
+        controlRenderer.updateIndicatorsPlay(
+                keyPressed && key == '-' && simulationManager.canDecreaseSimulationSpeed(),
+                keyPressed && key == '+' && simulationManager.canIncreaseSimulationSpeed()
+        );
     }
 
     private void btnClicked(String buttonCode) {
@@ -197,4 +206,5 @@ public class Sketch extends PApplet {
     public void keyReleased() {
         uiInteractionController.handleKeyReleased(keyCode);
     }
+
 }
