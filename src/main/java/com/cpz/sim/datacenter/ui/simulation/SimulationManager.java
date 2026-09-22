@@ -392,7 +392,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
 
     /** Selects the next configured speed factor, if one exists. */
     public void increaseSimulationSpeed() {
-        if (simulationContainer.simulationSpeedFactorIndex() >= simulationContainer.simulationSpeedFactors().size() - 1) return;
+        if (!canIncreaseSimulationSpeed()) return;
         int newIndex = simulationContainer.simulationSpeedFactorIndex() + 1;
         simulationContainer.setSimulationSpeedFactorIndex(newIndex);
         updateSimulationTimerPeriod();
@@ -401,7 +401,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
 
     /** Selects the previous configured speed factor, if one exists. */
     public void decreaseSimulationSpeed() {
-        if (simulationContainer.simulationSpeedFactorIndex() <= 0) return;
+        if (!canDecreaseSimulationSpeed()) return;
         int newIndex = simulationContainer.simulationSpeedFactorIndex() - 1;
         simulationContainer.setSimulationSpeedFactorIndex(newIndex);
         updateSimulationTimerPeriod();
