@@ -5,6 +5,7 @@ import com.cpz.sim.datacenter.cooling.CoolingConfiguration;
 import com.cpz.sim.datacenter.cooling.CoolingSnapshotCoordinator;
 import com.cpz.sim.datacenter.history.DatacenterSimulationHistory;
 import com.cpz.sim.datacenter.history.DatacenterSimulationHistoryRecorder;
+import com.cpz.sim.datacenter.input.ServerPowerInputSource;
 import com.cpz.sim.datacenter.model.Datacenter;
 import com.cpz.sim.datacenter.model.Rack;
 import com.cpz.sim.datacenter.snapshot.CoolingSnapshot;
@@ -77,6 +78,7 @@ public class SimulationContainer {
     private TemperatureSnapshot temperatureSnapshot;
     private DatacenterSimulationHistory simulationHistory;
     private DatacenterSimulationHistoryRecorder simulationHistoryRecorder;
+    private ServerPowerInputSource powerInputSource;
 
     /** Creates an empty backend container populated by {@link SimulationManager}. */
     public SimulationContainer() {
@@ -352,5 +354,13 @@ public class SimulationContainer {
 
     public void setSimulationHistoryRecorder(DatacenterSimulationHistoryRecorder simulationHistoryRecorder) {
         this.simulationHistoryRecorder = simulationHistoryRecorder;
+    }
+
+    public ServerPowerInputSource powerInputSource() {
+        return powerInputSource;
+    }
+
+    public void setPowerInputSource(ServerPowerInputSource powerInputSource) {
+        this.powerInputSource = powerInputSource;
     }
 }
