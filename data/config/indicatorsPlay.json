@@ -1,0 +1,48 @@
+{
+  "controls": [
+    {
+      "type": "indicator",
+      "code": "indPlayPlus",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9467986979,
+        "y": 0.9345986908,
+        "width": 0.02316213494,
+        "height": 0.02316213494
+      },
+      "on": false,
+      "onColor": "#ff00ffcc",
+      "offColor": "#0000ffcc",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indPlayPlus.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indPlayMinus",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.9296111979,
+        "y": 0.9345986908,
+        "width": 0.02316213494,
+        "height": 0.02316213494
+      },
+      "on": false,
+      "onColor": "#ff00ffcc",
+      "offColor": "#0000ffcc",
+      "style": {
+        "strokeColor": "#2e3c4a",
+        "strokeWeight": 0.0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indPlayMinus.svg"
+        }
+      }
+    }
+  ]
+}
