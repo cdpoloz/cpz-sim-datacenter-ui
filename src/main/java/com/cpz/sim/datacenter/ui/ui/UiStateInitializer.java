@@ -1,9 +1,13 @@
 package com.cpz.sim.datacenter.ui.ui;
 
+import com.cpz.sim.datacenter.input.DatacenterDataInputMode;
+import com.cpz.sim.datacenter.input.PowerInputGranularity;
 import com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot;
 import com.cpz.sim.datacenter.ui.app.ApplicationComponent;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
+
+import static com.cpz.sim.datacenter.input.PowerInputGranularity.RACK;
 
 /**
  * Initializes labels that are derived once after the first backend snapshot is available.
@@ -43,17 +47,27 @@ public class UiStateInitializer extends ApplicationComponent {
     }
 
     private void initializeDataInputMode() {
-        uiComponentContainer.labels().get("lblDataInputMode").setText(formatDataInputMode());
-    }
-
-    private String formatDataInputMode() {
         String dataInputMode = "DATA INPUT MODE: ";
-        switch (simulationContainer.datacenterDefinition().dataInputMode()) {
-            case UTILIZATION_DRIVEN -> dataInputMode += "UTILIZATION DRIVEN";
-            case POWER_DRIVEN -> dataInputMode += "POWER DRIVEN";
+        String selectedRackLoad = "LOAD";
+        String selectedRackPower = "POWER";
+        String inferred = " (i)";
+        DatacenterDataInputMode datacenterDataInputMode = simulationContainer.datacenterDefinition().dataInputMode();
+        PowerInputGranularity granularity = simulationContainer.datacenterDefinition().powerInputGranularity();
+        switch (datacenterDataInputMode) {
+            case UTILIZATION_DRIVEN -> {
+                dataInputMode += "UTILIZATION DRIVEN";
+                selectedRackPower += inferred;
+            }
+            case POWER_DRIVEN -> {
+                dataInputMode += "POWER DRIVEN - " + granularity;
+                selectedRackLoad += inferred;
+                if (granularity == RACK) selectedRackPower += inferred;
+            }
             case TEMPERATURE_DRIVEN -> dataInputMode += "TEMPERATURE DRIVEN";
         }
-        return dataInputMode;
+        uiComponentContainer.labels().get("lblDataInputMode").setText(dataInputMode);
+        uiComponentContainer.labels().get("lblSelectedRackLoad").setText(selectedRackLoad);
+        uiComponentContainer.labels().get("lblSelectedRackPower").setText(selectedRackPower);
     }
 
     private void initializeTemperatureScale(float minServerTemperatureCelsius, float maxServerTemperatureCelsius, String simpleTemperatureFormat) {
