@@ -15,9 +15,7 @@ import com.cpz.sim.datacenter.health.ServerHealthOptions;
 import com.cpz.sim.datacenter.history.DatacenterSimulationHistory;
 import com.cpz.sim.datacenter.history.DatacenterSimulationHistoryRecorder;
 import com.cpz.sim.datacenter.history.DatacenterSimulationStepSnapshot;
-import com.cpz.sim.datacenter.input.DatacenterDataInputMode;
-import com.cpz.sim.datacenter.input.NoiseServerPowerInputSource;
-import com.cpz.sim.datacenter.input.ServerPowerInputSource;
+import com.cpz.sim.datacenter.input.*;
 import com.cpz.sim.datacenter.model.Rack;
 import com.cpz.sim.datacenter.model.Server;
 import com.cpz.sim.datacenter.model.ServerLocation;
@@ -50,7 +48,6 @@ import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.cpz.sim.datacenter.input.DatacenterDataInputMode.TEMPERATURE_DRIVEN;
 import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
 
 /**
@@ -161,7 +158,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         switch (dataInputMode) {
             case UTILIZATION_DRIVEN -> initializeUtilizationDrivenInput(fractalNoise);
             case POWER_DRIVEN -> initializePowerDrivenInput(fractalNoise);
-            case TEMPERATURE_DRIVEN -> throw new UnsupportedOperationException("TEMPERATURE_DRIVEN is declared but not implemented yet.");
+            case TEMPERATURE_DRIVEN -> initializeTemperatureDrivenInput(fractalNoise);
         }
         simulationContainer.setClock(new SimulationClock(Duration.ofMinutes(1)));
     }
@@ -180,6 +177,10 @@ public class SimulationManager extends ApplicationComponent implements Initializ
     private void initializePowerDrivenInput(FractalNoise fractalNoise) {
         ServerPowerInputSource powerInputSource = new NoiseServerPowerInputSource(fractalNoise, 0.001, 0.20, 0.85);
         simulationContainer.setPowerInputSource(powerInputSource);
+    }
+
+    private void initializeTemperatureDrivenInput(FractalNoise fractalNoise) {
+        simulationContainer.setRackTemperatureInputSource(new SimulatedRackTemperatureInputSource());
     }
 
     private void initializeEngine() {
@@ -232,8 +233,13 @@ public class SimulationManager extends ApplicationComponent implements Initializ
                 simulationContainer.engine().register(new PowerConsumptionSystem(simulationContainer.datacenter()));
             }
             case POWER_DRIVEN -> simulationContainer.engine().register(new PowerInputSystem(simulationContainer.datacenter(), simulationContainer.powerInputSource()));
-            case TEMPERATURE_DRIVEN -> throw new UnsupportedOperationException(
-                    "TEMPERATURE_DRIVEN is declared but not implemented yet."
+            case TEMPERATURE_DRIVEN -> simulationContainer.engine().register(
+                    new RackTemperatureInputSystem(
+                            simulationContainer.datacenter(),
+                            simulationContainer.temperatureSystem(),
+                            simulationContainer.rackTemperatureInputSource(),
+                            simulationContainer.temperatureOptions()
+                    )
             );
         }
     }
@@ -342,8 +348,6 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         simulationContainer.setTemperatureSnapshot(stepSnapshot.temperatureSnapshot());
         simulationContainer.setHealthSnapshot(stepSnapshot.healthSnapshot());
         simulationContainer.setOperationalSnapshot(stepSnapshot.operationalSnapshot());
-        // debug
-        //printHistorySnapshot(stepSnapshot);
     }
 
     /**

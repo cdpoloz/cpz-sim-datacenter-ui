@@ -1,7 +1,8 @@
 {
   "name": "Complete 8x12 UI Test Datacenter",
-  "dataInputMode": "UTILIZATION_DRIVEN",
+  "dataInputMode": "TEMPERATURE_DRIVEN",
   "powerInputGranularity": "SERVER",
+  "temperatureInputGranularity": "RACK",
   "layout": {
     "room": {
       "code": "ROOM-01",
