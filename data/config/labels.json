@@ -3824,6 +3824,31 @@
         "alignY": "top",
         "disabledAlpha": 80
       }
+    },
+    {
+      "type": "label",
+      "code": "lblSelectedRackInferred",
+      "text": "(i): inferred",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.95629375,
+        "y": 0.5578252769,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "end",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
     }
   ]
 }
