@@ -1,8 +1,8 @@
 {
   "name": "Complete 8x12 UI Test Datacenter",
-  "dataInputMode": "TEMPERATURE_DRIVEN",
+  "dataInputMode": "UTILIZATION_DRIVEN",
   "powerInputGranularity": "SERVER",
-  "temperatureInputGranularity": "RACK",
+  "temperatureInputGranularity": "AISLE",
   "layout": {
     "room": {
       "code": "ROOM-01",
@@ -1831,6 +1831,41 @@
           "S10",
           "S11",
           "S12"
+        ]
+      }
+    ],
+    "hotAisles": [
+      {
+        "code": "HA01",
+        "columns": [
+          "C01"
+        ]
+      },
+      {
+        "code": "HA02",
+        "columns": [
+          "C02",
+          "C03"
+        ]
+      },
+      {
+        "code": "HA03",
+        "columns": [
+          "C04",
+          "C05"
+        ]
+      },
+      {
+        "code": "HA04",
+        "columns": [
+          "C06",
+          "C07"
+        ]
+      },
+      {
+        "code": "HA05",
+        "columns": [
+          "C08"
         ]
       }
     ]
