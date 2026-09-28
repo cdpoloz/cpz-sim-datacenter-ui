@@ -18,6 +18,7 @@ import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 import com.cpz.sim.datacenter.ui.ui.selection.SelectionManager;
 import com.cpz.utils.color.Colors;
+import processing.core.PApplet;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -156,7 +157,7 @@ public class SelectedAislePanelUpdater extends ApplicationComponent {
             String temperatureFormat,
             String percentageFormat
     ) {
-        Label averageTemperatureLabel = uiComponentContainer.labels().get("lblSelectedAisleAverageTemperatureValue");
+        Label averageTemperatureLabel = uiComponentContainer.labels().get("lblSelectedAisleAverageServerTemperatureValue");
         Label maxTemperatureLabel = uiComponentContainer.labels().get("lblSelectedAisleMaximumTemperatureValue");
         Label averageLoadLabel = uiComponentContainer.labels().get("lblSelectedAisleITLoadValue");
         uiComponentContainer
@@ -178,7 +179,6 @@ public class SelectedAislePanelUpdater extends ApplicationComponent {
                 temperatureFormat,
                 maxTemperatureLabel
         );
-
         updateAverageAisleMetrics(
                 aisleSnapshot,
                 minServerTemperatureCelsius,
@@ -239,11 +239,11 @@ public class SelectedAislePanelUpdater extends ApplicationComponent {
             Label averageLoadLabel
     ) {
         if (aisleSnapshot.hasOnlineServers()) {
-            double averageTemperature = aisleSnapshot.averageOnlineTemperatureCelsius();
+            double serverAverageTemperature = aisleSnapshot.averageOnlineTemperatureCelsius();
             double averageLoad = aisleSnapshot.averageOnlineUtilization();
-            int averageTemperatureColor = resolveTemperatureRangeColor((float) averageTemperature, minServerTemperatureCelsius, maxServerTemperatureCelsius);
+            int averageTemperatureColor = resolveTemperatureRangeColor((float) serverAverageTemperature, minServerTemperatureCelsius, maxServerTemperatureCelsius);
             averageTemperatureLabel.setTextColor(averageTemperatureColor);
-            averageTemperatureLabel.setText(String.format(temperatureFormat, averageTemperature));
+            averageTemperatureLabel.setText(String.format(temperatureFormat, serverAverageTemperature));
             averageLoadLabel.setText(String.format(percentageFormat, averageLoad * 100));
         } else {
             averageTemperatureLabel.setTextColor(COLOR_WHITE_LABEL);
@@ -304,7 +304,7 @@ public class SelectedAislePanelUpdater extends ApplicationComponent {
             float minServerTemperatureCelsius,
             float maxServerTemperatureCelsius
     ) {
-        float factor = sketch().map(temperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1);
+        float factor = PApplet.map(temperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1);
         factor = Math.clamp(factor, 0, 1);
         return Colors.lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, factor);
     }
