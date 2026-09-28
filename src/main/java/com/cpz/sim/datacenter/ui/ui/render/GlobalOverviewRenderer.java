@@ -2,10 +2,7 @@ package com.cpz.sim.datacenter.ui.ui.render;
 
 import com.cpz.sim.datacenter.history.DatacenterSimulationStepSnapshot;
 import com.cpz.sim.datacenter.model.RackLocation;
-import com.cpz.sim.datacenter.snapshot.CoolingSnapshot;
-import com.cpz.sim.datacenter.snapshot.CoolingZoneSnapshot;
-import com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot;
-import com.cpz.sim.datacenter.snapshot.ServerGroupOperationalSnapshot;
+import com.cpz.sim.datacenter.snapshot.*;
 import com.cpz.sim.datacenter.ui.app.ApplicationComponent;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
@@ -16,8 +13,7 @@ import processing.core.PApplet;
 import java.util.List;
 
 import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
-import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_BLUE_LABEL;
-import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_MAGENTA_LABEL;
+import static com.cpz.sim.datacenter.ui.util.Constants.*;
 
 /**
  * Draws Global Overview panel charts from the recorded simulation history.
@@ -346,7 +342,14 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
                 minX,
                 minY,
                 maxY,
-                COLOR_MAGENTA_LABEL
+                COLOR_MAX_TEMPERATURE
+        );
+        drawTemperatureSeries(
+                latestDisplayedRoomAverageTemperatures(sampleCount),
+                minX,
+                minY,
+                maxY,
+                COLOR_MIN_TEMPERATURE
         );
     }
 
@@ -357,14 +360,26 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
         return history
                 .subList(fromIndex, history.size())
                 .stream()
-                .map(DatacenterSimulationStepSnapshot::operationalSnapshot)
-                .map(snapshot ->
-                        snapshot
-                                .findRack(selectedRackLocation)
-                                .map(RackOperationalSnapshot::representativeTemperatureCelsius)
+                .map(DatacenterSimulationStepSnapshot::temperatureSnapshot)
+                .map(temperatureSnapshot ->
+                        temperatureSnapshot
+                                .servers()
+                                .stream()
+                                .filter(server ->
+                                        server.location()
+                                                .column()
+                                                .equals(selectedRackLocation.column()))
+                                .filter(server ->
+                                        server.location()
+                                                .rackCode()
+                                                .equals(selectedRackLocation.rackCode()))
+                                .mapToDouble(ServerTemperatureSnapshot::temperatureCelsius)
+                                .max()
                                 .orElse(Double.NaN)
                 )
                 .toList();
     }
+
+
 
 }

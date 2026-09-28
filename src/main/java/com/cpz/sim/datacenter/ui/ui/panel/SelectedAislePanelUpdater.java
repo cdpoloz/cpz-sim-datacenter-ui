@@ -299,11 +299,7 @@ public class SelectedAislePanelUpdater extends ApplicationComponent {
                 .toList();
     }
 
-    private int resolveTemperatureRangeColor(
-            float temperature,
-            float minServerTemperatureCelsius,
-            float maxServerTemperatureCelsius
-    ) {
+    private int resolveTemperatureRangeColor(float temperature, float minServerTemperatureCelsius, float maxServerTemperatureCelsius) {
         float factor = PApplet.map(temperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1);
         factor = Math.clamp(factor, 0, 1);
         return Colors.lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, factor);

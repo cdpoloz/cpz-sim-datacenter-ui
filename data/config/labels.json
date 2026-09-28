@@ -2281,7 +2281,7 @@
       "text": "TEMPERATURE",
       "bounds": {
         "mode": "relative",
-        "x": 0.0967,
+        "x": 0.107116667,
         "y": 0.1423172205,
         "width": 0.0005035246727,
         "height": 0.01074185616
@@ -2306,7 +2306,7 @@
       "text": "--",
       "bounds": {
         "mode": "relative",
-        "x": 0.1370614583,
+        "x": 0.147478125,
         "y": 0.1587809668,
         "width": 0.0005035246727,
         "height": 0.01074185616
@@ -2331,7 +2331,7 @@
       "text": "--",
       "bounds": {
         "mode": "relative",
-        "x": 0.1764515625,
+        "x": 0.186868229,
         "y": 0.1587809668,
         "width": 0.0005035246727,
         "height": 0.01074185616
@@ -2356,7 +2356,7 @@
       "text": "--",
       "bounds": {
         "mode": "relative",
-        "x": 0.2158835938,
+        "x": 0.22630026,
         "y": 0.1587809668,
         "width": 0.0005035246727,
         "height": 0.01074185616
@@ -2381,7 +2381,7 @@
       "text": "--",
       "bounds": {
         "mode": "relative",
-        "x": 0.2553200521,
+        "x": 0.265736719,
         "y": 0.1587809668,
         "width": 0.0005035246727,
         "height": 0.01074185616
@@ -2406,7 +2406,7 @@
       "text": "--",
       "bounds": {
         "mode": "relative",
-        "x": 0.2947614583,
+        "x": 0.305178125,
         "y": 0.1587809668,
         "width": 0.0005035246727,
         "height": 0.01074185616
@@ -2431,7 +2431,7 @@
       "text": "--",
       "bounds": {
         "mode": "relative",
-        "x": 0.3342026042,
+        "x": 0.344619271,
         "y": 0.1587809668,
         "width": 0.0005035246727,
         "height": 0.01074185616
@@ -3928,7 +3928,7 @@
     {
       "type": "label",
       "code": "lblTrendsRoomTemperature01",
-      "text": "25°C",
+      "text": "",
       "bounds": {
         "mode": "relative",
         "x": 0.480560156,
@@ -3953,7 +3953,7 @@
     {
       "type": "label",
       "code": "lblTrendsRoomTemperature02",
-      "text": "50°C",
+      "text": "",
       "bounds": {
         "mode": "relative",
         "x": 0.480560156,
@@ -3978,7 +3978,7 @@
     {
       "type": "label",
       "code": "lblTrendsRoomTemperature03",
-      "text": "75°C",
+      "text": "",
       "bounds": {
         "mode": "relative",
         "x": 0.480560156,
@@ -4003,7 +4003,7 @@
     {
       "type": "label",
       "code": "lblTrendsRoomTemperature04",
-      "text": "100°C",
+      "text": "",
       "bounds": {
         "mode": "relative",
         "x": 0.480560156,
@@ -4021,6 +4021,106 @@
         "textColor": "#f2ebe7",
         "lineSpacingMultiplier": 1.0,
         "alignX": "end",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblTrendsItLoad",
+      "text": "IT LOAD",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.68037526,
+        "y": 0.719652568,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblTrendsTotalLoad",
+      "text": "TOTAL LOAD",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.732335677,
+        "y": 0.719652568,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblRoomAverageTemperature",
+      "text": "AVG ROOM TEMP",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.067846354,
+        "y": 0.1309597180,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblRoomAverageTemperatureValue",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.067846354,
+        "y": 0.1506374622,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.02114803625
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#00ffcc",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "center",
         "alignY": "top",
         "disabledAlpha": 80
       }

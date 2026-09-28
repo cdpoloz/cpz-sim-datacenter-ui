@@ -300,7 +300,6 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
                         .filter(server -> server.location().column().equals(selectedRackLocation.column()))
                         .filter(server -> server.location().rackCode().equals(selectedRackLocation.rackCode()))
                         .max(Comparator.comparingDouble(ServerTemperatureSnapshot::temperatureCelsius));
-
         double maximumTemperatureCelsius = hottestServer.map(ServerTemperatureSnapshot::temperatureCelsius).orElse(Double.NaN);
         String hottestServerSlot =
                 hottestServer
