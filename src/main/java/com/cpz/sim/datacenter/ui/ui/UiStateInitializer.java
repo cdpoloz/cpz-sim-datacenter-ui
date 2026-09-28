@@ -7,6 +7,7 @@ import com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot;
 import com.cpz.sim.datacenter.ui.app.ApplicationComponent;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
+import processing.core.PApplet;
 
 /**
  * Initializes labels that are derived once after the first backend snapshot is available.
@@ -21,8 +22,8 @@ public class UiStateInitializer extends ApplicationComponent {
     /**
      * Creates the one-time UI state initializer.
      *
-     * @param context Processing time and mapping access
-     * @param simulationContainer source of initial operational totals
+     * @param context              Processing time and mapping access
+     * @param simulationContainer  source of initial operational totals
      * @param uiComponentContainer controls to populate
      */
     public UiStateInitializer(ApplicationContext context, SimulationContainer simulationContainer, UiComponentContainer uiComponentContainer) {
@@ -36,10 +37,11 @@ public class UiStateInitializer extends ApplicationComponent {
      *
      * @param minServerTemperatureCelsius scale lower bound
      * @param maxServerTemperatureCelsius scale upper bound
-     * @param simpleTemperatureFormat format used by integer-like legend labels
+     * @param simpleTemperatureFormat     format used by integer-like legend labels
      */
     public void initialize(float minServerTemperatureCelsius, float maxServerTemperatureCelsius, String simpleTemperatureFormat) {
         initializeTemperatureScale(minServerTemperatureCelsius, maxServerTemperatureCelsius, simpleTemperatureFormat);
+        initializeTemperatureTrendLabels(maxServerTemperatureCelsius, simpleTemperatureFormat);
         initializeRoomServerTotals();
         initializeDataInputMode();
         initializeDateTime();
@@ -80,11 +82,19 @@ public class UiStateInitializer extends ApplicationComponent {
     private void initializeTemperatureScale(float minServerTemperatureCelsius, float maxServerTemperatureCelsius, String simpleTemperatureFormat) {
         uiComponentContainer.labels().get("lblRoomTemperatureScale01").setText(String.format(simpleTemperatureFormat, minServerTemperatureCelsius));
         for (int i = 0; i < 5; i++) {
-            float temperature = sketch().map(i, 0, 5, minServerTemperatureCelsius, maxServerTemperatureCelsius);
+            float temperature = PApplet.map(i, 0, 5, minServerTemperatureCelsius, maxServerTemperatureCelsius);
             String temperatureScaleLabelCode = "lblRoomTemperatureScale0" + (i + 1);
             uiComponentContainer.labels().get(temperatureScaleLabelCode).setText(String.format(simpleTemperatureFormat, temperature));
         }
         uiComponentContainer.labels().get("lblRoomTemperatureScale06").setText(String.format(simpleTemperatureFormat, maxServerTemperatureCelsius));
+    }
+
+    private void initializeTemperatureTrendLabels(float maxServerTemperatureCelsius, String simpleTemperatureFormat) {
+        for (int i = 1; i < 5; i++) {
+            float temperature = maxServerTemperatureCelsius * i / 4.0f;
+            String temperatureScaleLabelCode = "lblTrendsRoomTemperature0" + i;
+            uiComponentContainer.labels().get(temperatureScaleLabelCode).setText(String.format(simpleTemperatureFormat, temperature));
+        }
     }
 
     private void initializeRoomServerTotals() {
@@ -113,21 +123,21 @@ public class UiStateInitializer extends ApplicationComponent {
                 .labels()
                 .get("lblDate")
                 .setText(
-                        String.format("%02d", sketch().day())
+                        String.format("%02d", PApplet.day())
                                 + "/"
-                                + String.format("%02d", sketch().month())
+                                + String.format("%02d", PApplet.month())
                                 + "/"
-                                + sketch().year()
+                                + PApplet.year()
                 );
         uiComponentContainer
                 .labels()
                 .get("lblTime")
                 .setText(
-                        String.format("%02d", sketch().hour())
+                        String.format("%02d", PApplet.hour())
                                 + ":"
-                                + String.format("%02d", sketch().minute())
+                                + String.format("%02d", PApplet.minute())
                                 + ":"
-                                + String.format("%02d", sketch().second())
+                                + String.format("%02d", PApplet.second())
                 );
     }
 }
