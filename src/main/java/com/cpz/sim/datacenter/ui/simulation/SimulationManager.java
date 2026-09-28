@@ -15,6 +15,7 @@ import com.cpz.sim.datacenter.health.ServerHealthOptions;
 import com.cpz.sim.datacenter.history.DatacenterSimulationHistory;
 import com.cpz.sim.datacenter.history.DatacenterSimulationHistoryRecorder;
 import com.cpz.sim.datacenter.history.DatacenterSimulationStepSnapshot;
+import com.cpz.sim.datacenter.history.HotAisleTemperatureHistoryRecorder;
 import com.cpz.sim.datacenter.input.*;
 import com.cpz.sim.datacenter.model.Rack;
 import com.cpz.sim.datacenter.model.Server;
@@ -316,6 +317,14 @@ public class SimulationManager extends ApplicationComponent implements Initializ
 
     private void initializeHistory() {
         simulationContainer.setSimulationHistory(new DatacenterSimulationHistory());
+        HotAisleTemperatureHistoryRecorder
+                hotAisleTemperatureHistoryRecorder =
+                new HotAisleTemperatureHistoryRecorder(
+                        rackLocation -> simulationContainer
+                                .hotAisleByColumn()
+                                .get(rackLocation.column())
+                                .code()
+                );
         simulationContainer.setSimulationHistoryRecorder(
                 new DatacenterSimulationHistoryRecorder(
                         simulationContainer.energySnapshotProvider(),
@@ -323,7 +332,8 @@ public class SimulationManager extends ApplicationComponent implements Initializ
                         simulationContainer.healthSnapshotProvider(),
                         simulationContainer.operationalSnapshotProvider(),
                         () -> Optional.ofNullable(simulationContainer.coolingSnapshot()),
-                        simulationContainer.simulationHistory()
+                        simulationContainer.simulationHistory(),
+                        hotAisleTemperatureHistoryRecorder
                 )
         );
     }
