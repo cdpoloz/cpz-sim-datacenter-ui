@@ -1,18 +1,23 @@
 package com.cpz.sim.datacenter.ui.ui.render;
 
 import com.cpz.sim.datacenter.history.DatacenterSimulationStepSnapshot;
+import com.cpz.sim.datacenter.model.RackLocation;
 import com.cpz.sim.datacenter.snapshot.CoolingSnapshot;
 import com.cpz.sim.datacenter.snapshot.CoolingZoneSnapshot;
 import com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot;
+import com.cpz.sim.datacenter.snapshot.ServerGroupOperationalSnapshot;
 import com.cpz.sim.datacenter.ui.app.ApplicationComponent;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.ui.UiStateContainer;
+import com.cpz.sim.datacenter.ui.ui.selection.SelectionManager;
+import processing.core.PApplet;
 
 import java.util.List;
 
 import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
 import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_BLUE_LABEL;
+import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_MAGENTA_LABEL;
 
 /**
  * Draws Global Overview panel charts from the recorded simulation history.
@@ -23,25 +28,30 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
 
     private final SimulationContainer simulationContainer;
     private final UiStateContainer uiStateContainer;
+    private final SelectionManager selectionManager;
 
     /**
      * Creates a renderer for Global Overview history charts.
      *
-     * @param context Processing drawing and coordinate-mapping access
+     * @param context             Processing drawing and coordinate-mapping access
      * @param simulationContainer recorded simulation history
-     * @param uiStateContainer shared UI temperature scale
+     * @param uiStateContainer    shared UI temperature scale
      */
     public GlobalOverviewRenderer(
             ApplicationContext context,
             SimulationContainer simulationContainer,
-            UiStateContainer uiStateContainer
+            UiStateContainer uiStateContainer,
+            SelectionManager selectionManager
     ) {
         super(context);
         this.simulationContainer = simulationContainer;
         this.uiStateContainer = uiStateContainer;
+        this.selectionManager = selectionManager;
     }
 
-    /** Draws all currently implemented Global Overview charts. */
+    /**
+     * Draws all currently implemented Global Overview charts.
+     */
     public void draw() {
         if (simulationContainer == null || simulationContainer.simulationHistory() == null) return;
         sketch().pushStyle();
@@ -50,6 +60,7 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
         drawDisplayedRoomAverageItLoadGraph();
         drawDisplayedRoomHvacLoadGraph();
         drawDisplayedRoomEstimatedPowerLoadGraph();
+        drawDisplayedRoomHottestServerTemperatureGraph();
         sketch().popStyle();
     }
 
@@ -96,10 +107,25 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
         }
     }
 
+    private void drawTemperatureSeries(List<Double> temperatures, float minX, float minY, float maxY, int strokeColor) {
+        sketch().strokeWeight(Float.parseFloat(PROPS.getProperty("ui.global.overview.graph.stroke.weigth")) * sketch().height);
+        sketch().stroke(strokeColor);
+        for (int i = 1; i < temperatures.size(); i++) {
+            double previousTemperature = temperatures.get(i - 1);
+            double temperature = temperatures.get(i);
+            if (!Double.isFinite(previousTemperature) || !Double.isFinite(temperature)) continue;
+            float x = minX * sketch().width + i;
+            float y = yForTemperature(temperature, minY, maxY);
+            float previousX = minX * sketch().width + i - 1;
+            float previousY = yForTemperature(previousTemperature, minY, maxY);
+            sketch().line(x, y, previousX, previousY);
+        }
+    }
+
     private float yForTemperature(double temperature, float minY, float maxY) {
-        float y = sketch().map(
+        float y = PApplet.map(
                 (float) temperature,
-                uiStateContainer.minServerTemperatureCelsius(),
+                0,
                 uiStateContainer.maxServerTemperatureCelsius(),
                 maxY * sketch().height,
                 minY * sketch().height
@@ -304,7 +330,41 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
     }
 
     private float yForMegawatts(double megawatts, float minY, float maxY) {
-        float y = sketch().map((float) megawatts, 0.0f, 0.35f, maxY * sketch().height, minY * sketch().height);
+        float y = PApplet.map((float) megawatts, 0.0f, 0.35f, maxY * sketch().height, minY * sketch().height);
         return Math.clamp(y, minY * sketch().height, maxY * sketch().height);
     }
+
+    private void drawDisplayedRoomHottestServerTemperatureGraph() {
+        float minX = Float.parseFloat(PROPS.getProperty("ui.hottest.server.temperature.min.x"));
+        float maxX = Float.parseFloat(PROPS.getProperty("ui.hottest.server.temperature.max.x"));
+        float minY = Float.parseFloat(PROPS.getProperty("ui.hottest.server.temperature.min.y"));
+        float maxY = Float.parseFloat(PROPS.getProperty("ui.hottest.server.temperature.max.y"));
+        int sampleCount = (int) ((maxX - minX) * sketch().width);
+        RackLocation selectedRackLocation = new RackLocation(selectionManager.selectedColumn(), selectionManager.selectedRack());
+        drawTemperatureSeries(
+                latestDisplayedSelectedRackHottestServerTemperatures(selectedRackLocation, sampleCount),
+                minX,
+                minY,
+                maxY,
+                COLOR_MAGENTA_LABEL
+        );
+    }
+
+    private List<Double> latestDisplayedSelectedRackHottestServerTemperatures(RackLocation selectedRackLocation, int sampleCount) {
+        if (selectedRackLocation == null || sampleCount <= 0) return List.of();
+        List<DatacenterSimulationStepSnapshot> history = simulationContainer.simulationHistory().snapshots();
+        int fromIndex = Math.max(0, history.size() - sampleCount);
+        return history
+                .subList(fromIndex, history.size())
+                .stream()
+                .map(DatacenterSimulationStepSnapshot::operationalSnapshot)
+                .map(snapshot ->
+                        snapshot
+                                .findRack(selectedRackLocation)
+                                .map(RackOperationalSnapshot::representativeTemperatureCelsius)
+                                .orElse(Double.NaN)
+                )
+                .toList();
+    }
+
 }
