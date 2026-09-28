@@ -2,17 +2,19 @@ package com.cpz.sim.datacenter.ui.ui.panel;
 
 import com.cpz.processing.controls.controls.label.Label;
 import com.cpz.sim.datacenter.history.DatacenterSimulationStepSnapshot;
-import com.cpz.sim.datacenter.snapshot.CoolingZoneSnapshot;
-import com.cpz.sim.datacenter.snapshot.DatacenterOperationalSnapshot;
-import com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot;
+import com.cpz.sim.datacenter.model.RackLocation;
+import com.cpz.sim.datacenter.model.ServerLocation;
+import com.cpz.sim.datacenter.snapshot.*;
 import com.cpz.sim.datacenter.ui.app.ApplicationComponent;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 import com.cpz.sim.datacenter.ui.ui.UiFormatContainer;
+import com.cpz.sim.datacenter.ui.ui.selection.SelectionManager;
 import com.cpz.utils.color.Colors;
 import processing.core.PApplet;
 
+import java.util.Comparator;
 import java.util.Optional;
 
 import static com.cpz.sim.datacenter.ui.util.Constants.*;
@@ -27,26 +29,31 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
     private final SimulationContainer simulationContainer;
     private final UiComponentContainer uiComponentContainer;
     private final UiFormatContainer uiFormatContainer;
+    private final SelectionManager selectionManager;
 
     /**
      * Creates an updater for Global Overview labels.
      *
-     * @param simulationContainer simulation state and recorded history
+     * @param simulationContainer  simulation state and recorded history
      * @param uiComponentContainer configured UI labels
      */
     public GlobalOverviewUpdater(
             ApplicationContext context,
             SimulationContainer simulationContainer,
             UiComponentContainer uiComponentContainer,
-            UiFormatContainer uiFormatContainer
+            UiFormatContainer uiFormatContainer,
+            SelectionManager selectionManager
     ) {
         super(context);
         this.simulationContainer = simulationContainer;
         this.uiComponentContainer = uiComponentContainer;
         this.uiFormatContainer = uiFormatContainer;
+        this.selectionManager = selectionManager;
     }
 
-    /** Updates all currently available Global Overview labels. */
+    /**
+     * Updates all currently available Global Overview labels.
+     */
     public void update() {
         if (simulationContainer == null || simulationContainer.operationalSnapshot() == null) return;
         if (uiComponentContainer == null) return;
@@ -57,6 +64,7 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
         updateDisplayedRoomTotalElectricalLoad();
         updateDisplayedRoomPue();
         updateDisplayedRoomSystemStatus();
+        updateDisplayedRoomTrends();
     }
 
     private void updateDisplayedRoomTemperature() {
@@ -276,6 +284,36 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
         uiComponentContainer.indicators().get("indSystemStatusWarning").setOn(status.equals("WARNING"));
         uiComponentContainer.indicators().get("indSystemStatusCritical").setOn(status.equals("CRITICAL"));
     }
+
+    private void updateDisplayedRoomTrends() {
+        if (!uiComponentContainer.labels().containsKey("lblTrendsMaximumTemperatureServer")
+                || !uiComponentContainer.labels().containsKey("lblTrendsRoomTemperature")
+        ) return;
+        Label lblTrendsMaximumTemperatureServer = uiComponentContainer.labels().get("lblTrendsMaximumTemperatureServer");
+        Label lblTrendsRoomTemperature = uiComponentContainer.labels().get("lblTrendsRoomTemperature");
+        RackLocation selectedRackLocation = new RackLocation(selectionManager.selectedColumn(), selectionManager.selectedRack());
+        TemperatureSnapshot temperatureSnapshot = simulationContainer.temperatureSnapshot();
+        Optional<ServerTemperatureSnapshot> hottestServer =
+                temperatureSnapshot
+                        .servers()
+                        .stream()
+                        .filter(server -> server.location().column().equals(selectedRackLocation.column()))
+                        .filter(server -> server.location().rackCode().equals(selectedRackLocation.rackCode()))
+                        .max(Comparator.comparingDouble(ServerTemperatureSnapshot::temperatureCelsius));
+
+        double maximumTemperatureCelsius = hottestServer.map(ServerTemperatureSnapshot::temperatureCelsius).orElse(Double.NaN);
+        String hottestServerSlot =
+                hottestServer
+                        .map(ServerTemperatureSnapshot::location)
+                        .map(ServerLocation::slot)
+                        .orElse("--");
+        String hottestServerLocation = selectionManager.selectedColumn() + "-" + selectionManager.selectedRack() + "-" + hottestServerSlot;
+        lblTrendsMaximumTemperatureServer.setText(hottestServerLocation + ":" + String.format(uiFormatContainer.temperature(), maximumTemperatureCelsius));
+        double roomTemperatureCelsius = simulationContainer.operationalSnapshot().roomTemperatureCelsius();
+        lblTrendsRoomTemperature.setText("ROOM TEMP:" + String.format(uiFormatContainer.temperature(), roomTemperatureCelsius));
+    }
+
+
 
     private String displayedRoomSystemStatus() {
         if (simulationContainer == null || simulationContainer.operationalSnapshot() == null) return "NO DATA";
