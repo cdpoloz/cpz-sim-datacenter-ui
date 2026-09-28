@@ -14,10 +14,7 @@ import com.cpz.sim.datacenter.ui.simulation.TemperatureRange;
 import com.cpz.sim.datacenter.ui.simulation.TemperatureRangeCalculator;
 import com.cpz.sim.datacenter.ui.ui.*;
 import com.cpz.sim.datacenter.ui.ui.panel.*;
-import com.cpz.sim.datacenter.ui.ui.render.ControlRenderer;
-import com.cpz.sim.datacenter.ui.ui.render.GlobalOverviewRenderer;
-import com.cpz.sim.datacenter.ui.ui.render.SelectedHotAisleTemperatureGradientRenderer;
-import com.cpz.sim.datacenter.ui.ui.render.StaticUiRenderer;
+import com.cpz.sim.datacenter.ui.ui.render.*;
 import com.cpz.sim.datacenter.ui.ui.selection.SelectionManager;
 import processing.core.PApplet;
 import processing.event.MouseEvent;
@@ -47,10 +44,12 @@ public class Sketch extends PApplet {
     private UiUpdateCoordinator uiUpdateCoordinator;
     private UiInteractionController uiInteractionController;
     private SelectedHotAisleTemperatureGradientRenderer selectedHotAisleTemperatureGradientRenderer;
+    private SelectedHotAisleTemperatureHistoryRenderer selectedHotAisleTemperatureHistoryRenderer;
     private StaticUiRenderer staticUiRenderer;
     private ControlRenderer controlRenderer;
     private GlobalOverviewUpdater globalOverviewUpdater;
     private GlobalOverviewRenderer globalOverviewRenderer;
+    private SelectionManager selectionManager;
 
     /**
      * Configures the Processing surface before it is created.
@@ -107,7 +106,7 @@ public class Sketch extends PApplet {
         SimulationContainer simulationContainer = new SimulationContainer();
         simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         CoolingToggleManager coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
-        SelectionManager selectionManager = new SelectionManager(context, simulationContainer, uiComponentContainer);
+        selectionManager = new SelectionManager(context, simulationContainer, uiComponentContainer);
         uiInteractionController = new UiInteractionController(uiStateContainer, simulationManager, coolingToggleManager, selectionManager);
         headerUpdater = new HeaderUpdater(context, simulationContainer, uiComponentContainer);
         TemperatureRangeCalculator temperatureRangeCalculator = new TemperatureRangeCalculator();
@@ -121,6 +120,7 @@ public class Sketch extends PApplet {
         controlRenderer = new ControlRenderer(uiComponentContainer);
         globalOverviewUpdater = new GlobalOverviewUpdater(context, simulationContainer, uiComponentContainer, uiFormatContainer);
         globalOverviewRenderer = new GlobalOverviewRenderer(context, simulationContainer, uiStateContainer);
+        selectedHotAisleTemperatureHistoryRenderer = new SelectedHotAisleTemperatureHistoryRenderer(context, simulationContainer, uiStateContainer);
         simulationManager.initialize();
         selectionManager.initialize();
         // Use one backend-derived temperature scale for panels, room colors, and the gradient.
@@ -155,6 +155,9 @@ public class Sketch extends PApplet {
                 uiStateContainer.selectedHotAisleTemperatures(),
                 uiStateContainer.minServerTemperatureCelsius(),
                 uiStateContainer.maxServerTemperatureCelsius()
+        );
+        selectedHotAisleTemperatureHistoryRenderer.draw(
+                selectionManager.selectedHotAisle().code()
         );
         globalOverviewRenderer.draw();
         staticUiRenderer.drawOverlay();
