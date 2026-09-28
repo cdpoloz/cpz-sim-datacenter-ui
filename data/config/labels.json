@@ -1577,8 +1577,8 @@
     },
     {
       "type": "label",
-      "code": "lblSelectedAisleAverageTemperature",
-      "text": "AVG SERVER TEMP",
+      "code": "lblSelectedAisleAverageServerTemperature",
+      "text": "AVG AISLE TEMP",
       "bounds": {
         "mode": "relative",
         "x": 0.4946338542,
@@ -1602,7 +1602,7 @@
     },
     {
       "type": "label",
-      "code": "lblSelectedAisleAverageTemperatureValue",
+      "code": "lblSelectedAisleAverageServerTemperatureValue",
       "text": "--",
       "bounds": {
         "mode": "relative",
@@ -2027,12 +2027,12 @@
     },
     {
       "type": "label",
-      "code": "lblSelectedAisleTemperatureProfile",
-      "text": "TEMP PROFILE",
+      "code": "lblSelectedAisleTemperature",
+      "text": "AVG AISLE TEMP",
       "bounds": {
         "mode": "relative",
         "x": 0.6620606771,
-        "y": 0.2111923464,
+        "y": 0.200666667,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -3353,7 +3353,7 @@
     {
       "type": "label",
       "code": "lblAverageServerTemperature",
-      "text": "AVG SERVER TEMP",
+      "text": "AVG AISLE TEMP",
       "bounds": {
         "mode": "relative",
         "x": 0.06354817708,
