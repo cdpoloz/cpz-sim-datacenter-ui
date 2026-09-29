@@ -2,10 +2,7 @@ package com.cpz.sim.datacenter.ui.ui.render;
 
 import com.cpz.sim.datacenter.history.DatacenterSimulationStepSnapshot;
 import com.cpz.sim.datacenter.model.RackLocation;
-import com.cpz.sim.datacenter.snapshot.CoolingSnapshot;
-import com.cpz.sim.datacenter.snapshot.CoolingZoneSnapshot;
-import com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot;
-import com.cpz.sim.datacenter.snapshot.ServerGroupOperationalSnapshot;
+import com.cpz.sim.datacenter.snapshot.*;
 import com.cpz.sim.datacenter.ui.app.ApplicationComponent;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
@@ -16,8 +13,7 @@ import processing.core.PApplet;
 import java.util.List;
 
 import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
-import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_BLUE_LABEL;
-import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_MAGENTA_LABEL;
+import static com.cpz.sim.datacenter.ui.util.Constants.*;
 
 /**
  * Draws Global Overview panel charts from the recorded simulation history.
@@ -61,6 +57,7 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
         drawDisplayedRoomHvacLoadGraph();
         drawDisplayedRoomEstimatedPowerLoadGraph();
         drawDisplayedRoomHottestServerTemperatureGraph();
+        drawDisplayedRoomItAndPowerLoadGraph();
         sketch().popStyle();
     }
 
@@ -74,7 +71,8 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
                 latestDisplayedRoomAverageTemperatures(sampleCount),
                 minX,
                 minY,
-                maxY
+                maxY,
+                COLOR_BLUE_LABEL
         );
     }
 
@@ -88,23 +86,9 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
                 latestDisplayedRoomMaximumRackTemperatures(sampleCount),
                 minX,
                 minY,
-                maxY
+                maxY,
+                COLOR_BLUE_LABEL
         );
-    }
-
-    private void drawTemperatureSeries(List<Double> temperatures, float minX, float minY, float maxY) {
-        sketch().strokeWeight(Float.parseFloat(PROPS.getProperty("ui.global.overview.graph.stroke.weigth")) * sketch().height);
-        sketch().stroke(COLOR_BLUE_LABEL);
-        for (int i = 1; i < temperatures.size(); i++) {
-            double previousTemperature = temperatures.get(i - 1);
-            double temperature = temperatures.get(i);
-            if (!Double.isFinite(previousTemperature) || !Double.isFinite(temperature)) continue;
-            float x = minX * sketch().width + i;
-            float y = yForTemperature(temperature, minY, maxY);
-            float previousX = minX * sketch().width + i - 1;
-            float previousY = yForTemperature(previousTemperature, minY, maxY);
-            sketch().line(x, y, previousX, previousY);
-        }
     }
 
     private void drawTemperatureSeries(List<Double> temperatures, float minX, float minY, float maxY, int strokeColor) {
@@ -184,12 +168,12 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
         float minY = Float.parseFloat(PROPS.getProperty("ui.average.it.load.min.y"));
         float maxY = Float.parseFloat(PROPS.getProperty("ui.average.it.load.max.y"));
         int sampleCount = (int) ((maxX - minX) * sketch().width);
-        drawPercentageSeries(latestDisplayedRoomAverageItLoads(sampleCount), minX, minY, maxY);
+        drawPercentageSeries(latestDisplayedRoomAverageItLoads(sampleCount), minX, minY, maxY, COLOR_BLUE_LABEL);
     }
 
-    private void drawPercentageSeries(List<Double> percentages, float minX, float minY, float maxY) {
+    private void drawPercentageSeries(List<Double> percentages, float minX, float minY, float maxY, int strokeColor) {
         sketch().strokeWeight(Float.parseFloat(PROPS.getProperty("ui.global.overview.graph.stroke.weigth")) * sketch().height);
-        sketch().stroke(COLOR_BLUE_LABEL);
+        sketch().stroke(strokeColor);
         for (int i = 1; i < percentages.size(); i++) {
             double previousPercentage = percentages.get(i - 1);
             double percentage = percentages.get(i);
@@ -203,7 +187,7 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
     }
 
     private float yForPercentage(double percentage, float minY, float maxY) {
-        float y = sketch().map((float) percentage, 0, 100, maxY * sketch().height, minY * sketch().height);
+        float y = PApplet.map((float) percentage, 0, 100, maxY * sketch().height, minY * sketch().height);
         return Math.clamp(y, minY * sketch().height, maxY * sketch().height);
     }
 
@@ -241,7 +225,7 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
         float minY = Float.parseFloat(PROPS.getProperty("ui.hvac.load.min.y"));
         float maxY = Float.parseFloat(PROPS.getProperty("ui.hvac.load.max.y"));
         int sampleCount = (int) ((maxX - minX) * sketch().width);
-        drawPercentageSeries(latestDisplayedRoomHvacLoads(sampleCount), minX, minY, maxY);
+        drawPercentageSeries(latestDisplayedRoomHvacLoads(sampleCount), minX, minY, maxY, COLOR_BLUE_LABEL);
     }
 
     private List<Double> latestDisplayedRoomHvacLoads(int n) {
@@ -346,7 +330,14 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
                 minX,
                 minY,
                 maxY,
-                COLOR_MAGENTA_LABEL
+                COLOR_MAX_TEMPERATURE
+        );
+        drawTemperatureSeries(
+                latestDisplayedRoomAverageTemperatures(sampleCount),
+                minX,
+                minY,
+                maxY,
+                COLOR_MIN_TEMPERATURE
         );
     }
 
@@ -357,14 +348,103 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
         return history
                 .subList(fromIndex, history.size())
                 .stream()
-                .map(DatacenterSimulationStepSnapshot::operationalSnapshot)
-                .map(snapshot ->
-                        snapshot
-                                .findRack(selectedRackLocation)
-                                .map(RackOperationalSnapshot::representativeTemperatureCelsius)
+                .map(DatacenterSimulationStepSnapshot::temperatureSnapshot)
+                .map(temperatureSnapshot ->
+                        temperatureSnapshot
+                                .servers()
+                                .stream()
+                                .filter(server ->
+                                        server.location()
+                                                .column()
+                                                .equals(selectedRackLocation.column()))
+                                .filter(server ->
+                                        server.location()
+                                                .rackCode()
+                                                .equals(selectedRackLocation.rackCode()))
+                                .mapToDouble(ServerTemperatureSnapshot::temperatureCelsius)
+                                .max()
                                 .orElse(Double.NaN)
                 )
                 .toList();
+    }
+
+    private void drawDisplayedRoomItAndPowerLoadGraph() {
+        float minX = Float.parseFloat(PROPS.getProperty("ui.it.total.load.min.x"));
+        float maxX = Float.parseFloat(PROPS.getProperty("ui.it.total.load.max.x"));
+        float minY = Float.parseFloat(PROPS.getProperty("ui.it.total.load.min.y"));
+        float maxY = Float.parseFloat(PROPS.getProperty("ui.it.total.load.max.y"));
+        int sampleCount = (int) ((maxX - minX) * sketch().width);
+        drawMegawattSeries(
+                latestDisplayedRoomItLoadsMegawatts(sampleCount),
+                minX,
+                minY,
+                maxY,
+                COLOR_BLUE_LABEL
+        );
+        drawMegawattSeries(
+                latestDisplayedRoomTotalLoadsMegawatts(sampleCount),
+                minX,
+                minY,
+                maxY,
+                COLOR_YELLOW_LABEL
+        );
+    }
+
+    private List<Double> latestDisplayedRoomItLoadsMegawatts(int n) {
+        return simulationContainer
+                .simulationHistory()
+                .latest(n)
+                .stream()
+                .map(snapshot -> snapshot.operationalSnapshot()
+                        .currentItPowerWatts() / 1_000_000.0)
+                .toList();
+    }
+
+    private List<Double> latestDisplayedRoomTotalLoadsMegawatts(int n) {
+        return simulationContainer
+                .simulationHistory()
+                .latest(n)
+                .stream()
+                .map(snapshot -> {
+                    double totalPowerWatts = snapshot.operationalSnapshot().totalFacilityPowerWatts();
+                    return Double.isFinite(totalPowerWatts)
+                            ? totalPowerWatts / 1_000_000.0
+                            : Double.NaN;
+                })
+                .toList();
+    }
+
+    private void drawMegawattSeries(List<Double> percentages, float minX, float minY, float maxY, int strokeColor) {
+        sketch().strokeWeight(Float.parseFloat(PROPS.getProperty("ui.global.overview.graph.stroke.weigth")) * sketch().height);
+        sketch().stroke(strokeColor);
+        float displayedRoomMaximumPowerMegawatts = (float) displayedRoomMaximumPowerMegawatts();
+        for (int i = 1; i < percentages.size(); i++) {
+            double previousPercentage = percentages.get(i - 1);
+            double percentage = percentages.get(i);
+            if (!Double.isFinite(previousPercentage) || !Double.isFinite(percentage)) continue;
+            float x = minX * sketch().width + i;
+            float y = yForPower(percentage, minY, maxY, displayedRoomMaximumPowerMegawatts);
+            float previousX = minX * sketch().width + i - 1;
+            float previousY = yForPower(previousPercentage, minY, maxY, displayedRoomMaximumPowerMegawatts);
+            sketch().line(x, y, previousX, previousY);
+        }
+    }
+
+    private double displayedRoomMaximumPowerMegawatts() {
+        DatacenterOperationalSnapshot operationalSnapshot = simulationContainer.operationalSnapshot();
+        double maxItPowerWatts = operationalSnapshot.maxItPowerWatts();
+        double maxCoolingPowerWatts = simulationContainer.coolingSnapshot() == null
+                ? 0.0
+                : simulationContainer.coolingSnapshot().ratedElectricalPowerWatts();
+        return (maxItPowerWatts + maxCoolingPowerWatts) / 1_000_000.0;
+    }
+
+    private float yForPower(double power, float minY, float maxY, float displayedRoomMaximumPowerMegawatts) {
+
+
+
+        float y = PApplet.map((float) power, 0, displayedRoomMaximumPowerMegawatts, maxY * sketch().height, minY * sketch().height);
+        return Math.clamp(y, minY * sketch().height, maxY * sketch().height);
     }
 
 }

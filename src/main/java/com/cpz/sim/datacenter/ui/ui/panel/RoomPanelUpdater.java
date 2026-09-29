@@ -1,6 +1,7 @@
 package com.cpz.sim.datacenter.ui.ui.panel;
 
 import com.cpz.processing.controls.controls.indicator.Indicator;
+import com.cpz.processing.controls.controls.label.Label;
 import com.cpz.sim.datacenter.model.Rack;
 import com.cpz.sim.datacenter.model.RackLocation;
 import com.cpz.sim.datacenter.model.Server;
@@ -11,7 +12,9 @@ import com.cpz.sim.datacenter.ui.app.ApplicationComponent;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
+import com.cpz.sim.datacenter.ui.ui.UiFormatContainer;
 import com.cpz.utils.color.Colors;
+import processing.core.PApplet;
 
 import java.util.List;
 
@@ -29,6 +32,7 @@ public class RoomPanelUpdater extends ApplicationComponent {
 
     private final SimulationContainer simulationContainer;
     private final UiComponentContainer uiComponentContainer;
+    private final UiFormatContainer uiFormatContainer;
 
     /**
      * Creates a room updater for the backend model and configured room Indicators.
@@ -40,11 +44,13 @@ public class RoomPanelUpdater extends ApplicationComponent {
     public RoomPanelUpdater(
             ApplicationContext context,
             SimulationContainer simulationContainer,
-            UiComponentContainer uiComponentContainer
+            UiComponentContainer uiComponentContainer,
+            UiFormatContainer uiFormatContainer
     ) {
         super(context);
         this.simulationContainer = simulationContainer;
         this.uiComponentContainer = uiComponentContainer;
+        this.uiFormatContainer = uiFormatContainer;
     }
 
     /**
@@ -53,17 +59,30 @@ public class RoomPanelUpdater extends ApplicationComponent {
      * @param minServerTemperatureCelsius lower color-scale bound
      * @param maxServerTemperatureCelsius upper color-scale bound
      */
-    public void update(
-            float minServerTemperatureCelsius,
-            float maxServerTemperatureCelsius
-    ) {
+    public void update(float minServerTemperatureCelsius, float maxServerTemperatureCelsius) {
         updateRoomHotAisleIndicator("HA01", "indRoomHotAisleC01", minServerTemperatureCelsius, maxServerTemperatureCelsius);
         updateRoomHotAisleIndicator("HA02", "indRoomHotAisleC02-C03", minServerTemperatureCelsius, maxServerTemperatureCelsius);
         updateRoomHotAisleIndicator("HA03", "indRoomHotAisleC04-C05", minServerTemperatureCelsius, maxServerTemperatureCelsius);
         updateRoomHotAisleIndicator("HA04", "indRoomHotAisleC06-C07", minServerTemperatureCelsius, maxServerTemperatureCelsius);
         updateRoomHotAisleIndicator("HA05", "indRoomHotAisleC08", minServerTemperatureCelsius, maxServerTemperatureCelsius);
+        updateRoomAverageTemperatureLabel(minServerTemperatureCelsius, maxServerTemperatureCelsius);
         for (Rack rack : simulationContainer.datacenter().getRacks())
             updateRackIndicator(rack, minServerTemperatureCelsius, maxServerTemperatureCelsius);
+    }
+
+    private void updateRoomAverageTemperatureLabel(float minServerTemperatureCelsius, float maxServerTemperatureCelsius) {
+        if (!uiComponentContainer.labels().containsKey("lblRoomAverageTemperatureValue")) return;
+        Label lblRoomAverageTemperatureValue = uiComponentContainer.labels().get("lblRoomAverageTemperatureValue");
+        double roomTemperatureCelsius = simulationContainer.operationalSnapshot().roomTemperatureCelsius();
+        int averageTemperatureColor = resolveTemperatureRangeColor((float) roomTemperatureCelsius, minServerTemperatureCelsius, maxServerTemperatureCelsius);
+        lblRoomAverageTemperatureValue.setText(String.format(uiFormatContainer.temperature(), roomTemperatureCelsius));
+        lblRoomAverageTemperatureValue.setTextColor(averageTemperatureColor);
+    }
+
+    private int resolveTemperatureRangeColor(float temperature, float minServerTemperatureCelsius, float maxServerTemperatureCelsius) {
+        float factor = PApplet.map(temperature, minServerTemperatureCelsius, maxServerTemperatureCelsius, 0, 1);
+        factor = Math.clamp(factor, 0, 1);
+        return Colors.lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, factor);
     }
 
     private void updateRackIndicator(Rack rack, float minServerTemperatureCelsius, float maxServerTemperatureCelsius) {

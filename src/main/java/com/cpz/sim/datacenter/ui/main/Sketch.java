@@ -112,7 +112,7 @@ public class Sketch extends PApplet {
         TemperatureRangeCalculator temperatureRangeCalculator = new TemperatureRangeCalculator();
         SelectedRackPanelUpdater selectedRackPanelUpdater = new SelectedRackPanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
         SelectedAislePanelUpdater selectedAislePanelUpdater = new SelectedAislePanelUpdater(context, simulationContainer, uiComponentContainer, selectionManager);
-        RoomPanelUpdater roomPanelUpdater = new RoomPanelUpdater(context, simulationContainer, uiComponentContainer);
+        RoomPanelUpdater roomPanelUpdater = new RoomPanelUpdater(context, simulationContainer, uiComponentContainer, uiFormatContainer);
         uiUpdateCoordinator = new UiUpdateCoordinator(uiStateContainer, uiFormatContainer, simulationManager, selectedRackPanelUpdater, selectedAislePanelUpdater, roomPanelUpdater);
         UiStateInitializer uiStateInitializer = new UiStateInitializer(context, simulationContainer, uiComponentContainer);
         selectedHotAisleTemperatureGradientRenderer = new SelectedHotAisleTemperatureGradientRenderer(context);

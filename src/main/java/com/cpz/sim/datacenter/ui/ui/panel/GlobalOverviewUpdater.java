@@ -234,36 +234,8 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
     }
 
     private double displayedRoomPue() {
-        double itPowerWatts = displayedRoomItPowerWatts();
-        if (itPowerWatts == 0.0) return Double.NaN;
-        double estimatedTotalElectricalPowerWatts = displayedRoomEstimatedTotalElectricalPowerWatts();
-        return estimatedTotalElectricalPowerWatts / itPowerWatts;
-    }
-
-    private double displayedRoomItPowerWatts() {
-        return simulationContainer
-                .operationalSnapshot()
-                .racks()
-                .values()
-                .stream()
-                .mapToDouble(RackOperationalSnapshot::currentPowerWatts)
-                .sum();
-    }
-
-    private double displayedRoomEstimatedTotalElectricalPowerWatts() {
-        double TEMPORARY_HVAC_COP = 3.0;
-        double itPowerWatts = displayedRoomItPowerWatts();
-        double usedCoolingCapacityWatts = 0.0;
-        if (simulationContainer.coolingSnapshot() != null) {
-            usedCoolingCapacityWatts = simulationContainer
-                    .coolingSnapshot()
-                    .zones()
-                    .stream()
-                    .mapToDouble(CoolingZoneSnapshot::usedCoolingCapacityWatts)
-                    .sum();
-        }
-        double estimatedHvacElectricalPowerWatts = usedCoolingCapacityWatts / TEMPORARY_HVAC_COP;
-        return itPowerWatts + estimatedHvacElectricalPowerWatts;
+        double pue = simulationContainer.operationalSnapshot().pue();
+        return Double.isFinite(pue) ? pue : Double.NaN;
     }
 
     private void updateDisplayedRoomSystemStatus() {
@@ -288,9 +260,13 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
     private void updateDisplayedRoomTrends() {
         if (!uiComponentContainer.labels().containsKey("lblTrendsMaximumTemperatureServer")
                 || !uiComponentContainer.labels().containsKey("lblTrendsRoomTemperature")
+                || !uiComponentContainer.labels().containsKey("lblTrendsItLoad")
+                || !uiComponentContainer.labels().containsKey("lblTrendsTotalLoad")
         ) return;
         Label lblTrendsMaximumTemperatureServer = uiComponentContainer.labels().get("lblTrendsMaximumTemperatureServer");
         Label lblTrendsRoomTemperature = uiComponentContainer.labels().get("lblTrendsRoomTemperature");
+        Label lblTrendsItLoad = uiComponentContainer.labels().get("lblTrendsItLoad");
+        Label lblTrendsTotalLoad = uiComponentContainer.labels().get("lblTrendsTotalLoad");
         RackLocation selectedRackLocation = new RackLocation(selectionManager.selectedColumn(), selectionManager.selectedRack());
         TemperatureSnapshot temperatureSnapshot = simulationContainer.temperatureSnapshot();
         Optional<ServerTemperatureSnapshot> hottestServer =
@@ -300,7 +276,6 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
                         .filter(server -> server.location().column().equals(selectedRackLocation.column()))
                         .filter(server -> server.location().rackCode().equals(selectedRackLocation.rackCode()))
                         .max(Comparator.comparingDouble(ServerTemperatureSnapshot::temperatureCelsius));
-
         double maximumTemperatureCelsius = hottestServer.map(ServerTemperatureSnapshot::temperatureCelsius).orElse(Double.NaN);
         String hottestServerSlot =
                 hottestServer
@@ -311,9 +286,11 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
         lblTrendsMaximumTemperatureServer.setText(hottestServerLocation + ":" + String.format(uiFormatContainer.temperature(), maximumTemperatureCelsius));
         double roomTemperatureCelsius = simulationContainer.operationalSnapshot().roomTemperatureCelsius();
         lblTrendsRoomTemperature.setText("ROOM TEMP:" + String.format(uiFormatContainer.temperature(), roomTemperatureCelsius));
+        double roomItLoad = simulationContainer.operationalSnapshot().currentItPowerWatts() / 1_000_000.0;
+        lblTrendsItLoad.setText("IT LOAD:" + String.format(uiFormatContainer.powerMw(), roomItLoad));
+        double roomTotalLoad = simulationContainer.operationalSnapshot().totalFacilityPowerWatts() / 1_000_000.0;
+        lblTrendsTotalLoad.setText("TOTAL LOAD:" + String.format(uiFormatContainer.powerMw(), roomTotalLoad));
     }
-
-
 
     private String displayedRoomSystemStatus() {
         if (simulationContainer == null || simulationContainer.operationalSnapshot() == null) return "NO DATA";
