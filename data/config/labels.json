@@ -4031,7 +4031,7 @@
       "text": "IT LOAD",
       "bounds": {
         "mode": "relative",
-        "x": 0.68037526,
+        "x": 0.6647742188,
         "y": 0.719652568,
         "width": 0.0005035246727,
         "height": 0.01074185616
@@ -4056,7 +4056,7 @@
       "text": "TOTAL LOAD",
       "bounds": {
         "mode": "relative",
-        "x": 0.732335677,
+        "x": 0.7245348958,
         "y": 0.719652568,
         "width": 0.0005035246727,
         "height": 0.01074185616
@@ -4121,6 +4121,31 @@
         "textColor": "#00ffcc",
         "lineSpacingMultiplier": 1.0,
         "alignX": "center",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblAlerts",
+      "text": "ALERTS",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.8142239583,
+        "y": 0.6571903323,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01409869084
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
         "alignY": "top",
         "disabledAlpha": 80
       }
