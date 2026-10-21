@@ -2278,11 +2278,11 @@
     {
       "type": "label",
       "code": "lblRoomTemperatureScale",
-      "text": "TEMPERATURE",
+      "text": "SERVER TEMPERATURE",
       "bounds": {
         "mode": "relative",
-        "x": 0.107116667,
-        "y": 0.1423172205,
+        "x": 0.131,
+        "y": 0.126,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },

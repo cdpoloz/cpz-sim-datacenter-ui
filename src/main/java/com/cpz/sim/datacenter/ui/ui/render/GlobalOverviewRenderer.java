@@ -11,6 +11,8 @@ import com.cpz.sim.datacenter.ui.ui.selection.SelectionManager;
 import processing.core.PApplet;
 
 import java.util.List;
+import java.util.Locale;
+import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 
 import static com.cpz.sim.datacenter.ui.main.Launcher.PROPS;
 import static com.cpz.sim.datacenter.ui.util.Constants.*;
@@ -25,6 +27,9 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
     private final SimulationContainer simulationContainer;
     private final UiStateContainer uiStateContainer;
     private final SelectionManager selectionManager;
+    private UiComponentContainer axisControls;
+    private double graphMinimum = 0.0;
+    private double graphMaximum = 80.0;
 
     /**
      * Creates a renderer for Global Overview history charts.
@@ -43,6 +48,36 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
         this.simulationContainer = simulationContainer;
         this.uiStateContainer = uiStateContainer;
         this.selectionManager = selectionManager;
+    }
+
+    /** Updates the graph bounds and axis labels together, before controls are drawn.
+     * Color scales remain independent of this display-only range.
+     */
+    public void setAxisControls(UiComponentContainer controls) {
+        this.axisControls = controls;
+    }
+
+    public void updateTemperatureAxis() {
+        UiComponentContainer controls = axisControls;
+        if (controls == null) return;
+        if (simulationContainer.simulationHistory() == null) return;
+        float minX = Float.parseFloat(PROPS.getProperty("ui.hottest.server.temperature.min.x"));
+        float maxX = Float.parseFloat(PROPS.getProperty("ui.hottest.server.temperature.max.x"));
+        int count = Math.max(1, (int) ((maxX - minX) * sketch().width));
+        RackLocation rack = new RackLocation(selectionManager.selectedColumn(), selectionManager.selectedRack());
+        var values = new java.util.ArrayList<Double>();
+        values.addAll(latestDisplayedSelectedRackHottestServerTemperatures(rack, count));
+        values.addAll(latestDisplayedRoomAverageTemperatures(count));
+        values.addAll(latestDisplayedRoomMaximumRackTemperatures(count));
+        simulationContainer.simulationHistory().latest(count).forEach(step ->
+                values.add(step.operationalSnapshot().roomAirTemperatureCelsius()));
+        TemperatureGraphRange range = TemperatureGraphRange.from(values, uiStateContainer.maxServerTemperatureCelsius());
+        graphMinimum = range.minimum();
+        graphMaximum = range.maximum();
+        for (int i = 1; i <= 4; i++) {
+            var label = controls.labels().get("lblTrendsRoomTemperature0" + i);
+            if (label != null) label.setText(String.format(Locale.ROOT, "%.0f°C", range.tick(i)));
+        }
     }
 
     /**
@@ -109,8 +144,8 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
     private float yForTemperature(double temperature, float minY, float maxY) {
         float y = PApplet.map(
                 (float) temperature,
-                0,
-                uiStateContainer.maxServerTemperatureCelsius(),
+                (float) graphMinimum,
+                (float) graphMaximum,
                 maxY * sketch().height,
                 minY * sketch().height
         );

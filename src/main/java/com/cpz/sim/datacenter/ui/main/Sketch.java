@@ -120,6 +120,7 @@ public class Sketch extends PApplet {
         controlRenderer = new ControlRenderer(uiComponentContainer);
         globalOverviewUpdater = new GlobalOverviewUpdater(context, simulationContainer, uiComponentContainer, uiFormatContainer, selectionManager);
         globalOverviewRenderer = new GlobalOverviewRenderer(context, simulationContainer, uiStateContainer, selectionManager);
+        globalOverviewRenderer.setAxisControls(uiComponentContainer);
         selectedHotAisleTemperatureHistoryRenderer = new SelectedHotAisleTemperatureHistoryRenderer(context, simulationContainer, uiStateContainer);
         simulationManager.initialize();
         selectionManager.initialize();
@@ -147,6 +148,7 @@ public class Sketch extends PApplet {
         uiUpdateCoordinator.updateSnapshotsIfNeeded();
         uiUpdateCoordinator.updateControlsIfNeeded();
         globalOverviewUpdater.update();
+        globalOverviewRenderer.updateTemperatureAxis();
         updateKeyboardPlayIndicators();
         // The gradient must sit above controls but below active/static foreground overlays.
         staticUiRenderer.drawBackground();
