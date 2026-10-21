@@ -110,26 +110,7 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
     }
 
     private double displayedRoomAverageTemperatureCelsius(DatacenterSimulationStepSnapshot snapshot) {
-        int onlineServerCount = snapshot
-                .operationalSnapshot()
-                .racks()
-                .values()
-                .stream()
-                .mapToInt(RackOperationalSnapshot::onlineServerCount)
-                .sum();
-        double temperatureSumCelsius = snapshot
-                .operationalSnapshot()
-                .racks()
-                .values()
-                .stream()
-                .filter(RackOperationalSnapshot::hasOnlineServers)
-                .mapToDouble(rackSnapshot ->
-                        rackSnapshot.averageOnlineTemperatureCelsius()
-                                * rackSnapshot.onlineServerCount()
-                )
-                .sum();
-        if (onlineServerCount == 0) return snapshot.operationalSnapshot().roomTemperatureCelsius();
-        return temperatureSumCelsius / onlineServerCount;
+        return snapshot.operationalSnapshot().roomTemperatureCelsius();
     }
 
     private void updateDisplayedRoomAverageItLoad() {
@@ -322,22 +303,7 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
     }
 
     private double displayedRoomAverageTemperatureCelsius(DatacenterOperationalSnapshot operationalSnapshot) {
-        int onlineServerCount = operationalSnapshot
-                .racks()
-                .values()
-                .stream()
-                .mapToInt(RackOperationalSnapshot::onlineServerCount)
-                .sum();
-        double temperatureSumCelsius = operationalSnapshot
-                .racks()
-                .values()
-                .stream()
-                .filter(RackOperationalSnapshot::hasOnlineServers)
-                .mapToDouble(rackSnapshot -> rackSnapshot.averageOnlineTemperatureCelsius() * rackSnapshot.onlineServerCount()
-                )
-                .sum();
-        if (onlineServerCount == 0) return operationalSnapshot.roomTemperatureCelsius();
-        return temperatureSumCelsius / onlineServerCount;
+        return operationalSnapshot.roomTemperatureCelsius();
     }
 
     private double displayedRoomMaximumRackTemperatureCelsius(DatacenterOperationalSnapshot operationalSnapshot) {
