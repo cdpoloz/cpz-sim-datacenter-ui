@@ -34,7 +34,7 @@ The JSON files also reference assets below `data/img`. Changing control bounds o
 
 ## Datacenter backend configuration
 
-`SimulationManager.initializeDatacenter()` currently loads `../data/config/datacenter.json`. `JsonDatacenterConfigLoader` and factories from `cpz-sim-datacenter` turn this JSON into the `Datacenter`, workload factors, cooling configuration, and temperature options. The other `datacenter-*.json` files are alternative/test datasets present in the repository; they are not selected dynamically by a property in the current implementation.
+`SimulationManager.initializeDatacenter()` loads `data/config/datacenter.json` by default. `JsonDatacenterConfigLoader` and factories from `cpz-sim-datacenter` turn this JSON into the `Datacenter`, workload factors, cooling configuration, and temperature options. The other `datacenter-*.json` files are alternative/test datasets present in the repository; select an alternative using JVM option `-Dsimulation.datacenter.config=/path/to/datacenter.json`.
 
 Changes must preserve the assumptions encoded by the UI: rack/column codes, available rack rows/slots, cooling unit codes, and cooling zones must continue to match configured controls and aisle mapping.
 
@@ -62,3 +62,22 @@ Processing loads these resources at runtime rather than packaging them through M
 ## Reference-template files
 
 `template-sketch.json`, `custom-area-tooltip.json`, and `TemplateSketchConfig` support the intentionally preserved `TemplateSketch`. They demonstrate additional control types and tooltips but are not loaded by the active `Sketch` flow.
+
+## Optional room-air model
+
+An explicit backend `roomAirTemperature` block selects the coupled thermal
+pipeline in `UTILIZATION_DRIVEN` or `POWER_DRIVEN`. Configure initial air temperature,
+effective capacity in J/°C, environment temperature and environment transfer in
+W/°C. Choose/calibrate these for the modeled room; the existing virtual zone volume
+is not automatically converted into room thermal inertia. The main JSON remains
+unchanged in this migration.
+
+Without the block the original server/cooling model runs, while `ROOM AIR TEMP`
+and the `AIR` legend show `--`; no air curve is invented. Internal server average,
+rack temperatures and their alerts retain their existing meanings. In the coupled
+model zone inlet/outlet metrics refer to the same mixed air, and zero difference
+does not imply absent cooling. Colored rack/aisle gradients remain server proxies.
+
+The global temperature plot has three series: selected-rack hottest server, global
+online-server average and optional room air. Green is the air-series color, not
+a calibrated air-safety status; existing health thresholds still target servers.

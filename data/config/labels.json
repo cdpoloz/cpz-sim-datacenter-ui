@@ -1578,7 +1578,7 @@
     {
       "type": "label",
       "code": "lblSelectedAisleAverageServerTemperature",
-      "text": "AVG AISLE TEMP",
+      "text": "AVG SERVER TEMP",
       "bounds": {
         "mode": "relative",
         "x": 0.4946338542,
@@ -2028,7 +2028,7 @@
     {
       "type": "label",
       "code": "lblSelectedAisleTemperature",
-      "text": "AVG AISLE TEMP",
+      "text": "AVG SERVER TEMP",
       "bounds": {
         "mode": "relative",
         "x": 0.6620606771,
@@ -4078,7 +4078,7 @@
     {
       "type": "label",
       "code": "lblRoomAverageTemperature",
-      "text": "AVG SERVER TEMP",
+      "text": "ROOM AIR TEMP",
       "bounds": {
         "mode": "relative",
         "x": 0.067846354,
@@ -4144,6 +4144,31 @@
       "visible": true,
       "style": {
         "textColor": "#f2ebe7",
+        "lineSpacingMultiplier": 1.0,
+        "alignX": "start",
+        "alignY": "top",
+        "disabledAlpha": 80
+      }
+    },
+    {
+      "type": "label",
+      "code": "lblTrendsAirTemperature",
+      "text": "AIR:--",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.566272396,
+        "y": 0.732652568,
+        "width": 0.0005035246727,
+        "height": 0.01074185616
+      },
+      "textSize": {
+        "mode": "relative",
+        "value": 0.01057401813
+      },
+      "enabled": true,
+      "visible": true,
+      "style": {
+        "textColor": "#00ffcc",
         "lineSpacingMultiplier": 1.0,
         "alignX": "start",
         "alignY": "top",

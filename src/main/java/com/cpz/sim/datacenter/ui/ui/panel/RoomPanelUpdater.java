@@ -73,9 +73,12 @@ public class RoomPanelUpdater extends ApplicationComponent {
     private void updateRoomAverageTemperatureLabel(float minServerTemperatureCelsius, float maxServerTemperatureCelsius) {
         if (!uiComponentContainer.labels().containsKey("lblRoomAverageTemperatureValue")) return;
         Label lblRoomAverageTemperatureValue = uiComponentContainer.labels().get("lblRoomAverageTemperatureValue");
-        double roomTemperatureCelsius = simulationContainer.operationalSnapshot().averageOnlineServerTemperatureCelsius();
-        int averageTemperatureColor = resolveTemperatureRangeColor((float) roomTemperatureCelsius, minServerTemperatureCelsius, maxServerTemperatureCelsius);
-        lblRoomAverageTemperatureValue.setText(String.format(uiFormatContainer.temperature(), roomTemperatureCelsius));
+        double roomTemperatureCelsius = simulationContainer.operationalSnapshot().roomAirTemperatureCelsius();
+        int averageTemperatureColor = Double.isFinite(roomTemperatureCelsius)
+                ? com.cpz.sim.datacenter.ui.util.Constants.COLOR_GREEN_LABEL
+                : com.cpz.sim.datacenter.ui.util.Constants.COLOR_WHITE_LABEL;
+        lblRoomAverageTemperatureValue.setText(Double.isFinite(roomTemperatureCelsius)
+                ? String.format(java.util.Locale.ROOT, uiFormatContainer.temperature(), roomTemperatureCelsius) : "--");
         lblRoomAverageTemperatureValue.setTextColor(averageTemperatureColor);
     }
 

@@ -65,6 +65,7 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
         updateDisplayedRoomPue();
         updateDisplayedRoomSystemStatus();
         updateDisplayedRoomTrends();
+        updateRoomAirTrendLabel();
     }
 
     private void updateDisplayedRoomTemperature() {
@@ -181,26 +182,16 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
     }
 
     private double displayedRoomTotalElectricalLoadMegawatts() {
-        double TEMPORARY_HVAC_COP = 3.0;
-        double itPowerWatts = simulationContainer
-                .operationalSnapshot()
-                .racks()
-                .values()
-                .stream()
-                .mapToDouble(RackOperationalSnapshot::currentPowerWatts)
-                .sum();
+        return simulationContainer.operationalSnapshot().totalFacilityPowerWatts() / 1_000_000.0;
+    }
 
-        double usedCoolingCapacityWatts = 0.0;
-        if (simulationContainer.coolingSnapshot() != null) {
-            usedCoolingCapacityWatts = simulationContainer
-                    .coolingSnapshot()
-                    .zones()
-                    .stream()
-                    .mapToDouble(CoolingZoneSnapshot::usedCoolingCapacityWatts)
-                    .sum();
-        }
-        double estimatedHvacElectricalPowerWatts = usedCoolingCapacityWatts / TEMPORARY_HVAC_COP;
-        return (itPowerWatts + estimatedHvacElectricalPowerWatts) / 1_000_000.0;
+    private void updateRoomAirTrendLabel() {
+        Label label = uiComponentContainer.labels().get("lblTrendsAirTemperature");
+        if (label == null) return;
+        double air = simulationContainer.operationalSnapshot().roomAirTemperatureCelsius();
+        label.setText("AIR:" + (Double.isFinite(air)
+                ? String.format(java.util.Locale.ROOT, uiFormatContainer.temperature(), air) : "--"));
+        label.setTextColor(COLOR_GREEN_LABEL);
     }
 
     private void updateDisplayedRoomPue() {

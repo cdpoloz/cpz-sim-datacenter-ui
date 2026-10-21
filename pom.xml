@@ -22,6 +22,7 @@
         <cpz-sim-datacenter.version>0.1.0-alpha.1</cpz-sim-datacenter.version>
         <jetbrains-annotations.version>26.0.2</jetbrains-annotations.version>
         <jackson.version>2.21.4</jackson.version>
+        <junit.version>5.12.2</junit.version>
     </properties>
 
     <licenses>
@@ -33,6 +34,12 @@
     </licenses>
 
     <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.processing</groupId>
             <artifactId>core</artifactId>
@@ -77,6 +84,11 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.5</version>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

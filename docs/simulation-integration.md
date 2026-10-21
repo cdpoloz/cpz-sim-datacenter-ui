@@ -20,7 +20,7 @@ This repository consumes `cpz-sim-foundation`, `cpz-sim-runtime`, and `cpz-sim-d
 8. Load hot-aisle mapping and build the column lookup.
 9. Create operational snapshot server groups for every mapped aisle.
 
-The registered engine order is workload, power consumption, cooling snapshot update, temperature, health, then energy consumption. Later stages consume state produced earlier in the same simulation tick, so this ordering must not be changed casually.
+In legacy utilization mode the order is workload, power consumption, cooling snapshot update, temperature, health, then energy consumption. `SimulationThermalPipeline` selects this route or the coupled route. In temperature-driven mode observed rack/aisle input is followed by cooling diagnostics, health and energy, without a power-based thermal overwrite. Later stages consume state produced earlier in the same simulation tick, so this ordering must not be changed casually.
 
 ## Time and stepping
 
@@ -60,3 +60,25 @@ UI cooling toggles change `CoolingSystem` enabled state using stable backend uni
 - The temperature scale is calculated once from backend ambient temperature and server thermal/max-power configuration.
 
 The UI assumes the backend definition, hot-aisle mapping, and control-code layout describe the same physical room. Inconsistencies generally fail fast with missing rack, group, toggle, or indicator errors rather than being silently ignored.
+
+## Coupled room-air route
+
+With explicit `roomAirTemperature` configuration, utilization/power input is
+followed by exactly one `CoupledRoomTemperatureSystem`, then health and energy.
+The old cooling coordinator and temperature updater are not registered in parallel.
+The coupled owner reads the same unit controls and exposes a read-only mixed-air
+cooling snapshot, so UI toggles, electrical load and PUE remain available. No
+zone-air thermal tick is run during capture. Inlet/exhaust fields in this route
+are a global mixed-air projection, not a separate spatial model.
+
+`DatacenterSimulationHistoryRecorder` captures the coupled ledger and room-air
+snapshot at the same tick as the server snapshots. Existing accessors remain
+server averages; `roomAirTemperatureCelsius()` is NaN when unconfigured.
+The top room label and additional green trend line use this separate accessor.
+The lower average-server panel, rack colors and health thresholds stay on internal
+server temperatures. Facility load labels and charts read backend electrical
+totals rather than estimating HVAC consumption using a temporary COP.
+
+Resetting the engine clears coupled cooling/air captures and restores initial
+thermal state; clear the history recorder before recording a replay. The legacy
+temperature system now also restores its initial thermal state on engine reset.

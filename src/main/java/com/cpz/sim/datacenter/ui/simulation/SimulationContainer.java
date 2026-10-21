@@ -81,6 +81,15 @@ public class SimulationContainer {
     private DatacenterSimulationHistoryRecorder simulationHistoryRecorder;
     private ServerPowerInputSource powerInputSource;
     private RackTemperatureInputSource rackTemperatureInputSource;
+    private SimulationThermalPipeline thermalPipeline;
+
+    public SimulationThermalPipeline thermalPipeline() {
+        return thermalPipeline;
+    }
+
+    public void setThermalPipeline(SimulationThermalPipeline thermalPipeline) {
+        this.thermalPipeline = thermalPipeline;
+    }
 
     /** Creates an empty backend container populated by {@link SimulationManager}. */
     public SimulationContainer() {

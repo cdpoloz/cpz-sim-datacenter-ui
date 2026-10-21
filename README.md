@@ -76,7 +76,7 @@ The project currently has no `src/test` test suite. `mvn test` still performs co
 
 ## Configuration
 
-`data/config.properties` controls the window, frame rate, number formats, boundary columns, health thresholds, simulation speed factors, and selected-aisle gradient geometry. JSON files under `data/config` define the control layout and backend datacenter model. The active backend input is currently `datacenter.json`; `SimulationManager` selects it directly.
+`data/config.properties` controls the window, frame rate, number formats, boundary columns, health thresholds, simulation speed factors, and selected-aisle gradient geometry. JSON files under `data/config` define the control layout and backend datacenter model. The default backend input is `data/config/datacenter.json`; JVM property `-Dsimulation.datacenter.config=/path/to/datacenter.json` selects another file.
 
 `hot-aisle-mapping.json` maps columns such as `C02` and `C03` to UI hot aisles such as `HA02`. Control codes in the JSON files are integration identifiers and must stay aligned with the code that resolves buttons, toggles, labels, and indicators.
 
@@ -116,3 +116,20 @@ Related projects: [cpz-sim-foundation](https://github.com/cdpoloz/cpz-sim-founda
 **Carlos Polo Zamora**  
 GitHub: https://github.com/cdpoloz  
 Alias: CPZ / cepezeta / cdpoloz
+
+## Room air and server temperatures
+
+The top room indicator is `ROOM AIR TEMP`, separate from `AVG SERVER TEMP` in
+the overview. The temperature trend retains the server average and adds a green
+`AIR` curve. Without an explicit `roomAirTemperature` block, air reads `--` and
+its curve is omitted. The checked-in datacenter keeps its previous configuration;
+no uncalibrated room capacity is silently selected.
+
+When configured in utilization/power mode, `SimulationThermalPipeline` installs
+one coupled backend thermal owner and records air, cooling equipment and energy
+ledger together. Temperature-driven telemetry is preserved and is not overwritten
+by a subsequent power-based temperature update; coupled air inference for that
+mode is not yet supported. See [simulation integration](docs/simulation-integration.md).
+
+Install the updated backend first with `mvn clean install`, then run `mvn test`
+and build this UI.

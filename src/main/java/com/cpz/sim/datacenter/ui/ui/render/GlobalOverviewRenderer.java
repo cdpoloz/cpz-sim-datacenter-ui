@@ -259,24 +259,7 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
     }
 
     private double displayedRoomEstimatedPowerLoadMegawatts(DatacenterSimulationStepSnapshot snapshot) {
-        double TEMPORARY_HVAC_COP = 3.0;
-        double itPowerWatts = snapshot
-                .operationalSnapshot()
-                .racks()
-                .values()
-                .stream()
-                .mapToDouble(RackOperationalSnapshot::currentPowerWatts)
-                .sum();
-        double usedCoolingCapacityWatts = snapshot
-                .coolingSnapshot()
-                .map(coolingSnapshot -> coolingSnapshot
-                        .zones()
-                        .stream()
-                        .mapToDouble(CoolingZoneSnapshot::usedCoolingCapacityWatts)
-                        .sum())
-                .orElse(0.0);
-        double estimatedHvacElectricalPowerWatts = usedCoolingCapacityWatts / TEMPORARY_HVAC_COP;
-        return (itPowerWatts + estimatedHvacElectricalPowerWatts) / 1_000_000.0;
+        return snapshot.operationalSnapshot().totalFacilityPowerWatts() / 1_000_000.0;
     }
 
     private void drawMegawattSeries(List<Double> megawatts, float minX, float minY, float maxY) {
@@ -320,6 +303,10 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
                 maxY,
                 COLOR_MIN_TEMPERATURE
         );
+        drawTemperatureSeries(
+                simulationContainer.simulationHistory().latest(sampleCount).stream()
+                        .map(step -> step.operationalSnapshot().roomAirTemperatureCelsius()).toList(),
+                minX, minY, maxY, COLOR_GREEN_LABEL);
     }
 
     private List<Double> latestDisplayedSelectedRackHottestServerTemperatures(RackLocation selectedRackLocation, int sampleCount) {

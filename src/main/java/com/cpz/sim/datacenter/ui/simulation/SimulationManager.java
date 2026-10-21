@@ -134,7 +134,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
     }
 
     private void initializeDatacenter() {
-        Path configPath = Path.of("data/config/datacenter.json");
+        Path configPath = Path.of(System.getProperty("simulation.datacenter.config", "data/config/datacenter.json"));
         DatacenterDefinition definition = new JsonDatacenterConfigLoader().load(configPath);
         simulationContainer.setDatacenter(new DatacenterFactory().create(definition));
         simulationContainer.setRoomName(definition.layout().room().name());
@@ -192,13 +192,6 @@ public class SimulationManager extends ApplicationComponent implements Initializ
         simulationContainer.setEnergySystem(new EnergyConsumptionSystem(simulationContainer.datacenter()));
         simulationContainer.setCoolingSystem(new CoolingSystem(simulationContainer.coolingConfiguration()));
         simulationContainer.setCoolingTemperatureReferenceProvider(new CoolingSnapshotTemperatureReferenceProvider(simulationContainer.coolingConfiguration()));
-        simulationContainer.setCoolingSnapshotCoordinator(
-                new CoolingSnapshotCoordinator(
-                        new DatacenterCoolingTickInputProvider(simulationContainer.datacenter()),
-                        simulationContainer.coolingSystem(),
-                        simulationContainer.coolingTemperatureReferenceProvider()
-                )
-        );
         TemperatureSystemOptions temperatureOptions = new TemperatureSystemOptionsFactory().create(simulationContainer.datacenterDefinition());
         simulationContainer.setTemperatureOptions(temperatureOptions);
         simulationContainer.setTemperatureSystem(
@@ -218,31 +211,13 @@ public class SimulationManager extends ApplicationComponent implements Initializ
                 Double.parseDouble(PROPS.getProperty("simulation.health.temperature.recovery-threshold-celsius"))
         );
         simulationContainer.setHealthSystem(new ServerHealthSystem(simulationContainer.datacenter(), simulationContainer.temperatureSystem(), new ServerHealthOptions(utilizationThreshold, temperatureThreshold)));
-        // Registration order is the backend tick pipeline: each stage consumes earlier results.
-        registerInputModeSystems();
-        simulationContainer.engine().register(tick -> simulationContainer.setCoolingSnapshot(simulationContainer.coolingSnapshotCoordinator().update(tick)));
-        simulationContainer.engine().register(simulationContainer.temperatureSystem());
+        simulationContainer.setThermalPipeline(new SimulationThermalPipeline(
+                simulationContainer.engine(), simulationContainer.datacenterDefinition(), simulationContainer.datacenter(),
+                simulationContainer.temperatureSystem(), temperatureOptions, simulationContainer.coolingSystem(),
+                simulationContainer.coolingTemperatureReferenceProvider(), simulationContainer.workloadSource(),
+                simulationContainer.powerInputSource()));
         simulationContainer.engine().register(simulationContainer.healthSystem());
         simulationContainer.engine().register(simulationContainer.energySystem());
-    }
-
-    private void registerInputModeSystems() {
-        DatacenterDataInputMode dataInputMode = simulationContainer.datacenterDefinition().dataInputMode();
-        switch (dataInputMode) {
-            case UTILIZATION_DRIVEN -> {
-                simulationContainer.engine().register(new WorkloadSystem(simulationContainer.datacenter(), simulationContainer.workloadSource()));
-                simulationContainer.engine().register(new PowerConsumptionSystem(simulationContainer.datacenter()));
-            }
-            case POWER_DRIVEN -> simulationContainer.engine().register(new PowerInputSystem(simulationContainer.datacenter(), simulationContainer.powerInputSource()));
-            case TEMPERATURE_DRIVEN -> simulationContainer.engine().register(
-                    new RackTemperatureInputSystem(
-                            simulationContainer.datacenter(),
-                            simulationContainer.temperatureSystem(),
-                            simulationContainer.rackTemperatureInputSource(),
-                            simulationContainer.temperatureOptions()
-                    )
-            );
-        }
     }
 
     private void initializeSnapshots() {
@@ -331,9 +306,10 @@ public class SimulationManager extends ApplicationComponent implements Initializ
                         simulationContainer.temperatureSnapshotProvider(),
                         simulationContainer.healthSnapshotProvider(),
                         simulationContainer.operationalSnapshotProvider(),
-                        () -> Optional.ofNullable(simulationContainer.coolingSnapshot()),
+                        simulationContainer.thermalPipeline()::coolingSnapshot,
                         simulationContainer.simulationHistory(),
-                        hotAisleTemperatureHistoryRecorder
+                        Optional.of(hotAisleTemperatureHistoryRecorder),
+                        simulationContainer.thermalPipeline()::coupledThermalSnapshot
                 )
         );
     }
@@ -343,6 +319,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
      */
     public void initializeInitialSimulationState() {
         simulationContainer.engine().step();
+        simulationContainer.setCoolingSnapshot(simulationContainer.thermalPipeline().coolingSnapshot().orElse(null));
     }
 
     /**
@@ -354,6 +331,7 @@ public class SimulationManager extends ApplicationComponent implements Initializ
                         .simulationHistoryRecorder()
                         .record(simulationContainer.engine().currentTick());
 
+        simulationContainer.setCoolingSnapshot(stepSnapshot.coolingSnapshot().orElse(null));
         simulationContainer.setEnergySnapshot(stepSnapshot.energySnapshot());
         simulationContainer.setTemperatureSnapshot(stepSnapshot.temperatureSnapshot());
         simulationContainer.setHealthSnapshot(stepSnapshot.healthSnapshot());
