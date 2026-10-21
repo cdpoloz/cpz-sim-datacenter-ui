@@ -3353,7 +3353,7 @@
     {
       "type": "label",
       "code": "lblAverageServerTemperature",
-      "text": "AVG AISLE TEMP",
+      "text": "AVG SERVER TEMP",
       "bounds": {
         "mode": "relative",
         "x": 0.06354817708,
@@ -4078,7 +4078,7 @@
     {
       "type": "label",
       "code": "lblRoomAverageTemperature",
-      "text": "AVG ROOM TEMP",
+      "text": "AVG SERVER TEMP",
       "bounds": {
         "mode": "relative",
         "x": 0.067846354,
