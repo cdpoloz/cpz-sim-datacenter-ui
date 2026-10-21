@@ -69,8 +69,10 @@ An explicit backend `roomAirTemperature` block selects the coupled thermal
 pipeline in `UTILIZATION_DRIVEN` or `POWER_DRIVEN`. Configure initial air temperature,
 effective capacity in J/°C, environment temperature and environment transfer in
 W/°C. Choose/calibrate these for the modeled room; the existing virtual zone volume
-is not automatically converted into room thermal inertia. The main JSON remains
-unchanged in this migration.
+is not automatically converted into room thermal inertia. The main JSON now
+explicitly enables a 20 MJ/°C experimental reference with 24 °C initial air and
+zero environmental transfer. See [reference configuration](room-air-reference.md)
+for assumptions, scenario results and calibration requirements.
 
 Without the block the original server/cooling model runs, while `ROOM AIR TEMP`
 and the `AIR` legend show `--`; no air curve is invented. Internal server average,

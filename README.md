@@ -122,8 +122,9 @@ Alias: CPZ / cepezeta / cdpoloz
 The top room indicator is `ROOM AIR TEMP`, separate from `AVG SERVER TEMP` in
 the overview. The temperature trend retains the server average and adds a green
 `AIR` curve. Without an explicit `roomAirTemperature` block, air reads `--` and
-its curve is omitted. The checked-in datacenter keeps its previous configuration;
-no uncalibrated room capacity is silently selected.
+its curve is omitted. The checked-in datacenter now explicitly enables a 20 MJ/°C
+experimental reference, starting at 24 °C with all cooling units disabled. This is
+not calibrated to a real room; see [reference parameters and comparisons](docs/room-air-reference.md).
 
 When configured in utilization/power mode, `SimulationThermalPipeline` installs
 one coupled backend thermal owner and records air, cooling equipment and energy
