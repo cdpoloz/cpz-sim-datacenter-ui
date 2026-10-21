@@ -127,26 +127,7 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
     }
 
     private double displayedRoomAverageTemperatureCelsius(DatacenterSimulationStepSnapshot snapshot) {
-        int onlineServerCount = snapshot
-                .operationalSnapshot()
-                .racks()
-                .values()
-                .stream()
-                .mapToInt(RackOperationalSnapshot::onlineServerCount)
-                .sum();
-        double temperatureSumCelsius = snapshot
-                .operationalSnapshot()
-                .racks()
-                .values()
-                .stream()
-                .filter(RackOperationalSnapshot::hasOnlineServers)
-                .mapToDouble(rackSnapshot ->
-                        rackSnapshot.averageOnlineTemperatureCelsius()
-                                * rackSnapshot.onlineServerCount()
-                )
-                .sum();
-        if (onlineServerCount == 0) return snapshot.operationalSnapshot().roomTemperatureCelsius();
-        return temperatureSumCelsius / onlineServerCount;
+        return snapshot.operationalSnapshot().averageOnlineServerTemperatureCelsius();
     }
 
     private List<Double> latestDisplayedRoomMaximumRackTemperatures(int n) {
