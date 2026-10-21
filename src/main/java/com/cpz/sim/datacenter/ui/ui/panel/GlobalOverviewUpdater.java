@@ -110,7 +110,7 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
     }
 
     private double displayedRoomAverageTemperatureCelsius(DatacenterSimulationStepSnapshot snapshot) {
-        return snapshot.operationalSnapshot().roomTemperatureCelsius();
+        return snapshot.operationalSnapshot().averageOnlineServerTemperatureCelsius();
     }
 
     private void updateDisplayedRoomAverageItLoad() {
@@ -265,8 +265,8 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
                         .orElse("--");
         String hottestServerLocation = selectionManager.selectedColumn() + "-" + selectionManager.selectedRack() + "-" + hottestServerSlot;
         lblTrendsMaximumTemperatureServer.setText(hottestServerLocation + ":" + String.format(uiFormatContainer.temperature(), maximumTemperatureCelsius));
-        double roomTemperatureCelsius = simulationContainer.operationalSnapshot().roomTemperatureCelsius();
-        lblTrendsRoomTemperature.setText("ROOM TEMP:" + String.format(uiFormatContainer.temperature(), roomTemperatureCelsius));
+        double roomTemperatureCelsius = simulationContainer.operationalSnapshot().averageOnlineServerTemperatureCelsius();
+        lblTrendsRoomTemperature.setText("AVG SERVER:" + String.format(uiFormatContainer.temperature(), roomTemperatureCelsius));
         double roomItLoad = simulationContainer.operationalSnapshot().currentItPowerWatts() / 1_000_000.0;
         lblTrendsItLoad.setText("IT LOAD:" + String.format(uiFormatContainer.powerMw(), roomItLoad));
         double roomTotalLoad = simulationContainer.operationalSnapshot().totalFacilityPowerWatts() / 1_000_000.0;
@@ -303,7 +303,7 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
     }
 
     private double displayedRoomAverageTemperatureCelsius(DatacenterOperationalSnapshot operationalSnapshot) {
-        return operationalSnapshot.roomTemperatureCelsius();
+        return operationalSnapshot.averageOnlineServerTemperatureCelsius();
     }
 
     private double displayedRoomMaximumRackTemperatureCelsius(DatacenterOperationalSnapshot operationalSnapshot) {
