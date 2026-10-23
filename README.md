@@ -93,6 +93,24 @@ See [Configuration and assets](docs/configuration.md) before changing configurat
 
 See [Input and controls](docs/controllers.md) for dispatch, selection, and toggle synchronization details.
 
+## Room air and server temperatures
+
+The top room indicator is `ROOM AIR TEMP`, separate from `AVG SERVER TEMP` in
+the overview. The temperature trend retains the server average and adds a green
+`AIR` curve. Without an explicit `roomAirTemperature` block, air reads `--` and
+its curve is omitted. The checked-in datacenter now explicitly enables a 20 MJ/°C
+experimental reference, starting at 24 °C with all cooling units disabled. This is
+not calibrated to a real room; see [reference parameters and comparisons](docs/room-air-reference.md).
+
+When configured in utilization/power mode, `SimulationThermalPipeline` installs
+one coupled backend thermal owner and records air, cooling equipment and energy
+ledger together. Temperature-driven telemetry is preserved and is not overwritten
+by a subsequent power-based temperature update; coupled air inference for that
+mode is not yet supported. See [simulation integration](docs/simulation-integration.md).
+
+Install the updated backend first with `mvn clean install`, then run `mvn test`
+and build this UI.
+
 ## Development notes
 
 The current structure separates composition from runtime work. `Sketch.setup()` is the composition root: it wires local containers and services in dependency order. `ApplicationContext` exposes the `Sketch` only to components that require Processing APIs; passive state and configuration objects do not inherit from `ApplicationComponent`. `UiUpdateCoordinator` uses `updateSnapshots` and `updateUI` as explicit invalidation flags so the 60 FPS render loop does not rebuild snapshots or controls unnecessarily.
@@ -116,21 +134,3 @@ Related projects: [cpz-sim-foundation](https://github.com/cdpoloz/cpz-sim-founda
 **Carlos Polo Zamora**  
 GitHub: https://github.com/cdpoloz  
 Alias: CPZ / cepezeta / cdpoloz
-
-## Room air and server temperatures
-
-The top room indicator is `ROOM AIR TEMP`, separate from `AVG SERVER TEMP` in
-the overview. The temperature trend retains the server average and adds a green
-`AIR` curve. Without an explicit `roomAirTemperature` block, air reads `--` and
-its curve is omitted. The checked-in datacenter now explicitly enables a 20 MJ/°C
-experimental reference, starting at 24 °C with all cooling units disabled. This is
-not calibrated to a real room; see [reference parameters and comparisons](docs/room-air-reference.md).
-
-When configured in utilization/power mode, `SimulationThermalPipeline` installs
-one coupled backend thermal owner and records air, cooling equipment and energy
-ledger together. Temperature-driven telemetry is preserved and is not overwritten
-by a subsequent power-based temperature update; coupled air inference for that
-mode is not yet supported. See [simulation integration](docs/simulation-integration.md).
-
-Install the updated backend first with `mvn clean install`, then run `mvn test`
-and build this UI.
