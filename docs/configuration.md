@@ -30,6 +30,11 @@ Current formats include units directly, such as `%.1f°C`, `%.2fkW`, and `%.1f /
 
 The resulting objects are grouped by type and indexed by `code` in `UiComponentContainer`. Java code performs direct lookups, so codes such as `tglPlay`, `btnPlayPlus`, `indSelectedRackLeft01`, and `lblSelectedAisleAirflowValue` are stable integration identifiers, not presentation text.
 
+The room header and value are `lblRoomAirTemperature` and
+`lblRoomAirTemperatureValue`. They display the simulated mixed-room air
+temperature (`ROOM AIR TEMP`). `AVG SERVER TEMP` is a separate online-server
+aggregate and must not be wired to the room-air snapshot.
+
 The JSON files also reference assets below `data/img`. Changing control bounds or resource paths changes the visual layout and should be treated separately from application logic.
 
 ## Datacenter backend configuration

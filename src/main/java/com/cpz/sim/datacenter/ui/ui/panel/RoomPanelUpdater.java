@@ -65,21 +65,21 @@ public class RoomPanelUpdater extends ApplicationComponent {
         updateRoomHotAisleIndicator("HA03", "indRoomHotAisleC04-C05", minServerTemperatureCelsius, maxServerTemperatureCelsius);
         updateRoomHotAisleIndicator("HA04", "indRoomHotAisleC06-C07", minServerTemperatureCelsius, maxServerTemperatureCelsius);
         updateRoomHotAisleIndicator("HA05", "indRoomHotAisleC08", minServerTemperatureCelsius, maxServerTemperatureCelsius);
-        updateRoomAverageTemperatureLabel(minServerTemperatureCelsius, maxServerTemperatureCelsius);
+        updateRoomAirTemperatureLabel();
         for (Rack rack : simulationContainer.datacenter().getRacks())
             updateRackIndicator(rack, minServerTemperatureCelsius, maxServerTemperatureCelsius);
     }
 
-    private void updateRoomAverageTemperatureLabel(float minServerTemperatureCelsius, float maxServerTemperatureCelsius) {
-        if (!uiComponentContainer.labels().containsKey("lblRoomAverageTemperatureValue")) return;
-        Label lblRoomAverageTemperatureValue = uiComponentContainer.labels().get("lblRoomAverageTemperatureValue");
-        double roomTemperatureCelsius = simulationContainer.operationalSnapshot().roomAirTemperatureCelsius();
-        int averageTemperatureColor = Double.isFinite(roomTemperatureCelsius)
+    private void updateRoomAirTemperatureLabel() {
+        if (!uiComponentContainer.labels().containsKey("lblRoomAirTemperatureValue")) return;
+        Label lblRoomAirTemperatureValue = uiComponentContainer.labels().get("lblRoomAirTemperatureValue");
+        double roomAirTemperatureCelsius = simulationContainer.operationalSnapshot().roomAirTemperatureCelsius();
+        int roomAirTemperatureColor = Double.isFinite(roomAirTemperatureCelsius)
                 ? com.cpz.sim.datacenter.ui.util.Constants.COLOR_GREEN_LABEL
                 : com.cpz.sim.datacenter.ui.util.Constants.COLOR_WHITE_LABEL;
-        lblRoomAverageTemperatureValue.setText(Double.isFinite(roomTemperatureCelsius)
-                ? String.format(java.util.Locale.ROOT, uiFormatContainer.temperature(), roomTemperatureCelsius) : "--");
-        lblRoomAverageTemperatureValue.setTextColor(averageTemperatureColor);
+        lblRoomAirTemperatureValue.setText(Double.isFinite(roomAirTemperatureCelsius)
+                ? String.format(java.util.Locale.ROOT, uiFormatContainer.temperature(), roomAirTemperatureCelsius) : "--");
+        lblRoomAirTemperatureValue.setTextColor(roomAirTemperatureColor);
     }
 
     private int resolveTemperatureRangeColor(float temperature, float minServerTemperatureCelsius, float maxServerTemperatureCelsius) {

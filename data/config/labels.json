@@ -4077,7 +4077,7 @@
     },
     {
       "type": "label",
-      "code": "lblRoomAverageTemperature",
+      "code": "lblRoomAirTemperature",
       "text": "ROOM AIR TEMP",
       "bounds": {
         "mode": "relative",
@@ -4102,7 +4102,7 @@
     },
     {
       "type": "label",
-      "code": "lblRoomAverageTemperatureValue",
+      "code": "lblRoomAirTemperatureValue",
       "text": "",
       "bounds": {
         "mode": "relative",
