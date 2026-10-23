@@ -48,6 +48,8 @@ public final class RoomAirReferenceScenarios {
         if (definition.roomAirTemperature() == null)
             throw new IllegalArgumentException("reference scenarios require explicit roomAirTemperature parameters");
         java.util.Objects.requireNonNull(scenario, "scenario must not be null");
+        // Preserve the room-only benchmark even when the interactive dataset includes a local rack node.
+        definition = withoutRackCooling(definition);
         var dc = new DatacenterFactory().create(definition);
         var options = new TemperatureSystemOptionsFactory().create(definition);
         var cooling = new CoolingSystem(new CoolingConfigurationFactory().create(definition, dc).orElseThrow());
@@ -88,13 +90,20 @@ public final class RoomAirReferenceScenarios {
                 operational.pue(), maximumResidual);
     }
 
+    private static DatacenterDefinition withoutRackCooling(DatacenterDefinition definition) {
+        return new DatacenterDefinition(definition.name(), definition.layout(), definition.serverModels(), definition.servers(),
+                definition.temperature(), definition.health(), definition.cooling(), definition.dataInputMode(),
+                definition.powerInputGranularity(), definition.temperatureInputGranularity(), definition.roomAirTemperature(), null);
+    }
+
     public static DatacenterDefinition withCapacity(DatacenterDefinition definition, double capacity) {
         var room = java.util.Objects.requireNonNull(definition.roomAirTemperature(), "room parameters must be configured");
         return new DatacenterDefinition(definition.name(), definition.layout(), definition.serverModels(), definition.servers(),
                 definition.temperature(), definition.health(), definition.cooling(), definition.dataInputMode(),
                 definition.powerInputGranularity(), definition.temperatureInputGranularity(),
                 new RoomAirTemperatureOptionsDefinition(room.initialTemperatureCelsius(), capacity,
-                        room.environmentTemperatureCelsius(), room.environmentHeatTransferWattsPerCelsius()));
+                        room.environmentTemperatureCelsius(), room.environmentHeatTransferWattsPerCelsius()),
+                definition.rackCooling());
     }
 
     /** Arguments: optional config path, optional simulated minutes (default 21). */

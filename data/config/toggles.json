@@ -371,6 +371,37 @@
           "path": "data/img/tgl/tglPlay.svg"
         }
       }
+    },
+    {
+      "type": "toggle",
+      "code": "tglSelectedRackCooling",
+      "state": 0,
+      "totalStates": 2,
+      "bounds": {
+        "mode": "relative",
+        "x": 0.734,
+        "y": 0.49,
+        "width": 0.02316213494,
+        "height": 0.02316213494
+      },
+      "enabled": false,
+      "visible": false,
+      "style": {
+        "stateColors": [
+          "#2e3c4a",
+          "#7a9dbe"
+        ],
+        "strokeColor": "#FFFFFF",
+        "strokeWidth": 0.0,
+        "strokeWidthHover": 0.0,
+        "hoverBlendWithWhite": 0.18,
+        "pressedBlendWithBlack": 0.2,
+        "disabledAlpha": 70,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/tgl/tglFan.svg"
+        }
+      }
     }
   ]
 }

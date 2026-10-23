@@ -7,6 +7,26 @@
     "environmentTemperatureCelsius": 24.0,
     "environmentHeatTransferWattsPerCelsius": 0.0
   },
+  "rackCooling": {
+    "airDensityKilogramsPerCubicMeter": 1.204,
+    "airSpecificHeatJoulesPerKilogramKelvin": 1005.0,
+    "units": [
+      {
+        "code": "RACK-COOLING-C01-R01",
+        "column": "C01",
+        "rackCode": "R01",
+        "initialAirTemperatureCelsius": 24.0,
+        "effectiveAirThermalCapacityJoulesPerCelsius": 10000.0,
+        "roomHeatTransferWattsPerCelsius": 50.0,
+        "ratedAirflowCubicMetersPerSecond": 0.3,
+        "ratedCoolingCapacityWatts": 4000.0,
+        "supplyAirTemperatureCelsius": 18.0,
+        "ratedElectricalPowerWatts": 1000.0,
+        "heatRejectionDestination": "ROOM",
+        "initiallyEnabled": true
+      }
+    ]
+  },
   "powerInputGranularity": "SERVER",
   "temperatureInputGranularity": "AISLE",
   "layout": {

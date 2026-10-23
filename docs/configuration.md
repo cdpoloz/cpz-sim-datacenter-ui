@@ -88,3 +88,8 @@ does not imply absent cooling. Colored rack/aisle gradients remain server proxie
 The global temperature plot has three series: selected-rack hottest server, global
 online-server average and optional room air. Green is the air-series color, not
 a calibrated air-safety status; existing health thresholds still target servers.
+
+## Integrated rack cooling
+
+See [rack cooling](rack-cooling.md) for the example JSON, selected-rack fan,
+local air and thermal readouts, and combined facility electrical metrics.

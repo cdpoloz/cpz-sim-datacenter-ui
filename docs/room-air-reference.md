@@ -28,6 +28,12 @@ The default UI now shows numerical `ROOM AIR TEMP` and `AIR` history. The lower
 server proxies. The UI starts with its usual variable noise-driven workload;
 the fixed-load benchmark below will therefore not exactly match an interactive run.
 
+The interactive dataset also includes a demonstration integrated cooling unit on
+`C01-R01` (see [rack cooling](rack-cooling.md)). The benchmark runner explicitly
+removes `rackCooling`, including its local air node, before constructing each
+simulation. This preserves the room-only setup and the results below; disabling
+a rack unit alone would retain its local air node and change that comparison.
+
 ## Reproducing the benchmark
 
 Run the main class

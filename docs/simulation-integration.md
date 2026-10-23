@@ -82,3 +82,8 @@ totals rather than estimating HVAC consumption using a temporary COP.
 Resetting the engine clears coupled cooling/air captures and restores initial
 thermal state; clear the history recorder before recording a replay. The legacy
 temperature system now also restores its initial thermal state on engine reset.
+
+## Integrated rack cooling
+
+See [rack cooling](rack-cooling.md) for the example JSON, selected-rack fan,
+local air and thermal readouts, and combined facility electrical metrics.

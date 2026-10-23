@@ -68,6 +68,11 @@ public final class SimulationThermalPipeline {
             engine.register(temperatures);
     }
 
+    /** Returns the authoritative controls owned by the coupled thermal solver. */
+    public Optional<RackCoolingSystem> rackCoolingSystem() {
+        return coupled.flatMap(CoupledRoomTemperatureSystem::rackCoolingSystem);
+    }
+
     public Optional<CoolingSnapshot> coolingSnapshot() {
         return coupled.isPresent() ? coupled.orElseThrow().lastCoolingSnapshot() : Optional.ofNullable(legacyCoolingSnapshot);
     }

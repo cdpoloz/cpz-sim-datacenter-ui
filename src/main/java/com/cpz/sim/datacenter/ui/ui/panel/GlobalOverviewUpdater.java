@@ -155,21 +155,23 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
     }
 
     private double displayedRoomHvacLoadPercentage() {
-        if (simulationContainer.coolingSnapshot() == null) return 0.0;
-        double availableCoolingCapacityWatts = simulationContainer
-                .coolingSnapshot()
-                .zones()
-                .stream()
-                .mapToDouble(CoolingZoneSnapshot::availableCoolingCapacityWatts)
-                .sum();
-        if (availableCoolingCapacityWatts == 0.0) return 0.0;
-        double usedCoolingCapacityWatts = simulationContainer
-                .coolingSnapshot()
-                .zones()
-                .stream()
-                .mapToDouble(CoolingZoneSnapshot::usedCoolingCapacityWatts)
-                .sum();
-        return usedCoolingCapacityWatts / availableCoolingCapacityWatts * 100.0;
+        double availableCoolingCapacityWatts = 0.0;
+        double usedCoolingCapacityWatts = 0.0;
+        var room = simulationContainer.coolingSnapshot();
+        if (room != null) {
+            availableCoolingCapacityWatts = room.zones().stream()
+                    .mapToDouble(CoolingZoneSnapshot::availableCoolingCapacityWatts).sum();
+            usedCoolingCapacityWatts = room.zones().stream()
+                    .mapToDouble(CoolingZoneSnapshot::usedCoolingCapacityWatts).sum();
+        }
+        var racks = simulationContainer.operationalSnapshot().rackCoolingSnapshot();
+        if (racks.isPresent()) {
+            availableCoolingCapacityWatts += racks.orElseThrow().units().stream()
+                    .mapToDouble(unit -> unit.equipment().currentCoolingPowerWatts()).sum();
+            usedCoolingCapacityWatts += racks.orElseThrow().totalActualCoolingPowerWatts();
+        }
+        return availableCoolingCapacityWatts == 0.0 ? 0.0
+                : usedCoolingCapacityWatts / availableCoolingCapacityWatts * 100.0;
     }
 
     private void updateDisplayedRoomTotalElectricalLoad() {

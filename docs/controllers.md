@@ -42,3 +42,8 @@ Only codes beginning `tglSupplyC` or `tglExhaustC` map to backend units. A child
 A master toggle sets every child in its derived group and updates each corresponding backend cooling unit. `syncingCoolingToggles` is set around programmatic `setState()` calls so child/master listener notifications cannot recurse or apply the same transition twice. A `try/finally` always clears the guard if a configured control is missing or another update fails.
 
 Cooling state affects backend results on subsequent simulation steps. The manager does not fabricate a UI snapshot immediately; the normal timer -> engine -> snapshot -> control path remains authoritative.
+
+## Integrated rack cooling
+
+See [rack cooling](rack-cooling.md) for the example JSON, selected-rack fan,
+local air and thermal readouts, and combined facility electrical metrics.

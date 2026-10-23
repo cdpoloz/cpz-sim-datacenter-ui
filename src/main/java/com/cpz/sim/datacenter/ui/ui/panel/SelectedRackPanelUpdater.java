@@ -3,6 +3,7 @@ package com.cpz.sim.datacenter.ui.ui.panel;
 import com.cpz.processing.controls.controls.indicator.Indicator;
 import com.cpz.processing.controls.controls.label.Label;
 import com.cpz.sim.datacenter.health.ServerAlertReason;
+import com.cpz.sim.datacenter.ui.controls.SelectedRackCoolingControls;
 import com.cpz.sim.datacenter.model.*;
 import com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot;
 import com.cpz.sim.datacenter.snapshot.ServerEnergySnapshot;
@@ -37,6 +38,7 @@ public class SelectedRackPanelUpdater extends ApplicationComponent {
     private final SimulationContainer simulationContainer;
     private final UiComponentContainer uiComponentContainer;
     private final SelectionManager selectionManager;
+    private final SelectedRackCoolingControls rackCoolingControls;
 
     /**
      * Creates an updater that resolves the current rack through {@link SelectionManager}.
@@ -50,12 +52,14 @@ public class SelectedRackPanelUpdater extends ApplicationComponent {
             ApplicationContext context,
             SimulationContainer simulationContainer,
             UiComponentContainer uiComponentContainer,
-            SelectionManager selectionManager
+            SelectionManager selectionManager,
+            SelectedRackCoolingControls rackCoolingControls
     ) {
         super(context);
         this.simulationContainer = simulationContainer;
         this.uiComponentContainer = uiComponentContainer;
         this.selectionManager = selectionManager;
+        this.rackCoolingControls = rackCoolingControls;
     }
 
     /**
@@ -78,6 +82,7 @@ public class SelectedRackPanelUpdater extends ApplicationComponent {
         Rack rack = resolveSelectedRack();
         // Resolve every domain snapshot against the same physical column/rack selection.
         RackLocation rackLocation = new RackLocation(selectedColumn(), new RackCode(selectedRack()));
+        rackCoolingControls.update(rackLocation);
         RackOperationalSnapshot rackSnapshot =
                 simulationContainer
                         .operationalSnapshot()

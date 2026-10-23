@@ -72,7 +72,7 @@ mvn dependency:build-classpath -Dmdep.outputFile=target/classpath.txt
 java -cp "target/classes:$(<target/classpath.txt)" com.cpz.sim.datacenter.ui.main.Launcher
 ```
 
-The project currently has no `src/test` test suite. `mvn test` still performs compilation and runs any tests added later.
+Run `mvn test` for thermal-pipeline integration, cooling-control projections, and graph-range tests.
 
 ## Configuration
 
@@ -89,6 +89,7 @@ See [Configuration and assets](docs/configuration.md) before changing configurat
 - Use `tglPlay` or the Space bar to start or stop simulation stepping.
 - Use `btnPlayPlus` / `btnPlayMinus`, or the Plus / Minus keys, to change the configured speed factor.
 - Use an individual `tglSupply...` or `tglExhaust...` control to enable or disable its backend cooling unit.
+- Use the fan in the selected rack illustration (`tglSelectedRackCooling`) to enable or disable that rack’s integrated unit, when installed.
 - Use master `tglSupply` or `tglExhaust` to apply a state to every child unit of that type.
 
 See [Input and controls](docs/controllers.md) for dispatch, selection, and toggle synchronization details.
@@ -99,7 +100,7 @@ The top room indicator is `ROOM AIR TEMP`, separate from `AVG SERVER TEMP` in
 the overview. The temperature trend retains the server average and adds a green
 `AIR` curve. Without an explicit `roomAirTemperature` block, air reads `--` and
 its curve is omitted. The checked-in datacenter now explicitly enables a 20 MJ/°C
-experimental reference, starting at 24 °C with all cooling units disabled. This is
+experimental reference, starting at 24 °C with room cooling disabled. Integrated cooling is enabled on `C01-R01`. This is
 not calibrated to a real room; see [reference parameters and comparisons](docs/room-air-reference.md).
 
 When configured in utilization/power mode, `SimulationThermalPipeline` installs
@@ -110,6 +111,22 @@ mode is not yet supported. See [simulation integration](docs/simulation-integrat
 
 Install the updated backend first with `mvn clean install`, then run `mvn test`
 and build this UI.
+
+## Integrated rack cooling
+
+The default JSON includes `RACK-COOLING-C01-R01`: a demonstration 4 kW thermal
+unit, 1 kW electrical power, returning heat to the room (`ROOM`). Select
+`C01-R02` for a rack without integrated cooling. These are illustrative parameters,
+not measurements or a controlled matched-rack experiment.
+
+The selected-rack illustration shows local `AIR`, actual heat removal `LAST Q`,
+live electrical `ELEC`, nominal `CAP`, and live on/off status plus heat destination.
+The fan changes the solver’s own unit state. Air and `LAST Q` describe the last
+completed step; while paused they retain that measurement. Room/HVAC power, total
+facility power and PUE use backend aggregates including integrated cooling.
+`SERVER AVG` and `IT POWER` remain server-only metrics.
+
+See [rack cooling](docs/rack-cooling.md) for configuration and behavior.
 
 ## Development notes
 
