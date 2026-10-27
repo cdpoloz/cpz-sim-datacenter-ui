@@ -189,10 +189,6 @@ class SimulationThermalPipelineTest {
         var applet = new PApplet();
         var controls = new UiComponentContainer();
         Map<String, Label> labels = new HashMap<>();
-        for (String code : new String[]{"Title", "State", "Air", "Actual", "Power", "Capacity"}) {
-            var label = new Label(applet, "lblRackCooling" + code, "", 0.0f, 0.0f);
-            labels.put(label.getCode(), label);
-        }
         var hvac = new Label(applet, "lblRoomHvacLoadValue", "", 0.0f, 0.0f);
         labels.put(hvac.getCode(), hvac);
         controls.setLabels(labels);
@@ -213,22 +209,39 @@ class SimulationThermalPipelineTest {
         var interaction = new UiInteractionController(state, null, null, null, panel);
         var toggle = controls.toggles().get("tglSelectedRackCooling");
         toggle.setChangeListener(value -> interaction.handleToggleChange(toggle, value));
+        var applet = new PApplet();
+        applet.width = 1920;
+        applet.height = 993;
+        var overlays = new com.cpz.processing.controls.core.overlay.OverlayManager();
+        var tooltips = new com.cpz.processing.controls.core.overlay.tooltip.util.TooltipOverlayController(applet, overlays);
+        panel.registerTooltips(applet, tooltips);
+        var tooltipIdentity = toggle.getTooltip();
+        var tooltipInput = new com.cpz.processing.controls.core.overlay.tooltip.input.TooltipInputLayer(1000, tooltips);
+        assertFalse(tooltipInput.handlePointerEvent(new com.cpz.processing.controls.core.input.PointerEvent(
+                com.cpz.processing.controls.core.input.PointerEvent.Type.MOVE, 1400, 300)));
+        assertTrue(overlays.getActiveOverlays().isEmpty());
         var rack = new RackLocation("C01", new RackCode("R01"));
         var system = f.pipeline.rackCoolingSystem().orElseThrow();
         String code = system.findUnitForRack(rack).orElseThrow().code();
         panel.update(rack);
         assertTrue(system.isEnabled(code), "programmatic projection must not turn equipment off");
-        assertEquals("AIR --", controls.labels().get("lblRackCoolingAir").getText());
+        assertTrue(toggle.getTooltip().getText().contains("Air (last step): --"));
         assertEquals(1, toggle.getState());
+        tooltips.refresh();
+        assertEquals(1, overlays.getActiveOverlays().size());
         var first = f.step();
         simulation.setOperationalSnapshot(first.operationalSnapshot());
         panel.update(rack);
         var thermal = first.rackCoolingSnapshot().orElseThrow().findRack(rack).orElseThrow();
-        assertEquals("ON > " + destination, controls.labels().get("lblRackCoolingState").getText());
-        assertEquals(String.format(Locale.ROOT, "AIR %.1f°C", thermal.airTemperatureCelsius()),
-                controls.labels().get("lblRackCoolingAir").getText());
-        assertEquals(String.format(Locale.ROOT, "LAST Q %.2f kW", thermal.actualCoolingPowerWatts() / 1000),
-                controls.labels().get("lblRackCoolingActual").getText());
+        assertTrue(toggle.getTooltip().getText().contains("State: ON"));
+        assertTrue(toggle.getTooltip().getText().contains("Heat rejection: " + destination));
+        assertTrue(toggle.getTooltip().getText().contains("Rated capacity: 4.0 kW"));
+        assertTrue(toggle.getTooltip().getStyleConfig().minHeight >= 8 * toggle.getTooltip().getStyleConfig().textSize);
+        assertTrue(toggle.getTooltip().getText().contains("Unit: " + code));
+        assertTrue(toggle.getTooltip().getText().contains(String.format(Locale.ROOT,
+                "Air (last step): %.1f°C", thermal.airTemperatureCelsius())));
+        assertTrue(toggle.getTooltip().getText().contains(String.format(Locale.ROOT,
+                "Cooling (last step): %.2f kW", thermal.actualCoolingPowerWatts() / 1000)));
         assertEquals(1000.0, first.operationalSnapshot().coolingPowerWatts(), 1e-9);
         assertEquals(first.operationalSnapshot().currentItPowerWatts() + 1000,
                 first.operationalSnapshot().totalFacilityPowerWatts(), 1e-9);
@@ -243,8 +256,14 @@ class SimulationThermalPipelineTest {
         assertNotEquals(first.operationalSnapshot().averageOnlineServerTemperatureCelsius(), thermal.airTemperatureCelsius());
         toggle.setState(0);
         assertFalse(system.isEnabled(code));
+        tooltips.refresh();
+        assertSame(tooltipIdentity, toggle.getTooltip());
+        assertEquals(1, overlays.getActiveOverlays().size());
         assertTrue(state.updateUI());
-        assertEquals("ELEC 0.00 kW", controls.labels().get("lblRackCoolingPower").getText());
+        assertTrue(toggle.getTooltip().getText().contains("Electrical power: 0.00 kW"));
+        assertTrue(toggle.getTooltip().getText().contains("State: OFF"));
+        assertTrue(toggle.getTooltip().getText().contains(String.format(Locale.ROOT,
+                "Cooling (last step): %.2f kW", thermal.actualCoolingPowerWatts() / 1000)));
         assertTrue(thermal.equipment().enabled(), "history remains immutable after an operator command");
         assertEquals(first.facilityEnergySnapshot(), f.pipeline.coupledThermalSnapshot().orElseThrow().facilityEnergySnapshot());
         assertEquals(1, f.recorder.history().size());
@@ -252,7 +271,7 @@ class SimulationThermalPipelineTest {
         simulation.setOperationalSnapshot(off.operationalSnapshot());
         panel.update(rack);
         assertEquals(0, off.rackCoolingSnapshot().orElseThrow().totalActualCoolingPowerWatts());
-        assertEquals("LAST Q 0.00 kW", controls.labels().get("lblRackCoolingActual").getText());
+        assertTrue(toggle.getTooltip().getText().contains("Cooling (last step): 0.00 kW"));
         assertEquals(0, off.operationalSnapshot().coolingPowerWatts());
         simulation.setCoolingSnapshot(off.coolingSnapshot().orElseThrow());
         overview.update();
@@ -260,8 +279,10 @@ class SimulationThermalPipelineTest {
         panel.update(new RackLocation("C01", new RackCode("R02")));
         assertFalse(toggle.isVisible());
         assertFalse(toggle.isEnabled());
-        assertEquals("NO UNIT", controls.labels().get("lblRackCoolingState").getText());
-        assertEquals("AIR --", controls.labels().get("lblRackCoolingAir").getText());
+        assertFalse(toggle.getTooltip().isEnabled());
+        assertEquals("", toggle.getTooltip().getText());
+        tooltips.refresh();
+        assertTrue(overlays.getActiveOverlays().isEmpty());
         panel.changeState(1);
         assertFalse(system.isEnabled(code), "an uncooled rack must not control the previous selection");
         f.engine.reset();
@@ -270,7 +291,19 @@ class SimulationThermalPipelineTest {
         panel.update(rack);
         assertTrue(system.isEnabled(code));
         assertEquals(1, toggle.getState());
-        assertEquals("LAST Q --", controls.labels().get("lblRackCoolingActual").getText());
+        assertTrue(toggle.getTooltip().getText().contains("Cooling (last step): --"));
+        tooltips.refresh();
+        assertEquals(1, overlays.getActiveOverlays().size());
+        applet.width = 960;
+        applet.height = 496;
+        tooltips.refresh();
+        assertTrue(overlays.getActiveOverlays().isEmpty(), "old pointer position is outside the resized rack");
+        tooltips.showIfMouseOver(700, 150);
+        assertEquals(1, overlays.getActiveOverlays().size());
+        tooltips.showIfMouseOver(5, 5); // The same tooltip is available on the fan control.
+        assertEquals(1, overlays.getActiveOverlays().size());
+        tooltips.dispose();
+        assertTrue(overlays.getActiveOverlays().isEmpty());
         assertEquals(thermal.airTemperatureCelsius(), f.step().rackCoolingSnapshot().orElseThrow()
                 .findRack(rack).orElseThrow().airTemperatureCelsius(), 1e-10);
     }
@@ -287,7 +320,8 @@ class SimulationThermalPipelineTest {
         panel.changeState(1);
         assertTrue(f.pipeline.rackCoolingSystem().isEmpty());
         assertFalse(controls.toggles().get("tglSelectedRackCooling").isVisible());
-        assertEquals("AIR --", controls.labels().get("lblRackCoolingAir").getText());
+        assertFalse(controls.toggles().get("tglSelectedRackCooling").getTooltip().isEnabled());
+        assertEquals("", controls.toggles().get("tglSelectedRackCooling").getTooltip().getText());
     }
 
     @Test

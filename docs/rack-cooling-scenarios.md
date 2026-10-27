@@ -76,13 +76,13 @@ and reset. Stage 7 rendered the configured controls offscreen with Java2D.
 An interactive Processing P2D run is still required on a graphical machine:
 
 1. Open `room.json` and inspect initial selection `C01-R01`. Its fan is on,
-   destination is ROOM, and `ELEC` reads 1.00 kW. `CAP` is 4.0 kW; actual `LAST Q`
-   varies and must not be interpreted as electrical power.
-2. Pause. Switch the rack fan off. State and `ELEC` change immediately; `AIR` and
-   `LAST Q` keep the last completed measurement. Resume for one tick and check
+   hover over the rack drawing or its fan. The tooltip shows ROOM rejection,
+   1.00 kW electrical power and 4.0 kW rated capacity. Actual cooling varies and
+   must not be interpreted as electrical power.
+2. Pause. Switch the rack fan off. State and electrical power change immediately; air and actual cooling keep
+   the last completed measurement. Resume for one tick and check
    zero rack heat removal and zero rack electrical contribution in that capture.
-3. Select `C01-R02`. The rack reads `NO UNIT`, has no fan control and has no local
-   air measurement. Return to `C01-R01`; its previous control state is retained.
+3. Select `C01-R02`. The tooltip disappears, there is no fan control and no local air measurement. Return to `C01-R01`; its previous control state is retained.
 4. Restart with `external.json` and verify the EXTERNAL destination. Compare room
    behavior over identical initial conditions/schedules, allowing for the UI's
    variable workload; the controlled backend CSV provides numerical reference.

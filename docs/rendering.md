@@ -11,8 +11,8 @@ Snapshot capture order is energy, temperature, health, then the combined operati
 ## Layer order
 
 ```text
-top/front    static ui_overlay.png
-             active control overlays
+top/front    active control overlays, including rack cooling tooltip
+             static ui_overlay.png
              selected hot-aisle temperature gradient
              buttons and toggles
              rack/slot/aisle indicators and labels
@@ -20,7 +20,7 @@ top/front    static ui_overlay.png
 bottom/back  COLOR_BACKGROUND clear
 ```
 
-In execution order, `StaticUiRenderer.drawBackground()` clears and draws the background image list; `ControlRenderer.draw()` draws each control group; `SelectedHotAisleTemperatureGradientRenderer.draw()` adds the dynamic heat shape; and `StaticUiRenderer.drawOverlay()` runs active overlay callbacks before drawing the full-canvas static overlay.
+In execution order, `StaticUiRenderer.drawBackground()` clears and draws the background image list; `ControlRenderer.draw()` draws each control group; `SelectedHotAisleTemperatureGradientRenderer.draw()` adds the dynamic heat shape; and `StaticUiRenderer.drawOverlay()` draws the full-canvas static overlay before running active overlay callbacks.
 
 Moving the gradient before controls or moving the static overlay earlier would change masking and visual composition even if all coordinates stayed the same.
 
@@ -39,3 +39,12 @@ The selected aisle updater calculates one representative temperature per rack ro
 The renderer uses normalized geometry from `config.properties`, scaled by current canvas width/height. It draws horizontal lines that widen down the aisle. The first segment uses the first row's color; each later segment interpolates vertically between adjacent row colors. Finally, it draws the configured border. A null or empty temperature list suppresses the gradient during incomplete initialization.
 
 Processing-specific calls such as `pushStyle()`, `map()`, `stroke()`, `line()`, `image()`, and canvas dimensions require an active `PApplet`, so renderers access `Sketch` through `ApplicationContext` and run from `draw()` on the sketch thread.
+
+## Rack cooling tooltip
+
+The selected rack drawing and its cooling fan share a dynamic tooltip, shown only
+for racks with integrated cooling. `TooltipInputLayer` observes pointer events
+without consuming them. After controls update, `TooltipOverlayController.refresh()`
+keeps an open tooltip synchronized with the backend snapshot and live equipment
+state even if the pointer stays still. Overlays draw above server indicators and
+the static foreground. The former six permanent cooling labels are removed.

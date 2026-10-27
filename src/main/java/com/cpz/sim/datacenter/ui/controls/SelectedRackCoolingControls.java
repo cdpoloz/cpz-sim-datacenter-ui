@@ -1,9 +1,13 @@
 package com.cpz.sim.datacenter.ui.controls;
 
+import com.cpz.processing.controls.core.overlay.tooltip.TooltipArea;
+import com.cpz.processing.controls.core.overlay.tooltip.TooltipBounds;
+import com.cpz.processing.controls.core.overlay.tooltip.util.TooltipOverlayController;
 import com.cpz.sim.datacenter.model.RackLocation;
 import com.cpz.sim.datacenter.system.RackCoolingSystem;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
+import processing.core.PApplet;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -18,6 +22,18 @@ public final class SelectedRackCoolingControls {
     public SelectedRackCoolingControls(SimulationContainer simulation, UiComponentContainer controls) {
         this.simulation = simulation;
         this.controls = controls;
+    }
+
+    /** Hover over the selected-rack illustration or its fan; both share one tooltip. */
+    public void registerTooltips(PApplet sketch, TooltipOverlayController tooltips) {
+        var toggle = controls.toggles().get("tglSelectedRackCooling");
+        if (toggle.getTooltip() == null) toggle.setTooltip("");
+        var area = new TooltipArea(() -> new TooltipBounds(
+                sketch.width * 0.707f, sketch.height * 0.149f,
+                sketch.width * 0.073f, sketch.height * 0.399f))
+                .setTooltip(toggle.getTooltip());
+        tooltips.registerTarget(area);
+        tooltips.registerTarget(toggle);
     }
 
     private Optional<RackCoolingSystem> system() {
@@ -39,13 +55,26 @@ public final class SelectedRackCoolingControls {
             toggle.setEnabled(installed);
             toggle.setVisible(installed);
             toggle.setState(enabled ? 1 : 0);
-            text("lblRackCoolingState", installed
-                    ? (enabled ? "ON" : "OFF") + " > " + definition.orElseThrow().heatRejectionDestination() : "NO UNIT");
-            text("lblRackCoolingAir", snapshot.map(value -> format("AIR %.1f°C", value.airTemperatureCelsius())).orElse("AIR --"));
-            text("lblRackCoolingActual", snapshot.map(value -> format("LAST Q %.2f kW", value.actualCoolingPowerWatts() / 1000)).orElse("LAST Q --"));
-            text("lblRackCoolingPower", installed ? format("ELEC %.2f kW",
-                    system.orElseThrow().currentElectricalPowerWatts(definition.orElseThrow().code()) / 1000) : "ELEC --");
-            text("lblRackCoolingCapacity", definition.map(value -> format("CAP %.1f kW", value.ratedCoolingCapacityWatts() / 1000)).orElse("CAP --"));
+            if (installed) {
+                var unit = definition.orElseThrow();
+                toggle.setTooltipText("RACK COOLING - " + rack.code()
+                        + "\nUnit: " + unit.code()
+                        + "\nState: " + (enabled ? "ON" : "OFF")
+                        + "\nHeat rejection: " + unit.heatRejectionDestination()
+                        + "\n" + snapshot.map(value -> format("Air (last step): %.1f°C", value.airTemperatureCelsius()))
+                                .orElse("Air (last step): --")
+                        + "\n" + snapshot.map(value -> format("Cooling (last step): %.2f kW", value.actualCoolingPowerWatts() / 1000))
+                                .orElse("Cooling (last step): --")
+                        + "\n" + format("Electrical power: %.2f kW", system.orElseThrow().currentElectricalPowerWatts(unit.code()) / 1000)
+                        + "\n" + format("Rated capacity: %.1f kW", unit.ratedCoolingCapacityWatts() / 1000));
+            } else toggle.setTooltipText("");
+            toggle.getTooltip().setEnabled(installed);
+            if (installed) {
+                // The library tooltip uses a fixed minimum height; reserve space for all text lines.
+                var style = toggle.getTooltip().getStyleConfig();
+                style.setMinHeight(style.textPadding * 2
+                        + style.textSize * 1.5f * toggle.getTooltip().getText().lines().count());
+            }
         } finally {
             syncing = false;
         }
@@ -57,10 +86,6 @@ public final class SelectedRackCoolingControls {
         system().ifPresent(system -> system.findUnitForRack(displayedRack)
                 .ifPresent(unit -> system.setEnabled(unit.code(), state == 1)));
         update(displayedRack);
-    }
-
-    private void text(String code, String value) {
-        controls.labels().get(code).setText(value);
     }
 
     private static String format(String format, double value) {

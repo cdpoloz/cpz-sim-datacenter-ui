@@ -42,12 +42,12 @@ public class StaticUiRenderer extends ApplicationComponent {
         sketch().popStyle();
     }
 
-    /** Draws active library overlays followed by the static full-canvas foreground. */
+    /** Draws the static foreground, then active overlays above the complete scene. */
     public void drawOverlay() {
-        overlayManager.getActiveOverlays().forEach(entry -> entry.getRender().run());
         sketch().pushStyle();
         sketch().imageMode(CORNER);
         sketch().image(resourceContainer.staticOverlay(), 0, 0, sketch().width, sketch().height);
         sketch().popStyle();
+        overlayManager.getActiveOverlays().forEach(entry -> entry.getRender().run());
     }
 }

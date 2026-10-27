@@ -33,7 +33,7 @@ The backend requires the coupled `roomAirTemperature` model and utilization or
 power input. Removing `rackCooling` retains supported room-only/legacy behavior;
 removing only `roomAirTemperature` while retaining rack cooling is invalid.
 
-## Selected rack panel
+## Selected rack tooltip and fan
 
 `SelectedRackCoolingControls` resolves the selected `RackLocation` against
 `SimulationThermalPipeline.rackCoolingSystem()`. That accessor returns the same
@@ -41,23 +41,39 @@ control object owned by `CoupledRoomTemperatureSystem`; there is no second unit
 registry or UI thermal calculation. Any configured rack unit can use this panel,
 without a new fixed toggle for every rack or a naming convention for its code.
 
-| Display | Source and meaning |
+Hover over the rack illustration or its fan to display the same tooltip. The
+illustration target uses canvas-relative bounds and follows resizing. The fan
+remains clickable; the tooltip is informational and does not consume pointer
+input. Both targets share one tooltip instance, styled in `toggles.json` with
+JetBrains Mono, a dark background and cyan border.
+
+| Tooltip field | Source and meaning |
 | --- | --- |
-| `ON/OFF > ROOM/EXTERNAL` | Live control state and immutable destination |
-| `AIR` | Local air temperature from the last recorded rack thermal snapshot |
-| `LAST Q` | Actual thermal removal rate at the end of that step, in kW |
-| `ELEC` | Live enabled-state electrical power, in kW |
-| `CAP` | Configured nominal thermal capacity, including when disabled |
-| Fan | `tglSelectedRackCooling`, changes only the displayed rack's unit |
-| `SERVER AVG` | Existing online server internal-temperature average |
-| `IT POWER` | Existing server electrical power only |
+| Title / Unit | Physical rack identity and configured equipment code |
+| State | Live enabled state; this is not an automatic temperature controller |
+| Heat rejection | Immutable `ROOM` or `EXTERNAL` destination |
+| Air (last step) | Local air temperature from the latest rack capture |
+| Cooling (last step) | Actual removal rate at the end of that step, in kW |
+| Electrical power | Live enabled-state electrical power, in kW |
+| Rated capacity | Configured nominal thermal capacity, including when disabled |
+
+The six `lblRackCooling...` controls were removed from `labels.json`. The server
+average and IT power labels remain separate server-only metrics. Tooltip sizing
+reserves room for every line because the library defaults to a single-line-height
+box. Active overlays render after the full scene and static foreground.
 
 Projection sets the toggle under a re-entry guard. Operator commands update the
-unit and live readouts immediately, including while paused; they do not advance
-time or replace historical snapshots. `AIR` and `LAST Q` stay at the last completed
-step until simulation resumes. A rack without a unit shows `NO UNIT` and `--`
-measurements and hides/disables the fan; room air is never substituted for local
-rack air. A configured unit without a completed snapshot has pending measurements.
+unit, state and electrical-power tooltip fields immediately, including while
+paused; they do not advance time or replace historical snapshots. Air and actual
+cooling stay at the last completed step until simulation resumes. Before the
+first capture, these two values read `--`. An uncooled rack has no cooling tooltip
+and hides/disables the fan; room air is never substituted for local rack air.
+
+`Sketch` registers a `TooltipOverlayController` and passive `TooltipInputLayer`
+using the existing infrastructure. Refreshing after panel updates keeps a visible
+tooltip current even when the mouse does not move, clears it when selection moves
+to an uncooled rack, and handles changed canvas dimensions. Disposal unregisters
+the tooltip. Hovering does not change equipment state.
 
 The fan sits in the lower part of the rack illustration as an equipment control;
 its position does not allocate server slots. Rack and aisle color scales continue
@@ -94,3 +110,8 @@ layout and asset loading; it does not exercise an interactive P2D desktop sessio
 standalone generator, six full-layout JSON variants, source preservation and a
 manual P2D checklist. Room control children/masters now initialize from backend
 states, including examples that begin with room HVAC enabled.
+
+Tooltip verification also checks stationary-pointer refresh, removal/restoration
+on selection changes, canvas resizing, fan hover, passive pointer handling and
+overlay disposal. The multiline tooltip was rendered offscreen using the actual
+JSON font/style, selected-rack server indicators and static foreground.

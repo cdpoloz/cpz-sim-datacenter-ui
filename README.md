@@ -119,12 +119,13 @@ unit, 1 kW electrical power, returning heat to the room (`ROOM`). Select
 `C01-R02` for a rack without integrated cooling. These are illustrative parameters,
 not measurements or a controlled matched-rack experiment.
 
-The selected-rack illustration shows local `AIR`, actual heat removal `LAST Q`,
-live electrical `ELEC`, nominal `CAP`, and live on/off status plus heat destination.
-The fan changes the solver’s own unit state. Air and `LAST Q` describe the last
-completed step; while paused they retain that measurement. Room/HVAC power, total
-facility power and PUE use backend aggregates including integrated cooling.
-`SERVER AVG` and `IT POWER` remain server-only metrics.
+Hover over the selected-rack illustration or its fan to see a cooling tooltip
+when that rack has an integrated unit. It shows unit/rack identity, live on/off
+state, heat destination, local air and actual cooling from the last completed
+step, live electrical power and nominal thermal capacity. The six permanent
+cooling labels have been removed to preserve the rack drawing and server table.
+The fan remains a separate on/off control. Global electrical load and PUE still
+include the unit; `SERVER AVG` and `IT POWER` remain server-only metrics.
 
 See [rack cooling](docs/rack-cooling.md) for configuration and behavior, and
 [scenario generation and verification](docs/rack-cooling-scenarios.md) for six

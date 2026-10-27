@@ -51,3 +51,12 @@ local air and thermal readouts, and combined facility electrical metrics.
 During cooling initialization, child toggles are synchronized from the backend
 enabled states under the listener guard, then masters are recomputed. The
 control JSON defaults do not determine the physical initial unit states.
+
+## Rack cooling hover details
+
+The selected-rack fan retains its on/off callback. Hovering over either the fan
+or the rack illustration shows the shared informational cooling tooltip when a
+unit is installed. The passive tooltip layer preserves normal pointer routing;
+hover does not toggle equipment. Text refreshes after selection/step/command
+updates; an uncooled selection clears and disables the tooltip. See
+[rack cooling](rack-cooling.md#selected-rack-tooltip-and-fan).

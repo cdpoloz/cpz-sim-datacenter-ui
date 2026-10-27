@@ -1,6 +1,8 @@
 package com.cpz.sim.datacenter.ui.main;
 
 import com.cpz.processing.controls.controls.toggle.Toggle;
+import com.cpz.processing.controls.core.overlay.tooltip.input.TooltipInputLayer;
+import com.cpz.processing.controls.core.overlay.tooltip.util.TooltipOverlayController;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.app.InfrastructureContainer;
 import com.cpz.sim.datacenter.ui.app.InfrastructureInitializer;
@@ -51,6 +53,7 @@ public class Sketch extends PApplet {
     private GlobalOverviewUpdater globalOverviewUpdater;
     private GlobalOverviewRenderer globalOverviewRenderer;
     private SelectionManager selectionManager;
+    private TooltipOverlayController tooltips;
 
     /**
      * Configures the Processing surface before it is created.
@@ -108,6 +111,9 @@ public class Sketch extends PApplet {
         simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         CoolingToggleManager coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
         SelectedRackCoolingControls rackCoolingControls = new SelectedRackCoolingControls(simulationContainer, uiComponentContainer);
+        tooltips = new TooltipOverlayController(this, infrastructureContainer.overlayManager());
+        rackCoolingControls.registerTooltips(this, tooltips);
+        infrastructureContainer.inputManager().registerLayer(new TooltipInputLayer(1000, tooltips));
         selectionManager = new SelectionManager(context, simulationContainer, uiComponentContainer);
         uiInteractionController = new UiInteractionController(uiStateContainer, simulationManager, coolingToggleManager, selectionManager, rackCoolingControls);
         headerUpdater = new HeaderUpdater(context, simulationContainer, uiComponentContainer);
@@ -149,6 +155,8 @@ public class Sketch extends PApplet {
         uiUpdateCoordinator.updateClock();
         uiUpdateCoordinator.updateSnapshotsIfNeeded();
         uiUpdateCoordinator.updateControlsIfNeeded();
+        // Keep an open tooltip current even while the pointer is stationary.
+        tooltips.refresh();
         globalOverviewUpdater.update();
         globalOverviewRenderer.updateTemperatureAxis();
         updateKeyboardPlayIndicators();
@@ -165,6 +173,12 @@ public class Sketch extends PApplet {
         );
         globalOverviewRenderer.draw();
         staticUiRenderer.drawOverlay();
+    }
+
+    @Override
+    public void dispose() {
+        if (tooltips != null) tooltips.dispose();
+        super.dispose();
     }
 
     private void updateKeyboardPlayIndicators() {
