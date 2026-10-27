@@ -225,7 +225,7 @@ class SimulationThermalPipelineTest {
         String code = system.findUnitForRack(rack).orElseThrow().code();
         panel.update(rack);
         assertTrue(system.isEnabled(code), "programmatic projection must not turn equipment off");
-        assertTrue(toggle.getTooltip().getText().contains("Air (last step): --"));
+        assertTrue(toggle.getTooltip().getText().contains("RACK AIR TEMP: --"));
         assertEquals(1, toggle.getState());
         panel.refreshTooltipLayout();
         tooltips.refresh();
@@ -234,19 +234,18 @@ class SimulationThermalPipelineTest {
         simulation.setOperationalSnapshot(first.operationalSnapshot());
         panel.update(rack);
         var thermal = first.rackCoolingSnapshot().orElseThrow().findRack(rack).orElseThrow();
-        assertTrue(toggle.getTooltip().getText().contains("State: ON"));
-        assertTrue(toggle.getTooltip().getText().contains("Heat rejection: " + destination));
-        assertTrue(toggle.getTooltip().getText().contains("Rated capacity: 4.0 kW"));
+        assertTrue(toggle.getTooltip().getText().contains("INTERNAL RACK COOLING: ON"));
+        assertTrue(toggle.getTooltip().getText().contains("HEAT REJECTION: " + destination));
+        assertTrue(toggle.getTooltip().getText().contains("COOLING CAPACITY: 4.00 kW"));
         assertTrue(toggle.getTooltip().getStyleConfig().minHeight >= 6 * toggle.getTooltip().getStyleConfig().textSize);
         assertFalse(toggle.getTooltip().getText().contains("Unit:"));
-        assertFalse(toggle.getTooltip().getText().contains("RACK COOLING"));
         assertFalse(toggle.getTooltip().getText().contains("C01-R01"));
         assertEquals(6, toggle.getTooltip().getText().lines().count());
         assertEquals(9.0, toggle.getTooltip().getStyleConfig().textSize, 1e-6);
         assertTrue(toggle.getTooltip().getText().contains(String.format(Locale.ROOT,
-                "Air (last step): %.1f°C", thermal.airTemperatureCelsius())));
+                "RACK AIR TEMP: %.1f°C", thermal.airTemperatureCelsius())));
         assertTrue(toggle.getTooltip().getText().contains(String.format(Locale.ROOT,
-                "Cooling (last step): %.2f kW", thermal.actualCoolingPowerWatts() / 1000)));
+                "HEAT REMOVAL: %.2f kW", thermal.actualCoolingPowerWatts() / 1000)));
         assertEquals(1000.0, first.operationalSnapshot().coolingPowerWatts(), 1e-9);
         assertEquals(first.operationalSnapshot().currentItPowerWatts() + 1000,
                 first.operationalSnapshot().totalFacilityPowerWatts(), 1e-9);
@@ -268,10 +267,10 @@ class SimulationThermalPipelineTest {
         assertSame(tooltipIdentity, toggle.getTooltip());
         assertEquals(1, overlays.getActiveOverlays().size());
         assertTrue(state.updateUI());
-        assertTrue(toggle.getTooltip().getText().contains("Electrical power: 0.00 kW"));
-        assertTrue(toggle.getTooltip().getText().contains("State: OFF"));
+        assertTrue(toggle.getTooltip().getText().contains("ELECTRICAL INPUT: 0.00 kW"));
+        assertTrue(toggle.getTooltip().getText().contains("INTERNAL RACK COOLING: OFF"));
         assertTrue(toggle.getTooltip().getText().contains(String.format(Locale.ROOT,
-                "Cooling (last step): %.2f kW", thermal.actualCoolingPowerWatts() / 1000)));
+                "HEAT REMOVAL: %.2f kW", thermal.actualCoolingPowerWatts() / 1000)));
         assertTrue(thermal.equipment().enabled(), "history remains immutable after an operator command");
         assertEquals(first.facilityEnergySnapshot(), f.pipeline.coupledThermalSnapshot().orElseThrow().facilityEnergySnapshot());
         assertEquals(1, f.recorder.history().size());
@@ -279,7 +278,7 @@ class SimulationThermalPipelineTest {
         simulation.setOperationalSnapshot(off.operationalSnapshot());
         panel.update(rack);
         assertEquals(0, off.rackCoolingSnapshot().orElseThrow().totalActualCoolingPowerWatts());
-        assertTrue(toggle.getTooltip().getText().contains("Cooling (last step): 0.00 kW"));
+        assertTrue(toggle.getTooltip().getText().contains("HEAT REMOVAL: 0.00 kW"));
         assertEquals(0, off.operationalSnapshot().coolingPowerWatts());
         simulation.setCoolingSnapshot(off.coolingSnapshot().orElseThrow());
         overview.update();
@@ -300,7 +299,7 @@ class SimulationThermalPipelineTest {
         panel.update(rack);
         assertTrue(system.isEnabled(code));
         assertEquals(1, toggle.getState());
-        assertTrue(toggle.getTooltip().getText().contains("Cooling (last step): --"));
+        assertTrue(toggle.getTooltip().getText().contains("HEAT REMOVAL: --"));
         panel.refreshTooltipLayout();
         tooltips.refresh();
         assertEquals(1, overlays.getActiveOverlays().size());

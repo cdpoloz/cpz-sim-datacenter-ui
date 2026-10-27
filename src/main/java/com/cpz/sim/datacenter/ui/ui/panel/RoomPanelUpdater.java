@@ -107,6 +107,13 @@ public class RoomPanelUpdater extends ApplicationComponent {
         else rackColor = calculateRackColor(averageTemperature, minServerTemperatureCelsius, maxServerTemperatureCelsius);
         rackIndicator.setOnColor(rackColor);
         updateRackConditionIndicators(rackIndicatorCode, rackOffline, emptyRack, rackHotspot, aiRack);
+        Indicator coolingIndicator = uiComponentContainer.indicatorsRackCondition()
+                .get(rackIndicatorCode.replace("indRack", "indRackCooling"));
+        if (coolingIndicator != null) {
+            // Identify installed equipment, independently of its current ON/OFF state.
+            coolingIndicator.setOn(simulationContainer.thermalPipeline().rackCoolingSystem()
+                    .flatMap(system -> system.findUnitForRack(location)).isPresent());
+        }
     }
 
     private int calculateRackColor(float temperature, float minServerTemperatureCelsius, float maxServerTemperatureCelsius) {
