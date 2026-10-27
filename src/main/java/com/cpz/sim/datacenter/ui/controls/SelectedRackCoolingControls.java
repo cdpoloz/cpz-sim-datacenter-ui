@@ -68,14 +68,14 @@ public final class SelectedRackCoolingControls {
             toggle.setState(enabled ? 1 : 0);
             if (installed) {
                 var unit = definition.orElseThrow();
-                toggle.setTooltipText("State: " + (enabled ? "ON" : "OFF")
-                        + "\nHeat rejection: " + unit.heatRejectionDestination()
-                        + "\n" + snapshot.map(value -> format("Air (last step): %.1f°C", value.airTemperatureCelsius()))
-                                .orElse("Air (last step): --")
-                        + "\n" + snapshot.map(value -> format("Cooling (last step): %.2f kW", value.actualCoolingPowerWatts() / 1000))
-                                .orElse("Cooling (last step): --")
-                        + "\n" + format("Electrical power: %.2f kW", system.orElseThrow().currentElectricalPowerWatts(unit.code()) / 1000)
-                        + "\n" + format("Rated capacity: %.1f kW", unit.ratedCoolingCapacityWatts() / 1000));
+                toggle.setTooltipText("INTERNAL RACK COOLING: " + (enabled ? "ON" : "OFF")
+                        + "\nHEAT REJECTION: " + unit.heatRejectionDestination()
+                        + "\n" + snapshot.map(value -> format("RACK AIR TEMP: %.1f°C", value.airTemperatureCelsius()))
+                                .orElse("RACK AIR TEMP: --")
+                        + "\n" + snapshot.map(value -> format("HEAT REMOVAL: %.2f kW", value.actualCoolingPowerWatts() / 1000))
+                                .orElse("HEAT REMOVAL: --")
+                        + "\n" + format("COOLING CAPACITY: %.2f kW", unit.ratedCoolingCapacityWatts() / 1000)
+                        + "\n" + format("ELECTRICAL INPUT: %.2f kW", system.orElseThrow().currentElectricalPowerWatts(unit.code()) / 1000));
             } else toggle.setTooltipText("");
             toggle.getTooltip().setEnabled(installed);
             if (installed) {
