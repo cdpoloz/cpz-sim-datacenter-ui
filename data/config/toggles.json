@@ -394,17 +394,17 @@
       "totalStates": 2,
       "bounds": {
         "mode": "relative",
-        "x": 0.7239497396,
+        "x": 0.723949739583,
         "y": 0.5425,
-        "width": 0.02316213494,
-        "height": 0.02316213494
+        "width": 0.0202683786506,
+        "height": 0.0231621349446
       },
       "enabled": false,
       "visible": false,
       "style": {
         "stateColors": [
           "#2e3c4a",
-          "#7a9dbe"
+          "#5cb5c6"
         ],
         "strokeColor": "#FFFFFF",
         "strokeWidth": 0.0,
@@ -414,7 +414,7 @@
         "disabledAlpha": 70,
         "renderer": {
           "type": "svg",
-          "path": "data/img/tgl/tglFan.svg"
+          "path": "data/img/tgl/indCoolingMode.svg"
         }
       }
     }
