@@ -383,7 +383,7 @@
           "textColor": "#FFF2EBE7",
           "borderColor": "#FF5CB4C6",
           "font": "data/font/JetBrainsMono.ttf",
-          "textSize": 14.0,
+          "textSize": 9.0,
           "textPadding": 12.0,
           "offset": 10.0,
           "cornerRadius": 6.0,

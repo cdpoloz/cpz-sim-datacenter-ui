@@ -54,6 +54,7 @@ public class Sketch extends PApplet {
     private GlobalOverviewRenderer globalOverviewRenderer;
     private SelectionManager selectionManager;
     private TooltipOverlayController tooltips;
+    private SelectedRackCoolingControls rackCoolingControls;
 
     /**
      * Configures the Processing surface before it is created.
@@ -110,9 +111,10 @@ public class Sketch extends PApplet {
         SimulationContainer simulationContainer = new SimulationContainer();
         simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         CoolingToggleManager coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
-        SelectedRackCoolingControls rackCoolingControls = new SelectedRackCoolingControls(simulationContainer, uiComponentContainer);
+        rackCoolingControls = new SelectedRackCoolingControls(simulationContainer, uiComponentContainer);
         tooltips = new TooltipOverlayController(this, infrastructureContainer.overlayManager());
-        rackCoolingControls.registerTooltips(this, tooltips);
+        rackCoolingControls.registerTooltips(this, tooltips,
+                Float.parseFloat(PROPS.getProperty("ui.rack-cooling.tooltip.text-size", "0.00906344410876")));
         infrastructureContainer.inputManager().registerLayer(new TooltipInputLayer(1000, tooltips));
         selectionManager = new SelectionManager(context, simulationContainer, uiComponentContainer);
         uiInteractionController = new UiInteractionController(uiStateContainer, simulationManager, coolingToggleManager, selectionManager, rackCoolingControls);
@@ -156,6 +158,7 @@ public class Sketch extends PApplet {
         uiUpdateCoordinator.updateSnapshotsIfNeeded();
         uiUpdateCoordinator.updateControlsIfNeeded();
         // Keep an open tooltip current even while the pointer is stationary.
+        rackCoolingControls.refreshTooltipLayout();
         tooltips.refresh();
         globalOverviewUpdater.update();
         globalOverviewRenderer.updateTemperatureAxis();

@@ -214,7 +214,7 @@ class SimulationThermalPipelineTest {
         applet.height = 993;
         var overlays = new com.cpz.processing.controls.core.overlay.OverlayManager();
         var tooltips = new com.cpz.processing.controls.core.overlay.tooltip.util.TooltipOverlayController(applet, overlays);
-        panel.registerTooltips(applet, tooltips);
+        panel.registerTooltips(applet, tooltips, 0.00906344410876f);
         var tooltipIdentity = toggle.getTooltip();
         var tooltipInput = new com.cpz.processing.controls.core.overlay.tooltip.input.TooltipInputLayer(1000, tooltips);
         assertFalse(tooltipInput.handlePointerEvent(new com.cpz.processing.controls.core.input.PointerEvent(
@@ -227,6 +227,7 @@ class SimulationThermalPipelineTest {
         assertTrue(system.isEnabled(code), "programmatic projection must not turn equipment off");
         assertTrue(toggle.getTooltip().getText().contains("Air (last step): --"));
         assertEquals(1, toggle.getState());
+        panel.refreshTooltipLayout();
         tooltips.refresh();
         assertEquals(1, overlays.getActiveOverlays().size());
         var first = f.step();
@@ -236,8 +237,12 @@ class SimulationThermalPipelineTest {
         assertTrue(toggle.getTooltip().getText().contains("State: ON"));
         assertTrue(toggle.getTooltip().getText().contains("Heat rejection: " + destination));
         assertTrue(toggle.getTooltip().getText().contains("Rated capacity: 4.0 kW"));
-        assertTrue(toggle.getTooltip().getStyleConfig().minHeight >= 8 * toggle.getTooltip().getStyleConfig().textSize);
-        assertTrue(toggle.getTooltip().getText().contains("Unit: " + code));
+        assertTrue(toggle.getTooltip().getStyleConfig().minHeight >= 6 * toggle.getTooltip().getStyleConfig().textSize);
+        assertFalse(toggle.getTooltip().getText().contains("Unit:"));
+        assertFalse(toggle.getTooltip().getText().contains("RACK COOLING"));
+        assertFalse(toggle.getTooltip().getText().contains("C01-R01"));
+        assertEquals(6, toggle.getTooltip().getText().lines().count());
+        assertEquals(9.0, toggle.getTooltip().getStyleConfig().textSize, 1e-6);
         assertTrue(toggle.getTooltip().getText().contains(String.format(Locale.ROOT,
                 "Air (last step): %.1f°C", thermal.airTemperatureCelsius())));
         assertTrue(toggle.getTooltip().getText().contains(String.format(Locale.ROOT,
@@ -245,6 +250,8 @@ class SimulationThermalPipelineTest {
         assertEquals(1000.0, first.operationalSnapshot().coolingPowerWatts(), 1e-9);
         assertEquals(first.operationalSnapshot().currentItPowerWatts() + 1000,
                 first.operationalSnapshot().totalFacilityPowerWatts(), 1e-9);
+        assertEquals(1 + 1000 / first.operationalSnapshot().currentItPowerWatts(),
+                first.operationalSnapshot().pue(), 1e-10);
         assertTrue(thermal.actualCoolingPowerWatts() > 0);
         simulation.setCoolingSnapshot(first.coolingSnapshot().orElseThrow());
         var formats = new UiFormatContainer();
@@ -256,6 +263,7 @@ class SimulationThermalPipelineTest {
         assertNotEquals(first.operationalSnapshot().averageOnlineServerTemperatureCelsius(), thermal.airTemperatureCelsius());
         toggle.setState(0);
         assertFalse(system.isEnabled(code));
+        panel.refreshTooltipLayout();
         tooltips.refresh();
         assertSame(tooltipIdentity, toggle.getTooltip());
         assertEquals(1, overlays.getActiveOverlays().size());
@@ -281,6 +289,7 @@ class SimulationThermalPipelineTest {
         assertFalse(toggle.isEnabled());
         assertFalse(toggle.getTooltip().isEnabled());
         assertEquals("", toggle.getTooltip().getText());
+        panel.refreshTooltipLayout();
         tooltips.refresh();
         assertTrue(overlays.getActiveOverlays().isEmpty());
         panel.changeState(1);
@@ -292,14 +301,17 @@ class SimulationThermalPipelineTest {
         assertTrue(system.isEnabled(code));
         assertEquals(1, toggle.getState());
         assertTrue(toggle.getTooltip().getText().contains("Cooling (last step): --"));
+        panel.refreshTooltipLayout();
         tooltips.refresh();
         assertEquals(1, overlays.getActiveOverlays().size());
         applet.width = 960;
         applet.height = 496;
+        panel.refreshTooltipLayout();
         tooltips.refresh();
         assertTrue(overlays.getActiveOverlays().isEmpty(), "old pointer position is outside the resized rack");
         tooltips.showIfMouseOver(700, 150);
         assertEquals(1, overlays.getActiveOverlays().size());
+        assertEquals(0.00906344410876 * 496, toggle.getTooltip().getStyleConfig().textSize, 1e-6);
         tooltips.showIfMouseOver(5, 5); // The same tooltip is available on the fan control.
         assertEquals(1, overlays.getActiveOverlays().size());
         tooltips.dispose();

@@ -120,9 +120,9 @@ unit, 1 kW electrical power, returning heat to the room (`ROOM`). Select
 not measurements or a controlled matched-rack experiment.
 
 Hover over the selected-rack illustration or its fan to see a cooling tooltip
-when that rack has an integrated unit. It shows unit/rack identity, live on/off
-state, heat destination, local air and actual cooling from the last completed
-step, live electrical power and nominal thermal capacity. The six permanent
+when that rack has an integrated unit. It shows live on/off state, heat destination,
+local air and actual cooling from the last completed step, live electrical power
+and nominal thermal capacity. The six permanent
 cooling labels have been removed to preserve the rack drawing and server table.
 The fan remains a separate on/off control. Global electrical load and PUE still
 include the unit; `SERVER AVG` and `IT POWER` remain server-only metrics.

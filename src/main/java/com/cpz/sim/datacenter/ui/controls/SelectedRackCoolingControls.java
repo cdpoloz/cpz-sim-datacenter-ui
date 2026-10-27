@@ -1,5 +1,6 @@
 package com.cpz.sim.datacenter.ui.controls;
 
+import com.cpz.processing.controls.core.overlay.tooltip.Tooltip;
 import com.cpz.processing.controls.core.overlay.tooltip.TooltipArea;
 import com.cpz.processing.controls.core.overlay.tooltip.TooltipBounds;
 import com.cpz.processing.controls.core.overlay.tooltip.util.TooltipOverlayController;
@@ -18,6 +19,7 @@ public final class SelectedRackCoolingControls {
     private final UiComponentContainer controls;
     private RackLocation displayedRack;
     private boolean syncing;
+    private Runnable resizeTooltip = () -> { };
 
     public SelectedRackCoolingControls(SimulationContainer simulation, UiComponentContainer controls) {
         this.simulation = simulation;
@@ -25,15 +27,24 @@ public final class SelectedRackCoolingControls {
     }
 
     /** Hover over the selected-rack illustration or its fan; both share one tooltip. */
-    public void registerTooltips(PApplet sketch, TooltipOverlayController tooltips) {
+    public void registerTooltips(PApplet sketch, TooltipOverlayController tooltips, float relativeTextSize) {
+        if (!Float.isFinite(relativeTextSize) || relativeTextSize <= 0)
+            throw new IllegalArgumentException("relative tooltip text size must be finite and positive");
         var toggle = controls.toggles().get("tglSelectedRackCooling");
         if (toggle.getTooltip() == null) toggle.setTooltip("");
+        var tooltip = toggle.getTooltip();
+        resizeTooltip = () -> resizeTooltip(tooltip, sketch.height, relativeTextSize);
+        refreshTooltipLayout();
         var area = new TooltipArea(() -> new TooltipBounds(
                 sketch.width * 0.707f, sketch.height * 0.149f,
-                sketch.width * 0.073f, sketch.height * 0.399f))
-                .setTooltip(toggle.getTooltip());
+                sketch.width * 0.073f, sketch.height * 0.399f)).setTooltip(tooltip);
         tooltips.registerTarget(area);
         tooltips.registerTarget(toggle);
+    }
+
+    /** Resolve relative text sizing before the overlay refresh, including while paused. */
+    public void refreshTooltipLayout() {
+        resizeTooltip.run();
     }
 
     private Optional<RackCoolingSystem> system() {
@@ -57,9 +68,7 @@ public final class SelectedRackCoolingControls {
             toggle.setState(enabled ? 1 : 0);
             if (installed) {
                 var unit = definition.orElseThrow();
-                toggle.setTooltipText("RACK COOLING - " + rack.code()
-                        + "\nUnit: " + unit.code()
-                        + "\nState: " + (enabled ? "ON" : "OFF")
+                toggle.setTooltipText("State: " + (enabled ? "ON" : "OFF")
                         + "\nHeat rejection: " + unit.heatRejectionDestination()
                         + "\n" + snapshot.map(value -> format("Air (last step): %.1f°C", value.airTemperatureCelsius()))
                                 .orElse("Air (last step): --")
@@ -86,6 +95,13 @@ public final class SelectedRackCoolingControls {
         system().ifPresent(system -> system.findUnitForRack(displayedRack)
                 .ifPresent(unit -> system.setEnabled(unit.code(), state == 1)));
         update(displayedRack);
+    }
+
+    private static void resizeTooltip(Tooltip tooltip, int canvasHeight, float relativeTextSize) {
+        if (canvasHeight <= 0) return;
+        var style = tooltip.getStyleConfig();
+        style.setTextSize(relativeTextSize * canvasHeight);
+        style.setMinHeight(style.textPadding * 2 + style.textSize * 1.5f * tooltip.getText().lines().count());
     }
 
     private static String format(String format, double value) {

@@ -45,11 +45,16 @@ Hover over the rack illustration or its fan to display the same tooltip. The
 illustration target uses canvas-relative bounds and follows resizing. The fan
 remains clickable; the tooltip is informational and does not consume pointer
 input. Both targets share one tooltip instance, styled in `toggles.json` with
-JetBrains Mono, a dark background and cyan border.
+JetBrains Mono, a dark background and cyan border. The header and equipment-code
+lines are omitted, leaving six data fields. Font sizing is configured through
+`ui.rack-cooling.tooltip.text-size=0.00906344410876` in `config.properties`.
+As with label sizing, this factor multiplies canvas height (9 px at 993 px).
+The tooltip library takes absolute pixel sizes, so the UI resolves the factor
+before each overlay refresh, including while paused and on resize. The JSON
+style's 9 px value supplies the initial/default-window font size.
 
 | Tooltip field | Source and meaning |
 | --- | --- |
-| Title / Unit | Physical rack identity and configured equipment code |
 | State | Live enabled state; this is not an automatic temperature controller |
 | Heat rejection | Immutable `ROOM` or `EXTERNAL` destination |
 | Air (last step) | Local air temperature from the latest rack capture |
@@ -78,6 +83,28 @@ the tooltip. Hovering does not change equipment state.
 The fan sits in the lower part of the rack illustration as an equipment control;
 its position does not allocate server slots. Rack and aisle color scales continue
 to describe server temperatures, not local air.
+
+## Meaning of thermal and electrical readouts
+
+`Air (last step)` is the local well-mixed rack air at the end of the last completed
+thermal tick, not internal server temperature, room air, or the 18 °C supply setting.
+`Cooling (last step)` is the end-of-tick heat removal rate (kW thermal), not an
+average over the tick, cumulative energy, or electrical consumption. The model
+limits it by nominal capacity and airflow times air density, specific heat and
+the positive local-air/supply-temperature difference.
+
+The enabled-state command is On/Off. Enabled electricity stays at the configured
+rated electrical power (1 kW in the UI example); disabled electricity is zero.
+The 4 kW capacity is a thermal upper bound. Actual heat removal below that bound
+does not mean that a compressor-speed control, adjustable load or variable
+power/COP model is implemented.
+
+The backend PUE includes rack electrical power along with IT and room cooling:
+`(IT + room cooling electricity + rack cooling electricity) / IT`. The heat
+rejection destination does not exempt electrical power from this sum. Readouts
+of PUE and facility load represent the completed snapshot; an operator command
+propagates to those totals on the next simulation tick. With two PUE decimals,
+a 1 kW contribution against 230 kW IT alone gives about 1.00435, displayed as 1.00.
 
 ## Electrical totals and history
 
