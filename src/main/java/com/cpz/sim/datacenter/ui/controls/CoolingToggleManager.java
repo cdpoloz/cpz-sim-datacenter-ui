@@ -38,10 +38,24 @@ public class CoolingToggleManager extends ApplicationComponent implements Initia
         this.uiComponentContainer = uiComponentContainer;
     }
 
-    /** Derives SUPPLY and EXHAUST child control codes from the initial cooling snapshot. */
+    /** Derives groups and synchronizes child/master controls with backend initial states. */
     @Override
     public void initialize() {
         initializeCoolingToggleGroups();
+        // Control JSON defaults must not override initiallyEnabled in the datacenter configuration.
+        syncingCoolingToggles = true;
+        try {
+            for (var unit : simulationContainer.coolingSnapshot().units()) {
+                String code = unit.unitCode().replace("SUPPLY-", "tglSupply").replace("EXHAUST-", "tglExhaust");
+                Toggle toggle = uiComponentContainer.toggles().get(code);
+                if (toggle == null) throw new IllegalStateException("Missing toggle: " + code);
+                toggle.setState(simulationContainer.coolingSystem().isEnabled(unit.unitCode()) ? 1 : 0);
+            }
+        } finally {
+            syncingCoolingToggles = false;
+        }
+        updateMasterToggle("tglSupply", simulationContainer.supplyToggleCodes());
+        updateMasterToggle("tglExhaust", simulationContainer.exhaustToggleCodes());
     }
 
     private void initializeCoolingToggleGroups() {

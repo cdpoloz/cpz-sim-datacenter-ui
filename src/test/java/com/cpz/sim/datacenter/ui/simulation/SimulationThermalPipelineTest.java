@@ -48,7 +48,7 @@ class SimulationThermalPipelineTest {
 
     private record Fixture(DatacenterDefinition definition, Datacenter datacenter,
                            TemperatureSystem temperatures, SimulationEngine engine,
-                           SimulationThermalPipeline pipeline, DatacenterSimulationHistoryRecorder recorder) {
+                           SimulationThermalPipeline pipeline, DatacenterSimulationHistoryRecorder recorder, CoolingSystem cooling) {
         DatacenterSimulationStepSnapshot step() {
             return recorder.record(engine.step());
         }
@@ -98,7 +98,7 @@ class SimulationThermalPipelineTest {
                 new TemperatureSnapshotProvider(dc, temperatures, options), new HealthSnapshotProvider(dc, health, temperatures),
                 new DatacenterOperationalSnapshotProvider(dc), pipeline::coolingSnapshot,
                 new DatacenterSimulationHistory(), Optional.empty(), pipeline::coupledThermalSnapshot);
-        return new Fixture(definition, dc, temperatures, engine, pipeline, recorder);
+        return new Fixture(definition, dc, temperatures, engine, pipeline, recorder, cooling);
     }
 
     @ParameterizedTest
@@ -336,5 +336,101 @@ class SimulationThermalPipelineTest {
         var scenario = com.cpz.sim.datacenter.ui.example.RoomAirReferenceScenarios.Scenario.NONE;
         assertEquals(com.cpz.sim.datacenter.ui.example.RoomAirReferenceScenarios.run(withoutRack, scenario, 2),
                 com.cpz.sim.datacenter.ui.example.RoomAirReferenceScenarios.run(withRack, scenario, 2));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"NO_UNIT", "DISABLED", "ROOM", "EXTERNAL", "ROOM_WITH_HVAC", "EXTERNAL_WITH_HVAC"})
+    void generatedUiExamplesLoadAndDriveTheRealPipeline(String variant) throws Exception {
+        var source = Path.of("data/config/datacenter.json");
+        String original = Files.readString(source);
+        var files = com.cpz.sim.datacenter.ui.example.RackCoolingExampleConfigurations.generate(source, directory);
+        assertEquals(original, Files.readString(source));
+        assertEquals(6, files.size());
+        var definition = new JsonDatacenterConfigLoader().load(files.get(variant));
+        var mapper = JsonMapper.builder().build();
+        var originalJson = mapper.readTree(original);
+        var generatedJson = mapper.readTree(Files.readString(files.get(variant)));
+        for (String field : new String[]{"layout", "servers", "serverModels", "temperature", "roomAirTemperature"})
+            assertEquals(originalJson.path(field), generatedJson.path(field), field);
+        var f = fixture(definition);
+        var step = f.step();
+        var room = step.coolingSnapshot().orElseThrow();
+        assertTrue(room.units().stream().allMatch(unit -> unit.enabled() == variant.endsWith("_WITH_HVAC")));
+        var racks = step.rackCoolingSnapshot();
+        assertEquals(!variant.equals("NO_UNIT"), racks.isPresent());
+        double rackPower = 0;
+        if (racks.isPresent()) {
+            var unit = racks.orElseThrow().units().getFirst();
+            assertEquals(!variant.equals("DISABLED"), unit.equipment().enabled());
+            assertEquals(variant.startsWith("EXTERNAL") ? "EXTERNAL" : "ROOM", unit.heatRejectionDestination().name());
+            rackPower = racks.orElseThrow().totalElectricalPowerWatts();
+            assertEquals(variant.equals("DISABLED") ? 0.0 : 1000.0, rackPower);
+        }
+        assertEquals(room.totalElectricalPowerWatts() + rackPower, step.operationalSnapshot().coolingPowerWatts(), 1e-8);
+        assertEquals(0, step.coupledThermalSnapshot().orElseThrow().energyBalanceResidualJoules(), 0.005);
+        var controls = new UiComponentContainer();
+        var toggles = new HashMap<String, Toggle>();
+        var applet = new PApplet();
+        for (var unit : room.units()) {
+            String code = unit.unitCode().replace("SUPPLY-", "tglSupply").replace("EXHAUST-", "tglExhaust");
+            toggles.put(code, new Toggle(applet, code, 0.0f, 0.0f, 20.0f));
+        }
+        for (String code : new String[]{"tglSupply", "tglExhaust"})
+            toggles.put(code, new Toggle(applet, code, 0.0f, 0.0f, 20.0f));
+        controls.setToggles(toggles);
+        var simulation = new SimulationContainer();
+        simulation.setCoolingSnapshot(room);
+        simulation.setCoolingSystem(f.cooling);
+        var manager = new com.cpz.sim.datacenter.ui.controls.CoolingToggleManager(null, simulation, controls);
+        toggles.values().forEach(toggle -> toggle.setChangeListener(value -> manager.toggleCoolingUnit(toggle, value)));
+        manager.initialize();
+        int expected = variant.endsWith("_WITH_HVAC") ? 1 : 0;
+        assertTrue(toggles.values().stream().allMatch(toggle -> toggle.getState() == expected));
+        assertTrue(f.cooling.currentUnitSnapshots().stream().allMatch(unit -> unit.enabled() == (expected == 1)));
+    }
+
+    @Test
+    void exampleGeneratorRejectsReplacingItsSource() throws Exception {
+        var source = directory.resolve("room.json");
+        Files.copy(Path.of("data/config/datacenter.json"), source);
+        String original = Files.readString(source);
+        assertThrows(IllegalArgumentException.class, () ->
+                com.cpz.sim.datacenter.ui.example.RackCoolingExampleConfigurations.generate(source, directory));
+        assertEquals(original, Files.readString(source));
+        assertFalse(Files.exists(directory.resolve("no_unit.json")));
+    }
+
+    @Test
+    void initialRoomToggleProjectionPreservesMixedStatesAndComputesAnyEnabledMasters() throws Exception {
+        var f = fixture("UTILIZATION_DRIVEN", true, "RACK");
+        String enabledCode = f.cooling.configuration().units().stream()
+                .filter(unit -> unit.type() == com.cpz.sim.datacenter.cooling.CoolingUnitType.SUPPLY)
+                .findFirst().orElseThrow().code();
+        f.cooling.enable(enabledCode);
+        var room = f.step().coolingSnapshot().orElseThrow();
+        var controls = new UiComponentContainer();
+        var toggles = new HashMap<String, Toggle>();
+        var applet = new PApplet();
+        for (var unit : room.units()) {
+            String code = unit.unitCode().replace("SUPPLY-", "tglSupply").replace("EXHAUST-", "tglExhaust");
+            toggles.put(code, new Toggle(applet, code, 0.0f, 0.0f, 20.0f));
+        }
+        for (String code : new String[]{"tglSupply", "tglExhaust"})
+            toggles.put(code, new Toggle(applet, code, 0.0f, 0.0f, 20.0f));
+        toggles.values().forEach(toggle -> toggle.setState(1));
+        controls.setToggles(toggles);
+        var simulation = new SimulationContainer();
+        simulation.setCoolingSnapshot(room);
+        simulation.setCoolingSystem(f.cooling);
+        var manager = new com.cpz.sim.datacenter.ui.controls.CoolingToggleManager(null, simulation, controls);
+        toggles.values().forEach(toggle -> toggle.setChangeListener(value -> manager.toggleCoolingUnit(toggle, value)));
+        manager.initialize();
+        for (var unit : room.units()) {
+            String code = unit.unitCode().replace("SUPPLY-", "tglSupply").replace("EXHAUST-", "tglExhaust");
+            assertEquals(unit.unitCode().equals(enabledCode) ? 1 : 0, toggles.get(code).getState());
+        }
+        assertEquals(1, toggles.get("tglSupply").getState());
+        assertEquals(0, toggles.get("tglExhaust").getState());
+        assertEquals(1, f.cooling.currentUnitSnapshots().stream().filter(CoolingUnitSnapshot::enabled).count());
     }
 }

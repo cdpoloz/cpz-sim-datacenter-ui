@@ -47,3 +47,7 @@ Cooling state affects backend results on subsequent simulation steps. The manage
 
 See [rack cooling](rack-cooling.md) for the example JSON, selected-rack fan,
 local air and thermal readouts, and combined facility electrical metrics.
+
+During cooling initialization, child toggles are synchronized from the backend
+enabled states under the listener guard, then masters are recomputed. The
+control JSON defaults do not determine the physical initial unit states.

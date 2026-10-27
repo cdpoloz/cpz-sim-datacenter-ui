@@ -87,3 +87,10 @@ versus nominal cooling, facility power, immutable history and deterministic rese
 The configured labels and SVG toggle were also loaded and rendered offscreen
 using Processing's Java2D renderer at the default 1920 × 993 layout. This verifies
 layout and asset loading; it does not exercise an interactive P2D desktop session.
+
+## Complete scenario files
+
+[Scenario generation and verification](rack-cooling-scenarios.md) documents the
+standalone generator, six full-layout JSON variants, source preservation and a
+manual P2D checklist. Room control children/masters now initialize from backend
+states, including examples that begin with room HVAC enabled.

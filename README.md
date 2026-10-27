@@ -126,7 +126,9 @@ completed step; while paused they retain that measurement. Room/HVAC power, tota
 facility power and PUE use backend aggregates including integrated cooling.
 `SERVER AVG` and `IT POWER` remain server-only metrics.
 
-See [rack cooling](docs/rack-cooling.md) for configuration and behavior.
+See [rack cooling](docs/rack-cooling.md) for configuration and behavior, and
+[scenario generation and verification](docs/rack-cooling-scenarios.md) for six
+complete JSON variants and launch commands.
 
 ## Development notes
 
