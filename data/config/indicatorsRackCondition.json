@@ -200,6 +200,28 @@
     },
     {
       "type": "indicator",
+      "code": "indRackCoolingC01R02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.07481171875,
+        "y": 0.258138469285,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
       "code": "indRackOfflineC01R03",
       "bounds": {
         "mode": "relative",
