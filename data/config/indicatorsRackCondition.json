@@ -8711,6 +8711,1854 @@
           "path": "data/img/ind/indCircle.svg"
         }
       }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC02R01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.122255208333,
+        "y": 0.231809667674,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": false,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC02R02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.122255208333,
+        "y": 0.258138469285,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC02R03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.122255208333,
+        "y": 0.2844672709,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC02R04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.122255208333,
+        "y": 0.310795568983,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC02R05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.122255208333,
+        "y": 0.337124370594,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC02R06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.122255208333,
+        "y": 0.363453172205,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC02R07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.122255208333,
+        "y": 0.389781973817,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC02R08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.122255208333,
+        "y": 0.4161102719,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC02R09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.122255208333,
+        "y": 0.442439073515,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC02R10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.122255208333,
+        "y": 0.468767875126,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC02R11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.122255208333,
+        "y": 0.495096676737,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC02R12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.122255208333,
+        "y": 0.521424974824,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC03R01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.169698697917,
+        "y": 0.231809667674,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": false,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC03R02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.169698697917,
+        "y": 0.258138469285,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC03R03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.169698697917,
+        "y": 0.2844672709,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC03R04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.169698697917,
+        "y": 0.310795568983,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC03R05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.169698697917,
+        "y": 0.337124370594,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC03R06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.169698697917,
+        "y": 0.363453172205,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC03R07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.169698697917,
+        "y": 0.389781973817,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC03R08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.169698697917,
+        "y": 0.4161102719,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC03R09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.169698697917,
+        "y": 0.442439073515,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC03R10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.169698697917,
+        "y": 0.468767875126,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC03R11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.169698697917,
+        "y": 0.495096676737,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC03R12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.169698697917,
+        "y": 0.521424974824,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC04R01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2171421875,
+        "y": 0.231809667674,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": false,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC04R02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2171421875,
+        "y": 0.258138469285,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC04R03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2171421875,
+        "y": 0.2844672709,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC04R04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2171421875,
+        "y": 0.310795568983,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC04R05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2171421875,
+        "y": 0.337124370594,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC04R06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2171421875,
+        "y": 0.363453172205,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC04R07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2171421875,
+        "y": 0.389781973817,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC04R08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2171421875,
+        "y": 0.4161102719,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC04R09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2171421875,
+        "y": 0.442439073515,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC04R10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2171421875,
+        "y": 0.468767875126,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC04R11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2171421875,
+        "y": 0.495096676737,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC04R12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.2171421875,
+        "y": 0.521424974824,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC05R01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.264585677083,
+        "y": 0.231809667674,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": false,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC05R02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.264585677083,
+        "y": 0.258138469285,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC05R03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.264585677083,
+        "y": 0.2844672709,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC05R04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.264585677083,
+        "y": 0.310795568983,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC05R05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.264585677083,
+        "y": 0.337124370594,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC05R06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.264585677083,
+        "y": 0.363453172205,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC05R07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.264585677083,
+        "y": 0.389781973817,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC05R08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.264585677083,
+        "y": 0.4161102719,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC05R09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.264585677083,
+        "y": 0.442439073515,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC05R10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.264585677083,
+        "y": 0.468767875126,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC05R11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.264585677083,
+        "y": 0.495096676737,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC05R12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.264585677083,
+        "y": 0.521424974824,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC06R01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.312029166667,
+        "y": 0.231809667674,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": false,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC06R02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.312029166667,
+        "y": 0.258138469285,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC06R03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.312029166667,
+        "y": 0.2844672709,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC06R04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.312029166667,
+        "y": 0.310795568983,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC06R05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.312029166667,
+        "y": 0.337124370594,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC06R06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.312029166667,
+        "y": 0.363453172205,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC06R07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.312029166667,
+        "y": 0.389781973817,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC06R08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.312029166667,
+        "y": 0.4161102719,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC06R09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.312029166667,
+        "y": 0.442439073515,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC06R10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.312029166667,
+        "y": 0.468767875126,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC06R11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.312029166667,
+        "y": 0.495096676737,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC06R12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.312029166667,
+        "y": 0.521424974824,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC07R01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.35947265625,
+        "y": 0.231809667674,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": false,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC07R02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.35947265625,
+        "y": 0.258138469285,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC07R03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.35947265625,
+        "y": 0.2844672709,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC07R04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.35947265625,
+        "y": 0.310795568983,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC07R05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.35947265625,
+        "y": 0.337124370594,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC07R06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.35947265625,
+        "y": 0.363453172205,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC07R07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.35947265625,
+        "y": 0.389781973817,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC07R08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.35947265625,
+        "y": 0.4161102719,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC07R09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.35947265625,
+        "y": 0.442439073515,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC07R10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.35947265625,
+        "y": 0.468767875126,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC07R11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.35947265625,
+        "y": 0.495096676737,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC07R12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.35947265625,
+        "y": 0.521424974824,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC08R01",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.40691640625,
+        "y": 0.231809667674,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": false,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC08R02",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.40691640625,
+        "y": 0.258138469285,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC08R03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.40691640625,
+        "y": 0.2844672709,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC08R04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.40691640625,
+        "y": 0.310795568983,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC08R05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.40691640625,
+        "y": 0.337124370594,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC08R06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.40691640625,
+        "y": 0.363453172205,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC08R07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.40691640625,
+        "y": 0.389781973817,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC08R08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.40691640625,
+        "y": 0.4161102719,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC08R09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.40691640625,
+        "y": 0.442439073515,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC08R10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.40691640625,
+        "y": 0.468767875126,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC08R11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.40691640625,
+        "y": 0.495096676737,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC08R12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.40691640625,
+        "y": 0.521424974824,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
     }
   ]
 }
