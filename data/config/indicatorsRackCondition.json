@@ -310,6 +310,28 @@
     },
     {
       "type": "indicator",
+      "code": "indRackCoolingC01R03",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.07481171875,
+        "y": 0.2844672709,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
       "code": "indRackOfflineC01R04",
       "bounds": {
         "mode": "relative",
@@ -393,6 +415,28 @@
         "renderer": {
           "type": "svg",
           "path": "data/img/ind/indCircle.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC01R04",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.07481171875,
+        "y": 0.310795568983,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
         }
       }
     },
@@ -486,6 +530,28 @@
     },
     {
       "type": "indicator",
+      "code": "indRackCoolingC01R05",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.07481171875,
+        "y": 0.337124370594,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
       "code": "indRackOfflineC01R06",
       "bounds": {
         "mode": "relative",
@@ -569,6 +635,28 @@
         "renderer": {
           "type": "svg",
           "path": "data/img/ind/indCircle.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC01R06",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.07481171875,
+        "y": 0.363453172205,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
         }
       }
     },
@@ -662,6 +750,28 @@
     },
     {
       "type": "indicator",
+      "code": "indRackCoolingC01R07",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.07481171875,
+        "y": 0.389781973817,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
       "code": "indRackOfflineC01R08",
       "bounds": {
         "mode": "relative",
@@ -745,6 +855,28 @@
         "renderer": {
           "type": "svg",
           "path": "data/img/ind/indCircle.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC01R08",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.07481171875,
+        "y": 0.4161102719,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
         }
       }
     },
@@ -838,6 +970,28 @@
     },
     {
       "type": "indicator",
+      "code": "indRackCoolingC01R09",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.07481171875,
+        "y": 0.442439073515,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
       "code": "indRackOfflineC01R10",
       "bounds": {
         "mode": "relative",
@@ -926,6 +1080,28 @@
     },
     {
       "type": "indicator",
+      "code": "indRackCoolingC01R10",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.07481171875,
+        "y": 0.468767875126,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
       "code": "indRackOfflineC01R11",
       "bounds": {
         "mode": "relative",
@@ -1009,6 +1185,28 @@
         "renderer": {
           "type": "svg",
           "path": "data/img/ind/indCircle.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC01R11",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.07481171875,
+        "y": 0.495096676737,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
         }
       }
     },
@@ -1185,6 +1383,28 @@
         "renderer": {
           "type": "svg",
           "path": "data/img/ind/indCircle.svg"
+        }
+      }
+    },
+    {
+      "type": "indicator",
+      "code": "indRackCoolingC01R12",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.07481171875,
+        "y": 0.521424974824,
+        "width": 0.0101339375629,
+        "height": 0.0115810674723
+      },
+      "on": true,
+      "onColor": "#ff5cb5c6",
+      "offColor": "#005cb5c6",
+      "style": {
+        "strokeColor": "#ffffffff",
+        "strokeWeight": 0,
+        "renderer": {
+          "type": "svg",
+          "path": "data/img/ind/indCoolingMode.svg"
         }
       }
     },
