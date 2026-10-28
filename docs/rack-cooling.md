@@ -3,7 +3,9 @@
 ## Example and configuration
 
 The default `data/config/datacenter.json` now includes a top-level `rackCooling`
-block with `RACK-COOLING-C01-R01`, linked to `C01-R01` by `column` and `rackCode`.
+block with units on `C01-R01`, `C01-R06`, `C03-R04`, `C05-R07` and `C08-R10`,
+linked to their racks by `column` and `rackCode`. Each uses the demonstration
+parameters below and has a corresponding cooling indicator on the room map.
 The existing `layout.racks` entry and all server slots are retained. This thermal
 attachment does not reserve rack units or assert a mounting position or footprint.
 

@@ -100,7 +100,7 @@ The top room indicator is `ROOM AIR TEMP`, separate from `AVG SERVER TEMP` in
 the overview. The temperature trend retains the server average and adds a green
 `AIR` curve. Without an explicit `roomAirTemperature` block, air reads `--` and
 its curve is omitted. The checked-in datacenter now explicitly enables a 20 MJ/°C
-experimental reference, starting at 24 °C with room cooling disabled. Integrated cooling is enabled on `C01-R01`. This is
+experimental reference, starting at 24 °C with room cooling disabled. Integrated cooling is enabled on `C01-R01`, `C01-R06`, `C03-R04`, `C05-R07` and `C08-R10`. This is
 not calibrated to a real room; see [reference parameters and comparisons](docs/room-air-reference.md).
 
 When configured in utilization/power mode, `SimulationThermalPipeline` installs
@@ -114,8 +114,9 @@ and build this UI.
 
 ## Integrated rack cooling
 
-The default JSON includes `RACK-COOLING-C01-R01`: a demonstration 4 kW thermal
-unit, 1 kW electrical power, returning heat to the room (`ROOM`). Select
+The default JSON includes five integrated units on `C01-R01`, `C01-R06`,
+`C03-R04`, `C05-R07` and `C08-R10`. Each is initially enabled, with 4 kW thermal
+capacity and 1 kW electrical power, returning heat to the room (`ROOM`). Select
 `C01-R02` for a rack without integrated cooling. These are illustrative parameters,
 not measurements or a controlled matched-rack experiment.
 

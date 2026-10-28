@@ -24,6 +24,62 @@
         "ratedElectricalPowerWatts": 1000.0,
         "heatRejectionDestination": "ROOM",
         "initiallyEnabled": true
+      },
+      {
+        "code": "RACK-COOLING-C01-R06",
+        "column": "C01",
+        "rackCode": "R06",
+        "initialAirTemperatureCelsius": 24.0,
+        "effectiveAirThermalCapacityJoulesPerCelsius": 10000.0,
+        "roomHeatTransferWattsPerCelsius": 50.0,
+        "ratedAirflowCubicMetersPerSecond": 0.3,
+        "ratedCoolingCapacityWatts": 4000.0,
+        "supplyAirTemperatureCelsius": 18.0,
+        "ratedElectricalPowerWatts": 1000.0,
+        "heatRejectionDestination": "ROOM",
+        "initiallyEnabled": true
+      },
+      {
+        "code": "RACK-COOLING-C03-R04",
+        "column": "C03",
+        "rackCode": "R04",
+        "initialAirTemperatureCelsius": 24.0,
+        "effectiveAirThermalCapacityJoulesPerCelsius": 10000.0,
+        "roomHeatTransferWattsPerCelsius": 50.0,
+        "ratedAirflowCubicMetersPerSecond": 0.3,
+        "ratedCoolingCapacityWatts": 4000.0,
+        "supplyAirTemperatureCelsius": 18.0,
+        "ratedElectricalPowerWatts": 1000.0,
+        "heatRejectionDestination": "ROOM",
+        "initiallyEnabled": true
+      },
+      {
+        "code": "RACK-COOLING-C05-R07",
+        "column": "C05",
+        "rackCode": "R07",
+        "initialAirTemperatureCelsius": 24.0,
+        "effectiveAirThermalCapacityJoulesPerCelsius": 10000.0,
+        "roomHeatTransferWattsPerCelsius": 50.0,
+        "ratedAirflowCubicMetersPerSecond": 0.3,
+        "ratedCoolingCapacityWatts": 4000.0,
+        "supplyAirTemperatureCelsius": 18.0,
+        "ratedElectricalPowerWatts": 1000.0,
+        "heatRejectionDestination": "ROOM",
+        "initiallyEnabled": true
+      },
+      {
+        "code": "RACK-COOLING-C08-R10",
+        "column": "C08",
+        "rackCode": "R10",
+        "initialAirTemperatureCelsius": 24.0,
+        "effectiveAirThermalCapacityJoulesPerCelsius": 10000.0,
+        "roomHeatTransferWattsPerCelsius": 50.0,
+        "ratedAirflowCubicMetersPerSecond": 0.3,
+        "ratedCoolingCapacityWatts": 4000.0,
+        "supplyAirTemperatureCelsius": 18.0,
+        "ratedElectricalPowerWatts": 1000.0,
+        "heatRejectionDestination": "ROOM",
+        "initiallyEnabled": true
       }
     ]
   },

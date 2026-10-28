@@ -62,7 +62,12 @@ class SimulationThermalPipelineTest {
         var mapper = JsonMapper.builder().build();
         ObjectNode root = (ObjectNode) mapper.readTree(Files.readString(Path.of("data/config/datacenter.json")));
         if (destination == null) root.remove("rackCooling");
-        else ((ObjectNode) root.path("rackCooling").path("units").get(0)).put("heatRejectionDestination", destination);
+        else {
+            // Keep the single-unit fixture independent of the demo's installed equipment.
+            var units = (com.fasterxml.jackson.databind.node.ArrayNode) root.path("rackCooling").path("units");
+            var first = ((ObjectNode) units.get(0)).deepCopy();
+            units.removeAll().add(first.put("heatRejectionDestination", destination));
+        }
         root.put("dataInputMode", mode);
         root.put("temperatureInputGranularity", granularity);
         // Test parameters only, not calibrated production defaults.
@@ -340,6 +345,8 @@ class SimulationThermalPipelineTest {
         var mapper = JsonMapper.builder().build();
         ObjectNode root = (ObjectNode) mapper.readTree(Files.readString(Path.of("data/config/datacenter.json")));
         var units = (com.fasterxml.jackson.databind.node.ArrayNode) root.path("rackCooling").path("units");
+        var firstUnit = units.get(0).deepCopy();
+        units.removeAll().add(firstUnit);
         var second = ((ObjectNode) units.get(0)).deepCopy();
         second.put("code", "independent-cooler").put("rackCode", "R02").put("initiallyEnabled", false)
                 .put("heatRejectionDestination", "EXTERNAL");
@@ -409,7 +416,11 @@ class SimulationThermalPipelineTest {
             assertEquals(!variant.equals("DISABLED"), unit.equipment().enabled());
             assertEquals(variant.startsWith("EXTERNAL") ? "EXTERNAL" : "ROOM", unit.heatRejectionDestination().name());
             rackPower = racks.orElseThrow().totalElectricalPowerWatts();
-            assertEquals(variant.equals("DISABLED") ? 0.0 : 1000.0, rackPower);
+            double configuredRackPower = 0;
+            for (var configured : originalJson.path("rackCooling").path("units"))
+                configuredRackPower += configured.path("ratedElectricalPowerWatts").asDouble();
+            assertEquals(originalJson.path("rackCooling").path("units").size(), racks.orElseThrow().units().size());
+            assertEquals(variant.equals("DISABLED") ? 0.0 : configuredRackPower, rackPower);
         }
         assertEquals(room.totalElectricalPowerWatts() + rackPower, step.operationalSnapshot().coolingPowerWatts(), 1e-8);
         assertEquals(0, step.coupledThermalSnapshot().orElseThrow().energyBalanceResidualJoules(), 0.005);
