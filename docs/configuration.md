@@ -39,6 +39,12 @@ The JSON files also reference assets below `data/img`. Changing control bounds o
 
 ## Datacenter backend configuration
 
+The [filled configuration workbook](templates/README.md) documents this demo
+using the backend's canonical initial configuration template (`0.1-proposed`).
+It includes the inventory, room layout and cooling/thermal settings from a pinned
+revision of `data/config/datacenter.json`. The workbook and its documentation are
+in English. It is a reference artifact; the runtime continues to load JSON.
+
 `SimulationManager.initializeDatacenter()` loads `data/config/datacenter.json` by default. `JsonDatacenterConfigLoader` and factories from `cpz-sim-datacenter` turn this JSON into the `Datacenter`, workload factors, cooling configuration, and temperature options. The other `datacenter-*.json` files are alternative/test datasets present in the repository; select an alternative using JVM option `-Dsimulation.datacenter.config=/path/to/datacenter.json`.
 
 Changes must preserve the assumptions encoded by the UI: rack/column codes, available rack rows/slots, cooling unit codes, and cooling zones must continue to match configured controls and aisle mapping.
