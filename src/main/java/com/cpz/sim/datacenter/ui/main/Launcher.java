@@ -56,8 +56,11 @@ public class Launcher {
 
     /** Selects the view before constructing any sketch or map controls. */
     public static Class<? extends PApplet> selectSketch(Properties properties) {
-        return DatasetReplayOptions.source(properties) == DatasetReplayOptions.Source.DATASET
-                ? DatasetReplaySketch.class : Sketch.class;
+        return switch (DatasetReplayOptions.source(properties)) {
+            case DEMO -> Sketch.class;
+            case DATASET -> DatasetReplaySketch.class;
+            case RUNTIME -> RuntimeSketch.class;
+        };
     }
 
 }

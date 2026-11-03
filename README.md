@@ -74,6 +74,19 @@ mvn dependency:build-classpath -Dmdep.outputFile=target/classpath.txt
 java -cp "target/classes:$(<target/classpath.txt)" com.cpz.sim.datacenter.ui.main.Launcher
 ```
 
+The default is the classic view (`-Dsimulation.source=DEMO`). To open the
+independent runtime shell, run from the repository root:
+
+```bash
+java -Dsimulation.source=RUNTIME -cp "target/classes:$(<target/classpath.txt)" com.cpz.sim.datacenter.ui.main.Launcher
+```
+
+In an IDE, select `com.cpz.sim.datacenter.ui.main.Launcher` as the main class,
+set the working directory to the repository root, and add
+`-Dsimulation.source=RUNTIME` to **VM options**. Remove it or use `DEMO` for
+the classic view; `DATASET` retains the existing replay path and its required
+properties. Values are case sensitive. See [runtime progress](docs/runtime-controls-progress.md).
+
 Run `mvn test` for thermal-pipeline integration, cooling-control projections, and graph-range tests.
 
 ## Configuration
