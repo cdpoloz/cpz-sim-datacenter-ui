@@ -65,6 +65,8 @@ Compile and package the project:
 mvn package
 ```
 
+For the independent dataset view, see the [dataset replay guide](docs/dataset-replay.md), including local backend installation, new workbook generation and commands for both replay modes. The original map remains the default.
+
 There is no Maven execution plugin or wrapper configured. To run the compiled application with Maven's resolved runtime classpath:
 
 ```bash
@@ -138,7 +140,7 @@ The current structure separates composition from runtime work. `Sketch.setup()` 
 
 Some methods must remain on `Sketch`: Processing discovers lifecycle and input callbacks by subclassing `PApplet`, and controls bind to sketch callback adapters during setup. Rendering helpers can be separate classes, but they call Processing through `ApplicationContext` and must execute on the sketch thread.
 
-`src/main/java/com/cpz/sim/datacenter/ui/main/TemplateSketch.java` is intentionally retained as a reference for control types beyond Button, Label, and Toggle. It is not part of the active UI flow; `Launcher` starts `Sketch`.
+`src/main/java/com/cpz/sim/datacenter/ui/main/TemplateSketch.java` is intentionally retained as a reference for control types beyond Button, Label, and Toggle. It is not part of the active UI flow; `Launcher` starts `Sketch` by default; `-Dsimulation.source=DATASET` selects the independent [dataset replay view](docs/dataset-replay.md).
 
 See [Development notes](docs/development.md) for extension guidelines and invariants.
 

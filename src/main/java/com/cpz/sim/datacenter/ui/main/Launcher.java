@@ -3,6 +3,7 @@ package com.cpz.sim.datacenter.ui.main;
 import com.cpz.sim.datacenter.ui.logging.Log;
 import com.cpz.sim.datacenter.ui.logging.LogMessage;
 import processing.core.PApplet;
+import com.cpz.sim.datacenter.ui.dataset.DatasetReplayOptions;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -10,7 +11,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 /**
- * Process entry point that loads global properties and starts the active {@link Sketch}.
+ * Process entry point that loads global properties and starts the selected Processing view.
  *
  * <p>{@link TemplateSketch} is intentionally retained as a reference but is not launched by
  * this class.</p>
@@ -32,7 +33,7 @@ public class Launcher {
      * Application entry point.
      * <p>
      * Sets a stable formatting locale, loads application properties, and hands control to
-     * Processing with {@link Sketch} as the {@link PApplet} implementation.
+     * Processing with the selected {@link PApplet} implementation.
      * </p>
      *
      * @param args command-line arguments (unused)
@@ -50,7 +51,13 @@ public class Launcher {
             LOG.severe(LogMessage.fileLoadError(propertiesPath));
             System.exit(1);
         }
-        PApplet.main(Sketch.class);
+        PApplet.main(selectSketch(System.getProperties()));
+    }
+
+    /** Selects the view before constructing any sketch or map controls. */
+    public static Class<? extends PApplet> selectSketch(Properties properties) {
+        return DatasetReplayOptions.source(properties) == DatasetReplayOptions.Source.DATASET
+                ? DatasetReplaySketch.class : Sketch.class;
     }
 
 }
