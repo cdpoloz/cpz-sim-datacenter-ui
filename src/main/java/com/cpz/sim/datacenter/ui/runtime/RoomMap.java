@@ -18,8 +18,11 @@ public final class RoomMap {
     private RackLocation selected;
 
     public static RoomMap load() {
+        return new RoomMap(loadDefinition().layout());
+    }
+    public static DatacenterDefinition loadDefinition() {
         Path path = Path.of(System.getProperty("simulation.datacenter.config", "data/config/datacenter.json"));
-        try { return new RoomMap(new JsonDatacenterConfigLoader().load(path).layout()); }
+        try { return new JsonDatacenterConfigLoader().load(path); }
         catch (Exception e) { throw new IllegalStateException("Cannot load room layout from " + path + ": " + e.getMessage(), e); }
     }
     public RoomMap(DatacenterLayoutDefinition layout) {

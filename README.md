@@ -81,6 +81,14 @@ independent runtime shell, run from the repository root:
 java -Dsimulation.source=RUNTIME -cp "target/classes:$(<target/classpath.txt)" com.cpz.sim.datacenter.ui.main.Launcher
 ```
 
+Runtime starts paused after one initial simulation step. Use **Play/Pausa** in
+the footer to run or pause, and **−/+** to change the configured speed. The
+header shows the state, factor and simulated time. Select a rack in Sala to
+inspect its identity and average online server temperature; its border marks
+selection while the fill indicates its state. For manual validation, check
+that time and colors evolve during play, remain stable while paused, and that
+selection and controls still work after resizing.
+
 In an IDE, select `com.cpz.sim.datacenter.ui.main.Launcher` as the main class,
 set the working directory to the repository root, and add
 `-Dsimulation.source=RUNTIME` to **VM options**. Remove it or use `DEMO` for

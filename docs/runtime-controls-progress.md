@@ -1,8 +1,8 @@
 # Runtime controls: progress
 
 1. **Startup and visual structure:** implemented and visually accepted by Carlos.
-2. **Layout and room map generation:** implemented; Carlos's visual acceptance pending.
-3. **Room simulation and state:** pending.
+2. **Layout and room map generation:** implemented and visually accepted by Carlos.
+3. **Room simulation and state:** implemented; visual acceptance by Carlos pending.
 4. **Selected aisle:** pending.
 5. **Selected rack:** pending.
 6. **Cooling and functional equivalence**, including summary, trends and alerts: pending.
@@ -12,22 +12,22 @@
 
 `Launcher` selects `RUNTIME` through the existing `simulation.source` JVM
 property; `DEMO` remains the default and `DATASET` retains its replay path.
-`RuntimeSketch` owns an independent Processing lifecycle. `RuntimeLayout` exposes
+At milestone 1, `RuntimeSketch` owned an independent Processing lifecycle. `RuntimeLayout` exposes
 the shared area, title and content bounds; `RuntimeView` draws the shell and
 constructs public library `Label` controls. The eight areas contain explicit
-pending markers. No layout, assets, simulation, selection or graph data is
+pending markers. At that point no layout, assets, simulation, selection or graph data was
 loaded. The 8 × 12 × 12 example is not a design constant.
 
 Validated with Oracle JDK 26.0.1 and `mvn test`: 36 tests passed. The Maven
 classpath was generated with `mvn --batch-mode --no-transfer-progress
 dependency:build-classpath -Dmdep.outputFile=target/classpath.txt`. Runtime
 opened in the graphical session. A screenshot was partly obscured by another
-window, so complete visual acceptance is pending; the window manager also
+window, so visual acceptance was then pending; the window manager also
 resized the requested 1920 × 993 surface to 1920 × 1014. The classic mode
 opened and entered setup without a reported exception before the eight-second
 timeout; its full visual and interaction checks remain pending.
 
-Manual acceptance: launch using the README command, bring the full window to
+Historical manual acceptance plan: launch using the README command, bring the full window to
 the foreground, check the eight titles and pending markers for clipping and
 overlap at the configured resolution, then launch `DEMO` and verify its usual
 selection and simulation controls. Replay instructions remain in
@@ -51,8 +51,7 @@ The consumed controls dependency is 0.9.12. Its local documentation and the
 0.9.12 public `Label` API were inspected; no library blocker was identified.
 No dependency or version was changed.
 
-Carlos has accepted milestone 1, including the complete footer. Milestone 2
-requires its own visual acceptance.
+Carlos has accepted milestones 1 and 2, including the complete footer, room map and selection.
 
 ## Hito 2
 
@@ -71,11 +70,10 @@ pointer selection before and after resize, and geometry at multiple aspect
 ratios. `mvn test` with Oracle JDK 27 targeting release 26 passed 41 tests.
 The existing DEMO and DATASET tests also passed. IntelliJ MCP reported no
 errors in the changed runtime production files. These checks do not establish
-visual acceptance. RUNTIME was started for 15 seconds and reported an effective
+visual acceptance at that time. RUNTIME was started for 15 seconds and reported an effective
 1920 × 1011 surface, with no exception in its console; no screenshot or visual
-interaction was observed. Carlos should check the complete map, selection in two
-columns, the footer and resizing. Extreme density, scrolling and zoom remain
-outside this milestone. Next is milestone 3 after visual acceptance.
+interaction was observed. Carlos subsequently accepted the map and selection.
+Extreme density, scrolling and zoom remain outside this milestone.
 
 Runtime uses the existing font and Processing decoration, with no bitmap or
 SVG assets. The classic backgrounds, overlay and row-specific selection SVGs
@@ -98,11 +96,40 @@ labels, and recalculates them when the effective surface size changes. Startup
 estimates the available screen area and decoration insets before creating the
 runtime surface, scaling the configured size only if needed. This estimate is
 not sufficient on the observed window manager: it still reports the resize
-above. The footer's complete visibility on that desktop is not yet verified.
+above. The footer was subsequently accepted by Carlos.
 
 `mvn test` on JDK 26.0.1 passed 38 tests, including bounds and overlap tests
 at three aspect ratios and relative-width resolution. Runtime opened after the
-change; visual acceptance at both configured and smaller window sizes remains
-pending. Further work must account for actual window-manager decorations and
+change; visual acceptance was then pending. Further work must account for actual window-manager decorations and
 maximization without resizing during Processing setup, which caused a reentrant
 draw failure in an attempted approach. No library patch was identified.
+
+## Hito 3
+
+The active backend definition is loaded once and shared by the room map and
+runtime session. The session uses the same input factories, thermal pipeline,
+health and energy systems and snapshot recorder as the classic composition,
+without the classic column mapping or rack-code index. Snapshots are projected
+by `RackLocation`, using average online server temperature and the existing
+temperature range. Empty, offline and unavailable states have distinct fills;
+selection changes the border and preserves the fill. Cooling participates in
+the backend; its controls remain for milestone 6.
+
+As in the classic mode, the session performs one initial step and displays its
+actual elapsed time; it then starts paused. Each timer pulse advances one
+simulated minute and captures the resulting snapshot. Play, pause and speed
+changes restart the timer period, so paused time and delayed frames do not
+cause catch-up steps. Speed factors and health thresholds come from the
+existing properties. The UI advances on the Processing thread.
+
+Oracle JDK 27 targeting release 26: `mvn test` passed 45 tests, including
+controlled timer tests, snapshot projection and all three supported input modes
+with backend-compatible configurations. The existing coupled and legacy
+thermal pipeline tests also pass. IntelliJ MCP reported no errors in the
+changed runtime production files. Visual acceptance of milestone 3 remains
+pending: check state evolution, pause/resume, speed limits, rack selection and
+resizing. Runtime started and stayed open until the 15-second test timeout;
+classic DEMO completed setup before its eight-second timeout. Neither window
+nor interaction was visually inspected; both reported an effective 1920 × 1011
+surface. No new graphics assets are required. After acceptance, continue with
+milestone 4, selected aisle.

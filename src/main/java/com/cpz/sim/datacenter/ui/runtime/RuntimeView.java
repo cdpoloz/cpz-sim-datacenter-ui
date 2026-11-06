@@ -7,6 +7,7 @@ import com.cpz.processing.controls.controls.button.style.DefaultButtonStyle;
 import com.cpz.processing.controls.controls.geometry.ControlMeasure;
 import com.cpz.processing.controls.core.input.PointerEvent;
 import com.cpz.sim.datacenter.model.RackLocation;
+import com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot;
 import com.cpz.processing.controls.controls.label.config.LabelStyleConfig;
 import com.cpz.processing.controls.controls.label.style.DefaultLabelStyle;
 import com.cpz.processing.controls.controls.label.style.VerticalAlign;
@@ -32,10 +33,16 @@ public final class RuntimeView {
     private final RoomMap room;
     private final PFont font;
     private Label selectionLabel;
+    private final RuntimeSession session;
+    private final RuntimeClock clock;
+    private final List<Button> playback = new ArrayList<>();
+    private Label statusLabel;
 
-    public RuntimeView(PApplet sketch, RuntimeLayout layout, PFont font, RoomMap room) {
+    public RuntimeView(PApplet sketch, RuntimeLayout layout, PFont font, RoomMap room, RuntimeSession session, RuntimeClock clock) {
         this.sketch = sketch;
         this.room = room;
+        this.session = session;
+        this.clock = clock;
         this.font = font;
         this.layout = layout;
         this.layoutWidth = sketch.width;
@@ -50,7 +57,7 @@ public final class RuntimeView {
                 case SUMMARY -> "Resumen global";
                 case TRENDS -> "Tendencias";
                 case ALERTS -> "Alertas";
-                case FOOTER -> "Pie / Hito 1 — Estructura visual";
+                case FOOTER -> "Simulación";
             };
             addLabel(area.name() + "Title", title, layout.titleBounds(area),
                     font, textSize * 1.12f, COLOR_BLUE_LABEL);
@@ -64,9 +71,10 @@ public final class RuntimeView {
                     case ALERTS -> "Pendiente: evaluación de alertas.";
                     case FOOTER -> "Pendiente: simulación y acciones.";
                 };
-            if (area != ROOM) addLabel(area.name() + "Pending", pending, layout.contentBounds(area),
+            if (area != ROOM && area != FOOTER) addLabel(area.name() + "Pending", pending, layout.contentBounds(area),
                     font, textSize, COLOR_WHITE_LABEL);
         }
+        statusLabel = labels.get(1);
         var geometry = room.geometry(layout, layoutWidth, layoutHeight);
         for (var entry : geometry.columns().entrySet()) {
             int before = labels.size();
@@ -76,7 +84,7 @@ public final class RuntimeView {
         for (var placement : geometry.racks()) {
             var rack = placement.rack();
             Button button = new Button(sketch, rack.location().rackCode().value(), placement.bounds());
-            button.setStyle(buttonStyle(false));
+            button.setStyle(buttonStyle(false, COLOR_EMPTY_RACK));
             button.setTextSize(ControlMeasure.relative(.012f));
             button.setClickListener(() -> select(rack.location()));
             buttons.put(rack.location(), button);
@@ -84,6 +92,51 @@ public final class RuntimeView {
         var content = layout.contentBounds(ROOM).resolve(layoutWidth, layoutHeight);
         addLabel("Selection", "Sin selección", selectionBounds(content), font, textSize * .72f, COLOR_WHITE_LABEL);
         selectionLabel = labels.remove(labels.size() - 1);
+        for (int i = 0; i < 3; i++) {
+            Button button = new Button(sketch, i == 0 ? "Play" : i == 1 ? "−" : "+", playbackBounds(i));
+            button.setStyle(buttonStyle(false, 0xff30363d));
+            button.setTextSize(ControlMeasure.relative(.015f));
+            playback.add(button);
+        }
+        playback.get(0).setClickListener(() -> { clock.toggle(); updateStatus(); });
+        playback.get(1).setClickListener(() -> { clock.change(-1); updateStatus(); });
+        playback.get(2).setClickListener(() -> { clock.change(1); updateStatus(); });
+        updateStatus();
+        updateRacks();
+    }
+
+    private com.cpz.processing.controls.controls.geometry.ControlBounds playbackBounds(int index) {
+        var b = layout.contentBounds(FOOTER).resolve(layoutWidth, layoutHeight);
+        float unit = b.width() / 3;
+        return com.cpz.processing.controls.controls.geometry.ControlBounds.relative((b.x() + (index + .5f) * unit) / layoutWidth,
+                (b.y() + b.height() * .5f) / layoutHeight, unit * .8f / layoutHeight, b.height() * .85f / layoutHeight);
+    }
+
+    private void updateStatus() {
+        playback.get(0).setText(clock.running() ? "Pausa" : "Play");
+        playback.get(1).setEnabled(clock.canDecrease()); playback.get(2).setEnabled(clock.canIncrease());
+        long minutes = (long) (session.snapshot().elapsedSeconds() / 60);
+        statusLabel.setText(String.format(java.util.Locale.ROOT, "%s  x%s  %02dd %02d:%02d", clock.running() ? "Running" : "Paused", clock.factor(), minutes / 1440, minutes / 60 % 24, minutes % 60));
+    }
+
+    private int rackColor(RackOperationalSnapshot rack) {
+        return RackDisplay.color(rack, session.range());
+    }
+    private void updateRacks() {
+        var racks = session.snapshot().operationalSnapshot().racks();
+        buttons.forEach((location, button) -> button.setStyle(buttonStyle(location.equals(room.selected()), rackColor(racks.get(location)))));
+        updateSelection();
+    }
+    private void updateSelection() {
+        var location = room.selected();
+        String selected = "Sin selección";
+        if (location != null) {
+            var rack = session.snapshot().operationalSnapshot().racks().get(location);
+            double temp = RackDisplay.temperature(rack);
+            selected = location.column() + " / " + location.rackCode().value() + " " + (Double.isFinite(temp) ? session.formatTemperature(temp) : "--");
+        }
+        selectionLabel.setText(selected + "\nGris: vacío · azul oscuro: offline · violeta: -- · azul-rojo: "
+                + session.formatTemperature(session.range().minServerTemperatureCelsius()) + "–" + session.formatTemperature(session.range().maxServerTemperatureCelsius()));
     }
 
     private com.cpz.processing.controls.controls.geometry.ControlBounds selectionBounds(com.cpz.processing.controls.controls.geometry.ResolvedBounds b) {
@@ -91,10 +144,10 @@ public final class RuntimeView {
                 (b.y() + b.height() * .92f) / layoutHeight, b.width() / layoutHeight, b.height() * .08f / layoutHeight);
     }
 
-    private DefaultButtonStyle buttonStyle(boolean selected) {
+    private DefaultButtonStyle buttonStyle(boolean selected, int fill) {
         var style = new ButtonStyleConfig();
         style.font = font;
-        style.fillOverride = selected ? 0xff315b79 : 0xff30363d;
+        style.fillOverride = fill;
         style.strokeOverride = selected ? 0xff8ddcff : 0xff82909b;
         style.textOverride = 0xffeeeeee;
         style.strokeWeight = selected ? 2 : 1;
@@ -105,9 +158,9 @@ public final class RuntimeView {
     private void select(RackLocation location) {
         var previous = room.selected();
         room.select(location);
-        if (previous != null) buttons.get(previous).setStyle(buttonStyle(false));
-        buttons.get(location).setStyle(buttonStyle(true));
-        selectionLabel.setText("Seleccionado: " + location.column() + " / " + location.rackCode().value());
+        if (previous != null) buttons.get(previous).setStyle(buttonStyle(false, rackColor(session.snapshot().operationalSnapshot().racks().get(previous))));
+        buttons.get(location).setStyle(buttonStyle(true, rackColor(session.snapshot().operationalSnapshot().racks().get(location))));
+        updateSelection();
     }
 
     public void mouseEvent(processing.event.MouseEvent event) {
@@ -121,6 +174,7 @@ public final class RuntimeView {
         if (type != null) {
             var pointer = new PointerEvent(type, event.getX(), event.getY());
             buttons.values().forEach(button -> button.handlePointerEvent(pointer));
+            playback.forEach(button -> button.handlePointerEvent(pointer));
         }
     }
 
@@ -146,13 +200,15 @@ public final class RuntimeView {
             int index = 0;
             for (var area : RuntimeLayout.Area.values()) {
                 labels.get(index++).setBounds(layout.titleBounds(area));
-                if (area != ROOM) labels.get(index++).setBounds(layout.contentBounds(area));
+                if (area != ROOM && area != FOOTER) labels.get(index++).setBounds(layout.contentBounds(area));
             }
             var geometry = room.geometry(layout, layoutWidth, layoutHeight);
             geometry.columns().forEach((column, bounds) -> columnLabels.get(column).setBounds(bounds));
             geometry.racks().forEach(p -> buttons.get(p.rack().location()).setBounds(p.bounds()));
             selectionLabel.setBounds(selectionBounds(layout.contentBounds(ROOM).resolve(layoutWidth, layoutHeight)));
+            for (int i = 0; i < playback.size(); i++) playback.get(i).setBounds(playbackBounds(i));
         }
+        if (clock.poll()) { session.step(); updateRacks(); updateStatus(); }
         sketch.background(COLOR_BACKGROUND);
         sketch.pushStyle();
         sketch.rectMode(PApplet.CORNER);
@@ -172,5 +228,6 @@ public final class RuntimeView {
         columnLabels.values().forEach(Label::draw);
         buttons.values().forEach(Button::draw);
         selectionLabel.draw();
+        playback.forEach(Button::draw);
     }
 }
