@@ -10,6 +10,9 @@ import com.cpz.sim.datacenter.system.*;
 import com.cpz.sim.datacenter.temperature.*;
 import com.cpz.sim.datacenter.ui.simulation.*;
 import com.cpz.sim.datacenter.workload.*;
+import com.cpz.sim.datacenter.cooling.CoolingUnitType;
+import com.cpz.sim.datacenter.cooling.RackCoolingUnitDefinition;
+import com.cpz.sim.datacenter.model.RackLocation;
 import com.cpz.sim.foundation.engine.SimulationEngine;
 import com.cpz.sim.foundation.time.SimulationClock;
 import com.cpz.utils.noise.*;
@@ -25,6 +28,11 @@ public final class RuntimeSession {
     private final String temperatureFormat;
     private final Map<com.cpz.sim.datacenter.model.ServerLocation, com.cpz.sim.datacenter.model.ServerRole> serverRoles;
     private final DatacenterDefinition definition;
+    private final CoolingSystem cooling;
+    private final SimulationThermalPipeline thermalPipeline;
+    record Unit(String code, CoolingUnitType type) { }
+    record RackCooling(RackCoolingUnitDefinition definition, boolean enabled, double electricalWatts,
+                       Optional<RackCoolingUnitThermalSnapshot> lastTick) { }
 
     public RuntimeSession(DatacenterDefinition definition, Properties props) {
         this.definition = definition;
@@ -34,7 +42,7 @@ public final class RuntimeSession {
                 com.cpz.sim.datacenter.model.Server::getLocation, com.cpz.sim.datacenter.model.Server::getRole));
         var options = new TemperatureSystemOptionsFactory().create(definition);
         range = new TemperatureRangeCalculator().calculate(dc, options);
-        var cooling = new CoolingSystem(new CoolingConfigurationFactory().create(definition, dc)
+        cooling = new CoolingSystem(new CoolingConfigurationFactory().create(definition, dc)
                 .orElseThrow(() -> new IllegalStateException("The datacenter configuration does not contain a cooling block.")));
         var reference = new CoolingSnapshotTemperatureReferenceProvider(cooling.configuration());
         var temperature = new TemperatureSystem(dc, options, new SimpleServerTemperatureModel(), reference);
@@ -48,6 +56,7 @@ public final class RuntimeSession {
         }
         engine = new SimulationEngine(new SimulationClock(Duration.ofMinutes(1)));
         var pipeline = new SimulationThermalPipeline(engine, definition, dc, temperature, options, cooling, reference, workload, power);
+        thermalPipeline = pipeline;
         var health = new ServerHealthSystem(dc, temperature, new ServerHealthOptions(
                 new HealthThreshold(Double.parseDouble(props.getProperty("simulation.health.utilization.alert-threshold")), Double.parseDouble(props.getProperty("simulation.health.utilization.recovery-threshold"))),
                 new HealthThreshold(Double.parseDouble(props.getProperty("simulation.health.temperature.alert-threshold-celsius")), Double.parseDouble(props.getProperty("simulation.health.temperature.recovery-threshold-celsius")))));
@@ -72,4 +81,26 @@ public final class RuntimeSession {
     public String formatTemperature(double value) { return String.format(Locale.ROOT, temperatureFormat, value); }
     Map<com.cpz.sim.datacenter.model.ServerLocation, com.cpz.sim.datacenter.model.ServerRole> serverRoles() { return serverRoles; }
     DatacenterDefinition definition() { return definition; }
+    List<Unit> coolingUnits() { return cooling.configuration().units().stream()
+            .filter(unit -> unit.type() == CoolingUnitType.SUPPLY || unit.type() == CoolingUnitType.EXHAUST)
+            .map(unit -> new Unit(unit.code(), unit.type())).toList(); }
+    List<com.cpz.sim.datacenter.cooling.CoolingZoneDefinition> coolingZones() { return cooling.configuration().zones(); }
+    boolean coolingEnabled(String code) { return cooling.isEnabled(code); }
+    void setCoolingEnabled(String code, boolean enabled) { cooling.setEnabled(code, enabled); }
+    long coolingActive(CoolingUnitType type) { return coolingUnits().stream().filter(u -> u.type() == type && cooling.isEnabled(u.code())).count(); }
+    void setCoolingGroup(CoolingUnitType type, boolean enabled) {
+        coolingUnits().stream().filter(u -> u.type() == type).forEach(u -> cooling.setEnabled(u.code(), enabled));
+    }
+    boolean rackCoolingAvailable() { return thermalPipeline.rackCoolingSystem().isPresent(); }
+    Optional<RackCooling> rackCooling(RackLocation location) {
+        if (location == null) return Optional.empty();
+        return thermalPipeline.rackCoolingSystem().flatMap(system -> system.findUnitForRack(location).map(unit ->
+                new RackCooling(unit, system.isEnabled(unit.code()), system.currentElectricalPowerWatts(unit.code()),
+                        snapshot.operationalSnapshot().rackCoolingSnapshot().flatMap(s -> s.findRack(location)))));
+    }
+    void setRackCooling(RackLocation location, boolean enabled) {
+        if (location == null) return;
+        thermalPipeline.rackCoolingSystem().ifPresent(system -> system.findUnitForRack(location)
+                .ifPresent(unit -> system.setEnabled(unit.code(), enabled)));
+    }
 }

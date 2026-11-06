@@ -4,8 +4,8 @@
 2. **Layout and room map generation:** implemented and visually accepted by Carlos.
 3. **Room simulation and state:** implemented and visually accepted by Carlos.
 4. **Selected aisle:** implemented and visually accepted by Carlos.
-5. **Selected rack:** implemented; visual acceptance by Carlos pending.
-6. **Cooling and functional equivalence**, including summary, trends and alerts: pending.
+5. **Selected rack:** implemented and visually accepted by Carlos, with minor visual follow-ups.
+6. **Cooling and functional equivalence**, including summary, trends and alerts: in progress (6a accepted; 6b partial, visual acceptance pending).
 7. **Adaptation to other layouts:** pending.
 
 ## Hito 1
@@ -183,8 +183,7 @@ differences, alerts, offline/missing data, and a backend-validated layout with
 three ordered nonconsecutive slots. Tests cover replacing and clearing rows and
 geometry at 1920 × 1011 and 800 × 800. IntelliJ MCP reported no errors in the
 affected runtime files. RUNTIME and DEMO started until their respective timeout;
-neither window was observed. Carlos's visual acceptance of hito 5 remains
-pending, including occupied, empty, offline and AI rows, resize and the footer.
+neither window was observed in that run. Carlos subsequently accepted hito 5.
 
 ### Slot indicator readability adjustment
 
@@ -199,11 +198,80 @@ provides a visible border without loading `square.svg`; no new asset is needed.
 With Oracle JDK 27 and release 26, `mvn test` passed 57 tests after the
 adjustment, including indicator colors, stable text color, reuse, cleanup and
 resize geometry. IntelliJ MCP reported no errors in the affected files. The
-adjusted view has not been visually inspected; hito 5 acceptance remains pending
-Carlos's check of occupied, empty and offline slots and selection changes.
+adjusted view was subsequently accepted by Carlos. Slight vertical alignment of
+slot indicators and legend size/readability remain minor visual follow-ups.
 
 Runtime uses the existing font and public controls; classic backgrounds,
 overlays and row-specific SVGs remain for the classic mode. Circle and square
 assets do not add value to this text table, so no replacement is needed.
-After visual acceptance, continue with hito 6: cooling controls, global
-summary, trends and alerts.
+Hito 6 continues with cooling controls, global summary, trends and alerts.
+
+## Hito 6a — Cooling controls
+
+Sala offers a paginated cooling view in declared unit order, retaining the map
+and selection. Unit buttons use exact backend codes and initial/live states.
+Separate SUPPLY and EXHAUST masters mean "at least one enabled": clicking an
+active master disables the group; clicking an inactive master enables it. A
+group with no units is disabled. The rack's **Frío** view addresses the real
+integrated unit by full `RackLocation` when the current thermal route exposes
+one, and explicitly distinguishes no selection, no unit and unavailable route.
+
+The same `CoolingSystem` and thermal pipeline used by the engine are retained.
+Changing a control updates the live enabled state and electrical power without
+stepping or replacing the recorded snapshot. Rack air temperature and actual
+heat removal are labelled as the last tick; the next normal step incorporates
+the new state. No additional thermal owner or UI physics is introduced.
+
+Oracle JDK 27 with release 26: `mvn test` passed 62 tests. Tests cover mixed
+states and nonstandard codes, masters, missing unit types, coupled and legacy
+routes, full rack identity, paused snapshots, subsequent steps, pagination,
+hidden controls and bounds after resize. IntelliJ MCP found no errors in the
+affected runtime files. RUNTIME and DEMO started until their respective timeout;
+neither window was visually observed in that run. Carlos subsequently accepted 6a.
+
+Runtime uses existing font and public controls, with no new assets. Classic
+backgrounds, overlays and SVGs remain unchanged; circle/square/ventilation
+assets were not needed. Hito 6 remains incomplete: next are aisle cooling
+aggregates and global summary, followed by trends/alerts and equivalence review.
+
+## Hito 6b — Aisle cooling and global summary
+
+The selected aisle can switch between operational and cooling metrics without
+changing selection or the simulation. Zones are selected by actual server
+locations in its declared columns, deduplicated and passed to backend
+`CoolingSnapshot.aggregateZones`. A zone crossing the selected columns is
+included whole and identified as shared. Coverage, air ΔT and recirculation
+come from that group; the backend defines coverage as 100% for zero generated
+heat. No UI-side physical aggregation is used.
+
+The installed `cpz-sim-datacenter:0.1.0-alpha.1` group snapshot exposes no
+grouped SUPPLY/EXHAUST airflow. Both fields remain `-- m³/s` and 6b remains
+partial. The separate ignored prompt `prompts/pyxis-backend-agregados-refrigeracion.md`
+documents the required backend API and tests. The UI does not sum zone flows.
+
+The global summary shows room air separately from the online-server mean,
+the hottest rack by its online average, IT online utilization, IT power,
+electrical cooling power, facility power and PUE. Cooling and facility power
+are backend fields that include room and integrated-rack cooling when present;
+they are not recomputed in the UI. All power values describe the last tick,
+including during pause after a cooling-control change. Absent air, online data
+and unavailable PUE display `--`.
+
+Oracle JDK 27 with release 26: `mvn test` passed 67 tests. Tests compare the
+backend group and snapshot fields, shared/deduplicated zones, missing data,
+zero IT, coupled and legacy pause behavior, tab input and resize bounds.
+IntelliJ MCP reported no errors in affected runtime files. RUNTIME and DEMO
+started until their respective timeout; neither window was visually observed.
+Carlos's visual acceptance of the available 6b metrics remains pending. No new
+assets were used. Hito 6 remains open for blocked airflow, trends, alerts and
+equivalence review.
+
+## Pending visual and technical items
+
+| ID | Pending | Follow-up |
+| --- | --- | --- |
+| V01 | Align the left edge of Alertas with Rack seleccionado. | Alertas panel pass. |
+| V02 | Align slot indicators vertically with their text. | Rack detail polish with V03. |
+| V03 | Improve rack legend readability without clipping rows. | Rack detail polish with V02. |
+| V04 | Evaluate a graphical relationship between units and room. | Influence is not physical location; explicit layout data is needed for location. The 6a list is accepted for development. |
+| T01 | Requested 1920 × 993 versus observed 1920 × 1014/1011. | Initial clipping cause unconfirmed; footer accepted and nonblocking. Revisit if clipping returns or in hito 7. |

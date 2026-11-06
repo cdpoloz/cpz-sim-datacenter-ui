@@ -105,6 +105,25 @@ values inferred or assigned from that input; it does not imply measurements.
 The bordered circle beside each slot shows its temperature color; gray denotes
 empty, dark blue denotes offline, and a yellow border marks missing temperature.
 
+In Sala, **Refrigeración** switches from the map to the configured SUPPLY and
+EXHAUST units; **Mapa** returns to the map. The two master buttons show active
+and total counts: pressing a master turns all of that type off if any are on,
+or turns them all on otherwise. Unit pages use ‹/›. In the selected rack,
+**Frío** opens its integrated-unit details and control; **Slots** returns to the
+slot table. Current ON/OFF and electrical power update immediately. Air
+temperature and extracted heat describe the last simulation tick, so changes
+made while paused take effect in the next step.
+
+The selected-aisle **Refrigeración/Operación** button switches its metrics
+without changing selection. Cooling coverage, air ΔT and recirculation come
+from the backend's whole-zone aggregate for the last tick; a shared zone is
+included in full. Grouped SUPPLY/EXHAUST airflow is currently `--` because the
+installed backend does not provide that aggregate. The global summary shows
+room air, online-server averages, hottest rack by online average, IT utilization
+and last-tick IT, cooling and facility electrical power and PUE. Cooling power
+includes room and integrated-rack cooling when present. Unavailable values are
+shown as `--`; the displayed values remain unchanged while paused.
+
 In an IDE, select `com.cpz.sim.datacenter.ui.main.Launcher` as the main class,
 set the working directory to the repository root, and add
 `-Dsimulation.source=RUNTIME` to **VM options**. Remove it or use `DEMO` for
