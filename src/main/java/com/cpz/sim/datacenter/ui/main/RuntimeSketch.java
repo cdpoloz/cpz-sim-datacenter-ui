@@ -32,7 +32,8 @@ public final class RuntimeSketch extends PApplet {
         frameRate(Integer.parseInt(PROPS.getProperty("sketch.fps")));
         var font = createFont("data/font/JetBrainsMono.ttf", height * .021f, true);
         textFont(font);
-        view = new RuntimeView(this, new RuntimeLayout(width, height), font);
+        view = new RuntimeView(this, new RuntimeLayout(width, height), font, com.cpz.sim.datacenter.ui.runtime.RoomMap.load());
+        registerMethod("mouseEvent", view);
     }
 
     @Override public void draw() { view.draw(); }

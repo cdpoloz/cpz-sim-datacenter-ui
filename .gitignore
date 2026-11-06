@@ -49,3 +49,4 @@ nbbuild/
 /build
 /target/
 /log
+/prompts/

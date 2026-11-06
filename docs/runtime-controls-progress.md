@@ -1,7 +1,7 @@
 # Runtime controls: progress
 
-1. **Startup and visual structure:** implemented. Visual acceptance remains pending.
-2. **Layout and room map generation:** pending.
+1. **Startup and visual structure:** implemented and visually accepted by Carlos.
+2. **Layout and room map generation:** implemented; Carlos's visual acceptance pending.
 3. **Room simulation and state:** pending.
 4. **Selected aisle:** pending.
 5. **Selected rack:** pending.
@@ -51,8 +51,36 @@ The consumed controls dependency is 0.9.12. Its local documentation and the
 0.9.12 public `Label` API were inspected; no library blocker was identified.
 No dependency or version was changed.
 
-Next: complete visual acceptance, then start milestone 2 by inspecting the
-layout input and generating the room map within the shared room bounds.
+Carlos has accepted milestone 1, including the complete footer. Milestone 2
+requires its own visual acceptance.
+
+## Hito 2
+
+Runtime loads the backend definition once, using `simulation.datacenter.config`
+or `data/config/datacenter.json`. It retains the layout's hot-aisle associations
+and each rack's resolved slots, without starting the simulation or using the
+classic mapping. Columns and row values use lexical order; equal row values
+align across columns and missing positions remain empty. Duplicate locations or
+positions fail with a diagnostic. Selection uses the backend `RackLocation`
+(column and rack code), and public Button and Label controls are created once;
+resize updates their bounds without reloading or registering listeners again.
+
+The example contains eight columns and 96 racks. Automated tests cover the
+default and alternative paths, different sized columns, repeated rack codes,
+pointer selection before and after resize, and geometry at multiple aspect
+ratios. `mvn test` with Oracle JDK 27 targeting release 26 passed 41 tests.
+The existing DEMO and DATASET tests also passed. IntelliJ MCP reported no
+errors in the changed runtime production files. These checks do not establish
+visual acceptance. RUNTIME was started for 15 seconds and reported an effective
+1920 × 1011 surface, with no exception in its console; no screenshot or visual
+interaction was observed. Carlos should check the complete map, selection in two
+columns, the footer and resizing. Extreme density, scrolling and zoom remain
+outside this milestone. Next is milestone 3 after visual acceptance.
+
+Runtime uses the existing font and Processing decoration, with no bitmap or
+SVG assets. The classic backgrounds, overlay and row-specific selection SVGs
+remain for the classic mode. `circle.svg` and `square.svg` add no value to the
+rectangular map controls, and no replacement resources are needed.
 
 ## Footer and relative geometry follow-up
 
