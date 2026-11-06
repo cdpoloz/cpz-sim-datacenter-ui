@@ -23,10 +23,15 @@ public final class RuntimeSession {
     private DatacenterSimulationStepSnapshot snapshot;
     private final TemperatureRange range;
     private final String temperatureFormat;
+    private final Map<com.cpz.sim.datacenter.model.ServerLocation, com.cpz.sim.datacenter.model.ServerRole> serverRoles;
+    private final DatacenterDefinition definition;
 
     public RuntimeSession(DatacenterDefinition definition, Properties props) {
+        this.definition = definition;
         temperatureFormat = Objects.requireNonNull(props.getProperty("number.format.temperature"), "number.format.temperature");
         var dc = new DatacenterFactory().create(definition);
+        serverRoles = dc.getServers().stream().collect(java.util.stream.Collectors.toUnmodifiableMap(
+                com.cpz.sim.datacenter.model.Server::getLocation, com.cpz.sim.datacenter.model.Server::getRole));
         var options = new TemperatureSystemOptionsFactory().create(definition);
         range = new TemperatureRangeCalculator().calculate(dc, options);
         var cooling = new CoolingSystem(new CoolingConfigurationFactory().create(definition, dc)
@@ -65,4 +70,6 @@ public final class RuntimeSession {
     public DatacenterSimulationStepSnapshot snapshot() { return snapshot; }
     public TemperatureRange range() { return range; }
     public String formatTemperature(double value) { return String.format(Locale.ROOT, temperatureFormat, value); }
+    Map<com.cpz.sim.datacenter.model.ServerLocation, com.cpz.sim.datacenter.model.ServerRole> serverRoles() { return serverRoles; }
+    DatacenterDefinition definition() { return definition; }
 }

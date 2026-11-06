@@ -96,6 +96,15 @@ server temperature and IT utilization, plus the maximum among all installed
 servers (including offline servers) and its column/rack/slot. An asterisk marks
 that server's rack independently of the selected border.
 
+The selected-rack panel shows each configured slot in backend order, including
+empty slots, with server temperature, utilization, watts, health and role. `U`
+and `T` identify backend high-utilization and high-temperature alert reasons;
+`?` marks incomplete data. The summary reports online averages and total rack
+power. Its provenance legend identifies the configured simulated input and
+values inferred or assigned from that input; it does not imply measurements.
+The bordered circle beside each slot shows its temperature color; gray denotes
+empty, dark blue denotes offline, and a yellow border marks missing temperature.
+
 In an IDE, select `com.cpz.sim.datacenter.ui.main.Launcher` as the main class,
 set the working directory to the repository root, and add
 `-Dsimulation.source=RUNTIME` to **VM options**. Remove it or use `DEMO` for

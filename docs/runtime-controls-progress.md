@@ -3,8 +3,8 @@
 1. **Startup and visual structure:** implemented and visually accepted by Carlos.
 2. **Layout and room map generation:** implemented and visually accepted by Carlos.
 3. **Room simulation and state:** implemented and visually accepted by Carlos.
-4. **Selected aisle:** implemented; visual acceptance by Carlos pending.
-5. **Selected rack:** pending.
+4. **Selected aisle:** implemented and visually accepted by Carlos.
+5. **Selected rack:** implemented; visual acceptance by Carlos pending.
 6. **Cooling and functional equivalence**, including summary, trends and alerts: pending.
 7. **Adaptation to other layouts:** pending.
 
@@ -153,11 +153,57 @@ selection, repeated rack codes, row gaps, no aisles, backend group membership,
 offline maximum, resize geometry and pointer dispatch. IntelliJ MCP reported
 no errors in the modified runtime files. RUNTIME started until a 15-second
 timeout; the classic mode completed setup before an eight-second timeout.
-Neither window was observed. Carlos's visual acceptance of hito 4 remains
-pending, including selector, metrics, selection in both views and resize.
+Neither window was observed in that run. Carlos subsequently accepted hito 4,
+including selector, metrics and synchronized selection.
 
 Runtime continues using the existing font and Processing controls. Classic
 backgrounds, overlay and row-specific SVGs remain available to the classic
 mode; circle.svg and square.svg are unnecessary for the text marker, and no
-replacement asset is required. After visual acceptance, continue with hito 5
-(selected rack and slots).
+replacement asset is required.
+
+## Hito 5
+
+Rack detail follows the shared `RackLocation` selection. Installation and role
+are indexed once from the existing backend model; energy, temperature and
+health are joined by full `ServerLocation` from the same step snapshot. Slot
+rows retain the order returned by `RackSlotResolver`, including empty slots;
+selection changes replace the old labels, while a tick only refreshes values.
+Missing or non-finite data is shown as `--` and flagged, and offline server
+values remain those supplied by the backend. Summary averages and rack power
+come directly from `RackOperationalSnapshot`. U and T are backend alert reasons.
+
+The provenance legend describes simulated input and mode-specific inferred or
+assigned values; thermal-model results are labelled as modelled, not measured.
+It follows the available configuration and input-pipeline semantics rather
+than claiming independent per-value provenance metadata.
+
+Oracle JDK 27 with release 26: `mvn test` passed 57 tests, including snapshot
+joins with reordered lists, repeated rack/slot codes, role and workload
+differences, alerts, offline/missing data, and a backend-validated layout with
+three ordered nonconsecutive slots. Tests cover replacing and clearing rows and
+geometry at 1920 × 1011 and 800 × 800. IntelliJ MCP reported no errors in the
+affected runtime files. RUNTIME and DEMO started until their respective timeout;
+neither window was observed. Carlos's visual acceptance of hito 5 remains
+pending, including occupied, empty, offline and AI rows, resize and the footer.
+
+### Slot indicator readability adjustment
+
+Carlos found the row layout satisfactory but requested clearer text. Slot text
+now retains the existing light color, and a separate public `Indicator` shows
+the temperature scale. Empty and offline indicators use the existing room-state
+colors; a yellow border distinguishes unavailable temperature from any point
+on the scale. Indicators are reused between snapshots and their relative bounds
+are recalculated on resize. The 0.9.12 indicator's default circular renderer
+provides a visible border without loading `square.svg`; no new asset is needed.
+
+With Oracle JDK 27 and release 26, `mvn test` passed 57 tests after the
+adjustment, including indicator colors, stable text color, reuse, cleanup and
+resize geometry. IntelliJ MCP reported no errors in the affected files. The
+adjusted view has not been visually inspected; hito 5 acceptance remains pending
+Carlos's check of occupied, empty and offline slots and selection changes.
+
+Runtime uses the existing font and public controls; classic backgrounds,
+overlays and row-specific SVGs remain for the classic mode. Circle and square
+assets do not add value to this text table, so no replacement is needed.
+After visual acceptance, continue with hito 6: cooling controls, global
+summary, trends and alerts.

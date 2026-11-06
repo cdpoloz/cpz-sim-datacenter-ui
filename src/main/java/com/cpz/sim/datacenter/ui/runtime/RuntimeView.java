@@ -41,6 +41,7 @@ public final class RuntimeView {
     private Label selectionLabel;
     private final RuntimeSession session;
     private final RuntimeClock clock;
+    private final RackPanel rackPanel;
     private final List<Button> playback = new ArrayList<>();
     private Label statusLabel;
 
@@ -78,7 +79,7 @@ public final class RuntimeView {
                     case ALERTS -> "Pendiente: evaluación de alertas.";
                     case FOOTER -> "Pendiente: simulación y acciones.";
                 };
-            if (area != ROOM && area != FOOTER && area != SELECTED_AISLE) addLabel(area.name() + "Pending", pending, layout.contentBounds(area),
+            if (area != ROOM && area != FOOTER && area != SELECTED_AISLE && area != SELECTED_RACK) addLabel(area.name() + "Pending", pending, layout.contentBounds(area),
                     font, textSize, COLOR_WHITE_LABEL);
         }
         statusLabel = labels.get(1);
@@ -123,6 +124,7 @@ public final class RuntimeView {
         }
         aisleNavigation.get(0).setClickListener(() -> changeAisle(-1));
         aisleNavigation.get(1).setClickListener(() -> changeAisle(1));
+        rackPanel = new RackPanel(sketch, font, room, session, layout);
         for (int i = 0; i < 3; i++) {
             Button button = new Button(sketch, i == 0 ? "Play" : i == 1 ? "−" : "+", playbackBounds(i));
             button.setStyle(buttonStyle(false, 0xff30363d));
@@ -146,7 +148,7 @@ public final class RuntimeView {
         return com.cpz.processing.controls.controls.geometry.ControlBounds.relative((b.x()+b.width()*(index == 0 ? .15f : .85f))/layoutWidth,
                 (b.y()+b.height()*.05f)/layoutHeight, b.width()*.24f/layoutHeight, b.height()*.085f/layoutHeight);
     }
-    private void changeAisle(int direction) { aisle.change(direction); updateRacks(); updateAisle(); }
+    private void changeAisle(int direction) { aisle.change(direction); updateRacks(); updateAisle(); rackPanel.refresh(); }
     private void updateAisle() {
         var selected = aisle.selected();
         aisleNavigation.get(0).setEnabled(aisle.canPrevious());
@@ -227,7 +229,7 @@ public final class RuntimeView {
 
     private void select(RackLocation location) {
         aisle.selectRack(location);
-        updateRacks(); updateAisle();
+        updateRacks(); updateAisle(); rackPanel.refresh();
     }
 
     public void mouseEvent(processing.event.MouseEvent event) {
@@ -270,7 +272,7 @@ public final class RuntimeView {
             int index = 0;
             for (var area : RuntimeLayout.Area.values()) {
                 labels.get(index++).setBounds(layout.titleBounds(area));
-                if (area != ROOM && area != FOOTER && area != SELECTED_AISLE) labels.get(index++).setBounds(layout.contentBounds(area));
+                if (area != ROOM && area != FOOTER && area != SELECTED_AISLE && area != SELECTED_RACK) labels.get(index++).setBounds(layout.contentBounds(area));
             }
             var geometry = room.geometry(layout, layoutWidth, layoutHeight);
             geometry.columns().forEach((column, bounds) -> columnLabels.get(column).setBounds(bounds));
@@ -281,12 +283,13 @@ public final class RuntimeView {
             aisleMetrics.setBounds(aisleTextBounds(.18f, .17f));
             for (int i = 0; i < aisleNavigation.size(); i++) aisleNavigation.get(i).setBounds(aisleNavigationBounds(i));
             updateAisle();
+            rackPanel.resize(layout, layoutWidth, layoutHeight);
         }
     }
 
     public void draw() {
         updateLayoutIfNeeded();
-        if (clock.poll()) { session.step(); updateRacks(); updateStatus(); updateAisle(); }
+        if (clock.poll()) { session.step(); updateRacks(); updateStatus(); updateAisle(); rackPanel.refresh(); }
         sketch.background(COLOR_BACKGROUND);
         sketch.pushStyle();
         sketch.rectMode(PApplet.CORNER);
@@ -310,6 +313,7 @@ public final class RuntimeView {
         aisleTitle.draw(); aisleMetrics.draw();
         aisleColumns.values().forEach(Label::draw);
         aisleButtons.values().forEach(Button::draw);
+        rackPanel.draw();
         var selectedAisle = aisle.selected();
         if (selectedAisle != null) session.snapshot().operationalSnapshot().findServerGroup(selectedAisle.code())
                 .flatMap(group -> group.maximumTemperatureLocation()).map(location -> location.rackLocation())
