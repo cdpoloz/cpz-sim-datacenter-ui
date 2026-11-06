@@ -48,9 +48,16 @@ public final class RuntimeSession {
                 new HealthThreshold(Double.parseDouble(props.getProperty("simulation.health.temperature.alert-threshold-celsius")), Double.parseDouble(props.getProperty("simulation.health.temperature.recovery-threshold-celsius")))));
         var energy = new EnergyConsumptionSystem(dc);
         engine.register(health); engine.register(energy);
+        var aisles = definition.layout().hotAisles();
+        var groups = aisles == null ? List.<ServerGroupDefinition>of() : aisles.stream()
+                .map(aisle -> new ServerGroupDefinition(aisle.code(), dc.getServers().stream()
+                        .map(server -> server.getLocation())
+                        .filter(location -> aisle.columns().contains(location.column()))
+                        .collect(java.util.stream.Collectors.toUnmodifiableSet())))
+                .toList();
         recorder = new DatacenterSimulationHistoryRecorder(new EnergyConsumptionSnapshotProvider(dc, energy),
                 new TemperatureSnapshotProvider(dc, temperature, options), new HealthSnapshotProvider(dc, health, temperature),
-                new DatacenterOperationalSnapshotProvider(dc), pipeline::coolingSnapshot,
+                new DatacenterOperationalSnapshotProvider(dc, groups), pipeline::coolingSnapshot,
                 new DatacenterSimulationHistory(), Optional.empty(), pipeline::coupledThermalSnapshot);
         step(); // As in the classic mode, establish thermal state before the first frame.
     }

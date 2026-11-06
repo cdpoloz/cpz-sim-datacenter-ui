@@ -30,6 +30,12 @@ public final class RuntimeView {
     private final List<Label> labels = new ArrayList<>();
     private final Map<String, Label> columnLabels = new LinkedHashMap<>();
     private final Map<RackLocation, Button> buttons = new LinkedHashMap<>();
+    private final Map<RackLocation, Button> aisleButtons = new LinkedHashMap<>();
+    private final Map<String, Label> aisleColumns = new LinkedHashMap<>();
+    private final List<Button> aisleNavigation = new ArrayList<>();
+    private final AisleSelection aisle;
+    private Label aisleTitle, aisleMetrics;
+    private AisleSelection.Geometry aisleGeometry;
     private final RoomMap room;
     private final PFont font;
     private Label selectionLabel;
@@ -41,6 +47,7 @@ public final class RuntimeView {
     public RuntimeView(PApplet sketch, RuntimeLayout layout, PFont font, RoomMap room, RuntimeSession session, RuntimeClock clock) {
         this.sketch = sketch;
         this.room = room;
+        this.aisle = new AisleSelection(room);
         this.session = session;
         this.clock = clock;
         this.font = font;
@@ -71,7 +78,7 @@ public final class RuntimeView {
                     case ALERTS -> "Pendiente: evaluación de alertas.";
                     case FOOTER -> "Pendiente: simulación y acciones.";
                 };
-            if (area != ROOM && area != FOOTER) addLabel(area.name() + "Pending", pending, layout.contentBounds(area),
+            if (area != ROOM && area != FOOTER && area != SELECTED_AISLE) addLabel(area.name() + "Pending", pending, layout.contentBounds(area),
                     font, textSize, COLOR_WHITE_LABEL);
         }
         statusLabel = labels.get(1);
@@ -92,6 +99,30 @@ public final class RuntimeView {
         var content = layout.contentBounds(ROOM).resolve(layoutWidth, layoutHeight);
         addLabel("Selection", "Sin selección", selectionBounds(content), font, textSize * .72f, COLOR_WHITE_LABEL);
         selectionLabel = labels.remove(labels.size() - 1);
+        addLabel("AisleName", "", aisleTextBounds(.12f, .12f), font, textSize * .8f, COLOR_WHITE_LABEL);
+        aisleTitle = labels.remove(labels.size() - 1);
+        addLabel("AisleMetrics", "", aisleTextBounds(.18f, .17f), font, textSize * .72f, COLOR_WHITE_LABEL);
+        aisleMetrics = labels.remove(labels.size() - 1);
+        for (String column : room.hotAisles().stream().flatMap(a -> a.columns().stream()).distinct().toList()) {
+            addLabel("AisleColumn" + column, column, layout.contentBounds(SELECTED_AISLE), font, textSize * .72f, COLOR_WHITE_LABEL);
+            aisleColumns.put(column, labels.remove(labels.size() - 1));
+        }
+        for (var rack : room.racks()) {
+            var button = new Button(sketch, rack.location().rackCode().value(), layout.contentBounds(SELECTED_AISLE));
+            button.setStyle(buttonStyle(false, COLOR_EMPTY_RACK));
+            button.setTextSize(ControlMeasure.relative(.012f));
+            button.setClickListener(() -> select(rack.location()));
+            button.setVisible(false);
+            aisleButtons.put(rack.location(), button);
+        }
+        for (int i = 0; i < 2; i++) {
+            var button = new Button(sketch, i == 0 ? "‹" : "›", aisleNavigationBounds(i));
+            button.setStyle(buttonStyle(false, 0xff30363d));
+            button.setTextSize(ControlMeasure.relative(.016f));
+            aisleNavigation.add(button);
+        }
+        aisleNavigation.get(0).setClickListener(() -> changeAisle(-1));
+        aisleNavigation.get(1).setClickListener(() -> changeAisle(1));
         for (int i = 0; i < 3; i++) {
             Button button = new Button(sketch, i == 0 ? "Play" : i == 1 ? "−" : "+", playbackBounds(i));
             button.setStyle(buttonStyle(false, 0xff30363d));
@@ -103,6 +134,45 @@ public final class RuntimeView {
         playback.get(2).setClickListener(() -> { clock.change(1); updateStatus(); });
         updateStatus();
         updateRacks();
+        updateAisle();
+    }
+
+    private com.cpz.processing.controls.controls.geometry.ControlBounds aisleTextBounds(float y, float h) {
+        var b = layout.contentBounds(SELECTED_AISLE).resolve(layoutWidth, layoutHeight);
+        return com.cpz.processing.controls.controls.geometry.ControlBounds.relative(b.x()/layoutWidth, (b.y()+b.height()*y)/layoutHeight, b.width()/layoutHeight, b.height()*h/layoutHeight);
+    }
+    private com.cpz.processing.controls.controls.geometry.ControlBounds aisleNavigationBounds(int index) {
+        var b = layout.contentBounds(SELECTED_AISLE).resolve(layoutWidth, layoutHeight);
+        return com.cpz.processing.controls.controls.geometry.ControlBounds.relative((b.x()+b.width()*(index == 0 ? .15f : .85f))/layoutWidth,
+                (b.y()+b.height()*.05f)/layoutHeight, b.width()*.24f/layoutHeight, b.height()*.085f/layoutHeight);
+    }
+    private void changeAisle(int direction) { aisle.change(direction); updateRacks(); updateAisle(); }
+    private void updateAisle() {
+        var selected = aisle.selected();
+        aisleNavigation.get(0).setEnabled(aisle.canPrevious());
+        aisleNavigation.get(1).setEnabled(aisle.canNext());
+        aisleGeometry = aisle.geometry(layout, layoutWidth, layoutHeight);
+        aisleColumns.forEach((code, label) -> {
+            var bounds = aisleGeometry.columns().get(code);
+            label.setVisible(bounds != null);
+            if (bounds != null) label.setBounds(bounds);
+        });
+        aisleButtons.forEach((location, button) -> {
+            var bounds = aisleGeometry.racks().get(location);
+            button.setVisible(bounds != null);
+            if (bounds != null) {
+                button.setBounds(bounds);
+                button.setStyle(buttonStyle(location.equals(room.selected()), rackColor(session.snapshot().operationalSnapshot().racks().get(location))));
+            }
+        });
+        if (selected == null) {
+            aisleTitle.setText(room.hotAisles().isEmpty() ? "Sin pasillos configurados" : room.selected() == null ? "Seleccione un pasillo" : "Sin pasillo asociado");
+            aisleMetrics.setText("");
+            return;
+        }
+        aisleTitle.setText(selected.code() + "  " + String.join(", ", selected.columns()));
+        var group = session.snapshot().operationalSnapshot().findServerGroup(selected.code()).orElse(null);
+        aisleMetrics.setText(AisleMetrics.text(group, session::formatTemperature));
     }
 
     private com.cpz.processing.controls.controls.geometry.ControlBounds playbackBounds(int index) {
@@ -156,14 +226,12 @@ public final class RuntimeView {
     }
 
     private void select(RackLocation location) {
-        var previous = room.selected();
-        room.select(location);
-        if (previous != null) buttons.get(previous).setStyle(buttonStyle(false, rackColor(session.snapshot().operationalSnapshot().racks().get(previous))));
-        buttons.get(location).setStyle(buttonStyle(true, rackColor(session.snapshot().operationalSnapshot().racks().get(location))));
-        updateSelection();
+        aisle.selectRack(location);
+        updateRacks(); updateAisle();
     }
 
     public void mouseEvent(processing.event.MouseEvent event) {
+        updateLayoutIfNeeded();
         PointerEvent.Type type = switch (event.getAction()) {
             case processing.event.MouseEvent.PRESS -> PointerEvent.Type.PRESS;
             case processing.event.MouseEvent.RELEASE -> PointerEvent.Type.RELEASE;
@@ -175,6 +243,8 @@ public final class RuntimeView {
             var pointer = new PointerEvent(type, event.getX(), event.getY());
             buttons.values().forEach(button -> button.handlePointerEvent(pointer));
             playback.forEach(button -> button.handlePointerEvent(pointer));
+            aisleButtons.values().forEach(button -> button.handlePointerEvent(pointer));
+            aisleNavigation.forEach(button -> button.handlePointerEvent(pointer));
         }
     }
 
@@ -192,7 +262,7 @@ public final class RuntimeView {
         labels.add(label);
     }
 
-    public void draw() {
+    private void updateLayoutIfNeeded() {
         if (layoutWidth != sketch.width || layoutHeight != sketch.height) {
             layoutWidth = sketch.width;
             layoutHeight = sketch.height;
@@ -200,15 +270,23 @@ public final class RuntimeView {
             int index = 0;
             for (var area : RuntimeLayout.Area.values()) {
                 labels.get(index++).setBounds(layout.titleBounds(area));
-                if (area != ROOM && area != FOOTER) labels.get(index++).setBounds(layout.contentBounds(area));
+                if (area != ROOM && area != FOOTER && area != SELECTED_AISLE) labels.get(index++).setBounds(layout.contentBounds(area));
             }
             var geometry = room.geometry(layout, layoutWidth, layoutHeight);
             geometry.columns().forEach((column, bounds) -> columnLabels.get(column).setBounds(bounds));
             geometry.racks().forEach(p -> buttons.get(p.rack().location()).setBounds(p.bounds()));
             selectionLabel.setBounds(selectionBounds(layout.contentBounds(ROOM).resolve(layoutWidth, layoutHeight)));
             for (int i = 0; i < playback.size(); i++) playback.get(i).setBounds(playbackBounds(i));
+            aisleTitle.setBounds(aisleTextBounds(.12f, .12f));
+            aisleMetrics.setBounds(aisleTextBounds(.18f, .17f));
+            for (int i = 0; i < aisleNavigation.size(); i++) aisleNavigation.get(i).setBounds(aisleNavigationBounds(i));
+            updateAisle();
         }
-        if (clock.poll()) { session.step(); updateRacks(); updateStatus(); }
+    }
+
+    public void draw() {
+        updateLayoutIfNeeded();
+        if (clock.poll()) { session.step(); updateRacks(); updateStatus(); updateAisle(); }
         sketch.background(COLOR_BACKGROUND);
         sketch.pushStyle();
         sketch.rectMode(PApplet.CORNER);
@@ -228,6 +306,18 @@ public final class RuntimeView {
         columnLabels.values().forEach(Label::draw);
         buttons.values().forEach(Button::draw);
         selectionLabel.draw();
+        aisleNavigation.forEach(Button::draw);
+        aisleTitle.draw(); aisleMetrics.draw();
+        aisleColumns.values().forEach(Label::draw);
+        aisleButtons.values().forEach(Button::draw);
+        var selectedAisle = aisle.selected();
+        if (selectedAisle != null) session.snapshot().operationalSnapshot().findServerGroup(selectedAisle.code())
+                .flatMap(group -> group.maximumTemperatureLocation()).map(location -> location.rackLocation())
+                .map(location -> aisleGeometry.racks().get(location)).ifPresent(bounds -> {
+                    var b = bounds.resolve(layoutWidth, layoutHeight);
+                    sketch.pushStyle(); sketch.fill(0xffffe477); sketch.textAlign(PApplet.RIGHT, PApplet.CENTER);
+                    sketch.textSize(layoutHeight * .012f); sketch.text("*", b.x()+b.width()*.44f, b.y()); sketch.popStyle();
+                });
         playback.forEach(Button::draw);
     }
 }

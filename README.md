@@ -89,6 +89,13 @@ selection while the fill indicates its state. For manual validation, check
 that time and colors evolve during play, remain stable while paused, and that
 selection and controls still work after resizing.
 
+In **Pasillo seleccionado**, use ‹/› to navigate the aisles declared by the
+active layout. Selecting a rack in either view synchronizes the other; choosing
+an unrelated aisle clears the rack selection. The panel reports average online
+server temperature and IT utilization, plus the maximum among all installed
+servers (including offline servers) and its column/rack/slot. An asterisk marks
+that server's rack independently of the selected border.
+
 In an IDE, select `com.cpz.sim.datacenter.ui.main.Launcher` as the main class,
 set the working directory to the repository root, and add
 `-Dsimulation.source=RUNTIME` to **VM options**. Remove it or use `DEMO` for

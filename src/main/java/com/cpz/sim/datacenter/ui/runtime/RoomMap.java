@@ -49,6 +49,7 @@ public final class RoomMap {
     public List<Rack> racks() { return racks; }
     public List<HotAisleDefinition> hotAisles() { return hotAisles; }
     public RackLocation selected() { return selected; }
+    public void clearSelection() { selected = null; }
     public void select(RackLocation location) {
         if (racks.stream().noneMatch(r -> r.location().equals(location))) throw new IllegalArgumentException("Unknown rack: " + location);
         selected = location;

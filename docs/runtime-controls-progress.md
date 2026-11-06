@@ -2,8 +2,8 @@
 
 1. **Startup and visual structure:** implemented and visually accepted by Carlos.
 2. **Layout and room map generation:** implemented and visually accepted by Carlos.
-3. **Room simulation and state:** implemented; visual acceptance by Carlos pending.
-4. **Selected aisle:** pending.
+3. **Room simulation and state:** implemented and visually accepted by Carlos.
+4. **Selected aisle:** implemented; visual acceptance by Carlos pending.
 5. **Selected rack:** pending.
 6. **Cooling and functional equivalence**, including summary, trends and alerts: pending.
 7. **Adaptation to other layouts:** pending.
@@ -126,10 +126,38 @@ Oracle JDK 27 targeting release 26: `mvn test` passed 45 tests, including
 controlled timer tests, snapshot projection and all three supported input modes
 with backend-compatible configurations. The existing coupled and legacy
 thermal pipeline tests also pass. IntelliJ MCP reported no errors in the
-changed runtime production files. Visual acceptance of milestone 3 remains
-pending: check state evolution, pause/resume, speed limits, rack selection and
-resizing. Runtime started and stayed open until the 15-second test timeout;
+changed runtime production files. Carlos subsequently accepted milestone 3.
+Runtime started and stayed open until the 15-second test timeout;
 classic DEMO completed setup before its eight-second timeout. Neither window
 nor interaction was visually inspected; both reported an effective 1920 × 1011
-surface. No new graphics assets are required. After acceptance, continue with
-milestone 4, selected aisle.
+surface. No new graphics assets were required.
+
+## Hito 4
+
+The selector traverses `layout.hotAisles` and their columns in declared order;
+row values retain the room map's lexical order and missing positions remain
+empty. Selecting a room rack selects its associated aisle, or explicitly shows
+that it has none. Changing aisle retains only a rack in that aisle. Rack buttons
+in both panels share `RackLocation` and selection; a separate asterisk marks
+the rack containing the maximum-temperature server without replacing its border.
+
+Runtime builds backend server groups once using actual server locations in the
+declared columns. A single operational snapshot supplies both views. Average
+temperature and IT utilization cover online servers; the maximum covers all
+installed servers, including offline ones, and uses the backend's location and
+tie-breaking. Empty, offline and missing values are displayed explicitly.
+Cooling continues in the simulation; its metrics and controls remain for hito 6.
+
+Oracle JDK 27 targeting release 26: `mvn test` passed 52 tests, including
+selection, repeated rack codes, row gaps, no aisles, backend group membership,
+offline maximum, resize geometry and pointer dispatch. IntelliJ MCP reported
+no errors in the modified runtime files. RUNTIME started until a 15-second
+timeout; the classic mode completed setup before an eight-second timeout.
+Neither window was observed. Carlos's visual acceptance of hito 4 remains
+pending, including selector, metrics, selection in both views and resize.
+
+Runtime continues using the existing font and Processing controls. Classic
+backgrounds, overlay and row-specific SVGs remain available to the classic
+mode; circle.svg and square.svg are unnecessary for the text marker, and no
+replacement asset is required. After visual acceptance, continue with hito 5
+(selected rack and slots).
