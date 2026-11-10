@@ -244,10 +244,17 @@ included whole and identified as shared. Coverage, air ΔT and recirculation
 come from that group; the backend defines coverage as 100% for zero generated
 heat. No UI-side physical aggregation is used.
 
-The installed `cpz-sim-datacenter:0.1.0-alpha.1` group snapshot exposes no
-grouped SUPPLY/EXHAUST airflow. Both fields remain `-- m³/s` and 6b remains
-partial. The separate ignored prompt `prompts/pyxis-backend-agregados-refrigeracion.md`
-documents the required backend API and tests. The UI does not sum zone flows.
+The locally resolved `cpz-sim-datacenter:0.1.0-alpha.1` now exposes grouped
+SUPPLY/EXHAUST airflow and the source tick on `CoolingZoneGroupSnapshot`.
+The UI displays those assigned-zone flows in m³/s directly from the aggregate;
+it does not sum zone flows. A shared zone contributes fully to each group, so
+groups are not necessarily disjoint. An older artifact with the same version
+does not expose this API and must be updated locally before building.
+Integration verification on 10 November: `mvn test` passed 67 tests with JDK
+27/release 26. Tests check the aggregate's source tick and formatted values,
+and verify that switching units off while paused preserves the snapshot until
+the next step in both coupled and legacy paths. Visual verification remains
+pending.
 
 The global summary shows room air separately from the online-server mean,
 the hottest rack by its online average, IT online utilization, IT power,
@@ -263,8 +270,22 @@ zero IT, coupled and legacy pause behavior, tab input and resize bounds.
 IntelliJ MCP reported no errors in affected runtime files. RUNTIME and DEMO
 started until their respective timeout; neither window was visually observed.
 Carlos's visual acceptance of the available 6b metrics remains pending. No new
-assets were used. Hito 6 remains open for blocked airflow, trends, alerts and
+assets were used. Hito 6 remains open for visual acceptance, trends, alerts and
 equivalence review.
+
+On 10 November the unavailable airflow label was changed to user-facing
+wording, and the hottest rack location and temperature were moved to their own
+line to give the summary columns more space. `mvn test` passed all 67 tests
+with JDK 27 and release 26; IntelliJ reported no errors in the changed files.
+The new layout still needs Carlos's visual check, including resize. The
+thermal-metric interpretation review remains open.
+The current backend source's coupled mixed-room projection assigns the same
+room temperature to zone inlet and exhaust, so its ΔT is zero by construction;
+its recirculation is an airflow-balance target and coverage uses instantaneous
+removal divided by zone heat. The legacy path instead smooths recirculation and
+calculates zone temperatures. This source inspection does not establish that the
+installed binary was built from the inspected backend commit or validate a
+particular screenshot; confirm against the active artifact before conclusions.
 
 ## Pending visual and technical items
 
