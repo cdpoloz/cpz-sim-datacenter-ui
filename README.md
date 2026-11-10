@@ -117,8 +117,9 @@ made while paused take effect in the next step.
 The selected-aisle **Refrigeración/Operación** button switches its metrics
 without changing selection. Cooling coverage, air ΔT and recirculation come
 from the backend's whole-zone aggregate for the last tick; a shared zone is
-included in full. Grouped SUPPLY/EXHAUST airflow is currently `--` because the
-installed backend does not provide that aggregate. The global summary shows
+included in full. SUPPLY and EXHAUST show the backend's grouped airflow assigned
+to those zones in m³/s, not nominal unit airflow. Shared zones contribute in
+full to each aisle, so aisle totals cannot be added as disjoint flows. The global summary shows
 room air, online-server averages, hottest rack by online average, IT utilization
 and last-tick IT, cooling and facility electrical power and PUE. Cooling power
 includes room and integrated-rack cooling when present. Unavailable values are
