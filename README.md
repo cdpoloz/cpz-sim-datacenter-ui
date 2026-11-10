@@ -125,6 +125,15 @@ and last-tick IT, cooling and facility electrical power and PUE. Cooling power
 includes room and integrated-rack cooling when present. Unavailable values are
 shown as `--`; the displayed values remain unchanged while paused.
 
+**Tendencias** cycles between temperatures (online server mean, hottest rack by
+online mean, and room air), the selected aisle's online-server mean, online IT
+utilization (%), and IT and facility electrical power (kW). Values come from
+the recorder's step snapshots, including the initial step. The horizontal axis
+is the simulation tick; the chart displays at most the latest 120 recorded
+ticks. Missing values leave gaps. Changing selection or controls while paused
+does not record a sample; the next step adds one. The runtime window remains
+fixed in size.
+
 In an IDE, select `com.cpz.sim.datacenter.ui.main.Launcher` as the main class,
 set the working directory to the repository root, and add
 `-Dsimulation.source=RUNTIME` to **VM options**. Remove it or use `DEMO` for
