@@ -1,6 +1,9 @@
 package com.cpz.sim.datacenter.ui.main;
 
 import com.cpz.processing.controls.controls.toggle.Toggle;
+import com.cpz.processing.controls.core.overlay.notification.NotificationManager;
+import com.cpz.processing.controls.core.overlay.notification.NotificationSeverity;
+import com.cpz.processing.controls.core.overlay.notification.config.NotificationConfigLoader;
 import com.cpz.processing.controls.core.overlay.tooltip.input.TooltipInputLayer;
 import com.cpz.processing.controls.core.overlay.tooltip.util.TooltipOverlayController;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
@@ -55,6 +58,7 @@ public class Sketch extends PApplet {
     private SelectionManager selectionManager;
     private TooltipOverlayController tooltips;
     private SelectedRackCoolingControls rackCoolingControls;
+    private NotificationManager notifications;
 
     /**
      * Configures the Processing surface before it is created.
@@ -79,7 +83,7 @@ public class Sketch extends PApplet {
     public void setup() {
         LOG.info("Starting initial setup");
         background(COLOR_BACKGROUND);
-        frameRate(Integer.parseInt(PROPS.getProperty("sketch.fps")));
+        //frameRate(Integer.parseInt(PROPS.getProperty("sketch.fps")));
         getSurface().setTitle(PROPS.getProperty("window.title"));
         LOG.info("Finished initial setup");
         // The context is the narrow bridge used by Processing-dependent components.
@@ -87,6 +91,8 @@ public class Sketch extends PApplet {
         infrastructureContainer = new InfrastructureContainer();
         InfrastructureInitializer infrastructureInitializer = new InfrastructureInitializer(infrastructureContainer);
         infrastructureInitializer.initialize();
+        notifications = new NotificationManager(this, infrastructureContainer.overlayManager());
+        NotificationConfigLoader.apply(this, "config/notifications.json", notifications);
         UiComponentContainer uiComponentContainer = new UiComponentContainer();
         UiFormatContainer uiFormatContainer = new UiFormatContainer();
         uiStateContainer = new UiStateContainer();
@@ -145,6 +151,8 @@ public class Sketch extends PApplet {
         uiUpdateCoordinator.updateSnapshotsIfNeeded();
         coolingToggleManager.initialize();
         uiStateInitializer.initialize(uiStateContainer.minServerTemperatureCelsius(), uiStateContainer.maxServerTemperatureCelsius(), uiFormatContainer.simpleTemperature());
+        notifications.show("Prueba de alerta: C01 / R01 / S01", NotificationSeverity.WARNING, 30_000L);
+        LOG.info("Fin completo de setup");
     }
 
     /**
@@ -181,6 +189,7 @@ public class Sketch extends PApplet {
     @Override
     public void dispose() {
         if (tooltips != null) tooltips.dispose();
+        if (notifications != null) notifications.dispose();
         super.dispose();
     }
 
