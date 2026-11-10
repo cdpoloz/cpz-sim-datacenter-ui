@@ -21,7 +21,7 @@
   "style": {
     "backgroundColor": "#202020",
     "textColor": "#FFFFFF",
-    "borderColor": "#404040",
+    "borderColor": "#00404040",
     "strokeWeight": {
       "mode": "relative",
       "value": 0.00100704934
@@ -59,9 +59,29 @@
       "mode": "relative",
       "value": 0.00503524672709
     },
-    "infoAccentColor": "#3B82F6",
-    "successAccentColor": "#22C55E",
-    "warningAccentColor": "#F59E0B",
-    "errorAccentColor": "#EF4444"
+    "infoAccentColor": "#7a9dbe",
+    "successAccentColor": "#00ffcc",
+    "warningAccentColor": "#ffcc00",
+    "errorAccentColor": "#ff0066",
+    "iconSize": {
+      "mode": "relative",
+      "value": 0.0392749244713
+    },
+    "iconTextGap": {
+      "mode": "relative",
+      "value": 0.00805639476334
+    },
+    "severityIcons": {
+      "info": "data/img/ntf/ntf-info.svg",
+      "success": "data/img/ntf/ntf-success.svg",
+      "warning": "data/img/ntf/ntf-warning.svg",
+      "error": "data/img/ntf/ntf-error.svg"
+    },
+    "severityBackgroundColors": {
+      "info": "#187a9dbe",
+      "success": "#1800ffcc",
+      "warning": "#18ffcc00",
+      "error": "#18ff0066"
+    }
   }
 }
