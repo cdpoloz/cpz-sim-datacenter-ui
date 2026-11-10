@@ -47,6 +47,7 @@ public final class RuntimeView {
     private final CoolingRoomPanel coolingPanel;
     private final RackCoolingPanel rackCoolingPanel;
     private final SummaryPanel summaryPanel;
+    private final TrendsPanel trendsPanel;
     private final List<Button> playback = new ArrayList<>();
     private Label statusLabel;
 
@@ -84,7 +85,7 @@ public final class RuntimeView {
                     case ALERTS -> "Pendiente: evaluación de alertas.";
                     case FOOTER -> "Pendiente: simulación y acciones.";
                 };
-            if (area != ROOM && area != FOOTER && area != SELECTED_AISLE && area != SELECTED_RACK && area != SUMMARY) addLabel(area.name() + "Pending", pending, layout.contentBounds(area),
+            if (area != ROOM && area != FOOTER && area != SELECTED_AISLE && area != SELECTED_RACK && area != SUMMARY && area != TRENDS) addLabel(area.name() + "Pending", pending, layout.contentBounds(area),
                     font, textSize, COLOR_WHITE_LABEL);
         }
         statusLabel = labels.get(1);
@@ -136,6 +137,7 @@ public final class RuntimeView {
         coolingPanel = new CoolingRoomPanel(sketch, font, session, layout);
         rackCoolingPanel = new RackCoolingPanel(sketch, font, session, room, layout);
         summaryPanel = new SummaryPanel(sketch, font, layout);
+        trendsPanel = new TrendsPanel(sketch, font, layout, session);
         summaryPanel.refresh(session.snapshot().operationalSnapshot());
         for (int i = 0; i < 3; i++) {
             Button button = new Button(sketch, i == 0 ? "Play" : i == 1 ? "−" : "+", playbackBounds(i));
@@ -168,6 +170,7 @@ public final class RuntimeView {
     private void changeAisle(int direction) { aisle.change(direction); updateRacks(); updateAisle(); rackPanel.refresh(); rackCoolingPanel.refresh(); }
     private void updateAisle() {
         var selected = aisle.selected();
+        trendsPanel.refresh(selected == null ? null : selected.code());
         aisleMode.setText(aisleCooling ? "Operación" : "Refrigeración");
         aisleNavigation.get(0).setEnabled(aisle.canPrevious());
         aisleNavigation.get(1).setEnabled(aisle.canNext());
@@ -270,6 +273,7 @@ public final class RuntimeView {
             aisleButtons.values().forEach(button -> button.handlePointerEvent(pointer));
             aisleNavigation.forEach(button -> button.handlePointerEvent(pointer));
             aisleMode.handlePointerEvent(pointer);
+            trendsPanel.pointer(pointer);
         }
     }
 
@@ -295,7 +299,7 @@ public final class RuntimeView {
             int index = 0;
             for (var area : RuntimeLayout.Area.values()) {
                 labels.get(index++).setBounds(layout.titleBounds(area));
-                if (area != ROOM && area != FOOTER && area != SELECTED_AISLE && area != SELECTED_RACK && area != SUMMARY) labels.get(index++).setBounds(layout.contentBounds(area));
+                if (area != ROOM && area != FOOTER && area != SELECTED_AISLE && area != SELECTED_RACK && area != SUMMARY && area != TRENDS) labels.get(index++).setBounds(layout.contentBounds(area));
             }
             var geometry = room.geometry(layout, layoutWidth, layoutHeight);
             geometry.columns().forEach((column, bounds) -> columnLabels.get(column).setBounds(bounds));
@@ -311,6 +315,7 @@ public final class RuntimeView {
             coolingPanel.resize(layout, layoutWidth, layoutHeight);
             rackCoolingPanel.resize(layout, layoutWidth, layoutHeight);
             summaryPanel.resize(layout, layoutWidth, layoutHeight);
+            trendsPanel.resize(layout, layoutWidth, layoutHeight);
         }
     }
 
@@ -343,6 +348,7 @@ public final class RuntimeView {
         if (!rackCoolingPanel.expanded()) rackPanel.draw();
         rackCoolingPanel.draw();
         summaryPanel.draw();
+        trendsPanel.draw();
         var selectedAisle = aisle.selected();
         if (selectedAisle != null) session.snapshot().operationalSnapshot().findServerGroup(selectedAisle.code())
                 .flatMap(group -> group.maximumTemperatureLocation()).map(location -> location.rackLocation())
