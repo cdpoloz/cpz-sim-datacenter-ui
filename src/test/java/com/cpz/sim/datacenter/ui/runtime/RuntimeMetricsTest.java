@@ -30,7 +30,9 @@ class RuntimeMetricsTest {
         assertEquals(List.of(code),projected.zones());assertTrue(projected.shared());
         assertEquals(snapshot.aggregateZones("CUSTOM",List.of(code)),projected.group().orElseThrow());
         assertTrue(RuntimeMetrics.aisleText(projected).contains("zona compartida"));
-        assertTrue(RuntimeMetrics.aisleText(projected).contains("SUPPLY/EXHAUST: --"));
+        var group=projected.group().orElseThrow();
+        assertEquals(snapshot.tickIndex(),group.tickIndex());
+        assertTrue(RuntimeMetrics.aisleText(projected).contains(String.format(Locale.ROOT,"SUPPLY %.2f / EXHAUST %.2f m³/s",group.supplyAirflowCubicMetersPerSecond(),group.exhaustAirflowCubicMetersPerSecond())));
         assertTrue(RuntimeMetrics.aisle(null,List.of(cross),Optional.of(snapshot)).group().isEmpty());
         assertTrue(RuntimeMetrics.aisle(new HotAisleDefinition("none",List.of("WEST")),List.of(cross),Optional.of(snapshot)).group().isEmpty());
         assertTrue(RuntimeMetrics.aisle(aisle,List.of(cross),Optional.empty()).group().isEmpty());
@@ -40,7 +42,10 @@ class RuntimeMetricsTest {
     }
     @Test void summaryUsesSameSnapshotAndPausedChangesDoNotRewriteIt() throws Exception {
         for(boolean coupled:new boolean[]{true,false}) {
-            var session=session(coupled,false);var before=session.snapshot();var s=before.operationalSnapshot();
+            var session=session(coupled,false);
+            for (var unit:session.coolingUnits()) session.setCoolingEnabled(unit.code(),true);
+            session.step();
+            var before=session.snapshot();var s=before.operationalSnapshot();
             var text=RuntimeMetrics.summary(s);
             assertTrue(text.left().contains(String.format(Locale.ROOT,"%.1f°C",s.averageOnlineServerTemperatureCelsius())));
             assertTrue(text.right().contains(String.format(Locale.ROOT,"%.2f kW",s.currentItPowerWatts()/1000)));
@@ -48,10 +53,15 @@ class RuntimeMetricsTest {
             s.facilityEnergySnapshot().ifPresent(f -> { assertEquals(f.coolingPowerWatts(),s.coolingPowerWatts()); assertEquals(f.totalFacilityPowerWatts(),s.totalFacilityPowerWatts()); });
             var aisle=session.definition().layout().hotAisles().getFirst();
             var group=RuntimeMetrics.aisle(aisle,session.coolingZones(),before.coolingSnapshot());
-            var unit=session.coolingUnits().getFirst();session.setCoolingEnabled(unit.code(),!session.coolingEnabled(unit.code()));
+            for (var unit:session.coolingUnits()) session.setCoolingEnabled(unit.code(),false);
             assertSame(before,session.snapshot());assertEquals(text,RuntimeMetrics.summary(session.snapshot().operationalSnapshot()));
             assertEquals(group,RuntimeMetrics.aisle(aisle,session.coolingZones(),session.snapshot().coolingSnapshot()));
             session.step();assertEquals(before.tickIndex()+1,session.snapshot().tickIndex());
+            var next=RuntimeMetrics.aisle(aisle,session.coolingZones(),session.snapshot().coolingSnapshot()).group().orElseThrow();
+            assertEquals(session.snapshot().coolingSnapshot().orElseThrow().tickIndex(),next.tickIndex());
+            assertTrue(group.group().orElseThrow().supplyAirflowCubicMetersPerSecond()>0);
+            assertEquals(0.0,next.supplyAirflowCubicMetersPerSecond());
+            assertEquals(0.0,next.exhaustAirflowCubicMetersPerSecond());
         }
     }
     @Test void noOnlineNoRoomAirAndZeroItDoNotInventValues() throws Exception {
@@ -59,7 +69,7 @@ class RuntimeMetricsTest {
         assertFalse(snapshot.hasOnlineServers()); assertFalse(snapshot.hasPue());
         var summary=RuntimeMetrics.summary(snapshot);
         assertTrue(summary.left().contains("Aire sala: --"));assertTrue(summary.left().contains("Servidores online: --"));
-        assertTrue(summary.left().contains("Rack más caliente: --"));assertTrue(summary.right().contains("IT online: --"));
+        assertTrue(summary.left().contains("Rack más caliente:\n--"));assertTrue(summary.right().contains("IT online: --"));
         assertTrue(summary.right().contains("PUE: --"));
         assertTrue(RuntimeMetrics.summary(null).left().contains("no disponibles"));
     }
@@ -85,7 +95,7 @@ class RuntimeMetricsTest {
         var metricField=RuntimeView.class.getDeclaredField("aisleMetrics");metricField.setAccessible(true);
         var label=(com.cpz.processing.controls.controls.label.Label)metricField.get(view);
         var before=session.snapshot();var b=mode.getTooltipBounds();click(view,b.centerX(),b.centerY());
-        assertTrue(label.getText().contains("Cobertura"));assertTrue(label.getText().contains("SUPPLY/EXHAUST: --"));
+        assertTrue(label.getText().contains("Cobertura"));assertTrue(label.getText().contains("SUPPLY "));assertTrue(label.getText().contains("EXHAUST "));
         assertEquals(target,room.selected());assertSame(before,session.snapshot());
         click(view,b.centerX(),b.centerY());assertTrue(label.getText().contains("Media online"));assertSame(before,session.snapshot());
     }
