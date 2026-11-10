@@ -1,5 +1,15 @@
 {
   "placement": "bottom-right",
+  "position": {
+    "x": {
+      "mode": "relative",
+      "value": 0.804932552083
+    },
+    "y": {
+      "mode": "relative",
+      "value": 0.70041490433
+    }
+  },
   "maxVisible": 4,
   "defaultDurationMillis": 3000,
   "severityDurations": {
@@ -12,16 +22,43 @@
     "backgroundColor": "#202020",
     "textColor": "#FFFFFF",
     "borderColor": "#404040",
-    "strokeWeight": 1.0,
-    "cornerRadius": 8.0,
+    "strokeWeight": {
+      "mode": "relative",
+      "value": 0.00100704934
+    },
+    "cornerRadius": {
+      "mode": "relative",
+      "value": 0.00402819738167
+    },
     "font": "data/font/JetBrainsMono.ttf",
-    "textSize": 14.0,
-    "textPadding": 12.0,
-    "gap": 8.0,
-    "margin": 24.0,
-    "width": 320.0,
-    "minHeight": 48.0,
-    "accentWidth": 5.0,
+    "textSize": {
+      "mode": "relative",
+      "value": 0.01057401813
+    },
+    "textPadding": {
+      "mode": "relative",
+      "value": 0.00604229607
+    },
+    "gap": {
+      "mode": "relative",
+      "value": 0.00402819738
+    },
+    "margin":{
+      "mode": "relative",
+      "value": 0.012084592145
+    },
+    "width": {
+      "mode": "relative",
+      "value": 0.28808408862
+    },
+    "minHeight": {
+      "mode": "relative",
+      "value": 0.0530855991944
+    },
+    "accentWidth": {
+      "mode": "relative",
+      "value": 0.00503524672709
+    },
     "infoAccentColor": "#3B82F6",
     "successAccentColor": "#22C55E",
     "warningAccentColor": "#F59E0B",
