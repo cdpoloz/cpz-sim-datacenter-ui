@@ -77,6 +77,7 @@ public final class RuntimeSession {
     }
     public void step() { engine.step(); snapshot = recorder.record(engine.currentTick()); }
     public DatacenterSimulationStepSnapshot snapshot() { return snapshot; }
+    List<DatacenterSimulationStepSnapshot> recentHistory(int count) { return recorder.history().latest(count); }
     public TemperatureRange range() { return range; }
     public String formatTemperature(double value) { return String.format(Locale.ROOT, temperatureFormat, value); }
     Map<com.cpz.sim.datacenter.model.ServerLocation, com.cpz.sim.datacenter.model.ServerRole> serverRoles() { return serverRoles; }
