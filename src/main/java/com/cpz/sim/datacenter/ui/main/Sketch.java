@@ -151,7 +151,7 @@ public class Sketch extends PApplet {
         uiUpdateCoordinator.updateSnapshotsIfNeeded();
         coolingToggleManager.initialize();
         uiStateInitializer.initialize(uiStateContainer.minServerTemperatureCelsius(), uiStateContainer.maxServerTemperatureCelsius(), uiFormatContainer.simpleTemperature());
-        notifications.show("Prueba de alerta: C01 / R01 / S01", NotificationSeverity.WARNING, 30_000L);
+        //notifications.show("Prueba de alerta: C01 / R01 / S01", NotificationSeverity.SUCCESS, 30_000L);
         LOG.info("Fin completo de setup");
     }
 
