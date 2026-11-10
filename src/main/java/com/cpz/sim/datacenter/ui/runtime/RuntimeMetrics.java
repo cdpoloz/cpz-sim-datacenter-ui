@@ -21,7 +21,8 @@ final class RuntimeMetrics {
         var group = data.group().orElseThrow();
         return "Cobertura " + percent(group.thermalCoverage()) + "  ΔT " + number(group.airTemperatureRiseCelsius(), "%.1f°C") + " (tick)"
                 + "\nRecirculación " + percent(group.averageRecirculationFraction()) + (data.shared() ? " · zona compartida" : "")
-                + "\nSUPPLY/EXHAUST: -- m³/s (sin API)";
+                + "\nSUPPLY " + number(group.supplyAirflowCubicMetersPerSecond(), "%.2f")
+                + " / EXHAUST " + number(group.exhaustAirflowCubicMetersPerSecond(), "%.2f") + " m³/s";
     }
     record Summary(String left, String right) { }
     static Summary summary(DatacenterOperationalSnapshot s) {
@@ -31,7 +32,7 @@ final class RuntimeMetrics {
                 ? s.hottestRackLocation().map(r -> r.column()+"/"+r.rackCode().value()).orElse("--") + "  " + number(s.hottestRackAverageTemperatureCelsius(), "%.1f°C") : "--";
         String left = "Último tick\nAire sala: " + number(s.roomAirTemperatureCelsius(), "%.1f°C")
                 + "\nServidores online: " + (online ? number(s.averageOnlineServerTemperatureCelsius(), "%.1f°C") : "--")
-                + "\nRack más caliente: " + hottest;
+                + "\nRack más caliente:\n" + hottest;
         String right = "IT online: " + (online ? percent(s.totalItUtilization()) : "--")
                 + "\nIT: " + kw(s.currentItPowerWatts())
                 + "\nRefrigeración: " + (s.hasCoolingData() ? kw(s.coolingPowerWatts()) : "--")
