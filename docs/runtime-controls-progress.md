@@ -5,7 +5,7 @@
 3. **Room simulation and state:** implemented and visually accepted by Carlos.
 4. **Selected aisle:** implemented and visually accepted by Carlos.
 5. **Selected rack:** implemented and visually accepted by Carlos, with minor visual follow-ups.
-6. **Cooling and functional equivalence**, including summary, trends and alerts: in progress (6a accepted; 6b partial, visual acceptance pending).
+6. **Cooling and functional equivalence**, including summary, trends and alerts: in progress (6a accepted; 6b visually checked; 6c trends visually approved).
 7. **Adaptation to other layouts:** pending.
 
 ## Hito 1
@@ -253,8 +253,8 @@ does not expose this API and must be updated locally before building.
 Integration verification on 10 November: `mvn test` passed 67 tests with JDK
 27/release 26. Tests check the aggregate's source tick and formatted values,
 and verify that switching units off while paused preserves the snapshot until
-the next step in both coupled and legacy paths. Visual verification remains
-pending.
+the next step in both coupled and legacy paths. Carlos subsequently checked the
+airflow, summary and footer visually.
 
 The global summary shows room air separately from the online-server mean,
 the hottest rack by its online average, IT online utilization, IT power,
@@ -269,16 +269,16 @@ backend group and snapshot fields, shared/deduplicated zones, missing data,
 zero IT, coupled and legacy pause behavior, tab input and resize bounds.
 IntelliJ MCP reported no errors in affected runtime files. RUNTIME and DEMO
 started until their respective timeout; neither window was visually observed.
-Carlos's visual acceptance of the available 6b metrics remains pending. No new
-assets were used. Hito 6 remains open for visual acceptance, trends, alerts and
+Carlos subsequently checked the 6b airflow, summary and footer visually. No new
+assets were used. Hito 6 remains open for alerts and
 equivalence review.
 
 On 10 November the unavailable airflow label was changed to user-facing
 wording, and the hottest rack location and temperature were moved to their own
 line to give the summary columns more space. `mvn test` passed all 67 tests
 with JDK 27 and release 26; IntelliJ reported no errors in the changed files.
-The new layout still needs Carlos's visual check, including resize. The
-thermal-metric interpretation review remains open.
+Carlos subsequently checked the summary; the window is fixed-size by current
+decision. The thermal-metric interpretation review remains open.
 The current backend source's coupled mixed-room projection assigns the same
 room temperature to zone inlet and exhaust, so its ΔT is zero by construction;
 its recirculation is an airflow-balance target and coverage uses instantaneous
@@ -286,6 +286,27 @@ removal divided by zone heat. The legacy path instead smooths recirculation and
 calculates zone temperatures. This source inspection does not establish that the
 installed binary was built from the inspected backend commit or validate a
 particular screenshot; confirm against the active artifact before conclusions.
+
+## Hito 6c — Runtime trends
+
+The trends panel cycles through online server mean, hottest rack online mean
+and room air (°C); selected-aisle online server mean (°C); online IT utilization
+(%); and IT and facility electrical power (kW). These are fields of the recorded
+operational snapshots, with availability checked for each population. The
+horizontal axis uses recorded tick indices; the current step and initial step
+are recorded once each. Selection and cooling controls do not record steps.
+The graph projects at most the latest 120 snapshots and rebuilds on tick,
+selection or view changes. The recorder's existing history is unbounded; no
+additional unbounded history is introduced. Missing values break the lines.
+
+The classic HVAC percentage derives from UI sums, and the selected rack's
+hottest server is also computed in the classic UI; neither has an equivalent
+aggregate in the current operational rack snapshot, so neither is substituted
+or recalculated here. The shared fixed-size window decision remains in force.
+Oracle JDK 27/release 26: `mvn test` passed 72 tests, and IntelliJ reported no
+errors in the modified runtime classes. Carlos visually approved all four trend
+views. Alerts, equivalence and the ΔT interpretation review remain open;
+hito 6 is not complete. No new assets were added.
 
 ## Pending visual and technical items
 
