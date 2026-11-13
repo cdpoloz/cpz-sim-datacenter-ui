@@ -10,6 +10,7 @@ import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 import com.cpz.sim.datacenter.ui.ui.UiFormatContainer;
+import com.cpz.sim.datacenter.ui.ui.HealthPresentation;
 import com.cpz.sim.datacenter.ui.ui.selection.SelectionManager;
 import com.cpz.utils.color.Colors;
 import processing.core.PApplet;
@@ -267,27 +268,7 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
     }
 
     private String displayedRoomSystemStatus() {
-        if (simulationContainer == null || simulationContainer.operationalSnapshot() == null) return "NO DATA";
-        int onlineServerCount = simulationContainer
-                .operationalSnapshot()
-                .racks()
-                .values()
-                .stream()
-                .mapToInt(RackOperationalSnapshot::onlineServerCount)
-                .sum();
-        if (onlineServerCount == 0) return "IDLE";
-        double averageTemperature = displayedRoomAverageTemperatureCelsius();
-        double maximumRackTemperature = displayedRoomMaximumRackTemperatureCelsius();
-        double itLoad = displayedRoomAverageItLoadPercentage();
-        double hvacLoad = displayedRoomHvacLoadPercentage();
-        double pue = displayedRoomPue();
-        if (averageTemperature > 62.0 || maximumRackTemperature > 72.0 || itLoad > 97.0 || hvacLoad > 98.0 || pue > 2.20)
-            return "CRITICAL";
-        if (averageTemperature > 55.0 || maximumRackTemperature > 66.0 || itLoad > 90.0 || hvacLoad > 90.0 || pue > 1.80)
-            return "WARNING";
-        if (averageTemperature > 48.0 || maximumRackTemperature > 60.0 || itLoad > 80.0 || hvacLoad > 75.0 || pue > 1.50)
-            return "WATCH";
-        return "NORMAL";
+        return HealthPresentation.systemStatus(simulationContainer == null ? null : simulationContainer.healthSnapshot());
     }
 
     private double displayedRoomAverageTemperatureCelsius() {
