@@ -20,9 +20,9 @@ temperature color gradient is only a display scale. See [Health and alerts](docs
 
 Each frame follows this order:
 
-1. Update the header.
-2. Poll and, when due, advance the simulation clock.
-3. Refresh backend snapshots when a simulation step occurred.
+1. Poll and, when due, advance the simulation clock.
+2. Refresh backend snapshots when a simulation step occurred.
+3. Expand the temperature color scale and update its legend; update the header and alerts from the current snapshot.
 4. Refresh controls when snapshots or user selection changed.
 5. Draw static background layers.
 6. Draw controls.

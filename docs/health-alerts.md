@@ -34,7 +34,7 @@ fully offline racks keep their existing presentation and cannot show a critical
 thermal marker.
 
 The average-online-temperature gradient remains a continuous display scale.
-Reaching its upper bound (74 °C in the demo configuration) can saturate its
+Its initial upper bound (74 °C in the demo configuration) expands to contain observed server temperatures. Reaching the current upper bound can saturate its
 fuchsia color, but no longer activates the critical/hotspot flag. The gradient
 bound is derived for visualization and is not a health threshold.
 
@@ -68,7 +68,7 @@ messages. Changing selection, drawing frames and operating cooling controls in
 pause cannot reevaluate health; the next simulation tick updates the snapshot.
 Already displayed notifications expire according to real-time style durations,
 including while simulation is paused. The message timestamp uses simulated
-elapsed time in `00d hh:mm` format.
+elapsed time in `00d hh:mm` format, using the same formatter and health snapshot as the header after snapshot refresh. Existing notifications keep their event time.
 
 The manager still has the configured visible limit (currently three) and no
 backlog. Notifications report transitions, not a persistent active-alert list:

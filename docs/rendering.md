@@ -4,7 +4,7 @@ Rendering is performed every Processing frame after all required state updates. 
 
 ## Update before draw
 
-`Sketch.draw()` first updates the header, polls the simulation clock, refreshes snapshots if invalidated, and refreshes UI controls if invalidated. This guarantees that one frame never mixes a newly advanced engine with old panel controls.
+`Sketch.draw()` polls the simulation clock, refreshes snapshots if invalidated, expands the shared temperature color scale, and then updates the header, notifications, and invalidated panel controls. The header and notification timestamps both format `healthSnapshot.elapsedSeconds()` as `00d hh:mm`; neither subtracts a tick nor assumes a one-minute tick. This guarantees that one frame never mixes a newly advanced engine with old panel controls.
 
 Snapshot capture order is energy, temperature, health, then the combined operational snapshot. The combined snapshot depends on the first three. Panel update order is selected rack, selected aisle, then room. The selected aisle update also supplies the temperature list used by the gradient renderer later in the same frame.
 
@@ -26,7 +26,7 @@ Moving the gradient before controls or moving the static overlay earlier would c
 
 ## Temperature colors
 
-`TemperatureRangeCalculator` uses the backend ambient temperature as the minimum. For each server, it estimates a maximum equilibrium temperature as ambient plus maximum power divided by heat dissipation. A server-specific heat-dissipation value wins; otherwise the global temperature-system value is used. The highest estimate is rounded up and becomes the scale maximum.
+`TemperatureRangeCalculator` uses the backend ambient temperature as the minimum. For each server, it estimates a maximum equilibrium temperature as ambient plus maximum power divided by heat dissipation. A server-specific heat-dissipation value wins; otherwise the global temperature-system value is used. The highest estimate is rounded up and becomes the initial scale maximum. This estimate is not a physical maximum: room-air heating and temperature-driven input can exceed it. `TemperatureScaleUpdater` expands the bounds outward to multiples of 10 °C when any server temperature in the latest snapshot exceeds the current bounds. Bounds do not shrink during the session, so cooling does not continually change the color meaning. The six room legend labels and all panel color mappings use the expanded bounds in the same frame; health thresholds and hysteresis are unaffected.
 
 Rack, slot, aisle, maximum-server, and gradient colors map temperatures into the same interval, clamp the factor to `[0, 1]`, and interpolate between `COLOR_MIN_TEMPERATURE` and `COLOR_MAX_TEMPERATURE`. The room aisle fill uses the midpoint of average and maximum aisle temperature, plus temperature-derived alpha, to expose both typical load and hot spots.
 

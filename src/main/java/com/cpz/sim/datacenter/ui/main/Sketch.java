@@ -47,6 +47,7 @@ public class Sketch extends PApplet {
     private UiStateContainer uiStateContainer;
     private SimulationManager simulationManager;
     private HeaderUpdater headerUpdater;
+    private TemperatureScaleUpdater temperatureScaleUpdater;
     private UiUpdateCoordinator uiUpdateCoordinator;
     private UiInteractionController uiInteractionController;
     private SelectedHotAisleTemperatureGradientRenderer selectedHotAisleTemperatureGradientRenderer;
@@ -154,6 +155,8 @@ public class Sketch extends PApplet {
         uiUpdateCoordinator.updateSnapshotsIfNeeded();
         coolingToggleManager.initialize();
         uiStateInitializer.initialize(uiStateContainer.minServerTemperatureCelsius(), uiStateContainer.maxServerTemperatureCelsius(), uiFormatContainer.simpleTemperature());
+        temperatureScaleUpdater = new TemperatureScaleUpdater(uiStateContainer, uiComponentContainer, uiFormatContainer.simpleTemperature());
+        temperatureScaleUpdater.update(simulationContainer.temperatureSnapshot());
         //notifications.show("Prueba de alerta: C01 / R01 / S01", NotificationSeverity.SUCCESS, 30_000L);
         simulationAlertNotifier.update(simulationContainer.healthSnapshot());
         LOG.info("Fin completo de setup");
@@ -165,9 +168,10 @@ public class Sketch extends PApplet {
     @Override
     public void draw() {
         // Update order keeps controls aligned with the engine state advanced in this frame.
-        headerUpdater.update();
         uiUpdateCoordinator.updateClock();
         uiUpdateCoordinator.updateSnapshotsIfNeeded();
+        temperatureScaleUpdater.update(simulationContainer.temperatureSnapshot());
+        headerUpdater.update();
         simulationAlertNotifier.update(simulationContainer.healthSnapshot());
         uiUpdateCoordinator.updateControlsIfNeeded();
         // Keep an open tooltip current even while the pointer is stationary.
