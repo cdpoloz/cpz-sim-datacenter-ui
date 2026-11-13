@@ -32,6 +32,13 @@ Rack, slot, aisle, maximum-server, and gradient colors map temperatures into the
 
 Offline/empty/hotspot rack conditions can override the ordinary interpolated rack color. Labels additionally use health thresholds to distinguish normal, warning, and alert temperatures.
 
+The room hotspot override is driven by any online server in the rack whose
+health snapshot has `thermalAlertLevel() == CRITICAL`, not by the average
+temperature exceeding the color-scale maximum. The backend's evaluated level
+also drives notification severity and Global Overview SYSTEM STATUS; see
+[Health and alerts](health-alerts.md). Label color scales remain presentation
+details and do not evaluate critical health.
+
 ## Selected-aisle gradient
 
 The selected aisle updater calculates one representative temperature per rack row. For shared aisles, each row value is the average of the representative temperatures for the same rack code in both columns. Wall aisles contain one column.

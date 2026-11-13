@@ -13,10 +13,12 @@ import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 import com.cpz.sim.datacenter.ui.ui.UiFormatContainer;
+import com.cpz.sim.datacenter.ui.ui.HealthPresentation;
 import com.cpz.utils.color.Colors;
 import processing.core.PApplet;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_EMPTY_RACK;
 import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_HOTSPOT_RACK;
@@ -66,8 +68,9 @@ public class RoomPanelUpdater extends ApplicationComponent {
         updateRoomHotAisleIndicator("HA04", "indRoomHotAisleC06-C07", minServerTemperatureCelsius, maxServerTemperatureCelsius);
         updateRoomHotAisleIndicator("HA05", "indRoomHotAisleC08", minServerTemperatureCelsius, maxServerTemperatureCelsius);
         updateRoomAirTemperatureLabel();
+        Set<RackLocation> criticalRacks = HealthPresentation.criticalRacks(simulationContainer.healthSnapshot());
         for (Rack rack : simulationContainer.datacenter().getRacks())
-            updateRackIndicator(rack, minServerTemperatureCelsius, maxServerTemperatureCelsius);
+            updateRackIndicator(rack, minServerTemperatureCelsius, maxServerTemperatureCelsius, criticalRacks);
     }
 
     private void updateRoomAirTemperatureLabel() {
@@ -88,7 +91,7 @@ public class RoomPanelUpdater extends ApplicationComponent {
         return Colors.lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, factor);
     }
 
-    private void updateRackIndicator(Rack rack, float minServerTemperatureCelsius, float maxServerTemperatureCelsius) {
+    private void updateRackIndicator(Rack rack, float minServerTemperatureCelsius, float maxServerTemperatureCelsius, Set<RackLocation> criticalRacks) {
         RackLocation location = rack.getLocation();
         String rackIndicatorCode = "indRack" + rack.getColumn() + rack.getRow();
         Indicator rackIndicator = uiComponentContainer.indicatorsRack().get(rackIndicatorCode);
@@ -99,7 +102,8 @@ public class RoomPanelUpdater extends ApplicationComponent {
         boolean rackOffline = rackSnapshot.hasInstalledServers() && !rackSnapshot.hasOnlineServers();
         boolean aiRack = rackServers.stream().anyMatch(server -> server.getRole() == ServerRole.AI);
         float averageTemperature = (float) rackSnapshot.averageOnlineTemperatureCelsius();
-        boolean rackHotspot = averageTemperature > maxServerTemperatureCelsius;
+        // The gradient bound is a display scale, not a health threshold.
+        boolean rackHotspot = !emptyRack && !rackOffline && criticalRacks.contains(location);
         int rackColor;
         if (emptyRack) rackColor = COLOR_EMPTY_RACK;
         else if (rackOffline) rackColor = COLOR_MIN_TEMPERATURE;

@@ -1,6 +1,7 @@
 package com.cpz.sim.datacenter.ui.ui;
 
 import com.cpz.processing.controls.core.overlay.notification.NotificationManager;
+import com.cpz.processing.controls.core.overlay.notification.NotificationSeverity;
 import com.cpz.sim.datacenter.health.ServerAlertReason;
 import com.cpz.sim.datacenter.health.ThermalAlertLevel;
 import com.cpz.sim.datacenter.model.HardwareStatus;
@@ -14,18 +15,28 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.function.BiConsumer;
 
 /**
  * @author CPZ
  */
 public final class SimulationAlertNotifier {
 
-    private final NotificationManager notifications;
+    private final BiConsumer<NotificationSeverity, String> notificationSink;
     private Map<ServerLocation, AlertState> previousStates = new HashMap<>();
     private long lastTick = -1L;
 
     public SimulationAlertNotifier(NotificationManager notifications) {
-        this.notifications = Objects.requireNonNull(notifications);
+        this(sinkFor(notifications));
+    }
+
+    SimulationAlertNotifier(BiConsumer<NotificationSeverity, String> notificationSink) {
+        this.notificationSink = Objects.requireNonNull(notificationSink);
+    }
+
+    private static BiConsumer<NotificationSeverity, String> sinkFor(NotificationManager notifications) {
+        Objects.requireNonNull(notifications);
+        return (severity, message) -> notifications.show(message, severity);
     }
 
     public void update(HealthSnapshot snapshot) {
@@ -56,7 +67,7 @@ public final class SimulationAlertNotifier {
                             simulatedTime
                     );
             if (current.reasons().isEmpty()) {
-                notifications.success(prefix + "\nAlertas resueltas");
+                notificationSink.accept(HealthPresentation.notificationSeverity(server), prefix + "\nAlertas resueltas");
                 continue;
             }
             String reasons = current.reasons().stream()
@@ -64,8 +75,7 @@ public final class SimulationAlertNotifier {
                     .map(reason -> reasonText(reason, current.thermalLevel()))
                     .collect(Collectors.joining(", "));
             String message = prefix + "\n" + reasons;
-            if (current.thermalLevel() == ThermalAlertLevel.CRITICAL) notifications.error(message);
-            else notifications.warning(message);
+            notificationSink.accept(HealthPresentation.notificationSeverity(server), message);
         }
         previousStates = currentStates;
         lastTick = snapshot.tickIndex();
