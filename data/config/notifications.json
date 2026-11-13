@@ -10,7 +10,7 @@
       "value": 0.70041490433
     }
   },
-  "maxVisible": 4,
+  "maxVisible": 3,
   "defaultDurationMillis": 3000,
   "severityDurations": {
     "info": 3000,
