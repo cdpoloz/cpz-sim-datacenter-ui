@@ -11,6 +11,7 @@
     }
   },
   "maxVisible": 3,
+  "prioritizeSeverity": true,
   "defaultDurationMillis": 3000,
   "severityDurations": {
     "info": 3000,
