@@ -43,7 +43,7 @@ public final class SimulationAlertNotifier {
         if (snapshot == null || snapshot.tickIndex() == lastTick) return;
         boolean baseline = lastTick < 0L || snapshot.tickIndex() < lastTick;
         Map<ServerLocation, AlertState> currentStates = new HashMap<>();
-        String simulatedTime = formatSimulatedTime(snapshot.elapsedSeconds());
+        String simulatedTime = SimulationTimeFormat.daysHoursMinutes(snapshot.elapsedSeconds());
         var orderedServers = snapshot.servers().stream()
                 .sorted(Comparator.comparing(ServerHealthSnapshot::column)
                         .thenComparing(server -> server.rackCode().value())
@@ -85,14 +85,6 @@ public final class SimulationAlertNotifier {
         }
         previousStates = currentStates;
         lastTick = snapshot.tickIndex();
-    }
-
-    private static String formatSimulatedTime(double elapsedSeconds) {
-        long totalMinutes = (long) (elapsedSeconds / 60.0);
-        long days = totalMinutes / 1440;
-        long hours = (totalMinutes % 1440) / 60;
-        long minutes = totalMinutes % 60;
-        return "%02dd %02d:%02d".formatted(days, hours, minutes);
     }
 
     private static String reasonText(ServerAlertReason reason, ThermalAlertLevel thermalLevel) {
