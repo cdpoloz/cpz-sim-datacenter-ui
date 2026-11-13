@@ -59,6 +59,8 @@ public class Sketch extends PApplet {
     private TooltipOverlayController tooltips;
     private SelectedRackCoolingControls rackCoolingControls;
     private NotificationManager notifications;
+    private SimulationContainer simulationContainer;
+    private SimulationAlertNotifier simulationAlertNotifier;
 
     /**
      * Configures the Processing surface before it is created.
@@ -114,7 +116,8 @@ public class Sketch extends PApplet {
         ResourceManager resourceManager = new ResourceManager(context, resourceContainer);
         resourceManager.initialize();
         // These setup locals remain reachable through the runtime coordinators that own them.
-        SimulationContainer simulationContainer = new SimulationContainer();
+        simulationContainer = new SimulationContainer();
+        simulationAlertNotifier = new SimulationAlertNotifier(notifications);
         simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         CoolingToggleManager coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
         rackCoolingControls = new SelectedRackCoolingControls(simulationContainer, uiComponentContainer);
@@ -152,6 +155,7 @@ public class Sketch extends PApplet {
         coolingToggleManager.initialize();
         uiStateInitializer.initialize(uiStateContainer.minServerTemperatureCelsius(), uiStateContainer.maxServerTemperatureCelsius(), uiFormatContainer.simpleTemperature());
         //notifications.show("Prueba de alerta: C01 / R01 / S01", NotificationSeverity.SUCCESS, 30_000L);
+        simulationAlertNotifier.update(simulationContainer.healthSnapshot());
         LOG.info("Fin completo de setup");
     }
 
@@ -164,6 +168,7 @@ public class Sketch extends PApplet {
         headerUpdater.update();
         uiUpdateCoordinator.updateClock();
         uiUpdateCoordinator.updateSnapshotsIfNeeded();
+        simulationAlertNotifier.update(simulationContainer.healthSnapshot());
         uiUpdateCoordinator.updateControlsIfNeeded();
         // Keep an open tooltip current even while the pointer is stationary.
         rackCoolingControls.refreshTooltipLayout();
