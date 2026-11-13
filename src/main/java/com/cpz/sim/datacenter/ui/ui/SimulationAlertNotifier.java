@@ -71,7 +71,13 @@ public final class SimulationAlertNotifier {
                 continue;
             }
             String reasons = current.reasons().stream()
-                    .sorted()
+                    .sorted(Comparator
+                            .comparingInt((ServerAlertReason reason) -> switch (reason) {
+                                case HIGH_TEMPERATURE -> 0;
+                                case HIGH_UTILIZATION -> 1;
+                                default -> 2;
+                            })
+                            .thenComparingInt(ServerAlertReason::ordinal))
                     .map(reason -> reasonText(reason, current.thermalLevel()))
                     .collect(Collectors.joining(", "));
             String message = prefix + "\n" + reasons;
