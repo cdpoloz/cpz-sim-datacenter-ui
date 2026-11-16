@@ -37,6 +37,20 @@ public class HeaderUpdater extends ApplicationComponent {
         updateRoomLabel();
         updateDateTime();
         updateSimulationTimeAndStatus();
+        updateServerCounts();
+    }
+
+    private void updateServerCounts() {
+        var snapshot = simulationContainer.operationalSnapshot();
+        updateCount("lblRoomTotalServersValue", snapshot == null ? null : snapshot.racks().values().stream()
+                .mapToInt(com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot::installedServerCount).sum());
+        updateCount("lblRoomOnlineServersValue", snapshot == null ? null : snapshot.racks().values().stream()
+                .mapToInt(com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot::onlineServerCount).sum());
+    }
+
+    private void updateCount(String code, Integer count) {
+        var label = uiComponentContainer.labels().get(code);
+        if (label != null) label.setText(count == null ? "--" : count.toString());
     }
 
     private void updateRoomLabel() {

@@ -13,6 +13,8 @@ import com.cpz.sim.datacenter.ui.app.ApplicationComponent;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
+import com.cpz.sim.datacenter.ui.ui.MetricPresentation;
+import com.cpz.sim.datacenter.ui.ui.HealthPresentation;
 import com.cpz.sim.datacenter.ui.ui.selection.SelectionManager;
 import com.cpz.utils.color.Colors;
 
@@ -164,17 +166,18 @@ public class SelectedRackPanelUpdater extends ApplicationComponent {
         );
         slotTemperatureLabel.setText(String.format(temperatureFormat, temperature.temperatureCelsius()));
         slotLoadLabel.setText(String.format(percentageFormat, energy.utilization() * 100));
-        slotPowerLabel.setText(String.format(powerKwFormat, energy.currentPowerWatts() / 1000));
+        slotPowerLabel.setText(MetricPresentation.power(energy.currentPowerWatts(), powerKwFormat));
         HardwareStatus status = health.status();
+        boolean thermalShutdown = HealthPresentation.isThermalShutdown(health);
         okSlotStatusIndicator.setOn(status == HardwareStatus.OK);
-        alertSlotStatusIndicator.setOn(status == HardwareStatus.ALERT);
-        alertIndicator.setOn(status == HardwareStatus.ALERT);
+        alertSlotStatusIndicator.setOn(status == HardwareStatus.ALERT || thermalShutdown);
+        alertIndicator.setOn(status == HardwareStatus.ALERT || thermalShutdown);
         boolean loadAlert = health.hasAlertReason(ServerAlertReason.HIGH_UTILIZATION);
         slotLoadLabel.setTextColor(loadAlert ? COLOR_MAGENTA_LABEL : COLOR_BLUE_LABEL);
-        boolean temperatureAlert = health.hasAlertReason(ServerAlertReason.HIGH_TEMPERATURE);
+        boolean temperatureAlert = thermalShutdown || health.hasAlertReason(ServerAlertReason.HIGH_TEMPERATURE);
         updateTemperatureLabelColor(temperatureAlert, slotTemperatureLabel, temperature.temperatureCelsius());
         emptySlotIndicator.setOn(false);
-        indSlotOffline.setOn(status == HardwareStatus.OFFLINE);
+        indSlotOffline.setOn(status == HardwareStatus.OFFLINE && !thermalShutdown);
         boolean aiServer = installedServer.orElseThrow().getRole() == ServerRole.AI;
         aiSlotIndicator1.setOn(aiServer);
         aiSlotIndicator2.setOn(aiServer);
@@ -200,14 +203,11 @@ public class SelectedRackPanelUpdater extends ApplicationComponent {
         uiComponentContainer
                 .labels()
                 .get("lblRackCurrentPowerValue")
-                .setText(String.format(powerKwFormat, rackSnapshot.currentPowerWatts() / 1000));
+                .setText(MetricPresentation.power(rackSnapshot.currentPowerWatts(), powerKwFormat));
         String key = "indSelectedRackPowerBar";
-        int iMax = (int) sketch().map(
-                (float) rackSnapshot.currentPowerWatts(),
-                (float) rackSnapshot.idlePowerWatts(),
-                (float) rackSnapshot.maxPowerWatts(),
-                1,
-                6);
+        int iMax = rackSnapshot.maxPowerWatts() > 0
+                ? (int) sketch().map((float) rackSnapshot.currentPowerWatts(),
+                        0, (float) rackSnapshot.maxPowerWatts(), 0, 6) : 0;
         for (int i = 0; i < 6; i++)
             uiComponentContainer.indicators().get(key + (i + 1)).setOn(i < iMax);
     }

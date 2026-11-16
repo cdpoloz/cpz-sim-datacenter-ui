@@ -103,11 +103,11 @@ public class RoomPanelUpdater extends ApplicationComponent {
         boolean aiRack = rackServers.stream().anyMatch(server -> server.getRole() == ServerRole.AI);
         float averageTemperature = (float) rackSnapshot.averageOnlineTemperatureCelsius();
         // The gradient bound is a display scale, not a health threshold.
-        boolean rackHotspot = !emptyRack && !rackOffline && criticalRacks.contains(location);
+        boolean rackHotspot = !emptyRack && criticalRacks.contains(location);
         int rackColor;
         if (emptyRack) rackColor = COLOR_EMPTY_RACK;
-        else if (rackOffline) rackColor = COLOR_MIN_TEMPERATURE;
         else if (rackHotspot) rackColor = COLOR_HOTSPOT_RACK;
+        else if (rackOffline) rackColor = COLOR_MIN_TEMPERATURE;
         else rackColor = calculateRackColor(averageTemperature, minServerTemperatureCelsius, maxServerTemperatureCelsius);
         rackIndicator.setOnColor(rackColor);
         updateRackConditionIndicators(rackIndicatorCode, rackOffline, emptyRack, rackHotspot, aiRack);

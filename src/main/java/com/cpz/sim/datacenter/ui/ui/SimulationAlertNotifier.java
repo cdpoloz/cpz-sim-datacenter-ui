@@ -4,7 +4,7 @@ import com.cpz.processing.controls.core.overlay.notification.NotificationManager
 import com.cpz.processing.controls.core.overlay.notification.NotificationSeverity;
 import com.cpz.sim.datacenter.health.ServerAlertReason;
 import com.cpz.sim.datacenter.health.ThermalAlertLevel;
-import com.cpz.sim.datacenter.model.HardwareStatus;
+import com.cpz.sim.datacenter.model.ThermalProtectionState;
 import com.cpz.sim.datacenter.model.ServerLocation;
 import com.cpz.sim.datacenter.snapshot.HealthSnapshot;
 import com.cpz.sim.datacenter.snapshot.ServerHealthSnapshot;
@@ -19,7 +19,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 /**
- * Reconciles backend health into one persistent notification per online alerted server.
+ * Reconciles backend health into one persistent notification per server with an active health or protection condition.
  * @author CPZ
  */
 public final class SimulationAlertNotifier {
@@ -59,9 +59,9 @@ public final class SimulationAlertNotifier {
                 .toList();
 
         for (ServerHealthSnapshot server : orderedServers) {
-            if (server.status() == HardwareStatus.OFFLINE || !server.hasAlerts()) continue;
+            if (!HealthPresentation.hasActiveCondition(server)) continue;
             ServerLocation location = server.location();
-            AlertState current = new AlertState(server.alertReasons(), server.thermalAlertLevel());
+            AlertState current = new AlertState(server.alertReasons(), server.thermalAlertLevel(), server.thermalProtectionState());
             ActiveAlert previous = activeAlerts.get(location);
             if (previous != null && current.equals(previous.state())) {
                 currentAlerts.put(location, previous);
@@ -81,10 +81,15 @@ public final class SimulationAlertNotifier {
                             .thenComparingInt(ServerAlertReason::ordinal))
                     .map(reason -> reasonText(reason, current.thermalLevel()))
                     .collect(Collectors.joining(", "));
+            if (current.protectionState() == ThermalProtectionState.SHUTDOWN) {
+                reasons = "Thermal protection shutdown";
+            } else if (current.protectionState() == ThermalProtectionState.THROTTLED) {
+                reasons = reasons.isEmpty() ? "Thermal throttling" : reasons + ", Thermal throttling";
+            }
             String id = persistentSink.apply(HealthPresentation.notificationSeverity(server), prefix + "\n" + reasons);
             currentAlerts.put(location, new ActiveAlert(current, id));
         }
-        // Recovery, offline servers and removed locations no longer have an active item.
+        // Recovery, operator-owned offline states and removed locations no longer have an active item.
         activeAlerts.forEach((location, alert) -> {
             if (!currentAlerts.containsKey(location)) dismissSink.accept(alert.notificationId());
         });
@@ -103,10 +108,12 @@ public final class SimulationAlertNotifier {
         };
     }
 
-    private record AlertState(Set<ServerAlertReason> reasons, ThermalAlertLevel thermalLevel) {
+    private record AlertState(Set<ServerAlertReason> reasons, ThermalAlertLevel thermalLevel,
+                              ThermalProtectionState protectionState) {
         private AlertState {
             reasons = Set.copyOf(reasons);
             Objects.requireNonNull(thermalLevel);
+            Objects.requireNonNull(protectionState);
         }
     }
 }
