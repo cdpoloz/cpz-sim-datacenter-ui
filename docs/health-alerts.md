@@ -28,10 +28,11 @@ changed; an older JAR at those same coordinates is insufficient.
 ## Room map
 
 A rack is marked critical if **any online server at that full RackLocation**
-is CRITICAL. The marker uses the existing dark hotspot background and hotspot
+is CRITICAL, or if any server remains in protection-owned SHUTDOWN. The marker uses the existing dark hotspot background and hotspot
 icon. The same rack code in another column is a different rack. Empty and
-fully offline racks keep their existing presentation and cannot show a critical
-thermal marker.
+operator-offline racks keep their existing presentation. A protection-owned
+shutdown retains both its offline availability marker and the critical hotspot
+marker, including when the entire rack is offline.
 
 The average-online-temperature gradient remains a continuous display scale.
 Its initial upper bound (74 °C in the demo configuration) expands to contain observed server temperatures. Reaching the current upper bound can saturate its
@@ -42,11 +43,12 @@ bound is derived for visualization and is not a health threshold.
 
 `SYSTEM STATUS` summarizes evaluated server health:
 
-- CRITICAL: at least one online server has a critical thermal level.
-- WARNING: an online server has active backend alert reasons, with no critical
-  thermal level anywhere online.
+- CRITICAL: an online server has a critical thermal level, or a server remains
+  in protection-owned SHUTDOWN.
+- WARNING: an online server has active backend alert reasons or is THROTTLED,
+  with no critical thermal level or SHUTDOWN anywhere.
 - NORMAL: online servers exist and have no active alert reasons.
-- IDLE: there are no online servers.
+- IDLE: there are no online servers and no protection-owned shutdowns.
 - NO DATA: the health snapshot is unavailable.
 
 The previous local heuristics based on averages, maximum rack temperature,
@@ -59,18 +61,22 @@ but this backend health projection does not invent a WATCH band.
 `SimulationAlertNotifier` maintains one persistent notification per complete
 ServerLocation using `cpz-mvvm-processing-controls:0.9.15`. It uses
 `showPersistent()` and retains the returned ID for programmatic `dismiss()`.
-The UI consumes backend `alertReasons()` and `thermalAlertLevel()`; the backend
+The UI consumes backend `alertReasons()`, `thermalAlertLevel()` and
+`thermalProtectionState()`; the backend
 continues to own thresholds and hysteresis.
 
-- Initial snapshots immediately show existing online alerts.
-- Unchanged reasons and thermal levels retain the same notification and timestamp.
+- Initial snapshots immediately show existing health or protection conditions.
+- Unchanged reasons, thermal levels and protection states retain the same notification and timestamp.
 - Changed reasons or severity replace that server's notification. ELEVATED →
   CRITICAL uses ERROR; CRITICAL → ELEVATED uses WARNING.
 - Partial recovery removes only the resolved reasons from the replacement message.
   High utilization can therefore remain after thermal recovery.
 - Full recovery dismisses the item without creating a recovery notification.
-- Offline servers and locations absent from the next snapshot have their items
-  dismissed. This does not claim that an offline server has thermally recovered.
+- Operator-owned offline states and locations absent from the next snapshot have
+  their items dismissed. A protection-owned SHUTDOWN retains its ERROR item,
+  labelled `Thermal protection shutdown`, until the backend leaves SHUTDOWN.
+- THROTTLED is included in the message and has at least WARNING severity, even
+  when the ordinary health alert thresholds were not crossed.
 - A backward tick reset dismisses only this notifier's items, then displays the
   new snapshot's active alerts. Unrelated manager notifications are preserved.
 
@@ -135,12 +141,17 @@ to require `Server.requestThermalRestart()` in addition to sufficient cooling an
 the minimum off time. The current sketch has no dedicated manual-restart button.
 
 Protection state is available as `ServerHealthSnapshot.thermalProtectionState()`
-(NORMAL, THROTTLED, SHUTDOWN). Existing rack/table availability presentation uses
-OFFLINE for a shut-down server; this change does not add new icons or notification
-types. Existing notifications for offline servers are removed, so the alert panel
-is not a history of thermal shutdowns. Health alert thresholds remain independent
-of protection thresholds. Protection samples once per tick; a threshold crossed
-during a tick takes effect on the next one, with no clipping of temperatures.
+(NORMAL, THROTTLED, SHUTDOWN). A protection-owned shutdown still counts as OFFLINE,
+but its selected-rack slot uses the existing critical alert icon and magenta
+temperature text. The room map retains its hotspot and offline markers, the
+global state remains CRITICAL, and the notification remains visible or pending
+until the backend clears the condition. An operator-owned offline state uses the
+ordinary offline presentation. The panel remains a view of active conditions,
+not a history of shutdown events.
+
+Health alert thresholds remain independent of protection thresholds. Protection
+samples once per tick; a threshold crossed during a tick takes effect on the next
+one, with no clipping of temperatures.
 
 
 ## Empty online temperature groups
@@ -153,3 +164,27 @@ backend snapshots retain their explicit missing-average semantics.
 The complete demo JSON is regression-tested for two days without any active
 room or rack cooling, covering thermal shutdown and the coupled energy ledger
 at full UI scale.
+
+
+## Live metrics and missing averages
+
+The header refreshes installed/online counts from the latest operational rack
+snapshots; counts are no longer startup-only values. Global average temperature
+is displayed only when online servers exist, irrespective of the backend's
+legacy finite fallback. With none online, the card and trend legend show `--`,
+and the historical online-average curve contains a gap rather than an artificial
+drop to ambient temperature. The physical room-air and per-server temperatures
+remain visible independently.
+
+Hottest-rack values/locations are cleared to `--` when the backend no longer
+publishes an online hottest rack. IDLE and NO DATA labels retain readable text.
+
+Power labels use W below 1 kW, kW below 1 MW, and MW for larger values. This keeps
+5 W standby servers, small rack totals and installation standby demand visible.
+Graph data and axes retain their existing units; only label formatting adapts.
+
+`ThermalShutdownPresentationTest` uses real backend shutdown/recovery state and
+snapshots to verify live counts, missing values, restored averages, critical
+map/system state, persistent shutdown alerts, operator-offline ownership, and
+standby power formatting. The Java 26 workflow compiles the UI against pinned
+foundation/runtime/backend source revisions and runs the full UI suite.

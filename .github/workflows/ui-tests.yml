@@ -33,7 +33,7 @@ jobs:
         with:
           repository: cdpoloz/cpz-sim-datacenter
           ref: a3dec305a585d35b7734be71b120ebcb3244e965
-          path: dependencies/datacenter
+          path: cpz-sim-datacenter
           persist-credentials: false
       - uses: actions/setup-java@v4
         with:
@@ -43,7 +43,7 @@ jobs:
         run: |
           mvn -B -ntp -f dependencies/foundation/pom.xml -DskipTests install
           mvn -B -ntp -f dependencies/runtime/pom.xml -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true install
-          mvn -B -ntp -f dependencies/datacenter/pom.xml -DskipTests install
+          mvn -B -ntp -f cpz-sim-datacenter/pom.xml -DskipTests install
       - name: Compile and test UI
         working-directory: ui
         run: mvn -B -ntp -Djava.awt.headless=true clean verify
