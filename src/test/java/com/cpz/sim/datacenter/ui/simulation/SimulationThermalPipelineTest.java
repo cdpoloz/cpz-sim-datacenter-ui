@@ -68,6 +68,8 @@ class SimulationThermalPipelineTest {
             var first = ((ObjectNode) units.get(0)).deepCopy();
             units.removeAll().add(first.put("heatRejectionDestination", destination));
         }
+        // Existing physics tests exercise the backward-compatible, unprotected baseline.
+        root.path("serverModels").forEach(model -> ((ObjectNode) model).remove("thermalProtection"));
         root.put("dataInputMode", mode);
         root.put("temperatureInputGranularity", granularity);
         // Test parameters only, not calibrated production defaults.
@@ -104,6 +106,41 @@ class SimulationThermalPipelineTest {
                 new DatacenterOperationalSnapshotProvider(dc), pipeline::coolingSnapshot,
                 new DatacenterSimulationHistory(), Optional.empty(), pipeline::coupledThermalSnapshot);
         return new Fixture(definition, dc, temperatures, engine, pipeline, recorder, cooling);
+    }
+
+    @Test
+    void actualDemoJsonActivatesConfiguredProtection() throws Exception {
+        var f = fixture(new JsonDatacenterConfigLoader().load(Path.of("data/config/datacenter.json")));
+        assertTrue(f.datacenter.getServers().stream().allMatch(server -> server.getConfig().thermalProtection().enabled()));
+        f.datacenter.getServers().forEach(server -> f.temperatures.setTemperatureCelsius(server.getCode(), 110));
+        var capture = f.step();
+        assertTrue(capture.healthSnapshot().servers().stream()
+                .filter(server -> server.thermalProtectionState() == com.cpz.sim.datacenter.model.ThermalProtectionState.SHUTDOWN)
+                .count() > 0);
+        assertTrue(f.datacenter.getServers().stream().allMatch(server -> server.getStatus() == HardwareStatus.OFFLINE));
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void protectionIsInstalledBeforePowerForBothThermalPipelines(boolean coupled) throws Exception {
+        var original = definition("UTILIZATION_DRIVEN", coupled, "RACK");
+        var models = original.serverModels().stream().map(model ->
+                new com.cpz.sim.datacenter.config.definition.ServerModelDefinition(model.modelCode(), model.manufacturer(),
+                        model.model(), model.idlePowerWatts(), model.maxPowerWatts(), model.thermalCapacityJoulesPerCelsius(),
+                        model.heatDissipationWattsPerCelsius(), new com.cpz.sim.datacenter.model.ServerThermalProtection(
+                        true, 90, 85, .2, 105, 70, 120, com.cpz.sim.datacenter.model.ThermalRestartPolicy.MANUAL, 0))).toList();
+        var configured = new DatacenterDefinition(original.name(), original.layout(), models, original.servers(),
+                original.temperature(), original.health(), original.cooling(), original.dataInputMode(),
+                original.powerInputGranularity(), original.temperatureInputGranularity(), original.roomAirTemperature(), original.rackCooling());
+        var f = fixture(configured);
+        f.datacenter.getServers().forEach(server -> f.temperatures.setTemperatureCelsius(server.getCode(), 95));
+        f.step();
+        var online = f.datacenter.getServers().stream().filter(server -> server.getStatus() != HardwareStatus.OFFLINE).toList();
+        assertFalse(online.isEmpty());
+        online.forEach(server -> {
+            assertEquals(com.cpz.sim.datacenter.model.ThermalProtectionState.THROTTLED, server.getThermalProtectionState());
+            assertEquals(.2, server.getUtilization(), 1e-6);
+        });
     }
 
     @ParameterizedTest

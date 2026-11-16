@@ -106,3 +106,38 @@ critical boundary and cool it through recovery. Its rack marker and SYSTEM
 STATUS should follow the backend level, with ERROR on escalation and WARNING
 on downgrade. Recovery must remove the alert; pausing must retain it.
 No automatic resize or frame-rate changes are introduced.
+
+
+## Equipment protection
+
+The demo's `data/config/datacenter.json` now defines an independent
+`serverModels[].thermalProtection` profile for each of its three synthetic
+server models. These illustrative values are not equipment specifications:
+
+| Setting | Demo value |
+| --- | --- |
+| Throttle / recovery | 90 / 85 °C |
+| Delivered utilization cap | 40% |
+| Thermal shutdown | 105 °C |
+| Automatic restart temperature | 70 °C or lower |
+| Minimum off time | 120 simulated seconds |
+| Standby consumption | 5 W per thermal shutdown |
+
+The backend owns all protection decisions. The UI installs its controller before
+power input for both legacy and coupled thermal pipelines; rack-temperature
+input already evaluates observed readings through the backend. After pulling
+the backend, run `mvn clean install` there before rebuilding the UI: the artifact
+coordinates remain `com.cpz.sim.datacenter:cpz-sim-datacenter:0.1.0-alpha.1`.
+
+An omitted profile preserves legacy behavior. Set `enabled` to `false` on the
+profiles to repeat an unprotected experiment. Change `restartPolicy` to `MANUAL`
+to require `Server.requestThermalRestart()` in addition to sufficient cooling and
+the minimum off time. The current sketch has no dedicated manual-restart button.
+
+Protection state is available as `ServerHealthSnapshot.thermalProtectionState()`
+(NORMAL, THROTTLED, SHUTDOWN). Existing rack/table availability presentation uses
+OFFLINE for a shut-down server; this change does not add new icons or notification
+types. Existing notifications for offline servers are removed, so the alert panel
+is not a history of thermal shutdowns. Health alert thresholds remain independent
+of protection thresholds. Protection samples once per tick; a threshold crossed
+during a tick takes effect on the next one, with no clipping of temperatures.
