@@ -141,3 +141,15 @@ types. Existing notifications for offline servers are removed, so the alert pane
 is not a history of thermal shutdowns. Health alert thresholds remain independent
 of protection thresholds. Protection samples once per tick; a threshold crossed
 during a tick takes effect on the next one, with no clipping of temperatures.
+
+
+## Empty online temperature groups
+
+A hot aisle with no online servers has no online average temperature. Its
+room-map overlay becomes transparent instead of feeding NaN into Processing's
+color/alpha mapping. This also covers shutdowns of all servers in an aisle;
+backend snapshots retain their explicit missing-average semantics.
+
+The complete demo JSON is regression-tested for two days without any active
+room or rack cooling, covering thermal shutdown and the coupled energy ledger
+at full UI scale.

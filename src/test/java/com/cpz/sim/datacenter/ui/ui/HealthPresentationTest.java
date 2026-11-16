@@ -81,6 +81,7 @@ class HealthPresentationTest {
         assertFalse(conditions.get("indRackHotspotC01R01").isOn());
         assertTrue(conditions.get("indRackOfflineC01R01").isOn());
         assertEquals("IDLE", status.getText());
+        assertEquals(0, indicators.get("indRoomHotAisleC01").getOnColor());
     }
 
     @Test

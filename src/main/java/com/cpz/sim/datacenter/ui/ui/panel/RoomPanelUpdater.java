@@ -144,6 +144,11 @@ public class RoomPanelUpdater extends ApplicationComponent {
                         .findServerGroup(hotAisleCode)
                         .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for aisle: " + hotAisleCode));
         float averageTemperature = (float) aisleSnapshot.averageOnlineTemperatureCelsius();
+        if (!aisleSnapshot.hasOnlineServers() || !Float.isFinite(averageTemperature)) {
+            // No online temperature is available; do not map a missing value to a thermal color.
+            uiComponentContainer.indicators().get(indicatorCode).setOnColor(Colors.argb(0, 0, 0, 0));
+            return;
+        }
         float maxTemperature = (float) aisleSnapshot.maximumTemperatureCelsius();
         // Blend typical and worst-case temperature so the room view exposes both signals.
         float temperature = (maxTemperature + averageTemperature) * 0.5f;

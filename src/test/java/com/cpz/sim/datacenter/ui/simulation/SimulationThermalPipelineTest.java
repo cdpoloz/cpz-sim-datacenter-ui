@@ -109,6 +109,32 @@ class SimulationThermalPipelineTest {
     }
 
     @Test
+    void uncooledDemoContinuesThroughShutdownForTwoSimulatedDays() throws Exception {
+        var definition = new JsonDatacenterConfigLoader().load(Path.of("data/config/datacenter.json"));
+        var dc = new DatacenterFactory().create(definition);
+        var options = new TemperatureSystemOptionsFactory().create(definition);
+        var temps = new TemperatureSystem(dc, options, new SimpleServerTemperatureModel());
+        var cooling = new CoolingSystem(new CoolingConfigurationFactory().create(definition, dc).orElseThrow());
+        cooling.configuration().units().forEach(unit -> cooling.setEnabled(unit.code(), false));
+        var coupled = new CoupledRoomTemperatureSystemFactory().create(definition, dc, temps, Optional.of(cooling)).orElseThrow();
+        coupled.rackCoolingSystem().orElseThrow().configuration().units()
+                .forEach(unit -> coupled.rackCoolingSystem().orElseThrow().setEnabled(unit.code(), false));
+        var systems = new DatacenterInputPipelineFactory().createInputSystems(definition, dc, temps, options,
+                (server, tick) -> .5, null, coupled);
+        double maximumResidual = 0;
+        boolean observedShutdown = false;
+        for (int i = 1; i <= 2880; i++) {
+            var tick = new com.cpz.sim.foundation.time.SimulationTick(i, Duration.ofMinutes(i), Duration.ofMinutes(1));
+            systems.forEach(system -> system.update(tick));
+            maximumResidual = Math.max(maximumResidual, Math.abs(coupled.lastSnapshot().orElseThrow().energyBalanceResidualJoules()));
+            observedShutdown |= dc.getServers().stream().anyMatch(server ->
+                    server.getThermalProtectionState() == com.cpz.sim.datacenter.model.ThermalProtectionState.SHUTDOWN);
+        }
+        assertTrue(observedShutdown);
+        System.out.println("Uncooled demo: 2880 ticks, maximum energy residual J=" + maximumResidual);
+    }
+
+    @Test
     void actualDemoJsonActivatesConfiguredProtection() throws Exception {
         var f = fixture(new JsonDatacenterConfigLoader().load(Path.of("data/config/datacenter.json")));
         assertTrue(f.datacenter.getServers().stream().allMatch(server -> server.getConfig().thermalProtection().enabled()));
