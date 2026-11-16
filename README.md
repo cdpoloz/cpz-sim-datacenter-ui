@@ -12,7 +12,9 @@ The UI is intentionally thin: backend domain objects and systems produce immutab
 In the classic view, rack hotspot indicators, `SYSTEM STATUS`, and notification
 severity share the backend-evaluated health snapshot. A rack is critical when
 any online server in that rack has `thermalAlertLevel() == CRITICAL`; the
-temperature color gradient is only a display scale. See [Health and alerts](docs/health-alerts.md).
+temperature color gradient is only a display scale. Active server alerts stay
+visible until backend recovery and persist while paused, with severity changes
+replacing the existing item. See [Health and alerts](docs/health-alerts.md).
 
 ## Architecture at a glance
 

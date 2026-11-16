@@ -87,7 +87,11 @@ class HealthPresentationTest {
     void mapSystemAndNotificationsFollowTheSameRealBackendHysteresis() {
         Fixture f = new Fixture();
         List<Event> events = new ArrayList<>();
-        var notifier = new SimulationAlertNotifier((severity, message) -> events.add(new Event(severity, message)));
+        List<String> dismissed = new ArrayList<>();
+        var notifier = new SimulationAlertNotifier((severity, message) -> {
+            events.add(new Event(severity, message));
+            return "alert-" + events.size();
+        }, dismissed::add);
         var baseline = f.at(1, 25);
         notifier.update(baseline);
         assertEquals("NORMAL", HealthPresentation.systemStatus(baseline));
@@ -134,8 +138,8 @@ class HealthPresentationTest {
         notifier.update(recovery);
         assertEquals("NORMAL", HealthPresentation.systemStatus(recovery));
         assertTrue(HealthPresentation.criticalRacks(recovery).isEmpty());
-        assertEquals(NotificationSeverity.SUCCESS, events.getLast().severity());
-        assertEquals(4, events.size());
+        assertEquals(3, events.size());
+        assertEquals(List.of("alert-1", "alert-2", "alert-3"), dismissed);
     }
 
     @Test
@@ -169,19 +173,29 @@ class HealthPresentationTest {
         assertEquals("IDLE", HealthPresentation.systemStatus(snapshot(1, offline)));
         assertTrue(HealthPresentation.criticalRacks(snapshot(1, offline)).isEmpty());
         List<Event> events = new ArrayList<>();
-        var notifier = new SimulationAlertNotifier((severity, message) -> events.add(new Event(severity, message)));
+        List<String> dismissed = new ArrayList<>();
+        var notifier = new SimulationAlertNotifier((severity, message) -> {
+            events.add(new Event(severity, message));
+            return "alert-" + events.size();
+        }, dismissed::add);
         notifier.update(snapshot(1, server("C01", "R01", "S01", HardwareStatus.ALERT, ThermalAlertLevel.CRITICAL, 150)));
         notifier.update(snapshot(2, offline));
-        assertTrue(events.isEmpty());
+        assertEquals(1, events.size());
+        assertEquals(List.of("alert-1"), dismissed);
     }
 
     @Test
-    void resetTickReestablishesBaselineWithoutSpuriousNotifications() {
+    void resetTickRemovesPreviousSessionAlerts() {
         List<Event> events = new ArrayList<>();
-        var notifier = new SimulationAlertNotifier((severity, message) -> events.add(new Event(severity, message)));
+        List<String> dismissed = new ArrayList<>();
+        var notifier = new SimulationAlertNotifier((severity, message) -> {
+            events.add(new Event(severity, message));
+            return "alert-" + events.size();
+        }, dismissed::add);
         notifier.update(snapshot(5, server("C01", "R01", "S01", HardwareStatus.ALERT, ThermalAlertLevel.CRITICAL, 150)));
         notifier.update(snapshot(1, server("C01", "R01", "S01", HardwareStatus.OK, ThermalAlertLevel.NORMAL, 25)));
-        assertTrue(events.isEmpty());
+        assertEquals(1, events.size());
+        assertEquals(List.of("alert-1"), dismissed);
         notifier.update(snapshot(2, server("C01", "R01", "S01", HardwareStatus.ALERT, ThermalAlertLevel.CRITICAL, 150)));
         assertEquals(NotificationSeverity.ERROR, events.getLast().severity());
     }

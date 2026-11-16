@@ -1,6 +1,6 @@
 # Classic view health and alerts
 
-The room-map hotspot flag, the Global Overview `SYSTEM STATUS`, and transient
+The room-map hotspot flag, the Global Overview `SYSTEM STATUS`, and persistent
 notifications use `HealthSnapshot` from the same completed simulation tick.
 `HealthPresentation` maps already evaluated states to visuals; it contains no
 temperature, utilization, HVAC or PUE thresholds and stores no hysteresis state.
@@ -56,33 +56,53 @@ but this backend health projection does not invent a WATCH band.
 
 ## Notifications
 
-`SimulationAlertNotifier` compares both reasons and thermal levels by complete
-ServerLocation. ELEVATED → CRITICAL emits ERROR even though HIGH_TEMPERATURE
-remains active. CRITICAL → ELEVATED emits WARNING; full recovery emits SUCCESS.
-If utilization remains high after thermal recovery, the result is still WARNING.
-The first snapshot (or a backward tick reset) establishes a silent baseline.
-Offline transitions are not reported as successful recovery.
+`SimulationAlertNotifier` maintains one persistent notification per complete
+ServerLocation using `cpz-mvvm-processing-controls:0.9.15`. It uses
+`showPersistent()` and retains the returned ID for programmatic `dismiss()`.
+The UI consumes backend `alertReasons()` and `thermalAlertLevel()`; the backend
+continues to own thresholds and hysteresis.
 
-Snapshots with the same tick and unchanged states do not generate duplicate
-messages. Changing selection, drawing frames and operating cooling controls in
-pause cannot reevaluate health; the next simulation tick updates the snapshot.
-Already displayed notifications expire according to real-time style durations,
-including while simulation is paused. The message timestamp uses simulated
-elapsed time in `00d hh:mm` format, using the same formatter and health snapshot as the header after snapshot refresh. Existing notifications keep their event time.
+- Initial snapshots immediately show existing online alerts.
+- Unchanged reasons and thermal levels retain the same notification and timestamp.
+- Changed reasons or severity replace that server's notification. ELEVATED →
+  CRITICAL uses ERROR; CRITICAL → ELEVATED uses WARNING.
+- Partial recovery removes only the resolved reasons from the replacement message.
+  High utilization can therefore remain after thermal recovery.
+- Full recovery dismisses the item without creating a recovery notification.
+- Offline servers and locations absent from the next snapshot have their items
+  dismissed. This does not claim that an offline server has thermally recovered.
+- A backward tick reset dismisses only this notifier's items, then displays the
+  new snapshot's active alerts. Unrelated manager notifications are preserved.
 
-The manager still has the configured visible limit (currently three) and no
-backlog. Notifications report transitions, not a persistent active-alert list:
-a critical rack may stay marked after its notification expires. This change
-does not add queuing or priority retention for error notifications.
+Repeated snapshots at the same tick and drawing paused frames do not create
+new items. Null snapshots retain existing alerts until new health data arrives.
+Cooling controls in pause do not reevaluate health; the next completed tick
+updates the backend snapshot and the alert list.
+
+The message timestamp uses simulated elapsed time in `00d hh:mm` format, with
+the same formatter and snapshot time as the header. It records the last change
+of reasons or severity, rather than advancing with every tick.
+
+`data/config/notifications.json` retains three visible items and severity
+priority. Persistent overflow remains pending in the manager and appears as
+space becomes available; pending items can also be dismissed or replaced by ID.
+`persistentDismissible: false` hides manual close buttons so active conditions
+remain controlled by the simulation. Timed durations still apply to unrelated
+transient messages, but do not apply to these persistent alerts, including
+while paused. The panel is a view of active conditions, not an event history.
 
 ## Validation
 
 `HealthPresentationTest` drives the real backend health system through normal,
 elevated, critical, retained-critical, downgraded and recovered states. It checks
 actual room/global control states, notification severity, same-tick suppression,
-full-location identity, offline behavior and reset baselines without a window.
+full-location identity, offline behavior and session resets without a window.
+`SimulationAlertNotifierTest` also exercises the real notification manager for
+persistence, replacement, partial recovery, pending overflow, removal, and
+isolation from unrelated notifications.
 
 Manual acceptance: run the classic sketch, heat a server through the configured
 critical boundary and cool it through recovery. Its rack marker and SYSTEM
 STATUS should follow the backend level, with ERROR on escalation and WARNING
-on downgrade. No automatic resize or frame-rate changes are introduced.
+on downgrade. Recovery must remove the alert; pausing must retain it.
+No automatic resize or frame-rate changes are introduced.

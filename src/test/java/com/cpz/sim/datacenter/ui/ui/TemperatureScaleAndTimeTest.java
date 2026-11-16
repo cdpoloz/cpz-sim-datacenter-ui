@@ -67,7 +67,10 @@ class TemperatureScaleAndTimeTest {
         var simulation = new SimulationContainer();
         var header = new HeaderUpdater(new ApplicationContext(sketch), simulation, controls);
         var messages = new ArrayList<String>();
-        var notifier = new SimulationAlertNotifier((severity, message) -> messages.add(message));
+        var notifier = new SimulationAlertNotifier((severity, message) -> {
+            messages.add(message);
+            return "alert-" + messages.size();
+        }, id -> {});
         header.update();
         assertEquals("00d 00:00", labels.get("lblSimulationTime").getText());
         notifier.update(new HealthSnapshot(0, 0, List.of()));

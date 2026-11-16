@@ -15,34 +15,42 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 /**
+ * Reconciles backend health into one persistent notification per online alerted server.
  * @author CPZ
  */
 public final class SimulationAlertNotifier {
 
-    private final BiConsumer<NotificationSeverity, String> notificationSink;
-    private Map<ServerLocation, AlertState> previousStates = new HashMap<>();
+    private final BiFunction<NotificationSeverity, String, String> persistentSink;
+    private final Consumer<String> dismissSink;
+    private Map<ServerLocation, ActiveAlert> activeAlerts = new HashMap<>();
     private long lastTick = -1L;
 
     public SimulationAlertNotifier(NotificationManager notifications) {
-        this(sinkFor(notifications));
+        this(sinkFor(notifications), notifications::dismiss);
     }
 
-    SimulationAlertNotifier(BiConsumer<NotificationSeverity, String> notificationSink) {
-        this.notificationSink = Objects.requireNonNull(notificationSink);
+    SimulationAlertNotifier(BiFunction<NotificationSeverity, String, String> persistentSink,
+                            Consumer<String> dismissSink) {
+        this.persistentSink = Objects.requireNonNull(persistentSink);
+        this.dismissSink = Objects.requireNonNull(dismissSink);
     }
 
-    private static BiConsumer<NotificationSeverity, String> sinkFor(NotificationManager notifications) {
+    private static BiFunction<NotificationSeverity, String, String> sinkFor(NotificationManager notifications) {
         Objects.requireNonNull(notifications);
-        return (severity, message) -> notifications.show(message, severity);
+        return (severity, message) -> notifications.showPersistent(message, severity).getId();
     }
 
     public void update(HealthSnapshot snapshot) {
         if (snapshot == null || snapshot.tickIndex() == lastTick) return;
-        boolean baseline = lastTick < 0L || snapshot.tickIndex() < lastTick;
-        Map<ServerLocation, AlertState> currentStates = new HashMap<>();
+        if (snapshot.tickIndex() < lastTick) {
+            activeAlerts.values().forEach(alert -> dismissSink.accept(alert.notificationId()));
+            activeAlerts.clear();
+        }
+        Map<ServerLocation, ActiveAlert> currentAlerts = new HashMap<>();
         String simulatedTime = SimulationTimeFormat.daysHoursMinutes(snapshot.elapsedSeconds());
         var orderedServers = snapshot.servers().stream()
                 .sorted(Comparator.comparing(ServerHealthSnapshot::column)
@@ -51,25 +59,18 @@ public final class SimulationAlertNotifier {
                 .toList();
 
         for (ServerHealthSnapshot server : orderedServers) {
-            if (server.status() == HardwareStatus.OFFLINE) continue;
+            if (server.status() == HardwareStatus.OFFLINE || !server.hasAlerts()) continue;
             ServerLocation location = server.location();
             AlertState current = new AlertState(server.alertReasons(), server.thermalAlertLevel());
-            AlertState previous = previousStates.get(location);
-            currentStates.put(location, current);
-            if (baseline) continue;
-            if (current.equals(previous)) continue;
-            if (previous == null && current.reasons().isEmpty()) continue;
-            String prefix = "%s-%s-%s · %s"
-                    .formatted(
-                            server.column(),
-                            server.rackCode().value(),
-                            server.slot(),
-                            simulatedTime
-                    );
-            if (current.reasons().isEmpty()) {
-                notificationSink.accept(HealthPresentation.notificationSeverity(server), prefix + "\nAlertas resueltas");
+            ActiveAlert previous = activeAlerts.get(location);
+            if (previous != null && current.equals(previous.state())) {
+                currentAlerts.put(location, previous);
                 continue;
             }
+            // Replace the old item, including if it is pending behind the visible limit.
+            if (previous != null) dismissSink.accept(previous.notificationId());
+            String prefix = "%s-%s-%s · %s"
+                    .formatted(server.column(), server.rackCode().value(), server.slot(), simulatedTime);
             String reasons = current.reasons().stream()
                     .sorted(Comparator
                             .comparingInt((ServerAlertReason reason) -> switch (reason) {
@@ -80,11 +81,18 @@ public final class SimulationAlertNotifier {
                             .thenComparingInt(ServerAlertReason::ordinal))
                     .map(reason -> reasonText(reason, current.thermalLevel()))
                     .collect(Collectors.joining(", "));
-            String message = prefix + "\n" + reasons;
-            notificationSink.accept(HealthPresentation.notificationSeverity(server), message);
+            String id = persistentSink.apply(HealthPresentation.notificationSeverity(server), prefix + "\n" + reasons);
+            currentAlerts.put(location, new ActiveAlert(current, id));
         }
-        previousStates = currentStates;
+        // Recovery, offline servers and removed locations no longer have an active item.
+        activeAlerts.forEach((location, alert) -> {
+            if (!currentAlerts.containsKey(location)) dismissSink.accept(alert.notificationId());
+        });
+        activeAlerts = currentAlerts;
         lastTick = snapshot.tickIndex();
+    }
+
+    private record ActiveAlert(AlertState state, String notificationId) {
     }
 
     private static String reasonText(ServerAlertReason reason, ThermalAlertLevel thermalLevel) {
