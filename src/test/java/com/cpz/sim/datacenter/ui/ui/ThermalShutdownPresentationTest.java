@@ -180,6 +180,7 @@ class ThermalShutdownPresentationTest {
     @Test
     void totalPowerCardSwitchesToMegawattsAtOneHundredKilowattsOnly() {
         var f = new Fixture();
+        f.protectedServer.evaluateThermalProtection(110, 0);
         f.publish(1);
         var snapshot = f.simulation.operationalSnapshot();
         double[] powers = {5, 99_990, 100_000, 385_750, 1_250_000, Double.NaN};
@@ -190,7 +191,9 @@ class ThermalShutdownPresentationTest {
                     snapshot.averageOnlineServerTemperatureCelsius(), snapshot.hottestRackLocation(),
                     snapshot.hottestRackAverageTemperatureCelsius(), snapshot.totalItUtilization(),
                     snapshot.idleItPowerWatts(), snapshot.maxItPowerWatts(), snapshot.currentItPowerWatts(),
-                    snapshot.coolingPowerWatts(), powers[i], snapshot.pue(), snapshot.roomAirSnapshot(),
+                    Double.isFinite(powers[i]) ? powers[i] - snapshot.currentItPowerWatts() : Double.NaN,
+                    powers[i], Double.isFinite(powers[i]) ? powers[i] / snapshot.currentItPowerWatts() : Double.NaN,
+                    snapshot.roomAirSnapshot(),
                     snapshot.rackCoolingSnapshot(), snapshot.facilityEnergySnapshot()));
             f.global.update();
             assertEquals(expected[i], f.text("lblRoomTotalElectricalLoadValue"));
