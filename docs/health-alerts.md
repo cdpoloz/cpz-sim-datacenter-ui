@@ -46,7 +46,7 @@ bound is derived for visualization and is not a health threshold.
 
 - CRITICAL: an online server has a critical thermal level, or a server remains
   in protection-owned SHUTDOWN.
-- WARNING: an online server has active backend alert reasons or is THROTTLED,
+- WARNING: an online server has policy-enabled backend alert reasons or is THROTTLED,
   with no critical thermal level or SHUTDOWN anywhere.
 - NORMAL: online servers exist and have no active alert reasons.
 - IDLE: there are no online servers and no protection-owned shutdowns.
@@ -71,7 +71,7 @@ continues to own thresholds and hysteresis.
 - Changed reasons or severity replace that server's notification. ELEVATED →
   CRITICAL uses ERROR; CRITICAL → ELEVATED uses WARNING.
 - Partial recovery removes only the resolved reasons from the replacement message.
-  High utilization can therefore remain after thermal recovery.
+  High utilization can remain after thermal recovery only when enabled by the operator policy.
 - Full recovery dismisses the item without creating a recovery notification.
 - Operator-owned offline states and locations absent from the next snapshot have
   their items dismissed. A protection-owned SHUTDOWN retains its ERROR item,
@@ -211,10 +211,37 @@ remains `--` in the neutral text color. This is a presentation scale and does
 not introduce new room-health thresholds or change room thermal physics.
 
 The alert heading is updated after notification reconciliation on every frame,
-including while paused. With none active it is exactly `ALERTS`. With active
-items it reads `ALERTS - V visible/P more actives`, where V is the active count
-up to the configured manager visible limit and P is the remaining pending
-count. Eight active items with `maxVisible: 3` therefore show
-`ALERTS - 3 visible/5 more actives`; one shows
-`ALERTS - 1 visible/0 more actives`. The configured limit is read from the
-notification manager, with no additional hard-coded three-item limit.
+including while paused. Up to the configured `maxVisible` active items it is
+exactly `ALERTS`. Above that limit it is `ALERTS - V + N more`, where V is the
+configured visible limit and N is the additional pending count. With a limit of
+three, eight enabled active items show `ALERTS - 3 + 5 more`. Changing the JSON
+limit changes both the display boundary and the count automatically.
+
+## O&M alert selection
+
+The current `data/config/datacenter.json` contains:
+
+```json
+"alertPolicy": {
+  "highUtilizationEnabled": false
+}
+```
+
+The backend loads this policy and preserves the raw diagnostic HIGH_UTILIZATION
+reason, utilization metric and hardware state. The UI uses the policy for
+notifications, slot alert/OK icons, utilization alert coloring and global system
+severity. High utilization alone therefore does not produce an O&M notification
+or WARNING, but its metric is still visible. A mixed thermal/utilization event
+keeps the thermal reason and omits only the disabled utilization text. Hidden
+reason changes do not replace an unchanged thermal notification or its timestamp.
+
+Set the boolean to `true` and restart the application to enable utilization
+alerts for another audience. Omitted policies retain legacy visibility.
+Protection states THROTTLED and SHUTDOWN and thermal alerts remain enabled.
+The panel title counts enabled active notification items, including pending ones,
+rather than all raw diagnostic reasons.
+
+Backend API compatibility is preserved, but the updated backend artifact must be
+installed locally before building this UI: run `mvn clean install` in
+`cpz-sim-datacenter` after pulling both repositories. The CI workflow runs the
+backend tests and installs its pinned source revision before testing the UI.

@@ -22,29 +22,35 @@ class AlertsPanelUpdaterTest {
         var ids = new ArrayList<String>();
         for (int i = 0; i < 8; i++) ids.add(notifications.showPersistent("Alert " + i).getId());
         updater.update();
-        assertEquals("ALERTS - 3 visible/5 more actives", label.getText());
+        assertEquals("ALERTS - 3 + 5 more", label.getText());
         assertTrue(notifications.dismiss(ids.getFirst()));
         updater.update();
-        assertEquals("ALERTS - 3 visible/4 more actives", label.getText());
+        assertEquals("ALERTS - 3 + 4 more", label.getText());
         notifications.setMaxVisible(2);
         updater.update();
-        assertEquals("ALERTS - 2 visible/5 more actives", label.getText());
+        assertEquals("ALERTS - 2 + 5 more", label.getText());
         notifications.clear();
         updater.update();
         assertEquals("ALERTS", label.getText());
     }
 
     @Test
-    void titleReportsActualVisibleCountWhenThePanelIsNotFull() {
+    void titleStaysCompactThroughTheConfiguredVisibleLimit() {
         var sketch = new PApplet();
         var notifications = new NotificationManager(sketch, new OverlayManager());
-        notifications.setMaxVisible(3);
+        notifications.setMaxVisible(5);
         var label = new Label(sketch, "lblAlerts", "", 0, 0, 300, 20);
         var updater = new AlertsPanelUpdater(notifications, label);
-        for (int i = 1; i <= 3; i++) {
+        for (int i = 1; i <= 5; i++) {
             notifications.showPersistent("Alert " + i);
             updater.update();
-            assertEquals("ALERTS - " + i + " visible/0 more actives", label.getText());
+            assertEquals("ALERTS", label.getText());
         }
+        notifications.showPersistent("One beyond the limit");
+        updater.update();
+        assertEquals("ALERTS - 5 + 1 more", label.getText());
+        notifications.setMaxVisible(6);
+        updater.update();
+        assertEquals("ALERTS", label.getText());
     }
 }

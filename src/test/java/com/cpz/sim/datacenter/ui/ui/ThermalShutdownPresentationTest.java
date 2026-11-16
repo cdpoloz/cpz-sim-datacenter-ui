@@ -161,6 +161,22 @@ class ThermalShutdownPresentationTest {
         }
     }
 
+    @Test
+    void globalStatusUsesThePolicyFromTheLoadedDatacenterJson() {
+        var f = new Fixture();
+        var definition = new com.cpz.sim.datacenter.config.json.JsonDatacenterConfigLoader()
+                .load(java.nio.file.Path.of("data/config/datacenter.json"));
+        f.simulation.setDatacenterDefinition(definition);
+        f.temperatures.setTemperatureCelsius(f.protectedServer.getCode(), 24);
+        f.protectedServer.setUtilization(1);
+        f.publish(1); f.update();
+        assertTrue(f.simulation.healthSnapshot().servers().stream()
+                .anyMatch(server -> server.hasAlertReason(ServerAlertReason.HIGH_UTILIZATION)));
+        assertEquals("NORMAL", f.text("lblSystemStatusValue"));
+        assertFalse(f.controls.indicators().get("indSystemStatusWarning").isOn());
+        assertEquals("1", f.text("lblRoomOnlineServersValue"));
+    }
+
     private static final class Fixture {
         final Sketch sketch = new Sketch();
         final UiComponentContainer controls = new UiComponentContainer();

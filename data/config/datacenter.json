@@ -1,6 +1,9 @@
 {
   "name": "Complete 8x12 UI Test Datacenter",
   "dataInputMode": "UTILIZATION_DRIVEN",
+  "alertPolicy": {
+    "highUtilizationEnabled": false
+  },
   "roomAirTemperature": {
     "initialTemperatureCelsius": 24.0,
     "effectiveThermalCapacityJoulesPerCelsius": 20000000.0,

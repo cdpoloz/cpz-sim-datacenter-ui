@@ -3,6 +3,7 @@ package com.cpz.sim.datacenter.ui.ui;
 import com.cpz.processing.controls.core.overlay.notification.NotificationManager;
 import com.cpz.processing.controls.core.overlay.notification.NotificationSeverity;
 import com.cpz.sim.datacenter.health.ServerAlertReason;
+import com.cpz.sim.datacenter.health.ServerAlertPolicy;
 import com.cpz.sim.datacenter.health.ThermalAlertLevel;
 import com.cpz.sim.datacenter.model.ThermalProtectionState;
 import com.cpz.sim.datacenter.model.ServerLocation;
@@ -26,15 +27,26 @@ public final class SimulationAlertNotifier {
 
     private final BiFunction<NotificationSeverity, String, String> persistentSink;
     private final Consumer<String> dismissSink;
+    private final ServerAlertPolicy alertPolicy;
     private Map<ServerLocation, ActiveAlert> activeAlerts = new HashMap<>();
     private long lastTick = -1L;
 
     public SimulationAlertNotifier(NotificationManager notifications) {
-        this(sinkFor(notifications), notifications::dismiss);
+        this(notifications, ServerAlertPolicy.defaults());
+    }
+
+    public SimulationAlertNotifier(NotificationManager notifications, ServerAlertPolicy alertPolicy) {
+        this(sinkFor(notifications), notifications::dismiss, alertPolicy);
     }
 
     SimulationAlertNotifier(BiFunction<NotificationSeverity, String, String> persistentSink,
                             Consumer<String> dismissSink) {
+        this(persistentSink, dismissSink, ServerAlertPolicy.defaults());
+    }
+
+    SimulationAlertNotifier(BiFunction<NotificationSeverity, String, String> persistentSink,
+                            Consumer<String> dismissSink, ServerAlertPolicy alertPolicy) {
+        this.alertPolicy = Objects.requireNonNull(alertPolicy);
         this.persistentSink = Objects.requireNonNull(persistentSink);
         this.dismissSink = Objects.requireNonNull(dismissSink);
     }
@@ -59,9 +71,9 @@ public final class SimulationAlertNotifier {
                 .toList();
 
         for (ServerHealthSnapshot server : orderedServers) {
-            if (!HealthPresentation.hasActiveCondition(server)) continue;
+            if (!HealthPresentation.hasActiveCondition(server, alertPolicy)) continue;
             ServerLocation location = server.location();
-            AlertState current = new AlertState(server.alertReasons(), server.thermalAlertLevel(), server.thermalProtectionState());
+            AlertState current = new AlertState(alertPolicy.visibleReasons(server.alertReasons()), server.thermalAlertLevel(), server.thermalProtectionState());
             ActiveAlert previous = activeAlerts.get(location);
             if (previous != null && current.equals(previous.state())) {
                 currentAlerts.put(location, previous);
@@ -86,7 +98,7 @@ public final class SimulationAlertNotifier {
             } else if (current.protectionState() == ThermalProtectionState.THROTTLED) {
                 reasons = reasons.isEmpty() ? "Thermal throttling" : reasons + ", Thermal throttling";
             }
-            String id = persistentSink.apply(HealthPresentation.notificationSeverity(server), prefix + "\n" + reasons);
+            String id = persistentSink.apply(HealthPresentation.notificationSeverity(server, alertPolicy), prefix + "\n" + reasons);
             currentAlerts.put(location, new ActiveAlert(current, id));
         }
         // Recovery, operator-owned offline states and removed locations no longer have an active item.

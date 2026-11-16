@@ -169,10 +169,13 @@ public class SelectedRackPanelUpdater extends ApplicationComponent {
         slotPowerLabel.setText(MetricPresentation.power(energy.currentPowerWatts(), powerKwFormat));
         HardwareStatus status = health.status();
         boolean thermalShutdown = HealthPresentation.isThermalShutdown(health);
-        okSlotStatusIndicator.setOn(status == HardwareStatus.OK);
-        alertSlotStatusIndicator.setOn(status == HardwareStatus.ALERT || thermalShutdown);
-        alertIndicator.setOn(status == HardwareStatus.ALERT || thermalShutdown);
-        boolean loadAlert = health.hasAlertReason(ServerAlertReason.HIGH_UTILIZATION);
+        var alertPolicy = HealthPresentation.alertPolicy(simulationContainer.datacenterDefinition());
+        boolean visibleAlert = HealthPresentation.hasActiveCondition(health, alertPolicy);
+        okSlotStatusIndicator.setOn(status != HardwareStatus.OFFLINE && !visibleAlert);
+        alertSlotStatusIndicator.setOn(visibleAlert);
+        alertIndicator.setOn(visibleAlert);
+        boolean loadAlert = alertPolicy.includes(ServerAlertReason.HIGH_UTILIZATION)
+                && health.hasAlertReason(ServerAlertReason.HIGH_UTILIZATION);
         slotLoadLabel.setTextColor(loadAlert ? COLOR_MAGENTA_LABEL : COLOR_BLUE_LABEL);
         boolean temperatureAlert = thermalShutdown || health.hasAlertReason(ServerAlertReason.HIGH_TEMPERATURE);
         updateTemperatureLabelColor(temperatureAlert, slotTemperatureLabel, temperature.temperatureCelsius());

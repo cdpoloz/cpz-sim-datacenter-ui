@@ -16,11 +16,12 @@ public final class AlertsPanelUpdater {
 
     public void update() {
         int total = notifications.size();
-        if (total == 0) {
+        int maxVisible = notifications.getMaxVisible();
+        if (total <= maxVisible) {
             title.setText("ALERTS");
             return;
         }
-        int visible = Math.min(total, notifications.getMaxVisible());
-        title.setText("ALERTS - " + visible + " visible/" + (total - visible) + " more actives");
+        int visible = maxVisible;
+        title.setText("ALERTS - " + visible + " + " + (total - visible) + " more");
     }
 }

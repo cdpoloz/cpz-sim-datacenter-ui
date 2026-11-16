@@ -119,7 +119,6 @@ public class Sketch extends PApplet {
         resourceManager.initialize();
         // These setup locals remain reachable through the runtime coordinators that own them.
         simulationContainer = new SimulationContainer();
-        simulationAlertNotifier = new SimulationAlertNotifier(notifications);
         alertsPanelUpdater = new AlertsPanelUpdater(notifications, uiComponentContainer.labels().get("lblAlerts"));
         simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         CoolingToggleManager coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
@@ -145,6 +144,8 @@ public class Sketch extends PApplet {
         globalOverviewRenderer.setAxisControls(uiComponentContainer);
         selectedHotAisleTemperatureHistoryRenderer = new SelectedHotAisleTemperatureHistoryRenderer(context, simulationContainer, uiStateContainer);
         simulationManager.initialize();
+        simulationAlertNotifier = new SimulationAlertNotifier(notifications,
+                simulationContainer.datacenterDefinition().alertPolicy());
         selectionManager.initialize();
         // Use one backend-derived temperature scale for panels, room colors, and the gradient.
         TemperatureRange temperatureRange = temperatureRangeCalculator.calculate(simulationContainer.datacenter(), simulationContainer.temperatureOptions());

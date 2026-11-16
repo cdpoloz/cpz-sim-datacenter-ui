@@ -255,7 +255,8 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
     }
 
     private String displayedRoomSystemStatus() {
-        return HealthPresentation.systemStatus(simulationContainer == null ? null : simulationContainer.healthSnapshot());
+        return HealthPresentation.systemStatus(simulationContainer == null ? null : simulationContainer.healthSnapshot(),
+                HealthPresentation.alertPolicy(simulationContainer == null ? null : simulationContainer.datacenterDefinition()));
     }
 
     private double displayedRoomAverageTemperatureCelsius() {
