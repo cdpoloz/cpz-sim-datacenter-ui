@@ -133,7 +133,8 @@ public class RoomPanelUpdater extends ApplicationComponent {
         Indicator aiIndicator = uiComponentContainer.indicatorsRackCondition().get(rackIndicatorCode.replace("indRack", "indRackAI"));
         offlineIndicator.setOn(rackOffline);
         emptyIndicator.setOn(emptyRack);
-        hotspotIndicator.setOn(rackHotspot);
+        // Offline owns the shared icon position; the critical rack color is retained separately.
+        hotspotIndicator.setOn(rackHotspot && !rackOffline);
         aiIndicator.setOn(aiRack);
     }
 

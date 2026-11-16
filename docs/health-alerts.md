@@ -31,8 +31,9 @@ A rack is marked critical if **any online server at that full RackLocation**
 is CRITICAL, or if any server remains in protection-owned SHUTDOWN. The marker uses the existing dark hotspot background and hotspot
 icon. The same rack code in another column is a different rack. Empty and
 operator-offline racks keep their existing presentation. A protection-owned
-shutdown retains both its offline availability marker and the critical hotspot
-marker, including when the entire rack is offline.
+shutdown retains the critical background. The two icons share a position, so
+fully offline racks show only OFFLINE; racks with any online servers show HOTSPOT
+when critical. The dark critical background remains independent of icon choice.
 
 The average-online-temperature gradient remains a continuous display scale.
 Its initial upper bound (74 °C in the demo configuration) expands to contain observed server temperatures. Reaching the current upper bound can saturate its
@@ -143,7 +144,8 @@ the minimum off time. The current sketch has no dedicated manual-restart button.
 Protection state is available as `ServerHealthSnapshot.thermalProtectionState()`
 (NORMAL, THROTTLED, SHUTDOWN). A protection-owned shutdown still counts as OFFLINE,
 but its selected-rack slot uses the existing critical alert icon and magenta
-temperature text. The room map retains its hotspot and offline markers, the
+temperature text. The room map retains its critical background and shows only
+the OFFLINE icon when fully offline, or HOTSPOT when partly online. The
 global state remains CRITICAL, and the notification remains visible or pending
 until the backend clears the condition. An operator-owned offline state uses the
 ordinary offline presentation. The panel remains a view of active conditions,
@@ -188,3 +190,13 @@ snapshots to verify live counts, missing values, restored averages, critical
 map/system state, persistent shutdown alerts, operator-offline ownership, and
 standby power formatting. The Java 26 workflow compiles the UI against pinned
 foundation/runtime/backend source revisions and runs the full UI suite.
+
+
+| Room-map rack state | Background | Shared icon |
+| --- | --- | --- |
+| Operator offline, no critical protection condition | Offline blue | OFFLINE |
+| Fully offline with protection-owned shutdown | Dark critical red | OFFLINE |
+| At least one online server, with a critical condition | Dark critical red | HOTSPOT |
+
+The icon exclusivity is purely presentational: health/protection state, persistent
+shutdown notifications and global CRITICAL status are unchanged.

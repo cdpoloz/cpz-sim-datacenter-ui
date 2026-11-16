@@ -50,7 +50,7 @@ class ThermalShutdownPresentationTest {
         assertEquals("CRITICAL", f.text("lblSystemStatusValue"));
         assertTrue(f.controls.indicators().get("indSystemStatusCritical").isOn());
         assertTrue(f.controls.indicatorsRackCondition().get("indRackOfflineC01R01").isOn());
-        assertTrue(f.controls.indicatorsRackCondition().get("indRackHotspotC01R01").isOn());
+        assertFalse(f.controls.indicatorsRackCondition().get("indRackHotspotC01R01").isOn());
         assertEquals(COLOR_HOTSPOT_RACK, f.controls.indicatorsRack().get("indRackC01R01").getOnColor());
         assertEquals(1, active.size());
         assertTrue(active.values().iterator().next().contains("Thermal protection shutdown"));
@@ -81,12 +81,29 @@ class ThermalShutdownPresentationTest {
     }
 
     @Test
+    void partiallyOnlineCriticalRackUsesHotspotInsteadOfOfflineIcon() {
+        var f = new Fixture();
+        f.protectedServer.evaluateThermalProtection(110, 0);
+        f.operatorOfflineServer.setStatus(HardwareStatus.OK);
+        f.operatorOfflineServer.setUtilization(.5);
+        f.temperatures.setTemperatureCelsius(f.operatorOfflineServer.getCode(), 60);
+        f.publish(1); f.update();
+        assertTrue(f.controls.indicatorsRackCondition().get("indRackHotspotC01R01").isOn());
+        assertFalse(f.controls.indicatorsRackCondition().get("indRackOfflineC01R01").isOn());
+        assertEquals(COLOR_HOTSPOT_RACK, f.controls.indicatorsRack().get("indRackC01R01").getOnColor());
+        assertEquals("CRITICAL", f.text("lblSystemStatusValue"));
+    }
+
+    @Test
     void operatorOfflineIsIdleAndReadableWithoutFalseCriticality() {
         var f = new Fixture();
         f.protectedServer.setStatus(HardwareStatus.OFFLINE);
         f.publish(1); f.update();
         assertEquals("0", f.text("lblRoomOnlineServersValue"));
         assertEquals("IDLE", f.text("lblSystemStatusValue"));
+        assertTrue(f.controls.indicatorsRackCondition().get("indRackOfflineC01R01").isOn());
+        assertFalse(f.controls.indicatorsRackCondition().get("indRackHotspotC01R01").isOn());
+        assertEquals(COLOR_MIN_TEMPERATURE, f.controls.indicatorsRack().get("indRackC01R01").getOnColor());
         assertEquals(COLOR_WHITE_LABEL, f.controls.labels().get("lblSystemStatusValue").getTextColor());
         assertTrue(HealthPresentation.criticalRacks(f.simulation.healthSnapshot()).isEmpty());
     }
