@@ -177,6 +177,28 @@ class ThermalShutdownPresentationTest {
         assertEquals("1", f.text("lblRoomOnlineServersValue"));
     }
 
+    @Test
+    void totalPowerCardSwitchesToMegawattsAtOneHundredKilowattsOnly() {
+        var f = new Fixture();
+        f.publish(1);
+        var snapshot = f.simulation.operationalSnapshot();
+        double[] powers = {5, 99_990, 100_000, 385_750, 1_250_000, Double.NaN};
+        String[] expected = {"5W", "99.99kW", "0.10MW", "0.39MW", "1.25MW", "--"};
+        for (int i = 0; i < powers.length; i++) {
+            f.simulation.setOperationalSnapshot(new DatacenterOperationalSnapshot(
+                    snapshot.tickIndex(), snapshot.elapsedSeconds(), snapshot.racks(), snapshot.columns(), snapshot.serverGroups(),
+                    snapshot.averageOnlineServerTemperatureCelsius(), snapshot.hottestRackLocation(),
+                    snapshot.hottestRackAverageTemperatureCelsius(), snapshot.totalItUtilization(),
+                    snapshot.idleItPowerWatts(), snapshot.maxItPowerWatts(), snapshot.currentItPowerWatts(),
+                    snapshot.coolingPowerWatts(), powers[i], snapshot.pue(), snapshot.roomAirSnapshot(),
+                    snapshot.rackCoolingSnapshot(), snapshot.facilityEnergySnapshot()));
+            f.global.update();
+            assertEquals(expected[i], f.text("lblRoomTotalElectricalLoadValue"));
+        }
+        assertEquals("385.75kW", MetricPresentation.power(385_750, "%.2fkW", "%.2fMW"),
+                "Other power labels retain their existing unit boundary");
+    }
+
     private static final class Fixture {
         final Sketch sketch = new Sketch();
         final UiComponentContainer controls = new UiComponentContainer();
@@ -214,7 +236,7 @@ class ThermalShutdownPresentationTest {
             var labels = new HashMap<String, Label>();
             for (String code : List.of("lblRoom", "lblTime", "lblDate", "lblSimulationTime",
                     "lblRoomTotalServersValue", "lblRoomOnlineServersValue", "lblAverageServerTemperatureValue", "lblRoomAirTemperatureValue",
-                    "lblRoomMaximumRackTemperatureValue", "lblRoomMaximumRackTemperatureLocation", "lblSystemStatusValue",
+                    "lblRoomMaximumRackTemperatureValue", "lblRoomMaximumRackTemperatureLocation", "lblSystemStatusValue", "lblRoomTotalElectricalLoadValue",
                     "lblTrendsMaximumTemperatureServer", "lblTrendsRoomTemperature", "lblTrendsItLoad", "lblTrendsTotalLoad"))
                 labels.put(code, new Label(sketch, code, "STALE", 0, 0, 100, 20));
             controls.setLabels(labels);

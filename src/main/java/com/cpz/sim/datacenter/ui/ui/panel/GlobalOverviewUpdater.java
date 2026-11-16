@@ -163,11 +163,11 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
 
     private void updateDisplayedRoomTotalElectricalLoad() {
         if (!uiComponentContainer.labels().containsKey("lblRoomTotalElectricalLoadValue")) return;
-        uiComponentContainer
-                .labels()
-                .get("lblRoomTotalElectricalLoadValue")
-                .setText(MetricPresentation.power(simulationContainer.operationalSnapshot().totalFacilityPowerWatts(),
-                        uiFormatContainer.powerKw(), uiFormatContainer.powerMw()));
+        double watts = simulationContainer.operationalSnapshot().totalFacilityPowerWatts();
+        String text = Double.isFinite(watts) && watts >= 100_000.0
+                ? String.format(java.util.Locale.ROOT, uiFormatContainer.powerMw(), watts / 1_000_000.0)
+                : MetricPresentation.power(watts, uiFormatContainer.powerKw(), uiFormatContainer.powerMw());
+        uiComponentContainer.labels().get("lblRoomTotalElectricalLoadValue").setText(text);
     }
 
     private double displayedRoomTotalElectricalLoadMegawatts() {
