@@ -200,3 +200,21 @@ foundation/runtime/backend source revisions and runs the full UI suite.
 
 The icon exclusivity is purely presentational: health/protection state, persistent
 shutdown notifications and global CRITICAL status are unchanged.
+
+
+## Room temperature color and alert-panel title
+
+The room-air temperature label uses the same continuous temperature gradient
+and current display bounds as the selected-aisle temperature labels. Values
+outside the display range retain the endpoint color; missing air temperature
+remains `--` in the neutral text color. This is a presentation scale and does
+not introduce new room-health thresholds or change room thermal physics.
+
+The alert heading is updated after notification reconciliation on every frame,
+including while paused. With none active it is exactly `ALERTS`. With active
+items it reads `ALERTS - V visible/P more actives`, where V is the active count
+up to the configured manager visible limit and P is the remaining pending
+count. Eight active items with `maxVisible: 3` therefore show
+`ALERTS - 3 visible/5 more actives`; one shows
+`ALERTS - 1 visible/0 more actives`. The configured limit is read from the
+notification manager, with no additional hard-coded three-item limit.

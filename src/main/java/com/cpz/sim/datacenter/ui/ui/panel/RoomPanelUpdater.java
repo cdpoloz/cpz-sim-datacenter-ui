@@ -67,18 +67,19 @@ public class RoomPanelUpdater extends ApplicationComponent {
         updateRoomHotAisleIndicator("HA03", "indRoomHotAisleC04-C05", minServerTemperatureCelsius, maxServerTemperatureCelsius);
         updateRoomHotAisleIndicator("HA04", "indRoomHotAisleC06-C07", minServerTemperatureCelsius, maxServerTemperatureCelsius);
         updateRoomHotAisleIndicator("HA05", "indRoomHotAisleC08", minServerTemperatureCelsius, maxServerTemperatureCelsius);
-        updateRoomAirTemperatureLabel();
+        updateRoomAirTemperatureLabel(minServerTemperatureCelsius, maxServerTemperatureCelsius);
         Set<RackLocation> criticalRacks = HealthPresentation.criticalRacks(simulationContainer.healthSnapshot());
         for (Rack rack : simulationContainer.datacenter().getRacks())
             updateRackIndicator(rack, minServerTemperatureCelsius, maxServerTemperatureCelsius, criticalRacks);
     }
 
-    private void updateRoomAirTemperatureLabel() {
+    private void updateRoomAirTemperatureLabel(float minServerTemperatureCelsius, float maxServerTemperatureCelsius) {
         if (!uiComponentContainer.labels().containsKey("lblRoomAirTemperatureValue")) return;
         Label lblRoomAirTemperatureValue = uiComponentContainer.labels().get("lblRoomAirTemperatureValue");
         double roomAirTemperatureCelsius = simulationContainer.operationalSnapshot().roomAirTemperatureCelsius();
         int roomAirTemperatureColor = Double.isFinite(roomAirTemperatureCelsius)
-                ? com.cpz.sim.datacenter.ui.util.Constants.COLOR_GREEN_LABEL
+                ? resolveTemperatureRangeColor((float) roomAirTemperatureCelsius,
+                        minServerTemperatureCelsius, maxServerTemperatureCelsius)
                 : com.cpz.sim.datacenter.ui.util.Constants.COLOR_WHITE_LABEL;
         lblRoomAirTemperatureValue.setText(Double.isFinite(roomAirTemperatureCelsius)
                 ? String.format(java.util.Locale.ROOT, uiFormatContainer.temperature(), roomAirTemperatureCelsius) : "--");

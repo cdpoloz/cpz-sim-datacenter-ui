@@ -62,6 +62,7 @@ public class Sketch extends PApplet {
     private NotificationManager notifications;
     private SimulationContainer simulationContainer;
     private SimulationAlertNotifier simulationAlertNotifier;
+    private AlertsPanelUpdater alertsPanelUpdater;
 
     /**
      * Configures the Processing surface before it is created.
@@ -119,6 +120,7 @@ public class Sketch extends PApplet {
         // These setup locals remain reachable through the runtime coordinators that own them.
         simulationContainer = new SimulationContainer();
         simulationAlertNotifier = new SimulationAlertNotifier(notifications);
+        alertsPanelUpdater = new AlertsPanelUpdater(notifications, uiComponentContainer.labels().get("lblAlerts"));
         simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         CoolingToggleManager coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
         rackCoolingControls = new SelectedRackCoolingControls(simulationContainer, uiComponentContainer);
@@ -159,6 +161,7 @@ public class Sketch extends PApplet {
         temperatureScaleUpdater.update(simulationContainer.temperatureSnapshot());
         //notifications.show("Prueba de alerta: C01 / R01 / S01", NotificationSeverity.SUCCESS, 30_000L);
         simulationAlertNotifier.update(simulationContainer.healthSnapshot());
+        alertsPanelUpdater.update();
         LOG.info("Fin completo de setup");
     }
 
@@ -173,6 +176,7 @@ public class Sketch extends PApplet {
         temperatureScaleUpdater.update(simulationContainer.temperatureSnapshot());
         headerUpdater.update();
         simulationAlertNotifier.update(simulationContainer.healthSnapshot());
+        alertsPanelUpdater.update();
         uiUpdateCoordinator.updateControlsIfNeeded();
         // Keep an open tooltip current even while the pointer is stationary.
         rackCoolingControls.refreshTooltipLayout();

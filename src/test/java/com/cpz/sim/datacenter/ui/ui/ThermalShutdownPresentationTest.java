@@ -132,6 +132,35 @@ class ThermalShutdownPresentationTest {
         assertEquals("--", MetricPresentation.temperature(Double.POSITIVE_INFINITY, "%.1f°C"));
     }
 
+    @Test
+    void roomAirTemperatureUsesTheSharedGradientAndShowsMissingDataExplicitly() {
+        var f = new Fixture();
+        f.publish(1);
+        f.room.update(20, 110);
+        var label = f.controls.labels().get("lblRoomAirTemperatureValue");
+        assertEquals("--", label.getText());
+        assertEquals(COLOR_WHITE_LABEL, label.getTextColor());
+        var snapshot = f.simulation.operationalSnapshot();
+        for (double air : new double[] {20, 65, 110, 160}) {
+            f.simulation.setOperationalSnapshot(new DatacenterOperationalSnapshot(
+                    snapshot.tickIndex(), snapshot.elapsedSeconds(), snapshot.racks(), snapshot.columns(), snapshot.serverGroups(),
+                    snapshot.averageOnlineServerTemperatureCelsius(), snapshot.hottestRackLocation(),
+                    snapshot.hottestRackAverageTemperatureCelsius(), snapshot.totalItUtilization(),
+                    snapshot.idleItPowerWatts(), snapshot.maxItPowerWatts(), snapshot.currentItPowerWatts(),
+                    snapshot.coolingPowerWatts(), snapshot.totalFacilityPowerWatts(), snapshot.pue(),
+                    Optional.of(new RoomAirTemperatureSnapshot(snapshot.tickIndex(), snapshot.elapsedSeconds(), air)),
+                    snapshot.rackCoolingSnapshot(), snapshot.facilityEnergySnapshot()));
+            f.room.update(20, 110);
+            assertEquals(String.format(Locale.ROOT, "%.1f°C", air), label.getText());
+            if (air == 20) assertEquals(COLOR_MIN_TEMPERATURE, label.getTextColor());
+            else if (air >= 110) assertEquals(COLOR_MAX_TEMPERATURE, label.getTextColor());
+            else {
+                assertNotEquals(COLOR_MIN_TEMPERATURE, label.getTextColor());
+                assertNotEquals(COLOR_MAX_TEMPERATURE, label.getTextColor());
+            }
+        }
+    }
+
     private static final class Fixture {
         final Sketch sketch = new Sketch();
         final UiComponentContainer controls = new UiComponentContainer();
@@ -168,7 +197,7 @@ class ThermalShutdownPresentationTest {
 
             var labels = new HashMap<String, Label>();
             for (String code : List.of("lblRoom", "lblTime", "lblDate", "lblSimulationTime",
-                    "lblRoomTotalServersValue", "lblRoomOnlineServersValue", "lblAverageServerTemperatureValue",
+                    "lblRoomTotalServersValue", "lblRoomOnlineServersValue", "lblAverageServerTemperatureValue", "lblRoomAirTemperatureValue",
                     "lblRoomMaximumRackTemperatureValue", "lblRoomMaximumRackTemperatureLocation", "lblSystemStatusValue",
                     "lblTrendsMaximumTemperatureServer", "lblTrendsRoomTemperature", "lblTrendsItLoad", "lblTrendsTotalLoad"))
                 labels.put(code, new Label(sketch, code, "STALE", 0, 0, 100, 20));
