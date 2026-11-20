@@ -2,20 +2,16 @@ package com.cpz.sim.datacenter.ui.ui;
 
 import com.cpz.processing.controls.core.overlay.notification.NotificationManager;
 import com.cpz.processing.controls.core.overlay.notification.NotificationSeverity;
-import com.cpz.sim.datacenter.health.ServerAlertReason;
 import com.cpz.sim.datacenter.health.ServerAlertPolicy;
-import com.cpz.sim.datacenter.health.ThermalAlertLevel;
-import com.cpz.sim.datacenter.model.ThermalProtectionState;
 import com.cpz.sim.datacenter.model.ServerLocation;
 import com.cpz.sim.datacenter.snapshot.HealthSnapshot;
 import com.cpz.sim.datacenter.snapshot.ServerHealthSnapshot;
 
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
@@ -28,7 +24,8 @@ public final class SimulationAlertNotifier {
     private final BiFunction<NotificationSeverity, String, String> persistentSink;
     private final Consumer<String> dismissSink;
     private final ServerAlertPolicy alertPolicy;
-    private Map<ServerLocation, ActiveAlert> activeAlerts = new HashMap<>();
+    private Map<ServerLocation, ActiveAlert> activeAlerts = Map.of();
+    private List<ServerAlertPresentation> activeAlertPresentations = List.of();
     private long lastTick = -1L;
 
     public SimulationAlertNotifier(NotificationManager notifications) {
@@ -56,14 +53,19 @@ public final class SimulationAlertNotifier {
         return (severity, message) -> notifications.showPersistent(message, severity).getId();
     }
 
+    /** Returns all active alerts, including overflow, in column, rack and slot order. */
+    public List<ServerAlertPresentation> activeAlerts() {
+        return activeAlertPresentations;
+    }
+
     public void update(HealthSnapshot snapshot) {
         if (snapshot == null || snapshot.tickIndex() == lastTick) return;
-        if (snapshot.tickIndex() < lastTick) {
+        boolean rewound = snapshot.tickIndex() < lastTick;
+        if (rewound) {
             activeAlerts.values().forEach(alert -> dismissSink.accept(alert.notificationId()));
-            activeAlerts.clear();
+            activeAlerts = Map.of();
         }
-        Map<ServerLocation, ActiveAlert> currentAlerts = new HashMap<>();
-        String simulatedTime = SimulationTimeFormat.daysHoursMinutes(snapshot.elapsedSeconds());
+        Map<ServerLocation, ActiveAlert> currentAlerts = new LinkedHashMap<>();
         var orderedServers = snapshot.servers().stream()
                 .sorted(Comparator.comparing(ServerHealthSnapshot::column)
                         .thenComparing(server -> server.rackCode().value())
@@ -73,59 +75,42 @@ public final class SimulationAlertNotifier {
         for (ServerHealthSnapshot server : orderedServers) {
             if (!HealthPresentation.hasActiveCondition(server, alertPolicy)) continue;
             ServerLocation location = server.location();
-            AlertState current = new AlertState(alertPolicy.visibleReasons(server.alertReasons()), server.thermalAlertLevel(), server.thermalProtectionState());
+            var visibleReasons = alertPolicy.visibleReasons(server.alertReasons());
             ActiveAlert previous = activeAlerts.get(location);
-            if (previous != null && current.equals(previous.state())) {
-                currentAlerts.put(location, previous);
-                continue;
+            if (previous != null) {
+                ServerAlertPresentation shown = previous.presentation();
+                if (visibleReasons.equals(shown.visibleReasons()) && server.thermalAlertLevel() == shown.thermalAlertLevel()
+                        && server.thermalProtectionState() == shown.protectionState()) {
+                    currentAlerts.put(location, previous);
+                    continue;
+                }
+                // Replace the old item, including if it is pending behind the visible limit.
+                dismissSink.accept(previous.notificationId());
             }
-            // Replace the old item, including if it is pending behind the visible limit.
-            if (previous != null) dismissSink.accept(previous.notificationId());
-            String prefix = "%s-%s-%s · %s"
-                    .formatted(server.column(), server.rackCode().value(), server.slot(), simulatedTime);
-            String reasons = current.reasons().stream()
-                    .sorted(Comparator
-                            .comparingInt((ServerAlertReason reason) -> switch (reason) {
-                                case HIGH_TEMPERATURE -> 0;
-                                case HIGH_UTILIZATION -> 1;
-                                default -> 2;
-                            })
-                            .thenComparingInt(ServerAlertReason::ordinal))
-                    .map(reason -> reasonText(reason, current.thermalLevel()))
-                    .collect(Collectors.joining(", "));
-            if (current.protectionState() == ThermalProtectionState.SHUTDOWN) {
-                reasons = "Thermal protection shutdown";
-            } else if (current.protectionState() == ThermalProtectionState.THROTTLED) {
-                reasons = reasons.isEmpty() ? "Thermal throttling" : reasons + ", Thermal throttling";
-            }
-            String id = persistentSink.apply(HealthPresentation.notificationSeverity(server, alertPolicy), prefix + "\n" + reasons);
-            currentAlerts.put(location, new ActiveAlert(current, id));
+            var presentation = new ServerAlertPresentation(location, visibleReasons, server.thermalAlertLevel(),
+                    server.thermalProtectionState(), HealthPresentation.notificationSeverity(server, alertPolicy),
+                    snapshot.elapsedSeconds());
+            String id = persistentSink.apply(presentation.severity(), notificationMessage(presentation));
+            currentAlerts.put(location, new ActiveAlert(presentation, id));
         }
         // Recovery, operator-owned offline states and removed locations no longer have an active item.
         activeAlerts.forEach((location, alert) -> {
             if (!currentAlerts.containsKey(location)) dismissSink.accept(alert.notificationId());
         });
-        activeAlerts = currentAlerts;
+        if (rewound || !currentAlerts.equals(activeAlerts)) {
+            activeAlerts = currentAlerts;
+            activeAlertPresentations = currentAlerts.values().stream().map(ActiveAlert::presentation).toList();
+        }
         lastTick = snapshot.tickIndex();
     }
 
-    private record ActiveAlert(AlertState state, String notificationId) {
+    private static String notificationMessage(ServerAlertPresentation alert) {
+        ServerLocation location = alert.location();
+        String prefix = "%s-%s-%s · %s".formatted(location.column(), location.rackCode().value(), location.slot(),
+                SimulationTimeFormat.daysHoursMinutes(alert.observedStateSinceSeconds()));
+        return prefix + "\n" + alert.conditionText();
     }
 
-    private static String reasonText(ServerAlertReason reason, ThermalAlertLevel thermalLevel) {
-        return switch (reason) {
-            case HIGH_UTILIZATION -> "High utilization";
-            case HIGH_TEMPERATURE -> thermalLevel == ThermalAlertLevel.CRITICAL ? "Critical temperature" : "High temperature";
-            default -> reason.name().replace('_', ' ');
-        };
-    }
-
-    private record AlertState(Set<ServerAlertReason> reasons, ThermalAlertLevel thermalLevel,
-                              ThermalProtectionState protectionState) {
-        private AlertState {
-            reasons = Set.copyOf(reasons);
-            Objects.requireNonNull(thermalLevel);
-            Objects.requireNonNull(protectionState);
-        }
+    private record ActiveAlert(ServerAlertPresentation presentation, String notificationId) {
     }
 }

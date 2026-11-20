@@ -1,8 +1,8 @@
 package com.cpz.sim.datacenter.ui.main;
 
 import com.cpz.processing.controls.controls.toggle.Toggle;
+import com.cpz.processing.controls.core.input.KeyboardEvent;
 import com.cpz.processing.controls.core.overlay.notification.NotificationManager;
-import com.cpz.processing.controls.core.overlay.notification.NotificationSeverity;
 import com.cpz.processing.controls.core.overlay.notification.config.NotificationConfigLoader;
 import com.cpz.processing.controls.core.overlay.tooltip.input.TooltipInputLayer;
 import com.cpz.processing.controls.core.overlay.tooltip.util.TooltipOverlayController;
@@ -23,6 +23,7 @@ import com.cpz.sim.datacenter.ui.ui.panel.*;
 import com.cpz.sim.datacenter.ui.ui.render.*;
 import com.cpz.sim.datacenter.ui.ui.selection.SelectionManager;
 import processing.core.PApplet;
+import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 import processing.opengl.PJOGL;
 
@@ -119,7 +120,6 @@ public class Sketch extends PApplet {
         resourceManager.initialize();
         // These setup locals remain reachable through the runtime coordinators that own them.
         simulationContainer = new SimulationContainer();
-        alertsPanelUpdater = new AlertsPanelUpdater(notifications, uiComponentContainer.labels().get("lblAlerts"));
         simulationManager = new SimulationManager(context, simulationContainer, uiComponentContainer);
         CoolingToggleManager coolingToggleManager = new CoolingToggleManager(context, simulationContainer, uiComponentContainer);
         rackCoolingControls = new SelectedRackCoolingControls(simulationContainer, uiComponentContainer);
@@ -146,6 +146,9 @@ public class Sketch extends PApplet {
         simulationManager.initialize();
         simulationAlertNotifier = new SimulationAlertNotifier(notifications,
                 simulationContainer.datacenterDefinition().alertPolicy());
+        alertsPanelUpdater = AlertsPanelUpdater.create(this, infrastructureContainer.overlayManager(),
+                infrastructureContainer.inputManager(), simulationAlertNotifier, notifications,
+                uiComponentContainer.labels().get("lblAlerts"));
         selectionManager.initialize();
         // Use one backend-derived temperature scale for panels, room colors, and the gradient.
         TemperatureRange temperatureRange = temperatureRangeCalculator.calculate(simulationContainer.datacenter(), simulationContainer.temperatureOptions());
@@ -160,7 +163,6 @@ public class Sketch extends PApplet {
         uiStateInitializer.initialize(uiStateContainer.minServerTemperatureCelsius(), uiStateContainer.maxServerTemperatureCelsius(), uiFormatContainer.simpleTemperature());
         temperatureScaleUpdater = new TemperatureScaleUpdater(uiStateContainer, uiComponentContainer, uiFormatContainer.simpleTemperature());
         temperatureScaleUpdater.update(simulationContainer.temperatureSnapshot());
-        //notifications.show("Prueba de alerta: C01 / R01 / S01", NotificationSeverity.SUCCESS, 30_000L);
         simulationAlertNotifier.update(simulationContainer.healthSnapshot());
         alertsPanelUpdater.update();
         LOG.info("Fin completo de setup");
@@ -188,6 +190,7 @@ public class Sketch extends PApplet {
         // The gradient must sit above controls but below active/static foreground overlays.
         staticUiRenderer.drawBackground();
         controlRenderer.draw();
+        alertsPanelUpdater.drawTrigger();
         selectedHotAisleTemperatureGradientRenderer.draw(
                 uiStateContainer.selectedHotAisleTemperatures(),
                 uiStateContainer.minServerTemperatureCelsius(),
@@ -202,6 +205,7 @@ public class Sketch extends PApplet {
 
     @Override
     public void dispose() {
+        if (alertsPanelUpdater != null) alertsPanelUpdater.close();
         if (tooltips != null) tooltips.dispose();
         if (notifications != null) notifications.dispose();
         super.dispose();
@@ -247,6 +251,16 @@ public class Sketch extends PApplet {
     public void mouseWheel(MouseEvent event) {
         if (event == null) return;
         infrastructureContainer.mouseInputDispatcher().mouseWheel(mouseX, mouseY, mouseButton, event.getCount(), event.isShiftDown(), event.isControlDown());
+    }
+
+    @Override
+    public void keyPressed(KeyEvent event) {
+        if (key == ESC && alertsPanelUpdater != null && alertsPanelUpdater.isOpen()) {
+            char escape = key;
+            key = 0;
+            infrastructureContainer.inputManager().dispatchKeyboard(new KeyboardEvent(KeyboardEvent.Type.PRESS,
+                    escape, keyCode, event.isShiftDown(), event.isControlDown(), event.isAltDown()));
+        }
     }
 
     @Override

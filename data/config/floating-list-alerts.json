@@ -1,0 +1,66 @@
+{
+  "title": "ACTIVE ALERTS",
+  "measures": {
+    "width": { "mode": "relative", "value": 0.548 },
+    "maxHeight": { "mode": "relative", "value": 0.438 },
+    "rowHeight": { "mode": "relative", "value": 0.063 },
+    "headerHeight": { "mode": "relative", "value": 0.042 },
+    "scrollbarWidth": { "mode": "relative", "value": 0.009 },
+    "closeButtonWidth": { "mode": "relative", "value": 0.071 },
+    "closeButtonHeight": { "mode": "relative", "value": 0.025 },
+    "canvasMargin": { "mode": "relative", "value": 0.022 },
+    "anchorGap": { "mode": "relative", "value": 0.010 },
+    "padding": { "mode": "relative", "value": 0.008 },
+    "minThumbSize": { "mode": "relative", "value": 0.028 }
+  },
+  "style": {
+    "font": "data/font/JetBrainsMono.ttf",
+    "headerColor": "#0C2530",
+    "frame": {
+      "backgroundColor": "#00121B",
+      "borderColor": "#467785",
+      "strokeWeight": { "mode": "relative", "value": 0.0013 },
+      "cornerRadius": { "mode": "relative", "value": 0.008 }
+    },
+    "title": {
+      "color": "#D8EFF2",
+      "size": { "mode": "relative", "value": 0.016 },
+      "paddingLeft": { "mode": "relative", "value": 0.015 },
+      "paddingRight": { "mode": "relative", "value": 0.009 }
+    },
+    "empty": {
+      "color": "#B6CBD8",
+      "size": { "mode": "relative", "value": 0.014 },
+      "paddingLeft": { "mode": "relative", "value": 0.010 },
+      "paddingRight": { "mode": "relative", "value": 0.010 }
+    },
+    "scrollbar": {
+      "trackColor": "#0C2530",
+      "thumbColor": "#467785",
+      "hoverColor": "#5CB4C6",
+      "pressedColor": "#D8EFF2",
+      "cornerRadius": { "mode": "relative", "value": 0.003 }
+    },
+    "closeButton": {
+      "backgroundColor": "#14323B",
+      "hoverColor": "#264C59",
+      "pressedColor": "#0B212A",
+      "textColor": "#D8EFF2",
+      "borderColor": "#467785",
+      "strokeWeight": { "mode": "relative", "value": 0.001 },
+      "hoverStrokeWeight": { "mode": "relative", "value": 0.0014 },
+      "cornerRadius": { "mode": "relative", "value": 0.004 },
+      "textSize": { "mode": "relative", "value": 0.012 }
+    }
+  },
+  "rowRenderer": {
+    "backgroundColor": "#0A202B",
+    "secondaryTextColor": "#B6CBD8",
+    "horizontalPadding": { "mode": "relative", "value": 0.012 },
+    "columnGap": { "mode": "relative", "value": 0.016 },
+    "rowGap": { "mode": "relative", "value": 0.001 },
+    "accentWidth": { "mode": "relative", "value": 0.003 },
+    "textSize": { "mode": "relative", "value": 0.014 },
+    "lineSpacing": { "mode": "relative", "value": 0.021 }
+  }
+}

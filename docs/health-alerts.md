@@ -60,7 +60,7 @@ but this backend health projection does not invent a WATCH band.
 ## Notifications
 
 `SimulationAlertNotifier` maintains one persistent notification per complete
-ServerLocation using `cpz-mvvm-processing-controls:0.9.15`. It uses
+`ServerLocation` using `cpz-mvvm-processing-controls`. It uses
 `showPersistent()` and retains the returned ID for programmatic `dismiss()`.
 The UI consumes backend `alertReasons()`, `thermalAlertLevel()` and
 `thermalProtectionState()`; the backend
@@ -86,12 +86,18 @@ new items. Null snapshots retain existing alerts until new health data arrives.
 Cooling controls in pause do not reevaluate health; the next completed tick
 updates the backend snapshot and the alert list.
 
-The message timestamp uses simulated elapsed time in `00d hh:mm` format, with
-the same formatter and snapshot time as the header. It records the last change
-of reasons or severity, rather than advancing with every tick.
+`SimulationAlertNotifier.activeAlerts()` exposes an immutable snapshot of all
+presentable server alerts, including pending items, sorted by column, rack and
+slot. Each `ServerAlertPresentation` contains the location, policy-visible reasons,
+thermal level, protection state, severity and `observedStateSinceSeconds`.
+This time is the simulated elapsed time of the tick when the UI created or
+replaced the alert state. Operational onset is unavailable in the backend
+snapshot. The time stays fixed while the state is unchanged and is formatted as
+`00d hh:mm` in the notification text. Repeated ticks reuse the same list, and
+previously returned snapshots remain unchanged after subsequent updates.
 
-`data/config/notifications.json` retains three visible items and severity
-priority. Persistent overflow remains pending in the manager and appears as
+`data/config/notifications.json` retains three visible items, ordered by severity
+and then newest insertion. Persistent overflow remains pending in the manager and appears as
 space becomes available; pending items can also be dismissed or replaced by ID.
 `persistentDismissible: false` hides manual close buttons so active conditions
 remain controlled by the simulation. Timed durations still apply to unrelated
@@ -210,12 +216,33 @@ outside the display range retain the endpoint color; missing air temperature
 remains `--` in the neutral text color. This is a presentation scale and does
 not introduce new room-health thresholds or change room thermal physics.
 
-The alert heading is updated after notification reconciliation on every frame,
-including while paused. Up to the configured `maxVisible` active items it is
-exactly `ALERTS`. Above that limit it is `ALERTS - V + N more`, where V is the
-configured visible limit and N is the additional pending count. With a limit of
-three, eight enabled active items show `ALERTS - 3 + 5 more`. Changing the JSON
-limit changes both the display boundary and the count automatically.
+The classic `ALERTS` heading shows a `+N more` button when the active server
+count exceeds the configured notification `maxVisible`. The button opens
+`ACTIVE ALERTS · N`, with the total updated in place and the panel anchored to
+the heading. The list includes the summary's alerts
+and pending alerts in location order. It shares the summary's condition text,
+severity colors and observed simulation time. With enough space its maximum
+height holds six rows. Controls handles the wheel, scrollbar, scroll retention,
+close button, outside gestures and Escape. The simulation keeps its current
+play or pause state. Changes refresh the open list, including recovery to zero.
+
+The classic sketch loads `data/config/floating-list-alerts.json` once at setup.
+Adjust `measures` for size, margin, anchor gap and scrolling geometry. Relative
+values use the canvas height, including widths and horizontal padding. Absolute
+pixel values and mixed declarations are also supported. The `ALERTS` anchor's
+relative X uses the canvas width. Controls resolves the measures on canvas
+changes and retains the opening side while it has usable space.
+
+Use `style.font` for the shared font resource and `style` for the frame, title,
+empty message, close button and scrollbar. The separate `rowRenderer` section
+sets row spacing, typography size and colors. Severity accents come from
+`data/config/notifications.json`. The drawing pass uses the classic P2D screen
+projection after the scene and paints overlays back to front by Z order.
+
+The classic sketch creates a new reconciler during setup and its playback
+controls only pause or change speed. A backward tick clears prior observations.
+A future in-place restart that starts at the same tick needs a session signal
+to clear them. The dataset replay restart belongs to a separate sketch.
 
 ## O&M alert selection
 
