@@ -51,6 +51,13 @@ public final class RuntimeLayout {
     public ControlBounds bounds(Area area) { return areas.get(area); }
     public ControlBounds titleBounds(Area area) { return titles.get(area); }
     public ControlBounds contentBounds(Area area) { return contents.get(area); }
+    public ControlBounds alertTriggerBounds(float width, float height) {
+        var heading = titleBounds(Area.ALERTS).resolve(width, height);
+        float buttonWidth = Math.min(.132f * height, heading.width() * .5f);
+        return ControlBounds.relative((heading.x() + heading.width() - buttonWidth / 2) / width,
+                (heading.y() + heading.height() / 2) / height, buttonWidth / height, .022f);
+    }
+
     public ResolvedBounds resolve(Area area, float width, float height) {
         return bounds(area).resolve(width, height);
     }

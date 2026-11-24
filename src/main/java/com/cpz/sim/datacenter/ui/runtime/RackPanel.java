@@ -21,6 +21,7 @@ final class RackPanel {
     record Geometry(ControlBounds title, ControlBounds summary, ControlBounds columns, ControlBounds legend, List<ControlBounds> rows, List<ControlBounds> indicators) { }
     private static final int INDICATOR_BORDER = 0xffd5dce3;
     private static final int MISSING_BORDER = 0xffffd166;
+    private static final String SLOT_COLUMNS = "%-5s %6s %5s %6s %s";
     private final PApplet sketch;
     private final PFont font;
     private final RoomMap room;
@@ -70,17 +71,20 @@ final class RackPanel {
     private void position() {
         var g = geometry(layout, width, height, rows.size());
         title.setBounds(g.title()); summary.setBounds(g.summary()); columns.setBounds(g.columns()); legend.setBounds(g.legend());
+        float rowTextSize = rows.isEmpty() ? .0105f
+                : Math.min(.0105f, g.rows().getFirst().resolve(width, height).height() / height * .68f);
+        columns.setTextSize(ControlMeasure.relative(rowTextSize));
         for (int i = 0; i < rows.size(); i++) {
             rows.get(i).setBounds(g.rows().get(i));
             indicators.get(i).setBounds(g.indicators().get(i));
-            rows.get(i).setTextSize(ControlMeasure.relative(Math.min(.0105f, g.rows().get(i).resolve(width, height).height() / height * .68f)));
+            rows.get(i).setTextSize(ControlMeasure.relative(rowTextSize));
         }
     }
     void refresh() {
         RackLocation selected = room.selected();
         if (!Objects.equals(current, selected)) { rows.clear(); indicators.clear(); current = selected; }
         if (selected == null) {
-            title.setText("Seleccione un rack"); summary.setText(""); columns.setText(""); legend.setText(""); position(); return;
+            title.setText("Select a rack"); summary.setText(""); columns.setText(""); legend.setText(""); position(); return;
         }
         var rack = room.racks().stream().filter(r -> r.location().equals(selected)).findFirst().orElseThrow();
         var data = RackDetail.project(rack, session.serverRoles(), session.snapshot());
@@ -92,25 +96,34 @@ final class RackPanel {
         }
         title.setText(selected.column() + " / " + selected.rackCode().value());
         var s = data.summary();
-        summary.setText(s == null ? "Resumen: datos no disponibles" : "Media online: " + (s.hasOnlineServers() ? temp(s.averageOnlineTemperatureCelsius()) : "--") + "  " + (s.hasOnlineServers() ? percent(s.averageOnlineUtilization()) : "--")
-                + "\nPotencia total: " + power(s.currentPowerWatts()));
-        columns.setText(data.rows().isEmpty() ? "Sin slots" : "SLOT   TEMP    CARGA   POT.    ESTADO / ROL");
+        summary.setText(s == null ? "No rack data" : "Online avg temp: " + (s.hasOnlineServers() ? temp(s.averageOnlineTemperatureCelsius()) : "--") + "  " + (s.hasOnlineServers() ? percent(s.averageOnlineUtilization()) : "--")
+                + "\nTotal rack power: " + power(s.currentPowerWatts()));
+        columns.setText(data.rows().isEmpty() ? "No slots"
+                : String.format(Locale.ROOT, SLOT_COLUMNS, "SLOT", "TEMP", "LOAD", "POWER", "STATUS/ROLE"));
         for (int i = 0; i < data.rows().size(); i++) {
             var row = data.rows().get(i); var label = rows.get(i);
             var indicator = indicators.get(i);
             indicator.setOnColor(indicatorColor(row, session.range()));
             indicator.setStrokeColor(missingTemperature(row) ? MISSING_BORDER : INDICATOR_BORDER);
             label.setTextColor(COLOR_WHITE_LABEL);
-            if (!row.installed()) { label.setText(row.location().slot() + "   --     --      --      VACÍO"); continue; }
+            if (!row.installed()) {
+                label.setText(String.format(Locale.ROOT, SLOT_COLUMNS, row.location().slot(), "--", "--", "--", "EMPTY"));
+                continue;
+            }
             double t = row.temperature() == null ? Double.NaN : row.temperature().temperatureCelsius();
             double load = row.energy() == null ? Double.NaN : row.energy().utilization();
             double watts = row.energy() == null ? Double.NaN : row.energy().currentPowerWatts();
-            String state = row.health() == null ? "SIN DATOS" : row.health().status().name();
+            String state = row.health() == null ? "NO DATA" : row.health().status().name();
             String reasons = row.health() == null ? "" : row.health().alertReasons().stream().sorted().map(RackPanel::reason).reduce("", (a,b) -> a.isEmpty() ? b : a + "," + b);
             boolean missing = row.incomplete() || !Double.isFinite(t) || !Double.isFinite(load) || !Double.isFinite(watts);
-            label.setText(String.format(Locale.ROOT, "%-5s %6s %5s %6s %s/%s%s%s", row.location().slot(), temp(t), percent(load), power(watts), state, role(row.role()), reasons.isEmpty() ? "" : " " + reasons, missing ? " ?" : ""));
+            label.setText(String.format(Locale.ROOT, SLOT_COLUMNS, row.location().slot(), temp(t), percent(load), power(watts),
+                    state + "/" + role(row.role()) + (reasons.isEmpty() ? "" : " " + reasons) + (missing ? " ?" : "")));
         }
-        legend.setText("Gris: vacío; azul oscuro: offline; borde amarillo: sin temp\nU: carga alta; T: temp alta; ?: faltan datos\nGP: general; AI: IA; ST: almacén; DB: base datos\nEDGE: borde; GPU: gráfico; MGMT: gestión\n" + RackDetail.provenance(session.definition()));
+        legend.setText("Gray: empty · dark blue: offline · yellow border: no temp\n"
+                + "U: high load · T: high temp · ?: missing data\n"
+                + "GP: general · AI: artificial intelligence · ST: storage · DB: database\n"
+                + "EDGE: edge · GPU: graphics · MGMT: management\n"
+                + RackDetail.provenance(session.definition()));
         position();
     }
     private static boolean missingTemperature(RackDetail.Row row) {

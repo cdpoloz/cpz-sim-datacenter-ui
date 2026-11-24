@@ -30,7 +30,7 @@ final class TrendsPanel {
 
     TrendsPanel(PApplet sketch, PFont font, RuntimeLayout layout, RuntimeSession session) {
         this.sketch = sketch; this.font = font; this.layout = layout; this.session = session;
-        mode = new Button(sketch, "Cambiar gráfica ›", buttonBounds(layout, sketch.width, sketch.height));
+        mode = new Button(sketch, "Next chart ›", buttonBounds(layout, sketch.width, sketch.height));
         var style = new ButtonStyleConfig(); style.font = font; style.fillOverride = 0xff30363d;
         style.strokeOverride = 0xff82909b; style.textOverride = 0xffeeeeee;
         mode.setStyle(new DefaultButtonStyle(style)); mode.setTextSize(ControlMeasure.relative(.012f));
@@ -62,17 +62,17 @@ final class TrendsPanel {
         sketch.pushStyle(); if (font != null) sketch.textFont(font); sketch.textSize(sketch.height * .012f);
         sketch.textAlign(PApplet.LEFT, PApplet.TOP); sketch.fill(0xffeeeeee);
         String title = switch (view) {
-            case TEMPERATURE -> "Temperaturas · °C";
-            case AISLE -> "Pasillo " + (aisle == null ? "sin selección" : aisle) + " · °C";
-            case UTILIZATION -> "Utilización IT online · %";
-            case POWER -> "Potencia eléctrica · kW";
+            case TEMPERATURE -> "Temperature · °C";
+            case AISLE -> (aisle == null ? "No aisle selected" : "Aisle " + aisle) + " · °C";
+            case UTILIZATION -> "Online IT load · %";
+            case POWER -> "Electrical power · kW";
         };
         sketch.text(title, x, y);
         String[] legends = switch (view) {
-            case TEMPERATURE -> new String[]{"Serv. online", "Rack más caliente (media)", "Aire sala"};
-            case AISLE -> new String[]{"Media servidores online"};
-            case UTILIZATION -> new String[]{"IT online"};
-            case POWER -> new String[]{"IT", "Instalación"};
+            case TEMPERATURE -> new String[]{"Online avg", "Hottest rack (avg)", "Room air"};
+            case AISLE -> new String[]{"Online avg temp"};
+            case UTILIZATION -> new String[]{"Online IT load"};
+            case POWER -> new String[]{"IT power", "Total power"};
         };
         float legendX = x;
         for (int i = 0; i < legends.length; i++) {
@@ -84,14 +84,14 @@ final class TrendsPanel {
         sketch.text(String.format(Locale.ROOT, "%.2f", range.max()), left - 4, top);
         sketch.text(String.format(Locale.ROOT, "%.2f", range.min()), left - 4, bottom);
         if (samples.isEmpty()) {
-            sketch.textAlign(PApplet.CENTER, PApplet.CENTER); sketch.text("Sin historial", (left + right) / 2, (top + bottom) / 2);
+            sketch.textAlign(PApplet.CENTER, PApplet.CENTER); sketch.text("No history", (left + right) / 2, (top + bottom) / 2);
         } else {
             long first = samples.getFirst().tick(), last = samples.getLast().tick();
-            sketch.textAlign(PApplet.LEFT, PApplet.TOP); sketch.text("tick " + first, left, bottom + 3);
-            sketch.textAlign(PApplet.RIGHT, PApplet.TOP); sketch.text("tick " + last, right, bottom + 3);
+            sketch.textAlign(PApplet.LEFT, PApplet.TOP); sketch.text("Tick " + first, left, bottom + 3);
+            sketch.textAlign(PApplet.RIGHT, PApplet.TOP); sketch.text("Tick " + last, right, bottom + 3);
             for (int series = 0; series < legends.length; series++) drawSeries(series, first, last, left, right, top, bottom);
             if (!hasValues) {
-                sketch.textAlign(PApplet.CENTER, PApplet.CENTER); sketch.text("Sin datos", (left + right) / 2, (top + bottom) / 2);
+                sketch.textAlign(PApplet.CENTER, PApplet.CENTER); sketch.text("No data", (left + right) / 2, (top + bottom) / 2);
             }
         }
         sketch.popStyle(); mode.draw();

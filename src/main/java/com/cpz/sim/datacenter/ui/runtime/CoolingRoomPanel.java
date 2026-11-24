@@ -35,7 +35,7 @@ final class CoolingRoomPanel {
     CoolingRoomPanel(PApplet sketch, PFont font, RuntimeSession session, RuntimeLayout layout) {
         this.sketch = sketch; this.font = font; this.session = session; this.layout = layout;
         width = sketch.width; height = sketch.height; units = session.coolingUnits();
-        tab = button("Refrigeración", rect(.8f, .0f, .35f, .06f, true));
+        tab = button("Cooling", rect(.8f, .0f, .35f, .06f, true));
         tab.setClickListener(() -> { visible = !visible; refresh(); });
         for (var type : List.of(CoolingUnitType.SUPPLY, CoolingUnitType.EXHAUST)) {
             var button = button("", rect(.5f, .1f, .3f, .07f, false));
@@ -81,13 +81,13 @@ final class CoolingRoomPanel {
     private int maxPage() { return Math.max(0, (units.size()-1)/PAGE_SIZE); }
     boolean showing() { return visible; }
     void refresh() {
-        tab.setText(visible ? "Mapa" : "Refrigeración");
-        help.setText("Maestro: ON si alguna está activa · Página " + (page+1) + "/" + (maxPage()+1));
+        tab.setText(visible ? "Map" : "Cooling");
+        help.setText("Group ON if any unit is on · Page " + (page+1) + "/" + (maxPage()+1));
         help.setVisible(visible);
         for (int i=0;i<2;i++) {
             var type = i == 0 ? CoolingUnitType.SUPPLY : CoolingUnitType.EXHAUST;
             long total = units.stream().filter(u -> u.type() == type).count(); long active = session.coolingActive(type);
-            masters.get(i).setText(type + " " + active + "/" + total + (total == 0 ? " sin unidades" : active > 0 ? " ON" : " OFF"));
+            masters.get(i).setText(type + " " + active + "/" + total + (total == 0 ? " no units" : active > 0 ? " ON" : " OFF"));
             masters.get(i).setEnabled(total > 0); masters.get(i).setVisible(visible);
         }
         for (int i=0;i<units.size();i++) {

@@ -4,6 +4,7 @@ import com.cpz.processing.controls.controls.button.Button;
 import com.cpz.processing.controls.controls.config.ControlConfigLoader;
 import com.cpz.processing.controls.controls.floatinglist.FloatingListConfigLoader;
 import com.cpz.processing.controls.controls.floatinglist.FloatingListPanel;
+import com.cpz.processing.controls.controls.geometry.ControlBounds;
 import com.cpz.processing.controls.controls.geometry.ResolvedBounds;
 import com.cpz.processing.controls.controls.label.Label;
 import com.cpz.processing.controls.core.input.DefaultInputLayer;
@@ -19,7 +20,7 @@ import processing.core.PApplet;
 
 import java.util.List;
 
-/** Connects the classic alert heading and trigger to the library's floating list. */
+/** Connects the alert heading and trigger to the library's floating list. */
 public final class AlertsPanelUpdater implements AutoCloseable {
     private static final int LIST_PRIORITY = 1100;
     private static final int TRIGGER_PRIORITY = 1;
@@ -102,6 +103,10 @@ public final class AlertsPanelUpdater implements AutoCloseable {
 
     public boolean isOpen() {
         return panel.isOpen();
+    }
+
+    public void setTriggerBounds(ControlBounds bounds) {
+        trigger.setBounds(bounds);
     }
 
     public void drawTrigger() {

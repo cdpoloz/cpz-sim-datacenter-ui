@@ -29,7 +29,7 @@ class RuntimeMetricsTest {
         var projected=RuntimeMetrics.aisle(aisle,List.of(cross),Optional.of(snapshot));
         assertEquals(List.of(code),projected.zones());assertTrue(projected.shared());
         assertEquals(snapshot.aggregateZones("CUSTOM",List.of(code)),projected.group().orElseThrow());
-        assertTrue(RuntimeMetrics.aisleText(projected).contains("zona compartida"));
+        assertTrue(RuntimeMetrics.aisleText(projected).contains("shared zone"));
         var group=projected.group().orElseThrow();
         assertEquals(snapshot.tickIndex(),group.tickIndex());
         assertTrue(RuntimeMetrics.aisleText(projected).contains(String.format(Locale.ROOT,"SUPPLY %.2f / EXHAUST %.2f m³/s",group.supplyAirflowCubicMetersPerSecond(),group.exhaustAirflowCubicMetersPerSecond())));
@@ -68,10 +68,10 @@ class RuntimeMetricsTest {
         var session=session(false,true);var snapshot=session.snapshot().operationalSnapshot();
         assertFalse(snapshot.hasOnlineServers()); assertFalse(snapshot.hasPue());
         var summary=RuntimeMetrics.summary(snapshot);
-        assertTrue(summary.left().contains("Aire sala: --"));assertTrue(summary.left().contains("Servidores online: --"));
-        assertTrue(summary.left().contains("Rack más caliente:\n--"));assertTrue(summary.right().contains("IT online: --"));
+        assertTrue(summary.left().contains("Room air temp: --"));assertTrue(summary.left().contains("Online avg temp: --"));
+        assertTrue(summary.left().contains("Hottest rack (avg):\n--"));assertTrue(summary.right().contains("Online IT load: --"));
         assertTrue(summary.right().contains("PUE: --"));
-        assertTrue(RuntimeMetrics.summary(null).left().contains("no disponibles"));
+        assertTrue(RuntimeMetrics.summary(null).left().contains("No data"));
     }
     @Test void summaryColumnsStayInBoundsAfterResize() {
         for(var size:List.of(new int[]{1920,1011},new int[]{800,800})) {
@@ -83,7 +83,7 @@ class RuntimeMetricsTest {
     }
     @Test void switchingAisleMetricsKeepsSelectionAndSnapshot() throws Exception {
         var session=session(true,false);var room=new RoomMap(session.definition().layout());
-        var sketch=new processing.core.PApplet();sketch.width=1920;sketch.height=1011;
+        var sketch = new RuntimeTestApplet(1920, 1011);
         var layout=new RuntimeLayout(sketch.width,sketch.height);
         var props=new Properties();try(var in=Files.newInputStream(Path.of("data/config.properties"))){props.load(in);}
         var view=new RuntimeView(sketch,layout,null,room,session,new RuntimeClock(props,()->0));
@@ -95,9 +95,9 @@ class RuntimeMetricsTest {
         var metricField=RuntimeView.class.getDeclaredField("aisleMetrics");metricField.setAccessible(true);
         var label=(com.cpz.processing.controls.controls.label.Label)metricField.get(view);
         var before=session.snapshot();var b=mode.getTooltipBounds();click(view,b.centerX(),b.centerY());
-        assertTrue(label.getText().contains("Cobertura"));assertTrue(label.getText().contains("SUPPLY "));assertTrue(label.getText().contains("EXHAUST "));
+        assertTrue(label.getText().contains("Coverage"));assertTrue(label.getText().contains("SUPPLY "));assertTrue(label.getText().contains("EXHAUST "));
         assertEquals(target,room.selected());assertSame(before,session.snapshot());
-        click(view,b.centerX(),b.centerY());assertTrue(label.getText().contains("Media online"));assertSame(before,session.snapshot());
+        click(view,b.centerX(),b.centerY());assertTrue(label.getText().contains("Online avg temp"));assertSame(before,session.snapshot());
     }
     private void click(RuntimeView view,float x,float y) {
         for(int action:new int[]{processing.event.MouseEvent.PRESS,processing.event.MouseEvent.RELEASE})

@@ -1,6 +1,9 @@
 package com.cpz.sim.datacenter.ui.runtime;
 
 import com.cpz.sim.datacenter.config.json.JsonDatacenterConfigLoader;
+import processing.core.PApplet;
+import processing.event.KeyEvent;
+import processing.event.MouseEvent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.*;
@@ -86,7 +89,7 @@ class RuntimeSessionTest {
     @Test void viewRoutesRoomAndAisleClicksToSameRack() throws Exception {
         var definition = RoomMap.loadDefinition();
         var room = new RoomMap(definition.layout());
-        var sketch = new processing.core.PApplet(); sketch.width = 1920; sketch.height = 1014;
+        var sketch = new RuntimeTestApplet(1920, 1014);
         var layout = new RuntimeLayout(sketch.width, sketch.height);
         var view = new RuntimeView(sketch, layout, null, room, new RuntimeSession(definition, properties()), new RuntimeClock(properties(), () -> 0));
         var rack = new com.cpz.sim.datacenter.model.RackLocation("C02", "R01");
@@ -103,6 +106,34 @@ class RuntimeSessionTest {
         var resized = resizedSelection.geometry(resizedLayout, 800, 800).racks().get(target).resolve(800, 800);
         click(view, resized.x(), resized.y()); assertEquals(target, room.selected());
     }
+
+    @Test void initialAlertsOpenWhilePausedAndOutsideClickDoesNotSelectRack() throws Exception {
+        var properties = properties();
+        properties.setProperty("simulation.health.temperature.alert-threshold-celsius", "30");
+        properties.setProperty("simulation.health.temperature.recovery-threshold-celsius", "25");
+        var definition = RoomMap.loadDefinition();
+        var session = new RuntimeSession(definition, properties);
+        var clock = new RuntimeClock(properties, () -> 0);
+        var room = new RoomMap(definition.layout());
+        var sketch = new RuntimeTestApplet(1920, 993);
+        var layout = new RuntimeLayout(sketch.width, sketch.height);
+        var trigger = layout.alertTriggerBounds(sketch.width, sketch.height).resolve(sketch.width, sketch.height);
+        var rack = room.geometry(layout, sketch.width, sketch.height).racks().getFirst();
+        var rackBounds = rack.bounds().resolve(sketch.width, sketch.height);
+        var escape = new KeyEvent(this, 0, KeyEvent.PRESS, 0, PApplet.ESC, PApplet.ESC);
+
+        try (var view = new RuntimeView(sketch, layout, null, room, session, clock)) {
+            assertFalse(clock.running());
+            click(view, trigger.x(), trigger.y());
+            assertTrue(view.closeAlertsOnEscape(escape), "The initial snapshot must already provide overflow");
+            click(view, trigger.x(), trigger.y());
+            click(view, rackBounds.x(), rackBounds.y());
+            assertFalse(view.closeAlertsOnEscape(escape), "The outside click must close the list");
+            assertNull(room.selected(), "The closing gesture must not reach the rack");
+            click(view, rackBounds.x(), rackBounds.y());
+            assertEquals(rack.rack().location(), room.selected());
+        }
+    }
     @Test void backendWithoutDeclaredAislesStillRuns() throws Exception {
         var mapper = new com.fasterxml.jackson.databind.ObjectMapper();
         var root = (com.fasterxml.jackson.databind.node.ObjectNode) mapper.readTree(Path.of("data/config/datacenter.json").toFile());
@@ -114,7 +145,8 @@ class RuntimeSessionTest {
         session.step(); assertEquals(96, session.snapshot().operationalSnapshot().rackCount());
     }
     private void click(RuntimeView view, float x, float y) {
-        for (int action : new int[]{processing.event.MouseEvent.PRESS, processing.event.MouseEvent.RELEASE})
-            view.mouseEvent(new processing.event.MouseEvent(this, 0, action, 0, (int)x, (int)y, 1, 1));
+        for (int action : new int[]{MouseEvent.PRESS, MouseEvent.RELEASE})
+            view.mouseEvent(new MouseEvent(this, 0, action, 0, (int)x, (int)y, PApplet.LEFT, 1));
     }
+
 }

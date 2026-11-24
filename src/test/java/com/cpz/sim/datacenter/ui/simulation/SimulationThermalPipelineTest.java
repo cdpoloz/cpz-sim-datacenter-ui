@@ -248,7 +248,7 @@ class SimulationThermalPipelineTest {
             updater.update();
             assertEquals(String.format(java.util.Locale.ROOT, "%.1f°C",
                     step.operationalSnapshot().averageOnlineServerTemperatureCelsius()), average.getText());
-            assertEquals(fixture == legacy ? "AIR:--" : "AIR:" + String.format(java.util.Locale.ROOT, "%.1f°C",
+            assertEquals(fixture == legacy ? "AIR TEMP:--" : "AIR TEMP:" + String.format(java.util.Locale.ROOT, "%.1f°C",
                     step.operationalSnapshot().roomAirTemperatureCelsius()), air.getText());
         }
     }

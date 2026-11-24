@@ -17,26 +17,26 @@ final class RuntimeMetrics {
         return new AisleCooling(codes, shared, codes.isEmpty() ? Optional.empty() : snapshot.map(s -> s.aggregateZones(aisle.code(), codes)));
     }
     static String aisleText(AisleCooling data) {
-        if (data.group().isEmpty()) return "Sin zonas o snapshot\nSUPPLY/EXHAUST: -- m³/s\nCaudal agrupado no disponible";
+        if (data.group().isEmpty()) return "No cooling zones or snapshot\nSUPPLY/EXHAUST: -- m³/s\nGrouped airflow unavailable";
         var group = data.group().orElseThrow();
-        return "Cobertura " + percent(group.thermalCoverage()) + "  ΔT " + number(group.airTemperatureRiseCelsius(), "%.1f°C") + " (tick)"
-                + "\nRecirculación " + percent(group.averageRecirculationFraction()) + (data.shared() ? " · zona compartida" : "")
+        return "Coverage " + percent(group.thermalCoverage()) + "  ΔT " + number(group.airTemperatureRiseCelsius(), "%.1f°C") + " (tick)"
+                + "\nRecirculation " + percent(group.averageRecirculationFraction()) + (data.shared() ? " · shared zone" : "")
                 + "\nSUPPLY " + number(group.supplyAirflowCubicMetersPerSecond(), "%.2f")
                 + " / EXHAUST " + number(group.exhaustAirflowCubicMetersPerSecond(), "%.2f") + " m³/s";
     }
     record Summary(String left, String right) { }
     static Summary summary(DatacenterOperationalSnapshot s) {
-        if (s == null) return new Summary("Último tick\nDatos no disponibles", "");
+        if (s == null) return new Summary("Last tick\nNo data", "");
         boolean online = s.hasOnlineServers();
         String hottest = online && s.hottestRackLocation().isPresent()
                 ? s.hottestRackLocation().map(r -> r.column()+"/"+r.rackCode().value()).orElse("--") + "  " + number(s.hottestRackAverageTemperatureCelsius(), "%.1f°C") : "--";
-        String left = "Último tick\nAire sala: " + number(s.roomAirTemperatureCelsius(), "%.1f°C")
-                + "\nServidores online: " + (online ? number(s.averageOnlineServerTemperatureCelsius(), "%.1f°C") : "--")
-                + "\nRack más caliente:\n" + hottest;
-        String right = "IT online: " + (online ? percent(s.totalItUtilization()) : "--")
-                + "\nIT: " + kw(s.currentItPowerWatts())
-                + "\nRefrigeración: " + (s.hasCoolingData() ? kw(s.coolingPowerWatts()) : "--")
-                + "\nInstalación: " + (s.hasFacilityPowerData() ? kw(s.totalFacilityPowerWatts()) : "--")
+        String left = "Last tick\nRoom air temp: " + number(s.roomAirTemperatureCelsius(), "%.1f°C")
+                + "\nOnline avg temp: " + (online ? number(s.averageOnlineServerTemperatureCelsius(), "%.1f°C") : "--")
+                + "\nHottest rack (avg):\n" + hottest;
+        String right = "Online IT load: " + (online ? percent(s.totalItUtilization()) : "--")
+                + "\nIT power: " + kw(s.currentItPowerWatts())
+                + "\nCooling power: " + (s.hasCoolingData() ? kw(s.coolingPowerWatts()) : "--")
+                + "\nTotal power: " + (s.hasFacilityPowerData() ? kw(s.totalFacilityPowerWatts()) : "--")
                 + "\nPUE: " + (s.hasPue() ? number(s.pue(), "%.2f") : "--");
         return new Summary(left, right);
     }

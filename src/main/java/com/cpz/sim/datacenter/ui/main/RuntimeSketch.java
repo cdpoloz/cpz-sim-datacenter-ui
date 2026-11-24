@@ -6,6 +6,7 @@ import com.cpz.sim.datacenter.ui.runtime.RoomMap;
 import com.cpz.sim.datacenter.ui.runtime.RuntimeSession;
 import com.cpz.sim.datacenter.ui.runtime.RuntimeClock;
 import processing.core.PApplet;
+import processing.event.KeyEvent;
 import java.awt.GraphicsEnvironment;
 import java.awt.Frame;
 
@@ -44,4 +45,12 @@ public final class RuntimeSketch extends PApplet {
 
     @Override public void draw() { view.draw(); }
 
+    @Override public void keyPressed(KeyEvent event) {
+        if (view != null && view.closeAlertsOnEscape(event)) key = 0;
+    }
+
+    @Override public void dispose() {
+        if (view != null) view.close();
+        super.dispose();
+    }
 }

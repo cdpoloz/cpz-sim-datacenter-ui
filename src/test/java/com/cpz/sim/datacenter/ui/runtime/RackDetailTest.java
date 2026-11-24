@@ -100,9 +100,9 @@ class RackDetailTest {
             var path = tempDir.resolve(mode + ".json"); mapper.writeValue(path.toFile(), root);
             var definition = new com.cpz.sim.datacenter.config.json.JsonDatacenterConfigLoader().load(path);
             String legend = RackDetail.provenance(definition);
-            assertTrue(legend.contains("simulada"));
-            if (mode.equals("POWER_DRIVEN")) assertTrue(legend.contains("W/servidor inferida"));
-            if (mode.equals("TEMPERATURE_DRIVEN")) assertTrue(legend.contains("AISLE") && legend.contains("asignada"));
+            assertTrue(legend.contains("Simulated input:"));
+            if (mode.equals("POWER_DRIVEN")) assertTrue(legend.contains("W/server inferred"));
+            if (mode.equals("TEMPERATURE_DRIVEN")) assertTrue(legend.contains("AISLE") && legend.contains("Temp assigned"));
         }
     }
     @Test void backendAcceptsDifferentSlotCountOrderAndNonConsecutiveCodes() throws Exception {

@@ -51,12 +51,25 @@ public class Launcher {
             LOG.severe(LogMessage.fileLoadError(propertiesPath));
             System.exit(1);
         }
-        PApplet.main(selectSketch(System.getProperties()));
+        PApplet.main(selectSketch(PROPS, System.getProperties()));
     }
 
     /** Selects the view before constructing any sketch or map controls. */
     public static Class<? extends PApplet> selectSketch(Properties properties) {
-        return switch (DatasetReplayOptions.source(properties)) {
+        return selectSketch(new Properties(), properties);
+    }
+
+    /** Explicit JVM sources override the file's UI mode, which is resolved only when needed. */
+    public static Class<? extends PApplet> selectSketch(Properties fileProperties, Properties jvmProperties) {
+        if (jvmProperties.getProperty("simulation.source") == null) {
+            String mode = fileProperties.getProperty("ui.mode", "CLASSIC");
+            return switch (mode) {
+                case "CLASSIC" -> Sketch.class;
+                case "RUNTIME" -> RuntimeSketch.class;
+                default -> throw new IllegalArgumentException("ui.mode must be CLASSIC or RUNTIME: " + mode);
+            };
+        }
+        return switch (DatasetReplayOptions.source(jvmProperties)) {
             case DEMO -> Sketch.class;
             case DATASET -> DatasetReplaySketch.class;
             case RUNTIME -> RuntimeSketch.class;

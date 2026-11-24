@@ -60,9 +60,9 @@ class AisleSelectionTest {
         var offline = new com.cpz.sim.datacenter.snapshot.ServerGroupOperationalSnapshot("one", 1, 0, 0, 0, 0,
                 Double.NaN, Double.NaN, 42, Optional.of(location));
         String text = AisleMetrics.text(offline, v -> v + "C");
-        assertTrue(text.contains("Sin servidores online"));
-        assertTrue(text.contains("Media online: --  IT: --"));
+        assertTrue(text.contains("No online servers"));
+        assertTrue(text.contains("Online avg temp: --  IT load: --"));
         assertTrue(text.contains("42.0C")); assertTrue(text.contains("NORTH/R01/S1"));
-        assertEquals("Datos no disponibles", AisleMetrics.text(null, v -> "unexpected"));
+        assertEquals("No data", AisleMetrics.text(null, v -> "unexpected"));
     }
 }

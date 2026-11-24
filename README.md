@@ -81,12 +81,37 @@ mvn dependency:build-classpath -Dmdep.outputFile=target/classpath.txt
 java -cp "target/classes:$(<target/classpath.txt)" com.cpz.sim.datacenter.ui.main.Launcher
 ```
 
-The default is the classic view (`-Dsimulation.source=DEMO`). To open the
-independent runtime shell, run from the repository root:
+Choose the UI in `data/config.properties`, then restart the application. The default
+`ui.mode=CLASSIC` opens `Sketch` with fixed JSON controls. To use controls generated
+from the configured datacenter, set `ui.mode=RUNTIME` to open `RuntimeSketch`.
+
+For either file setting, launch with the same command:
 
 ```bash
+# ui.mode=CLASSIC opens Sketch
+# ui.mode=RUNTIME opens RuntimeSketch
+java -cp "target/classes:$(<target/classpath.txt)" com.cpz.sim.datacenter.ui.main.Launcher
+```
+
+An explicit JVM source takes precedence over `ui.mode`:
+
+| JVM option | Selected sketch |
+| --- | --- |
+| Absent | File `ui.mode`, defaulting to `CLASSIC` when absent |
+| `-Dsimulation.source=DEMO` | `Sketch` |
+| `-Dsimulation.source=RUNTIME` | `RuntimeSketch` |
+| `-Dsimulation.source=DATASET` | `DatasetReplaySketch` |
+
+For example, these overrides work with either file mode:
+
+```bash
+java -Dsimulation.source=DEMO -cp "target/classes:$(<target/classpath.txt)" com.cpz.sim.datacenter.ui.main.Launcher
 java -Dsimulation.source=RUNTIME -cp "target/classes:$(<target/classpath.txt)" com.cpz.sim.datacenter.ui.main.Launcher
 ```
+
+DATASET requires the replay properties documented in the dataset replay guide.
+Values are case sensitive and use uppercase. When consulted, an empty or unknown
+`ui.mode` fails startup with an error listing `CLASSIC` and `RUNTIME`.
 
 Runtime starts paused after one initial simulation step. Use **Play/Pausa** in
 the footer to run or pause, and **−/+** to change the configured speed. The
@@ -142,16 +167,16 @@ does not record a sample; the next step adds one. The runtime window remains
 fixed in size.
 
 In an IDE, select `com.cpz.sim.datacenter.ui.main.Launcher` as the main class,
-set the working directory to the repository root, and add
-`-Dsimulation.source=RUNTIME` to **VM options**. Remove it or use `DEMO` for
-the classic view; `DATASET` retains the existing replay path and its required
-properties. Values are case sensitive. See [runtime progress](docs/runtime-controls-progress.md).
+set the working directory to the repository root, and choose `ui.mode` in
+`data/config.properties`. Existing **VM options** using `-Dsimulation.source`
+override the file mode; `DATASET` retains its replay properties. Values are case sensitive. See [runtime progress](docs/runtime-controls-progress.md).
 
 Run `mvn test` for thermal-pipeline integration, cooling-control projections, and graph-range tests.
 
 ## Configuration
 
-`data/config.properties` controls the window, frame rate, number formats, boundary columns, health thresholds, simulation speed factors, and selected-aisle gradient geometry. JSON files under `data/config` define the control layout and backend datacenter model. The default backend input is `data/config/datacenter.json`; JVM property `-Dsimulation.datacenter.config=/path/to/datacenter.json` selects another file.
+`data/config.properties` selects the startup UI with `ui.mode=CLASSIC` or
+`ui.mode=RUNTIME` and controls the window, frame rate, number formats, boundary columns, health thresholds, simulation speed factors, and selected-aisle gradient geometry. JSON files under `data/config` define the control layout and backend datacenter model. The default backend input is `data/config/datacenter.json`; JVM property `-Dsimulation.datacenter.config=/path/to/datacenter.json` selects another file.
 
 `hot-aisle-mapping.json` maps columns such as `C02` and `C03` to UI hot aisles such as `HA02`. Control codes in the JSON files are integration identifiers and must stay aligned with the code that resolves buttons, toggles, labels, and indicators.
 

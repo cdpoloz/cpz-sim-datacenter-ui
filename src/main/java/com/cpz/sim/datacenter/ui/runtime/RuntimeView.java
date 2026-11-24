@@ -5,14 +5,25 @@ import com.cpz.processing.controls.controls.button.Button;
 import com.cpz.processing.controls.controls.button.config.ButtonStyleConfig;
 import com.cpz.processing.controls.controls.button.style.DefaultButtonStyle;
 import com.cpz.processing.controls.controls.geometry.ControlMeasure;
+import com.cpz.processing.controls.core.input.DefaultInputLayer;
+import com.cpz.processing.controls.core.input.InputManager;
+import com.cpz.processing.controls.core.input.KeyboardEvent;
 import com.cpz.processing.controls.core.input.PointerEvent;
+import com.cpz.processing.controls.core.overlay.OverlayManager;
+import com.cpz.processing.controls.core.overlay.notification.NotificationManager;
+import com.cpz.processing.controls.core.overlay.notification.config.NotificationConfigLoader;
 import com.cpz.sim.datacenter.model.RackLocation;
 import com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot;
 import com.cpz.processing.controls.controls.label.config.LabelStyleConfig;
 import com.cpz.processing.controls.controls.label.style.DefaultLabelStyle;
 import com.cpz.processing.controls.controls.label.style.VerticalAlign;
+import com.cpz.sim.datacenter.ui.input.MouseInputDispatcher;
+import com.cpz.sim.datacenter.ui.ui.SimulationAlertNotifier;
+import com.cpz.sim.datacenter.ui.ui.panel.AlertsPanelUpdater;
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.event.KeyEvent;
+import processing.event.MouseEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +34,7 @@ import static com.cpz.sim.datacenter.ui.runtime.RuntimeLayout.Area.*;
 import static com.cpz.sim.datacenter.ui.util.Constants.*;
 
 /** Composes the shell and room map using public controls. */
-public final class RuntimeView {
+public final class RuntimeView implements AutoCloseable {
     private final PApplet sketch;
     private RuntimeLayout layout;
     private int layoutWidth, layoutHeight;
@@ -48,6 +59,12 @@ public final class RuntimeView {
     private final RackCoolingPanel rackCoolingPanel;
     private final SummaryPanel summaryPanel;
     private final TrendsPanel trendsPanel;
+    private final InputManager input = new InputManager();
+    private final MouseInputDispatcher mouse = new MouseInputDispatcher(input);
+    private final OverlayManager overlays = new OverlayManager(input.getFocusManager());
+    private final NotificationManager notifications;
+    private final SimulationAlertNotifier alertNotifier;
+    private final AlertsPanelUpdater alertsPanel;
     private final List<Button> playback = new ArrayList<>();
     private Label statusLabel;
 
@@ -64,31 +81,28 @@ public final class RuntimeView {
         float textSize = sketch.height * .018f;
         for (var area : RuntimeLayout.Area.values()) {
             String title = switch (area) {
-                case HEADER -> "DATACENTER SIMULATOR / RUNTIME — Cabecera";
-                case ROOM -> "Sala";
-                case SELECTED_AISLE -> "Pasillo seleccionado";
-                case SELECTED_RACK -> "Rack seleccionado";
-                case SUMMARY -> "Resumen global";
-                case TRENDS -> "Tendencias";
-                case ALERTS -> "Alertas";
-                case FOOTER -> "Simulación";
+                case HEADER -> "DATACENTER SIMULATOR";
+                case ROOM -> "DATACENTER MAP";
+                case SELECTED_AISLE -> "SELECTED AISLE";
+                case SELECTED_RACK -> "SELECTED RACK";
+                case SUMMARY -> "GLOBAL OVERVIEW";
+                case TRENDS -> "TRENDS";
+                case ALERTS -> "ALERTS";
+                case FOOTER -> "SIMULATION";
             };
-            addLabel(area.name() + "Title", title, layout.titleBounds(area),
-                    font, textSize * 1.12f, COLOR_BLUE_LABEL);
-            String pending = switch (area) {
-                    case HEADER -> "Pendiente: contenido y estado de sala.";
-                    case ROOM -> "Pendiente: mapa generado desde el layout.";
-                    case SELECTED_AISLE -> "Pendiente: selección y detalle\ndel pasillo.";
-                    case SELECTED_RACK -> "Pendiente: selección, slots\ny detalle del rack.";
-                    case SUMMARY -> "Pendiente: estado global de la sala.";
-                    case TRENDS -> "Pendiente: historial y gráficas.";
-                    case ALERTS -> "Pendiente: evaluación de alertas.";
-                    case FOOTER -> "Pendiente: simulación y acciones.";
-                };
-            if (area != ROOM && area != FOOTER && area != SELECTED_AISLE && area != SELECTED_RACK && area != SUMMARY && area != TRENDS) addLabel(area.name() + "Pending", pending, layout.contentBounds(area),
-                    font, textSize, COLOR_WHITE_LABEL);
+            addLabel(area.name() + "Title", title, layout.titleBounds(area), font,
+                    area == ALERTS ? sketch.height * .0141f : textSize * 1.12f,
+                    area == ALERTS ? COLOR_WHITE_LABEL : COLOR_BLUE_LABEL);
+            if (area == HEADER) addLabel("HEADERPending", "", layout.contentBounds(area), font, textSize, COLOR_WHITE_LABEL);
         }
         statusLabel = labels.get(1);
+        notifications = new NotificationManager(sketch, overlays);
+        NotificationConfigLoader.apply(sketch, "data/config/notifications.json", notifications);
+        alertNotifier = new SimulationAlertNotifier(notifications, session.definition().alertPolicy());
+        alertsPanel = AlertsPanelUpdater.create(sketch, overlays, input, alertNotifier, notifications,
+                labels.get(ALERTS.ordinal() + 1));
+        layoutAlerts();
+        updateAlerts();
         var geometry = room.geometry(layout, layoutWidth, layoutHeight);
         for (var entry : geometry.columns().entrySet()) {
             int before = labels.size();
@@ -104,7 +118,7 @@ public final class RuntimeView {
             buttons.put(rack.location(), button);
         }
         var content = layout.contentBounds(ROOM).resolve(layoutWidth, layoutHeight);
-        addLabel("Selection", "Sin selección", selectionBounds(content), font, textSize * .72f, COLOR_WHITE_LABEL);
+        addLabel("Selection", "No rack selected", selectionBounds(content), font, textSize * .72f, COLOR_WHITE_LABEL);
         selectionLabel = labels.remove(labels.size() - 1);
         addLabel("AisleName", "", aisleTextBounds(.12f, .12f), font, textSize * .8f, COLOR_WHITE_LABEL);
         aisleTitle = labels.remove(labels.size() - 1);
@@ -130,7 +144,7 @@ public final class RuntimeView {
         }
         aisleNavigation.get(0).setClickListener(() -> changeAisle(-1));
         aisleNavigation.get(1).setClickListener(() -> changeAisle(1));
-        aisleMode = new Button(sketch, "Refrigeración", aisleModeBounds());
+        aisleMode = new Button(sketch, "Cooling", aisleModeBounds());
         aisleMode.setStyle(buttonStyle(false, 0xff30363d)); aisleMode.setTextSize(ControlMeasure.relative(.012f));
         aisleMode.setClickListener(() -> { aisleCooling = !aisleCooling; updateAisle(); });
         rackPanel = new RackPanel(sketch, font, room, session, layout);
@@ -148,6 +162,13 @@ public final class RuntimeView {
         playback.get(0).setClickListener(() -> { clock.toggle(); updateStatus(); });
         playback.get(1).setClickListener(() -> { clock.change(-1); updateStatus(); });
         playback.get(2).setClickListener(() -> { clock.change(1); updateStatus(); });
+        input.registerLayer(new DefaultInputLayer(0) {
+            @Override public boolean handlePointerEvent(PointerEvent pointer) {
+                if (pointer.getType() == PointerEvent.Type.WHEEL) return false;
+                routeDashboardPointer(pointer);
+                return true;
+            }
+        });
         updateStatus();
         updateRacks();
         updateAisle();
@@ -171,7 +192,7 @@ public final class RuntimeView {
     private void updateAisle() {
         var selected = aisle.selected();
         trendsPanel.refresh(selected == null ? null : selected.code());
-        aisleMode.setText(aisleCooling ? "Operación" : "Refrigeración");
+        aisleMode.setText(aisleCooling ? "Operation" : "Cooling");
         aisleNavigation.get(0).setEnabled(aisle.canPrevious());
         aisleNavigation.get(1).setEnabled(aisle.canNext());
         aisleGeometry = aisle.geometry(layout, layoutWidth, layoutHeight);
@@ -189,8 +210,8 @@ public final class RuntimeView {
             }
         });
         if (selected == null) {
-            aisleTitle.setText(room.hotAisles().isEmpty() ? "Sin pasillos configurados" : room.selected() == null ? "Seleccione un pasillo" : "Sin pasillo asociado");
-            aisleMetrics.setText(aisleCooling ? "Sin pasillo\nSUPPLY/EXHAUST: -- m³/s" : "");
+            aisleTitle.setText(room.hotAisles().isEmpty() ? "No aisles configured" : room.selected() == null ? "Select an aisle" : "No aisle for this rack");
+            aisleMetrics.setText(aisleCooling ? "No aisle selected\nSUPPLY/EXHAUST: -- m³/s" : "");
             return;
         }
         aisleTitle.setText(selected.code() + "  " + String.join(", ", selected.columns()));
@@ -207,7 +228,7 @@ public final class RuntimeView {
     }
 
     private void updateStatus() {
-        playback.get(0).setText(clock.running() ? "Pausa" : "Play");
+        playback.get(0).setText(clock.running() ? "Pause" : "Play");
         playback.get(1).setEnabled(clock.canDecrease()); playback.get(2).setEnabled(clock.canIncrease());
         long minutes = (long) (session.snapshot().elapsedSeconds() / 60);
         statusLabel.setText(String.format(java.util.Locale.ROOT, "%s  x%s  %02dd %02d:%02d", clock.running() ? "Running" : "Paused", clock.factor(), minutes / 1440, minutes / 60 % 24, minutes % 60));
@@ -223,13 +244,13 @@ public final class RuntimeView {
     }
     private void updateSelection() {
         var location = room.selected();
-        String selected = "Sin selección";
+        String selected = "No rack selected";
         if (location != null) {
             var rack = session.snapshot().operationalSnapshot().racks().get(location);
             double temp = RackDisplay.temperature(rack);
             selected = location.column() + " / " + location.rackCode().value() + " " + (Double.isFinite(temp) ? session.formatTemperature(temp) : "--");
         }
-        selectionLabel.setText(selected + "\nGris: vacío · azul oscuro: offline · violeta: -- · azul-rojo: "
+        selectionLabel.setText(selected + "\nGray: empty · dark blue: offline · purple: -- · blue–red: "
                 + session.formatTemperature(session.range().minServerTemperatureCelsius()) + "–" + session.formatTemperature(session.range().maxServerTemperatureCelsius()));
     }
 
@@ -254,27 +275,47 @@ public final class RuntimeView {
         updateRacks(); updateAisle(); rackPanel.refresh(); rackCoolingPanel.refresh();
     }
 
-    public void mouseEvent(processing.event.MouseEvent event) {
+    public void mouseEvent(MouseEvent event) {
         updateLayoutIfNeeded();
-        PointerEvent.Type type = switch (event.getAction()) {
-            case processing.event.MouseEvent.PRESS -> PointerEvent.Type.PRESS;
-            case processing.event.MouseEvent.RELEASE -> PointerEvent.Type.RELEASE;
-            case processing.event.MouseEvent.MOVE -> PointerEvent.Type.MOVE;
-            case processing.event.MouseEvent.DRAG -> PointerEvent.Type.DRAG;
-            default -> null;
-        };
-        if (type != null) {
-            var pointer = new PointerEvent(type, event.getX(), event.getY());
-            boolean wasCooling = coolingPanel.showing();
-            coolingPanel.pointer(pointer);
-            if (!wasCooling && !coolingPanel.showing()) buttons.values().forEach(button -> button.handlePointerEvent(pointer));
-            rackCoolingPanel.pointer(pointer);
-            playback.forEach(button -> button.handlePointerEvent(pointer));
-            aisleButtons.values().forEach(button -> button.handlePointerEvent(pointer));
-            aisleNavigation.forEach(button -> button.handlePointerEvent(pointer));
-            aisleMode.handlePointerEvent(pointer);
-            trendsPanel.pointer(pointer);
+        int x = event.getX(), y = event.getY(), button = event.getButton();
+        switch (event.getAction()) {
+            case MouseEvent.PRESS -> mouse.mousePressed(x, y, button);
+            case MouseEvent.RELEASE -> mouse.mouseReleased(x, y, button);
+            case MouseEvent.MOVE -> mouse.mouseMoved(x, y, button);
+            case MouseEvent.DRAG -> mouse.mouseDragged(x, y, button);
+            case MouseEvent.WHEEL -> mouse.mouseWheel(x, y, button, event.getCount(), event.isShiftDown(), event.isControlDown());
         }
+    }
+
+    private void routeDashboardPointer(PointerEvent pointer) {
+        boolean wasCooling = coolingPanel.showing();
+        coolingPanel.pointer(pointer);
+        if (!wasCooling && !coolingPanel.showing()) buttons.values().forEach(button -> button.handlePointerEvent(pointer));
+        rackCoolingPanel.pointer(pointer);
+        playback.forEach(button -> button.handlePointerEvent(pointer));
+        aisleButtons.values().forEach(button -> button.handlePointerEvent(pointer));
+        aisleNavigation.forEach(button -> button.handlePointerEvent(pointer));
+        aisleMode.handlePointerEvent(pointer);
+        trendsPanel.pointer(pointer);
+    }
+
+    public boolean closeAlertsOnEscape(KeyEvent event) {
+        if (event.getKey() != PApplet.ESC || !alertsPanel.isOpen()) return false;
+        input.dispatchKeyboard(new KeyboardEvent(KeyboardEvent.Type.PRESS, event.getKey(), event.getKeyCode(),
+                event.isShiftDown(), event.isControlDown(), event.isAltDown()));
+        return true;
+    }
+
+    private void layoutAlerts() {
+        var content = layout.contentBounds(ALERTS).resolve(layoutWidth, layoutHeight);
+        notifications.setPosition(content.x(), content.y());
+        notifications.getStyle().setWidth(content.width());
+        alertsPanel.setTriggerBounds(layout.alertTriggerBounds(layoutWidth, layoutHeight));
+    }
+
+    private void updateAlerts() {
+        alertNotifier.update(session.snapshot().healthSnapshot());
+        alertsPanel.update();
     }
 
     private void addLabel(String code, String text, com.cpz.processing.controls.controls.geometry.ControlBounds bounds,
@@ -299,8 +340,9 @@ public final class RuntimeView {
             int index = 0;
             for (var area : RuntimeLayout.Area.values()) {
                 labels.get(index++).setBounds(layout.titleBounds(area));
-                if (area != ROOM && area != FOOTER && area != SELECTED_AISLE && area != SELECTED_RACK && area != SUMMARY && area != TRENDS) labels.get(index++).setBounds(layout.contentBounds(area));
+                if (area == HEADER) labels.get(index++).setBounds(layout.contentBounds(area));
             }
+            layoutAlerts();
             var geometry = room.geometry(layout, layoutWidth, layoutHeight);
             geometry.columns().forEach((column, bounds) -> columnLabels.get(column).setBounds(bounds));
             geometry.racks().forEach(p -> buttons.get(p.rack().location()).setBounds(p.bounds()));
@@ -321,7 +363,16 @@ public final class RuntimeView {
 
     public void draw() {
         updateLayoutIfNeeded();
-        if (clock.poll()) { session.step(); updateRacks(); updateStatus(); updateAisle(); rackPanel.refresh(); rackCoolingPanel.refresh(); summaryPanel.refresh(session.snapshot().operationalSnapshot()); }
+        if (clock.poll()) {
+            session.step();
+            updateAlerts();
+            updateRacks();
+            updateStatus();
+            updateAisle();
+            rackPanel.refresh();
+            rackCoolingPanel.refresh();
+            summaryPanel.refresh(session.snapshot().operationalSnapshot());
+        }
         sketch.background(COLOR_BACKGROUND);
         sketch.pushStyle();
         sketch.rectMode(PApplet.CORNER);
@@ -358,5 +409,12 @@ public final class RuntimeView {
                     sketch.textSize(layoutHeight * .012f); sketch.text("*", b.x()+b.width()*.44f, b.y()); sketch.popStyle();
                 });
         playback.forEach(Button::draw);
+        alertsPanel.drawTrigger();
+        overlays.getActiveOverlays().forEach(overlay -> overlay.getRender().run());
+    }
+
+    @Override public void close() {
+        alertsPanel.close();
+        notifications.dispose();
     }
 }

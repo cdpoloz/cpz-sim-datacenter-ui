@@ -35,10 +35,10 @@ final class RackDetail {
     }
     static String provenance(DatacenterDefinition definition) {
         return switch (definition.dataInputMode()) {
-            case UTILIZATION_DRIVEN -> "Entrada simulada: carga\nTemp: modelo; potencia: inferida";
-            case POWER_DRIVEN -> "Entrada simulada: potencia " + definition.powerInputGranularity() + "\nCarga inferida; temp modelo"
-                    + (definition.powerInputGranularity() == com.cpz.sim.datacenter.input.PowerInputGranularity.RACK ? "; W/servidor inferida" : "");
-            case TEMPERATURE_DRIVEN -> "Entrada simulada: temp " + definition.temperatureInputGranularity() + "\nTemp asignada; carga y W inferidas";
+            case UTILIZATION_DRIVEN -> "Simulated input: IT load\nTemp modeled · power inferred";
+            case POWER_DRIVEN -> "Simulated input: power " + definition.powerInputGranularity() + "\nLoad inferred · temp modeled"
+                    + (definition.powerInputGranularity() == com.cpz.sim.datacenter.input.PowerInputGranularity.RACK ? " · W/server inferred" : "");
+            case TEMPERATURE_DRIVEN -> "Simulated input: temp " + definition.temperatureInputGranularity() + "\nTemp assigned · load and power inferred";
         };
     }
 }

@@ -29,7 +29,7 @@ final class RackCoolingPanel {
         this.session = session; this.room = room; this.layout = layout; width = sketch.width; height = sketch.height;
         var style = new ButtonStyleConfig(); style.font = font; style.fillOverride = 0xff30363d; style.strokeOverride = 0xff82909b;
         style.textOverride = 0xffeeeeee; style.strokeWeight = 1; style.strokeWeightHover = 2;
-        tab = new Button(sketch, "Frío", bounds(.8f,.035f,.35f,.06f)); tab.setStyle(new DefaultButtonStyle(style)); tab.setTextSize(ControlMeasure.relative(.011f));
+        tab = new Button(sketch, "Cooling", bounds(.8f,.035f,.35f,.06f)); tab.setStyle(new DefaultButtonStyle(style)); tab.setTextSize(ControlMeasure.relative(.011f));
         toggle = new Button(sketch, "", bounds(.5f,.16f,.8f,.075f)); toggle.setStyle(new DefaultButtonStyle(style)); toggle.setTextSize(ControlMeasure.relative(.013f));
         tab.setClickListener(() -> { expanded = !expanded; refresh(); });
         toggle.setClickListener(() -> { var rack = room.selected(); session.rackCooling(rack).ifPresent(unit -> session.setRackCooling(rack, !unit.enabled())); refresh(); });
@@ -51,21 +51,21 @@ final class RackCoolingPanel {
     }
     boolean expanded() { return expanded; }
     void refresh() {
-        tab.setText(expanded ? "Slots" : "Frío");
+        tab.setText(expanded ? "Slots" : "Cooling");
         var rack = room.selected(); var unit = session.rackCooling(rack);
         toggle.setVisible(expanded && unit.isPresent());
-        if (rack == null) detail.setText("Seleccione un rack");
-        else if (!session.rackCoolingAvailable()) detail.setText("Refrigeración integrada\nno disponible en esta ruta");
-        else if (unit.isEmpty()) detail.setText(rack.column()+" / "+rack.rackCode().value()+"\nSin unidad integrada");
+        if (rack == null) detail.setText("Select a rack");
+        else if (!session.rackCoolingAvailable()) detail.setText("Rack cooling unavailable\nin this input mode");
+        else if (unit.isEmpty()) detail.setText(rack.column()+" / "+rack.rackCode().value()+"\nNo rack cooling unit");
         else {
             var value = unit.orElseThrow(); var u=value.definition();
-            toggle.setText("Unidad " + (value.enabled() ? "ON" : "OFF"));
+            toggle.setText("Unit " + (value.enabled() ? "ON" : "OFF"));
             String air = value.lastTick().map(s -> format("%.1f °C",s.airTemperatureCelsius())).orElse("--");
             String heat = value.lastTick().map(s -> format("%.2f kW",s.actualCoolingPowerWatts()/1000)).orElse("--");
-            detail.setText(rack.column()+" / "+rack.rackCode().value()+"\n"+u.code()+"\nDestino: "+u.heatRejectionDestination()
-                    +"\nCapacidad nominal: "+format("%.2f kW",u.ratedCoolingCapacityWatts()/1000)
-                    +"\nEléctrica actual: "+format("%.2f kW",value.electricalWatts()/1000)
-                    +"\nÚltimo tick — aire: "+air+"\nÚltimo tick — extraída: "+heat);
+            detail.setText(rack.column()+" / "+rack.rackCode().value()+"\n"+u.code()+"\nHeat rejection: "+u.heatRejectionDestination()
+                    +"\nRated capacity: "+format("%.2f kW",u.ratedCoolingCapacityWatts()/1000)
+                    +"\nElectrical power: "+format("%.2f kW",value.electricalWatts()/1000)
+                    +"\nLast tick air temp: "+air+"\nLast tick heat removal: "+heat);
         }
     }
     private static String format(String f,double d) { return Double.isFinite(d) ? String.format(Locale.ROOT,f,d) : "--"; }
