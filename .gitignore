@@ -50,3 +50,4 @@ nbbuild/
 /target/
 /log
 /prompts/
+/patch
