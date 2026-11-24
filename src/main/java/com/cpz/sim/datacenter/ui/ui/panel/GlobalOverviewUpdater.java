@@ -178,9 +178,8 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
         Label label = uiComponentContainer.labels().get("lblTrendsAirTemperature");
         if (label == null) return;
         double air = simulationContainer.operationalSnapshot().roomAirTemperatureCelsius();
-        label.setText("AIR:" + (Double.isFinite(air)
+        label.setText("AIR TEMP:" + (Double.isFinite(air)
                 ? String.format(java.util.Locale.ROOT, uiFormatContainer.temperature(), air) : "--"));
-        label.setTextColor(COLOR_GREEN_LABEL);
     }
 
     private void updateDisplayedRoomPue() {
