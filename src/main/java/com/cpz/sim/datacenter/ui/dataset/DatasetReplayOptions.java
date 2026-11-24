@@ -10,14 +10,14 @@ import java.util.Properties;
 /** Immutable startup settings. Plan semantics and limits belong to the backend. */
 public record DatasetReplayOptions(Path configuration, Path workbook, String configurationId,
                                    String configurationVersion, DatasetReplayPlan plan) {
-    public enum Source { DEMO, DATASET }
+    public enum Source { DEMO, DATASET, RUNTIME }
 
     public static Source source(Properties properties) {
         String value = properties.getProperty("simulation.source");
         if (value == null) return Source.DEMO;
         try { return Source.valueOf(value); }
         catch (IllegalArgumentException exception) {
-            throw new IllegalArgumentException("simulation.source must be DEMO or DATASET: " + value, exception);
+            throw new IllegalArgumentException("simulation.source must be DEMO, DATASET or RUNTIME: " + value, exception);
         }
     }
 

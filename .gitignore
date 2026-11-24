@@ -49,4 +49,5 @@ nbbuild/
 /build
 /target/
 /log
-/prompts
+/prompts/
+/patch

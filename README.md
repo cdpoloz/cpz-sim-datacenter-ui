@@ -81,11 +81,102 @@ mvn dependency:build-classpath -Dmdep.outputFile=target/classpath.txt
 java -cp "target/classes:$(<target/classpath.txt)" com.cpz.sim.datacenter.ui.main.Launcher
 ```
 
+Choose the UI in `data/config.properties`, then restart the application. The default
+`ui.mode=CLASSIC` opens `Sketch` with fixed JSON controls. To use controls generated
+from the configured datacenter, set `ui.mode=RUNTIME` to open `RuntimeSketch`.
+
+For either file setting, launch with the same command:
+
+```bash
+# ui.mode=CLASSIC opens Sketch
+# ui.mode=RUNTIME opens RuntimeSketch
+java -cp "target/classes:$(<target/classpath.txt)" com.cpz.sim.datacenter.ui.main.Launcher
+```
+
+An explicit JVM source takes precedence over `ui.mode`:
+
+| JVM option | Selected sketch |
+| --- | --- |
+| Absent | File `ui.mode`, defaulting to `CLASSIC` when absent |
+| `-Dsimulation.source=DEMO` | `Sketch` |
+| `-Dsimulation.source=RUNTIME` | `RuntimeSketch` |
+| `-Dsimulation.source=DATASET` | `DatasetReplaySketch` |
+
+For example, these overrides work with either file mode:
+
+```bash
+java -Dsimulation.source=DEMO -cp "target/classes:$(<target/classpath.txt)" com.cpz.sim.datacenter.ui.main.Launcher
+java -Dsimulation.source=RUNTIME -cp "target/classes:$(<target/classpath.txt)" com.cpz.sim.datacenter.ui.main.Launcher
+```
+
+DATASET requires the replay properties documented in the dataset replay guide.
+Values are case sensitive and use uppercase. When consulted, an empty or unknown
+`ui.mode` fails startup with an error listing `CLASSIC` and `RUNTIME`.
+
+Runtime starts paused after one initial simulation step. Use **Play/Pausa** in
+the footer to run or pause, and **−/+** to change the configured speed. The
+header shows the state, factor and simulated time. Select a rack in Sala to
+inspect its identity and average online server temperature; its border marks
+selection while the fill indicates its state. For manual validation, check
+that time and colors evolve during play, remain stable while paused, and that
+selection and controls still work after resizing.
+
+In **Pasillo seleccionado**, use ‹/› to navigate the aisles declared by the
+active layout. Selecting a rack in either view synchronizes the other; choosing
+an unrelated aisle clears the rack selection. The panel reports average online
+server temperature and IT utilization, plus the maximum among all installed
+servers (including offline servers) and its column/rack/slot. An asterisk marks
+that server's rack independently of the selected border.
+
+The selected-rack panel shows each configured slot in backend order, including
+empty slots, with server temperature, utilization, watts, health and role. `U`
+and `T` identify backend high-utilization and high-temperature alert reasons;
+`?` marks incomplete data. The summary reports online averages and total rack
+power. Its provenance legend identifies the configured simulated input and
+values inferred or assigned from that input; it does not imply measurements.
+The bordered circle beside each slot shows its temperature color; gray denotes
+empty, dark blue denotes offline, and a yellow border marks missing temperature.
+
+In Sala, **Refrigeración** switches from the map to the configured SUPPLY and
+EXHAUST units; **Mapa** returns to the map. The two master buttons show active
+and total counts: pressing a master turns all of that type off if any are on,
+or turns them all on otherwise. Unit pages use ‹/›. In the selected rack,
+**Frío** opens its integrated-unit details and control; **Slots** returns to the
+slot table. Current ON/OFF and electrical power update immediately. Air
+temperature and extracted heat describe the last simulation tick, so changes
+made while paused take effect in the next step.
+
+The selected-aisle **Refrigeración/Operación** button switches its metrics
+without changing selection. Cooling coverage, air ΔT and recirculation come
+from the backend's whole-zone aggregate for the last tick; a shared zone is
+included in full. SUPPLY and EXHAUST show the backend's grouped airflow assigned
+to those zones in m³/s, not nominal unit airflow. Shared zones contribute in
+full to each aisle, so aisle totals cannot be added as disjoint flows. The global summary shows
+room air, online-server averages, hottest rack by online average, IT utilization
+and last-tick IT, cooling and facility electrical power and PUE. Cooling power
+includes room and integrated-rack cooling when present. Unavailable values are
+shown as `--`; the displayed values remain unchanged while paused.
+
+**Tendencias** cycles between temperatures (online server mean, hottest rack by
+online mean, and room air), the selected aisle's online-server mean, online IT
+utilization (%), and IT and facility electrical power (kW). Values come from
+the recorder's step snapshots, including the initial step. The horizontal axis
+is the simulation tick; the chart displays at most the latest 120 recorded
+ticks. Missing values leave gaps. Changing selection or controls while paused
+does not record a sample; the next step adds one. The runtime window remains
+fixed in size.
+
+In an IDE, select `com.cpz.sim.datacenter.ui.main.Launcher` as the main class,
+set the working directory to the repository root, and choose `ui.mode` in
+`data/config.properties`. Existing **VM options** using `-Dsimulation.source`
+override the file mode; `DATASET` retains its replay properties. Values are case sensitive. See [runtime progress](docs/runtime-controls-progress.md).
+
 Run `mvn test` for thermal-pipeline integration, cooling-control projections, and graph-range tests.
 
 ## Configuration
 
-`data/config.properties` controls the window, frame rate, number formats, boundary columns, health thresholds, simulation speed factors, and selected-aisle gradient geometry. JSON files under `data/config` define the control layout and backend datacenter model. The default backend input is `data/config/datacenter.json`; JVM property `-Dsimulation.datacenter.config=/path/to/datacenter.json` selects another file.
+`data/config.properties` selects the startup UI with `ui.mode=CLASSIC` or
+`ui.mode=RUNTIME` and controls the window, frame rate, number formats, boundary columns, health thresholds, simulation speed factors, and selected-aisle gradient geometry. JSON files under `data/config` define the control layout and backend datacenter model. The default backend input is `data/config/datacenter.json`; JVM property `-Dsimulation.datacenter.config=/path/to/datacenter.json` selects another file.
 
 `hot-aisle-mapping.json` maps columns such as `C02` and `C03` to UI hot aisles such as `HA02`. Control codes in the JSON files are integration identifiers and must stay aligned with the code that resolves buttons, toggles, labels, and indicators.
 
