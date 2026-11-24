@@ -1,11 +1,14 @@
 {
   "name": "Complete 8x12 UI Test Datacenter",
   "dataInputMode": "UTILIZATION_DRIVEN",
+  "alertPolicy": {
+    "highUtilizationEnabled": false
+  },
   "roomAirTemperature": {
     "initialTemperatureCelsius": 24.0,
-    "effectiveThermalCapacityJoulesPerCelsius": 20000000.0,
     "environmentTemperatureCelsius": 24.0,
-    "environmentHeatTransferWattsPerCelsius": 0.0
+    "effectiveThermalCapacityJoulesPerCelsius": 40000000,
+    "environmentHeatTransferWattsPerCelsius": 1500
   },
   "rackCooling": {
     "airDensityKilogramsPerCubicMeter": 1.204,
@@ -1960,7 +1963,18 @@
       "idlePowerWatts": 100,
       "maxPowerWatts": 300,
       "thermalCapacityJoulesPerCelsius": 12000,
-      "heatDissipationWattsPerCelsius": 12
+      "heatDissipationWattsPerCelsius": 12,
+      "thermalProtection": {
+        "enabled": true,
+        "throttleTemperatureCelsius": 90,
+        "throttleRecoveryTemperatureCelsius": 85,
+        "throttledMaxUtilization": 0.4,
+        "shutdownTemperatureCelsius": 105,
+        "restartTemperatureCelsius": 70,
+        "minimumShutdownSeconds": 120,
+        "restartPolicy": "AUTOMATIC",
+        "shutdownPowerWatts": 5
+      }
     },
     {
       "modelCode": "SRV-AI-001",
@@ -1969,7 +1983,18 @@
       "idlePowerWatts": 220,
       "maxPowerWatts": 600,
       "thermalCapacityJoulesPerCelsius": 12000,
-      "heatDissipationWattsPerCelsius": 12
+      "heatDissipationWattsPerCelsius": 12,
+      "thermalProtection": {
+        "enabled": true,
+        "throttleTemperatureCelsius": 90,
+        "throttleRecoveryTemperatureCelsius": 85,
+        "throttledMaxUtilization": 0.4,
+        "shutdownTemperatureCelsius": 105,
+        "restartTemperatureCelsius": 70,
+        "minimumShutdownSeconds": 120,
+        "restartPolicy": "AUTOMATIC",
+        "shutdownPowerWatts": 5
+      }
     },
     {
       "modelCode": "SRV-STORAGE-001",
@@ -1978,7 +2003,18 @@
       "idlePowerWatts": 150,
       "maxPowerWatts": 450,
       "thermalCapacityJoulesPerCelsius": 12000,
-      "heatDissipationWattsPerCelsius": 12
+      "heatDissipationWattsPerCelsius": 12,
+      "thermalProtection": {
+        "enabled": true,
+        "throttleTemperatureCelsius": 90,
+        "throttleRecoveryTemperatureCelsius": 85,
+        "throttledMaxUtilization": 0.4,
+        "shutdownTemperatureCelsius": 105,
+        "restartTemperatureCelsius": 70,
+        "minimumShutdownSeconds": 120,
+        "restartPolicy": "AUTOMATIC",
+        "shutdownPowerWatts": 5
+      }
     }
   ],
   "servers": [

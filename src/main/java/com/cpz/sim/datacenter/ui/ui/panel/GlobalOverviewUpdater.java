@@ -10,6 +10,8 @@ import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 import com.cpz.sim.datacenter.ui.ui.UiFormatContainer;
+import com.cpz.sim.datacenter.ui.ui.HealthPresentation;
+import com.cpz.sim.datacenter.ui.ui.MetricPresentation;
 import com.cpz.sim.datacenter.ui.ui.selection.SelectionManager;
 import com.cpz.utils.color.Colors;
 import processing.core.PApplet;
@@ -69,37 +71,22 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
     }
 
     private void updateDisplayedRoomTemperature() {
-        if (!uiComponentContainer.labels().containsKey("lblAverageServerTemperatureValue")) return;
-        latestDisplayedRoomAverageTemperatureCelsius()
-                .ifPresent(averageRoomTemperatureCelsius ->
-                        uiComponentContainer
-                                .labels()
-                                .get("lblAverageServerTemperatureValue")
-                                .setText(String.format(uiFormatContainer.temperature(), averageRoomTemperatureCelsius))
-                );
+        Label label = uiComponentContainer.labels().get("lblAverageServerTemperatureValue");
+        if (label != null) label.setText(MetricPresentation.temperature(
+                MetricPresentation.onlineAverageTemperatureCelsius(simulationContainer.operationalSnapshot()),
+                uiFormatContainer.temperature()));
     }
 
     private void updateDisplayedRoomMaximumRackTemperature() {
-        if (!uiComponentContainer.labels().containsKey("lblRoomMaximumRackTemperatureValue")) return;
-        if (!uiComponentContainer.labels().containsKey("lblRoomMaximumRackTemperatureLocation")) return;
-        simulationContainer
-                .operationalSnapshot()
-                .hottestRackLocation()
-                .ifPresent(location -> {
-                    double maximumRackTemperature = simulationContainer
-                            .operationalSnapshot()
-                            .hottestRackAverageTemperatureCelsius();
-                    String columnCode = location.column();
-                    String rackCode = location.rackCode().value();
-                    uiComponentContainer
-                            .labels()
-                            .get("lblRoomMaximumRackTemperatureValue")
-                            .setText(String.format(uiFormatContainer.temperature(), maximumRackTemperature));
-                    uiComponentContainer
-                            .labels()
-                            .get("lblRoomMaximumRackTemperatureLocation")
-                            .setText(columnCode + "-" + rackCode);
-                });
+        var snapshot = simulationContainer.operationalSnapshot();
+        Label value = uiComponentContainer.labels().get("lblRoomMaximumRackTemperatureValue");
+        Label location = uiComponentContainer.labels().get("lblRoomMaximumRackTemperatureLocation");
+        if (value == null || location == null) return;
+        double temperature = snapshot.hottestRackLocation().isPresent()
+                ? snapshot.hottestRackAverageTemperatureCelsius() : Double.NaN;
+        value.setText(MetricPresentation.temperature(temperature, uiFormatContainer.temperature()));
+        location.setText(snapshot.hottestRackLocation()
+                .map(rack -> rack.column() + "-" + rack.rackCode().value()).orElse("--"));
     }
 
     private Optional<Double> latestDisplayedRoomAverageTemperatureCelsius() {
@@ -111,7 +98,7 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
     }
 
     private double displayedRoomAverageTemperatureCelsius(DatacenterSimulationStepSnapshot snapshot) {
-        return snapshot.operationalSnapshot().averageOnlineServerTemperatureCelsius();
+        return MetricPresentation.onlineAverageTemperatureCelsius(snapshot.operationalSnapshot());
     }
 
     private void updateDisplayedRoomAverageItLoad() {
@@ -176,11 +163,11 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
 
     private void updateDisplayedRoomTotalElectricalLoad() {
         if (!uiComponentContainer.labels().containsKey("lblRoomTotalElectricalLoadValue")) return;
-        double totalLoadMegawatts = displayedRoomTotalElectricalLoadMegawatts();
-        uiComponentContainer
-                .labels()
-                .get("lblRoomTotalElectricalLoadValue")
-                .setText(String.format(uiFormatContainer.powerMw(), totalLoadMegawatts));
+        double watts = simulationContainer.operationalSnapshot().totalFacilityPowerWatts();
+        String text = Double.isFinite(watts) && watts >= 100_000.0
+                ? String.format(java.util.Locale.ROOT, uiFormatContainer.powerMw(), watts / 1_000_000.0)
+                : MetricPresentation.power(watts, uiFormatContainer.powerKw(), uiFormatContainer.powerMw());
+        uiComponentContainer.labels().get("lblRoomTotalElectricalLoadValue").setText(text);
     }
 
     private double displayedRoomTotalElectricalLoadMegawatts() {
@@ -191,9 +178,8 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
         Label label = uiComponentContainer.labels().get("lblTrendsAirTemperature");
         if (label == null) return;
         double air = simulationContainer.operationalSnapshot().roomAirTemperatureCelsius();
-        label.setText("AIR:" + (Double.isFinite(air)
+        label.setText("AIR TEMP:" + (Double.isFinite(air)
                 ? String.format(java.util.Locale.ROOT, uiFormatContainer.temperature(), air) : "--"));
-        label.setTextColor(COLOR_GREEN_LABEL);
     }
 
     private void updateDisplayedRoomPue() {
@@ -202,7 +188,7 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
         String text = Double.isFinite(pue) ? String.format("%.2f", pue) : "--";
         uiComponentContainer.labels().get("lblRoomPueValue").setText(text);
         String key = "indRoomPueBar";
-        int iMax = (int) PApplet.map((float) pue, 1.0f, 2.2f, 1, 6);
+        int iMax = Double.isFinite(pue) ? (int) PApplet.map((float) pue, 1.0f, 2.2f, 1, 6) : 0;
         for (int i = 0; i < 6; i++)
             uiComponentContainer.indicators().get(key + (i + 1)).setOn(i < iMax);
     }
@@ -222,7 +208,7 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
             case "WATCH" -> COLOR_BLUE_LABEL;
             case "WARNING" -> COLOR_YELLOW_LABEL;
             case "CRITICAL" -> COLOR_MAGENTA_LABEL;
-            default -> Colors.argb(0, 0, 0, 0);
+            default -> COLOR_WHITE_LABEL;
         };
         lblSystemStatusValue.setTextColor(c);
         uiComponentContainer.indicators().get("indSystemStatusNormal").setOn(status.equals("NORMAL"));
@@ -257,37 +243,19 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
                         .map(ServerLocation::slot)
                         .orElse("--");
         String hottestServerLocation = selectionManager.selectedColumn() + "-" + selectionManager.selectedRack() + "-" + hottestServerSlot;
-        lblTrendsMaximumTemperatureServer.setText(hottestServerLocation + ":" + String.format(uiFormatContainer.temperature(), maximumTemperatureCelsius));
-        double roomTemperatureCelsius = simulationContainer.operationalSnapshot().averageOnlineServerTemperatureCelsius();
-        lblTrendsRoomTemperature.setText("AVG SERVER:" + String.format(uiFormatContainer.temperature(), roomTemperatureCelsius));
-        double roomItLoad = simulationContainer.operationalSnapshot().currentItPowerWatts() / 1_000_000.0;
-        lblTrendsItLoad.setText("IT LOAD:" + String.format(uiFormatContainer.powerMw(), roomItLoad));
-        double roomTotalLoad = simulationContainer.operationalSnapshot().totalFacilityPowerWatts() / 1_000_000.0;
-        lblTrendsTotalLoad.setText("TOTAL LOAD:" + String.format(uiFormatContainer.powerMw(), roomTotalLoad));
+        lblTrendsMaximumTemperatureServer.setText(hottestServerLocation + ":"
+                + MetricPresentation.temperature(maximumTemperatureCelsius, uiFormatContainer.temperature()));
+        double roomTemperatureCelsius = MetricPresentation.onlineAverageTemperatureCelsius(simulationContainer.operationalSnapshot());
+        lblTrendsRoomTemperature.setText("AVG SERVER:" + MetricPresentation.temperature(roomTemperatureCelsius, uiFormatContainer.temperature()));
+        double roomItLoad = simulationContainer.operationalSnapshot().currentItPowerWatts();
+        lblTrendsItLoad.setText("IT LOAD:" + MetricPresentation.power(roomItLoad, uiFormatContainer.powerKw(), uiFormatContainer.powerMw()));
+        double roomTotalLoad = simulationContainer.operationalSnapshot().totalFacilityPowerWatts();
+        lblTrendsTotalLoad.setText("TOTAL LOAD:" + MetricPresentation.power(roomTotalLoad, uiFormatContainer.powerKw(), uiFormatContainer.powerMw()));
     }
 
     private String displayedRoomSystemStatus() {
-        if (simulationContainer == null || simulationContainer.operationalSnapshot() == null) return "NO DATA";
-        int onlineServerCount = simulationContainer
-                .operationalSnapshot()
-                .racks()
-                .values()
-                .stream()
-                .mapToInt(RackOperationalSnapshot::onlineServerCount)
-                .sum();
-        if (onlineServerCount == 0) return "IDLE";
-        double averageTemperature = displayedRoomAverageTemperatureCelsius();
-        double maximumRackTemperature = displayedRoomMaximumRackTemperatureCelsius();
-        double itLoad = displayedRoomAverageItLoadPercentage();
-        double hvacLoad = displayedRoomHvacLoadPercentage();
-        double pue = displayedRoomPue();
-        if (averageTemperature > 62.0 || maximumRackTemperature > 72.0 || itLoad > 97.0 || hvacLoad > 98.0 || pue > 2.20)
-            return "CRITICAL";
-        if (averageTemperature > 55.0 || maximumRackTemperature > 66.0 || itLoad > 90.0 || hvacLoad > 90.0 || pue > 1.80)
-            return "WARNING";
-        if (averageTemperature > 48.0 || maximumRackTemperature > 60.0 || itLoad > 80.0 || hvacLoad > 75.0 || pue > 1.50)
-            return "WATCH";
-        return "NORMAL";
+        return HealthPresentation.systemStatus(simulationContainer == null ? null : simulationContainer.healthSnapshot(),
+                HealthPresentation.alertPolicy(simulationContainer == null ? null : simulationContainer.datacenterDefinition()));
     }
 
     private double displayedRoomAverageTemperatureCelsius() {
@@ -296,7 +264,7 @@ public class GlobalOverviewUpdater extends ApplicationComponent {
     }
 
     private double displayedRoomAverageTemperatureCelsius(DatacenterOperationalSnapshot operationalSnapshot) {
-        return operationalSnapshot.averageOnlineServerTemperatureCelsius();
+        return MetricPresentation.onlineAverageTemperatureCelsius(operationalSnapshot);
     }
 
     private double displayedRoomMaximumRackTemperatureCelsius(DatacenterOperationalSnapshot operationalSnapshot) {

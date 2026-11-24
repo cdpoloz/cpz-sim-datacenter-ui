@@ -4,6 +4,7 @@ import com.cpz.sim.datacenter.ui.app.ApplicationComponent;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
+import com.cpz.sim.datacenter.ui.ui.SimulationTimeFormat;
 import processing.core.PApplet;
 
 /**
@@ -36,6 +37,20 @@ public class HeaderUpdater extends ApplicationComponent {
         updateRoomLabel();
         updateDateTime();
         updateSimulationTimeAndStatus();
+        updateServerCounts();
+    }
+
+    private void updateServerCounts() {
+        var snapshot = simulationContainer.operationalSnapshot();
+        updateCount("lblRoomTotalServersValue", snapshot == null ? null : snapshot.racks().values().stream()
+                .mapToInt(com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot::installedServerCount).sum());
+        updateCount("lblRoomOnlineServersValue", snapshot == null ? null : snapshot.racks().values().stream()
+                .mapToInt(com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot::onlineServerCount).sum());
+    }
+
+    private void updateCount(String code, Integer count) {
+        var label = uiComponentContainer.labels().get(code);
+        if (label != null) label.setText(count == null ? "--" : count.toString());
     }
 
     private void updateRoomLabel() {
@@ -72,19 +87,13 @@ public class HeaderUpdater extends ApplicationComponent {
 
     private void updateSimulationTimeAndStatus() {
         uiComponentContainer.indicators().get("indSimulationRunning").setOn(isSimulationRunning());
-        long ticks = simulationContainer.engine().currentTick().index() - 1;
-        uiComponentContainer.labels().get("lblSimulationTime").setText(formatTicksAsDaysHoursMinutes(ticks));
+        var snapshot = simulationContainer.healthSnapshot();
+        uiComponentContainer.labels().get("lblSimulationTime").setText(
+                SimulationTimeFormat.daysHoursMinutes(snapshot == null ? 0.0 : snapshot.elapsedSeconds()));
     }
 
     public boolean isSimulationRunning() {
         return simulationContainer.simulationTimer() != null && simulationContainer.simulationTimer().isRunning();
     }
 
-    private String formatTicksAsDaysHoursMinutes(long ticks) {
-        long days = ticks / (24 * 60);
-        long remainingMinutes = ticks % (24 * 60);
-        long hours = remainingMinutes / 60;
-        long minutes = remainingMinutes % 60;
-        return String.format("%02dd %02d:%02d", days, hours, minutes);
-    }
 }

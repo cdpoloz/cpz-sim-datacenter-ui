@@ -210,7 +210,25 @@ public class SimulationManager extends ApplicationComponent implements Initializ
                 Double.parseDouble(PROPS.getProperty("simulation.health.temperature.alert-threshold-celsius")),
                 Double.parseDouble(PROPS.getProperty("simulation.health.temperature.recovery-threshold-celsius"))
         );
-        simulationContainer.setHealthSystem(new ServerHealthSystem(simulationContainer.datacenter(), simulationContainer.temperatureSystem(), new ServerHealthOptions(utilizationThreshold, temperatureThreshold)));
+        HealthThreshold criticalTemperatureThreshold = new HealthThreshold(
+                Double.parseDouble(PROPS.getProperty(
+                        "simulation.health.temperature.critical-alert-threshold-celsius"
+                )),
+                Double.parseDouble(PROPS.getProperty(
+                        "simulation.health.temperature.critical-recovery-threshold-celsius"
+                ))
+        );
+        simulationContainer.setHealthSystem(
+                new ServerHealthSystem(
+                        simulationContainer.datacenter(),
+                        simulationContainer.temperatureSystem(),
+                        new ServerHealthOptions(
+                                utilizationThreshold,
+                                temperatureThreshold,
+                                criticalTemperatureThreshold
+                        )
+                )
+        );
         simulationContainer.setThermalPipeline(new SimulationThermalPipeline(
                 simulationContainer.engine(), simulationContainer.datacenterDefinition(), simulationContainer.datacenter(),
                 simulationContainer.temperatureSystem(), temperatureOptions, simulationContainer.coolingSystem(),

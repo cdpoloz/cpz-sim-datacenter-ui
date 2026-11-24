@@ -1,0 +1,27 @@
+{
+  "controls": [
+    {
+      "type": "button",
+      "code": "btnMoreAlerts",
+      "text": "",
+      "bounds": {
+        "mode": "relative",
+        "x": 0.925,
+        "y": 0.6695,
+        "width": 0.132,
+        "height": 0.022
+      },
+      "textSize": { "mode": "relative", "value": 0.013 },
+      "enabled": false,
+      "visible": false,
+      "style": {
+        "baseColor": "#14323B",
+        "textColor": "#D8EFF2",
+        "strokeColor": "#467785",
+        "strokeWeight": 1.0,
+        "strokeWeightHover": 1.0,
+        "cornerRadius": 3.0
+      }
+    }
+  ]
+}

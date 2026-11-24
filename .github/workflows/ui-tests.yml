@@ -1,0 +1,49 @@
+name: UI regression tests
+
+on:
+  push:
+    branches: [master, fix/thermal-shutdown-presentation]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ui
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: cdpoloz/cpz-sim-foundation
+          ref: 2057108ba0473c18a215e87de47ded07ae4017ee
+          path: dependencies/foundation
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: cdpoloz/cpz-sim-runtime
+          ref: 4e219e044a05e1e52c25432dbab43a36b9aed6df
+          path: dependencies/runtime
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: cdpoloz/cpz-sim-datacenter
+          ref: 1004d664ccfa3d4f93a19347b6174a04a668fe48
+          path: cpz-sim-datacenter
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '26'
+      - name: Install simulation dependencies
+        run: |
+          mvn -B -ntp -f dependencies/foundation/pom.xml -DskipTests install
+          mvn -B -ntp -f dependencies/runtime/pom.xml -DskipTests -Dmaven.javadoc.skip=true -Dgpg.skip=true install
+          mvn -B -ntp -f cpz-sim-datacenter/pom.xml clean install
+      - name: Compile and test UI
+        working-directory: ui
+        run: mvn -B -ntp -Djava.awt.headless=true clean verify

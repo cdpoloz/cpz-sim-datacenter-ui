@@ -13,10 +13,12 @@ import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 import com.cpz.sim.datacenter.ui.ui.UiFormatContainer;
+import com.cpz.sim.datacenter.ui.ui.HealthPresentation;
 import com.cpz.utils.color.Colors;
 import processing.core.PApplet;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_EMPTY_RACK;
 import static com.cpz.sim.datacenter.ui.util.Constants.COLOR_HOTSPOT_RACK;
@@ -65,17 +67,19 @@ public class RoomPanelUpdater extends ApplicationComponent {
         updateRoomHotAisleIndicator("HA03", "indRoomHotAisleC04-C05", minServerTemperatureCelsius, maxServerTemperatureCelsius);
         updateRoomHotAisleIndicator("HA04", "indRoomHotAisleC06-C07", minServerTemperatureCelsius, maxServerTemperatureCelsius);
         updateRoomHotAisleIndicator("HA05", "indRoomHotAisleC08", minServerTemperatureCelsius, maxServerTemperatureCelsius);
-        updateRoomAirTemperatureLabel();
+        updateRoomAirTemperatureLabel(minServerTemperatureCelsius, maxServerTemperatureCelsius);
+        Set<RackLocation> criticalRacks = HealthPresentation.criticalRacks(simulationContainer.healthSnapshot());
         for (Rack rack : simulationContainer.datacenter().getRacks())
-            updateRackIndicator(rack, minServerTemperatureCelsius, maxServerTemperatureCelsius);
+            updateRackIndicator(rack, minServerTemperatureCelsius, maxServerTemperatureCelsius, criticalRacks);
     }
 
-    private void updateRoomAirTemperatureLabel() {
+    private void updateRoomAirTemperatureLabel(float minServerTemperatureCelsius, float maxServerTemperatureCelsius) {
         if (!uiComponentContainer.labels().containsKey("lblRoomAirTemperatureValue")) return;
         Label lblRoomAirTemperatureValue = uiComponentContainer.labels().get("lblRoomAirTemperatureValue");
         double roomAirTemperatureCelsius = simulationContainer.operationalSnapshot().roomAirTemperatureCelsius();
         int roomAirTemperatureColor = Double.isFinite(roomAirTemperatureCelsius)
-                ? com.cpz.sim.datacenter.ui.util.Constants.COLOR_GREEN_LABEL
+                ? resolveTemperatureRangeColor((float) roomAirTemperatureCelsius,
+                        minServerTemperatureCelsius, maxServerTemperatureCelsius)
                 : com.cpz.sim.datacenter.ui.util.Constants.COLOR_WHITE_LABEL;
         lblRoomAirTemperatureValue.setText(Double.isFinite(roomAirTemperatureCelsius)
                 ? String.format(java.util.Locale.ROOT, uiFormatContainer.temperature(), roomAirTemperatureCelsius) : "--");
@@ -88,7 +92,7 @@ public class RoomPanelUpdater extends ApplicationComponent {
         return Colors.lerpColor(COLOR_MIN_TEMPERATURE, COLOR_MAX_TEMPERATURE, factor);
     }
 
-    private void updateRackIndicator(Rack rack, float minServerTemperatureCelsius, float maxServerTemperatureCelsius) {
+    private void updateRackIndicator(Rack rack, float minServerTemperatureCelsius, float maxServerTemperatureCelsius, Set<RackLocation> criticalRacks) {
         RackLocation location = rack.getLocation();
         String rackIndicatorCode = "indRack" + rack.getColumn() + rack.getRow();
         Indicator rackIndicator = uiComponentContainer.indicatorsRack().get(rackIndicatorCode);
@@ -99,11 +103,12 @@ public class RoomPanelUpdater extends ApplicationComponent {
         boolean rackOffline = rackSnapshot.hasInstalledServers() && !rackSnapshot.hasOnlineServers();
         boolean aiRack = rackServers.stream().anyMatch(server -> server.getRole() == ServerRole.AI);
         float averageTemperature = (float) rackSnapshot.averageOnlineTemperatureCelsius();
-        boolean rackHotspot = averageTemperature > maxServerTemperatureCelsius;
+        // The gradient bound is a display scale, not a health threshold.
+        boolean rackHotspot = !emptyRack && criticalRacks.contains(location);
         int rackColor;
         if (emptyRack) rackColor = COLOR_EMPTY_RACK;
-        else if (rackOffline) rackColor = COLOR_MIN_TEMPERATURE;
         else if (rackHotspot) rackColor = COLOR_HOTSPOT_RACK;
+        else if (rackOffline) rackColor = COLOR_MIN_TEMPERATURE;
         else rackColor = calculateRackColor(averageTemperature, minServerTemperatureCelsius, maxServerTemperatureCelsius);
         rackIndicator.setOnColor(rackColor);
         updateRackConditionIndicators(rackIndicatorCode, rackOffline, emptyRack, rackHotspot, aiRack);
@@ -129,7 +134,8 @@ public class RoomPanelUpdater extends ApplicationComponent {
         Indicator aiIndicator = uiComponentContainer.indicatorsRackCondition().get(rackIndicatorCode.replace("indRack", "indRackAI"));
         offlineIndicator.setOn(rackOffline);
         emptyIndicator.setOn(emptyRack);
-        hotspotIndicator.setOn(rackHotspot);
+        // Offline owns the shared icon position; the critical rack color is retained separately.
+        hotspotIndicator.setOn(rackHotspot && !rackOffline);
         aiIndicator.setOn(aiRack);
     }
 
@@ -140,6 +146,11 @@ public class RoomPanelUpdater extends ApplicationComponent {
                         .findServerGroup(hotAisleCode)
                         .orElseThrow(() -> new IllegalStateException("Missing operational snapshot for aisle: " + hotAisleCode));
         float averageTemperature = (float) aisleSnapshot.averageOnlineTemperatureCelsius();
+        if (!aisleSnapshot.hasOnlineServers() || !Float.isFinite(averageTemperature)) {
+            // No online temperature is available; do not map a missing value to a thermal color.
+            uiComponentContainer.indicators().get(indicatorCode).setOnColor(Colors.argb(0, 0, 0, 0));
+            return;
+        }
         float maxTemperature = (float) aisleSnapshot.maximumTemperatureCelsius();
         // Blend typical and worst-case temperature so the room view exposes both signals.
         float temperature = (maxTemperature + averageTemperature) * 0.5f;

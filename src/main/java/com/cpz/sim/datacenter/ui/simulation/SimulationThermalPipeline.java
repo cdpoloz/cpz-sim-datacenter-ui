@@ -40,6 +40,10 @@ public final class SimulationThermalPipeline {
                     temperatures, options, workload, powerSource, coupled.orElseThrow());
             return;
         }
+        if (definition.dataInputMode() != DatacenterDataInputMode.TEMPERATURE_DRIVEN
+                && datacenter.getServers().stream().anyMatch(server -> server.getConfig().thermalProtection() != null
+                && server.getConfig().thermalProtection().enabled()))
+            engine.register(new ServerThermalProtectionSystem(datacenter, temperatures));
         switch (definition.dataInputMode()) {
             case UTILIZATION_DRIVEN -> {
                 engine.register(new WorkloadSystem(datacenter, workload));

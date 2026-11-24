@@ -1,0 +1,274 @@
+# Classic view health and alerts
+
+The room-map hotspot flag, the Global Overview `SYSTEM STATUS`, and persistent
+notifications use `HealthSnapshot` from the same completed simulation tick.
+`HealthPresentation` maps already evaluated states to visuals; it contains no
+temperature, utilization, HVAC or PUE thresholds and stores no hysteresis state.
+
+## Backend owns evaluation and hysteresis
+
+The current classic `SimulationManager` passes the thresholds from
+`data/config.properties` to `ServerHealthOptions`:
+
+| Condition | Activation | Recovery |
+| --- | --- | --- |
+| High utilization | 0.90 | 0.85 |
+| Elevated server temperature | 80 °C | 75 °C |
+| Critical server temperature | 100 °C | 95 °C |
+
+These are the repository's current scenario settings, not hard-coded UI rules
+or equipment safety ratings. The backend retains the thermal level inside each
+hysteresis band and publishes it as `thermalAlertLevel()`. It also evaluates
+`alertReasons()` independently for utilization and temperature.
+
+All consuming machines need the updated `cpz-sim-datacenter:0.1.0-alpha.1`
+artifact with the thermal-level API installed. Its coordinates have not
+changed; an older JAR at those same coordinates is insufficient.
+
+## Room map
+
+A rack is marked critical if **any online server at that full RackLocation**
+is CRITICAL, or if any server remains in protection-owned SHUTDOWN. The marker uses the existing dark hotspot background and hotspot
+icon. The same rack code in another column is a different rack. Empty and
+operator-offline racks keep their existing presentation. A protection-owned
+shutdown retains the critical background. The two icons share a position, so
+fully offline racks show only OFFLINE; racks with any online servers show HOTSPOT
+when critical. The dark critical background remains independent of icon choice.
+
+The average-online-temperature gradient remains a continuous display scale.
+Its initial upper bound (74 °C in the demo configuration) expands to contain observed server temperatures. Reaching the current upper bound can saturate its
+fuchsia color, but no longer activates the critical/hotspot flag. The gradient
+bound is derived for visualization and is not a health threshold.
+
+## Global Overview
+
+`SYSTEM STATUS` summarizes evaluated server health:
+
+- CRITICAL: an online server has a critical thermal level, or a server remains
+  in protection-owned SHUTDOWN.
+- WARNING: an online server has policy-enabled backend alert reasons or is THROTTLED,
+  with no critical thermal level or SHUTDOWN anywhere.
+- NORMAL: online servers exist and have no active alert reasons.
+- IDLE: there are no online servers and no protection-owned shutdowns.
+- NO DATA: the health snapshot is unavailable.
+
+The previous local heuristics based on averages, maximum rack temperature,
+IT/HVAC percentages and PUE no longer determine this status. HVAC, PUE and load
+metrics remain displayed independently. WATCH resources remain for compatibility,
+but this backend health projection does not invent a WATCH band.
+
+## Notifications
+
+`SimulationAlertNotifier` maintains one persistent notification per complete
+`ServerLocation` using `cpz-mvvm-processing-controls`. It uses
+`showPersistent()` and retains the returned ID for programmatic `dismiss()`.
+The UI consumes backend `alertReasons()`, `thermalAlertLevel()` and
+`thermalProtectionState()`; the backend
+continues to own thresholds and hysteresis.
+
+- Initial snapshots immediately show existing health or protection conditions.
+- Unchanged reasons, thermal levels and protection states retain the same notification and timestamp.
+- Changed reasons or severity replace that server's notification. ELEVATED →
+  CRITICAL uses ERROR; CRITICAL → ELEVATED uses WARNING.
+- Partial recovery removes only the resolved reasons from the replacement message.
+  High utilization can remain after thermal recovery only when enabled by the operator policy.
+- Full recovery dismisses the item without creating a recovery notification.
+- Operator-owned offline states and locations absent from the next snapshot have
+  their items dismissed. A protection-owned SHUTDOWN retains its ERROR item,
+  labelled `Thermal protection shutdown`, until the backend leaves SHUTDOWN.
+- THROTTLED is included in the message and has at least WARNING severity, even
+  when the ordinary health alert thresholds were not crossed.
+- A backward tick reset dismisses only this notifier's items, then displays the
+  new snapshot's active alerts. Unrelated manager notifications are preserved.
+
+Repeated snapshots at the same tick and drawing paused frames do not create
+new items. Null snapshots retain existing alerts until new health data arrives.
+Cooling controls in pause do not reevaluate health; the next completed tick
+updates the backend snapshot and the alert list.
+
+`SimulationAlertNotifier.activeAlerts()` exposes an immutable snapshot of all
+presentable server alerts, including pending items, sorted by column, rack and
+slot. Each `ServerAlertPresentation` contains the location, policy-visible reasons,
+thermal level, protection state, severity and `observedStateSinceSeconds`.
+This time is the simulated elapsed time of the tick when the UI created or
+replaced the alert state. Operational onset is unavailable in the backend
+snapshot. The time stays fixed while the state is unchanged and is formatted as
+`00d hh:mm` in the notification text. Repeated ticks reuse the same list, and
+previously returned snapshots remain unchanged after subsequent updates.
+
+`data/config/notifications.json` retains three visible items, ordered by severity
+and then newest insertion. Persistent overflow remains pending in the manager and appears as
+space becomes available; pending items can also be dismissed or replaced by ID.
+`persistentDismissible: false` hides manual close buttons so active conditions
+remain controlled by the simulation. Timed durations still apply to unrelated
+transient messages, but do not apply to these persistent alerts, including
+while paused. The panel is a view of active conditions, not an event history.
+
+## Validation
+
+`HealthPresentationTest` drives the real backend health system through normal,
+elevated, critical, retained-critical, downgraded and recovered states. It checks
+actual room/global control states, notification severity, same-tick suppression,
+full-location identity, offline behavior and session resets without a window.
+`SimulationAlertNotifierTest` also exercises the real notification manager for
+persistence, replacement, partial recovery, pending overflow, removal, and
+isolation from unrelated notifications.
+
+Manual acceptance: run the classic sketch, heat a server through the configured
+critical boundary and cool it through recovery. Its rack marker and SYSTEM
+STATUS should follow the backend level, with ERROR on escalation and WARNING
+on downgrade. Recovery must remove the alert; pausing must retain it.
+No automatic resize or frame-rate changes are introduced.
+
+
+## Equipment protection
+
+The demo's `data/config/datacenter.json` now defines an independent
+`serverModels[].thermalProtection` profile for each of its three synthetic
+server models. These illustrative values are not equipment specifications:
+
+| Setting | Demo value |
+| --- | --- |
+| Throttle / recovery | 90 / 85 °C |
+| Delivered utilization cap | 40% |
+| Thermal shutdown | 105 °C |
+| Automatic restart temperature | 70 °C or lower |
+| Minimum off time | 120 simulated seconds |
+| Standby consumption | 5 W per thermal shutdown |
+
+The backend owns all protection decisions. The UI installs its controller before
+power input for both legacy and coupled thermal pipelines; rack-temperature
+input already evaluates observed readings through the backend. After pulling
+the backend, run `mvn clean install` there before rebuilding the UI: the artifact
+coordinates remain `com.cpz.sim.datacenter:cpz-sim-datacenter:0.1.0-alpha.1`.
+
+An omitted profile preserves legacy behavior. Set `enabled` to `false` on the
+profiles to repeat an unprotected experiment. Change `restartPolicy` to `MANUAL`
+to require `Server.requestThermalRestart()` in addition to sufficient cooling and
+the minimum off time. The current sketch has no dedicated manual-restart button.
+
+Protection state is available as `ServerHealthSnapshot.thermalProtectionState()`
+(NORMAL, THROTTLED, SHUTDOWN). A protection-owned shutdown still counts as OFFLINE,
+but its selected-rack slot uses the existing critical alert icon and magenta
+temperature text. The room map retains its critical background and shows only
+the OFFLINE icon when fully offline, or HOTSPOT when partly online. The
+global state remains CRITICAL, and the notification remains visible or pending
+until the backend clears the condition. An operator-owned offline state uses the
+ordinary offline presentation. The panel remains a view of active conditions,
+not a history of shutdown events.
+
+Health alert thresholds remain independent of protection thresholds. Protection
+samples once per tick; a threshold crossed during a tick takes effect on the next
+one, with no clipping of temperatures.
+
+
+## Empty online temperature groups
+
+A hot aisle with no online servers has no online average temperature. Its
+room-map overlay becomes transparent instead of feeding NaN into Processing's
+color/alpha mapping. This also covers shutdowns of all servers in an aisle;
+backend snapshots retain their explicit missing-average semantics.
+
+The complete demo JSON is regression-tested for two days without any active
+room or rack cooling, covering thermal shutdown and the coupled energy ledger
+at full UI scale.
+
+
+## Live metrics and missing averages
+
+The header refreshes installed/online counts from the latest operational rack
+snapshots; counts are no longer startup-only values. Global average temperature
+is displayed only when online servers exist, irrespective of the backend's
+legacy finite fallback. With none online, the card and trend legend show `--`,
+and the historical online-average curve contains a gap rather than an artificial
+drop to ambient temperature. The physical room-air and per-server temperatures
+remain visible independently.
+
+Hottest-rack values/locations are cleared to `--` when the backend no longer
+publishes an online hottest rack. IDLE and NO DATA labels retain readable text.
+
+Power labels use W below 1 kW, kW below 1 MW, and MW for larger values. This keeps
+5 W standby servers, small rack totals and installation standby demand visible.
+Graph data and axes retain their existing units; only label formatting adapts.
+
+`ThermalShutdownPresentationTest` uses real backend shutdown/recovery state and
+snapshots to verify live counts, missing values, restored averages, critical
+map/system state, persistent shutdown alerts, operator-offline ownership, and
+standby power formatting. The Java 26 workflow compiles the UI against pinned
+foundation/runtime/backend source revisions and runs the full UI suite.
+
+
+| Room-map rack state | Background | Shared icon |
+| --- | --- | --- |
+| Operator offline, no critical protection condition | Offline blue | OFFLINE |
+| Fully offline with protection-owned shutdown | Dark critical red | OFFLINE |
+| At least one online server, with a critical condition | Dark critical red | HOTSPOT |
+
+The icon exclusivity is purely presentational: health/protection state, persistent
+shutdown notifications and global CRITICAL status are unchanged.
+
+
+## Room temperature color and alert-panel title
+
+The room-air temperature label uses the same continuous temperature gradient
+and current display bounds as the selected-aisle temperature labels. Values
+outside the display range retain the endpoint color; missing air temperature
+remains `--` in the neutral text color. This is a presentation scale and does
+not introduce new room-health thresholds or change room thermal physics.
+
+The classic `ALERTS` heading shows a `+N more` button when the active server
+count exceeds the configured notification `maxVisible`. The button opens
+`ACTIVE ALERTS · N`, with the total updated in place and the panel anchored to
+the heading. The list includes the summary's alerts
+and pending alerts in location order. It shares the summary's condition text,
+severity colors and observed simulation time. With enough space its maximum
+height holds six rows. Controls handles the wheel, scrollbar, scroll retention,
+close button, outside gestures and Escape. The simulation keeps its current
+play or pause state. Changes refresh the open list, including recovery to zero.
+
+The classic sketch loads `data/config/floating-list-alerts.json` once at setup.
+Adjust `measures` for size, margin, anchor gap and scrolling geometry. Relative
+values use the canvas height, including widths and horizontal padding. Absolute
+pixel values and mixed declarations are also supported. The `ALERTS` anchor's
+relative X uses the canvas width. Controls resolves the measures on canvas
+changes and retains the opening side while it has usable space.
+
+Use `style.font` for the shared font resource and `style` for the frame, title,
+empty message, close button and scrollbar. The separate `rowRenderer` section
+sets row spacing, typography size and colors. Severity accents come from
+`data/config/notifications.json`. The drawing pass uses the classic P2D screen
+projection after the scene and paints overlays back to front by Z order.
+
+The classic sketch creates a new reconciler during setup and its playback
+controls only pause or change speed. A backward tick clears prior observations.
+A future in-place restart that starts at the same tick needs a session signal
+to clear them. The dataset replay restart belongs to a separate sketch.
+
+## O&M alert selection
+
+The current `data/config/datacenter.json` contains:
+
+```json
+"alertPolicy": {
+  "highUtilizationEnabled": false
+}
+```
+
+The backend loads this policy and preserves the raw diagnostic HIGH_UTILIZATION
+reason, utilization metric and hardware state. The UI uses the policy for
+notifications, slot alert/OK icons, utilization alert coloring and global system
+severity. High utilization alone therefore does not produce an O&M notification
+or WARNING, but its metric is still visible. A mixed thermal/utilization event
+keeps the thermal reason and omits only the disabled utilization text. Hidden
+reason changes do not replace an unchanged thermal notification or its timestamp.
+
+Set the boolean to `true` and restart the application to enable utilization
+alerts for another audience. Omitted policies retain legacy visibility.
+Protection states THROTTLED and SHUTDOWN and thermal alerts remain enabled.
+The panel title counts enabled active notification items, including pending ones,
+rather than all raw diagnostic reasons.
+
+Backend API compatibility is preserved, but the updated backend artifact must be
+installed locally before building this UI: run `mvn clean install` in
+`cpz-sim-datacenter` after pulling both repositories. The CI workflow runs the
+backend tests and installs its pinned source revision before testing the UI.

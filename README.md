@@ -9,15 +9,22 @@
 
 The UI is intentionally thin: backend domain objects and systems produce immutable snapshots, and this project translates those snapshots into Processing controls and rendered layers.
 
+In the classic view, rack hotspot indicators, `SYSTEM STATUS`, and notification
+severity share the backend-evaluated health snapshot. A rack is critical when
+any online server in that rack has `thermalAlertLevel() == CRITICAL`; the
+temperature color gradient is only a display scale. Active server alerts stay
+visible until backend recovery and persist while paused, with severity changes
+replacing the existing item. See [Health and alerts](docs/health-alerts.md).
+
 ## Architecture at a glance
 
 `Launcher` loads `data/config.properties` and starts the Processing `Sketch`. During `Sketch.setup()`, the application constructs its infrastructure, controls, assets, backend simulation, selection logic, panel updaters, and renderers. Most of those objects are startup-only wiring and therefore remain local variables. Only objects needed by `draw()` or a Processing input callback are retained as fields.
 
 Each frame follows this order:
 
-1. Update the header.
-2. Poll and, when due, advance the simulation clock.
-3. Refresh backend snapshots when a simulation step occurred.
+1. Poll and, when due, advance the simulation clock.
+2. Refresh backend snapshots when a simulation step occurred.
+3. Expand the temperature color scale and update its legend; update the header and alerts from the current snapshot.
 4. Refresh controls when snapshots or user selection changed.
 5. Draw static background layers.
 6. Draw controls.

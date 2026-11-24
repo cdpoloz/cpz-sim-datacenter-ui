@@ -1,5 +1,7 @@
 package com.cpz.sim.datacenter.ui.ui.render;
 
+import com.cpz.sim.datacenter.ui.ui.MetricPresentation;
+
 import com.cpz.sim.datacenter.history.DatacenterSimulationStepSnapshot;
 import com.cpz.sim.datacenter.model.RackLocation;
 import com.cpz.sim.datacenter.snapshot.*;
@@ -162,7 +164,7 @@ public class GlobalOverviewRenderer extends ApplicationComponent {
     }
 
     private double displayedRoomAverageTemperatureCelsius(DatacenterSimulationStepSnapshot snapshot) {
-        return snapshot.operationalSnapshot().averageOnlineServerTemperatureCelsius();
+        return MetricPresentation.onlineAverageTemperatureCelsius(snapshot.operationalSnapshot());
     }
 
     private List<Double> latestDisplayedRoomMaximumRackTemperatures(int n) {

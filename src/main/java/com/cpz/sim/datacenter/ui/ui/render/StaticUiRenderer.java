@@ -48,6 +48,8 @@ public class StaticUiRenderer extends ApplicationComponent {
         sketch().imageMode(CORNER);
         sketch().image(resourceContainer.staticOverlay(), 0, 0, sketch().width, sketch().height);
         sketch().popStyle();
-        overlayManager.getActiveOverlays().forEach(entry -> entry.getRender().run());
+        // The scene leaves P2D's screen projection and matrix intact, with no active clip.
+        // The manager's frontmost entries paint last in this pass.
+        overlayManager.getActiveOverlays().reversed().forEach(entry -> entry.getRender().run());
     }
 }

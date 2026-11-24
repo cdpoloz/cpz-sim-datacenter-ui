@@ -4153,11 +4153,11 @@
     {
       "type": "label",
       "code": "lblTrendsAirTemperature",
-      "text": "AIR:--",
+      "text": "AIR TEMP:--",
       "bounds": {
         "mode": "relative",
-        "x": 0.566272396,
-        "y": 0.732652568,
+        "x": 0.532941666667,
+        "y": 0.868519637462,
         "width": 0.0005035246727,
         "height": 0.01074185616
       },
@@ -4168,7 +4168,7 @@
       "enabled": true,
       "visible": true,
       "style": {
-        "textColor": "#00ffcc",
+        "textColor": "#f2ebe7",
         "lineSpacingMultiplier": 1.0,
         "alignX": "start",
         "alignY": "top",
