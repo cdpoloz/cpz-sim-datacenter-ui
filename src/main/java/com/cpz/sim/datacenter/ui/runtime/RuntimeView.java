@@ -2,8 +2,10 @@ package com.cpz.sim.datacenter.ui.runtime;
 
 import com.cpz.processing.controls.controls.label.Label;
 import com.cpz.processing.controls.controls.button.Button;
+import com.cpz.processing.controls.controls.button.config.ButtonConfigLoader;
 import com.cpz.processing.controls.controls.button.config.ButtonStyleConfig;
 import com.cpz.processing.controls.controls.button.style.DefaultButtonStyle;
+import com.cpz.processing.controls.controls.button.style.render.SvgButtonRenderer;
 import com.cpz.processing.controls.controls.geometry.ControlMeasure;
 import com.cpz.processing.controls.core.input.DefaultInputLayer;
 import com.cpz.processing.controls.core.input.InputManager;
@@ -12,6 +14,7 @@ import com.cpz.processing.controls.core.input.PointerEvent;
 import com.cpz.processing.controls.core.overlay.OverlayManager;
 import com.cpz.processing.controls.core.overlay.notification.NotificationManager;
 import com.cpz.processing.controls.core.overlay.notification.config.NotificationConfigLoader;
+import com.cpz.processing.controls.core.util.JsonConfigSupport;
 import com.cpz.sim.datacenter.model.RackLocation;
 import com.cpz.sim.datacenter.snapshot.RackOperationalSnapshot;
 import com.cpz.processing.controls.controls.label.config.LabelStyleConfig;
@@ -22,6 +25,8 @@ import com.cpz.sim.datacenter.ui.ui.SimulationAlertNotifier;
 import com.cpz.sim.datacenter.ui.ui.panel.AlertsPanelUpdater;
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.core.PImage;
+import processing.data.JSONArray;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 
@@ -35,7 +40,11 @@ import static com.cpz.sim.datacenter.ui.util.Constants.*;
 
 /** Composes the shell and room map using public controls. */
 public final class RuntimeView implements AutoCloseable {
+    private static final String SPEED_BUTTONS_CONFIG = "data/config/buttonsPlay.json";
+    private static final float SPEED_ICON_SIZE = .02316213494f;
+
     private final PApplet sketch;
+    private final PImage footerBackground;
     private RuntimeLayout layout;
     private int layoutWidth, layoutHeight;
     private final List<Label> labels = new ArrayList<>();
@@ -67,9 +76,13 @@ public final class RuntimeView implements AutoCloseable {
     private final AlertsPanelUpdater alertsPanel;
     private final List<Button> playback = new ArrayList<>();
     private Label statusLabel;
+    private boolean displayedRunning;
+    private double displayedFactor;
+    private final Label footerValueLabel;
 
     public RuntimeView(PApplet sketch, RuntimeLayout layout, PFont font, RoomMap room, RuntimeSession session, RuntimeClock clock) {
         this.sketch = sketch;
+        this.footerBackground = sketch.loadImage("data/img/ui_backgroundFooter.png");
         this.room = room;
         this.aisle = new AisleSelection(room);
         this.session = session;
@@ -78,8 +91,13 @@ public final class RuntimeView implements AutoCloseable {
         this.layout = layout;
         this.layoutWidth = sketch.width;
         this.layoutHeight = sketch.height;
+        var footerLabels = FooterLabels.load(sketch, "data/config/labels.json");
         float textSize = sketch.height * .018f;
         for (var area : RuntimeLayout.Area.values()) {
+            if (area == FOOTER) {
+                labels.add(footerLabels.get("lblSimulation"));
+                continue;
+            }
             String title = switch (area) {
                 case HEADER -> "DATACENTER SIMULATOR";
                 case ROOM -> "DATACENTER MAP";
@@ -88,7 +106,7 @@ public final class RuntimeView implements AutoCloseable {
                 case SUMMARY -> "GLOBAL OVERVIEW";
                 case TRENDS -> "TRENDS";
                 case ALERTS -> "ALERTS";
-                case FOOTER -> "SIMULATION";
+                case FOOTER -> throw new IllegalStateException("Footer labels come from configuration");
             };
             addLabel(area.name() + "Title", title, layout.titleBounds(area), font,
                     area == ALERTS ? sketch.height * .0141f : textSize * 1.12f,
@@ -96,6 +114,7 @@ public final class RuntimeView implements AutoCloseable {
             if (area == HEADER) addLabel("HEADERPending", "", layout.contentBounds(area), font, textSize, COLOR_WHITE_LABEL);
         }
         statusLabel = labels.get(1);
+        footerValueLabel = footerLabels.get("lblSimulationValue");
         notifications = new NotificationManager(sketch, overlays);
         NotificationConfigLoader.apply(sketch, "data/config/notifications.json", notifications);
         alertNotifier = new SimulationAlertNotifier(notifications, session.definition().alertPolicy());
@@ -153,12 +172,13 @@ public final class RuntimeView implements AutoCloseable {
         summaryPanel = new SummaryPanel(sketch, font, layout);
         trendsPanel = new TrendsPanel(sketch, font, layout, session);
         summaryPanel.refresh(session.snapshot().operationalSnapshot());
-        for (int i = 0; i < 3; i++) {
-            Button button = new Button(sketch, i == 0 ? "Play" : i == 1 ? "−" : "+", playbackBounds(i));
-            button.setStyle(buttonStyle(false, 0xff30363d));
-            button.setTextSize(ControlMeasure.relative(.015f));
-            playback.add(button);
-        }
+        Button play = new Button(sketch, "", playbackBounds(0));
+        play.setStyle(new PlaybackButtonStyle(sketch, clock));
+        var speedConfig = JsonConfigSupport.loadRequiredObject(sketch, SPEED_BUTTONS_CONFIG, "speed buttons");
+        var speedControls = JsonConfigSupport.getRequiredArray(speedConfig, "controls", SPEED_BUTTONS_CONFIG);
+        playback.add(play);
+        playback.add(speedButton(speedControls, "btnPlayMinus", 1));
+        playback.add(speedButton(speedControls, "btnPlayPlus", 2));
         playback.get(0).setClickListener(() -> { clock.toggle(); updateStatus(); });
         playback.get(1).setClickListener(() -> { clock.change(-1); updateStatus(); });
         playback.get(2).setClickListener(() -> { clock.change(1); updateStatus(); });
@@ -221,17 +241,50 @@ public final class RuntimeView implements AutoCloseable {
     }
 
     private com.cpz.processing.controls.controls.geometry.ControlBounds playbackBounds(int index) {
-        var b = layout.contentBounds(FOOTER).resolve(layoutWidth, layoutHeight);
-        float unit = b.width() / 3;
-        return com.cpz.processing.controls.controls.geometry.ControlBounds.relative((b.x() + (index + .5f) * unit) / layoutWidth,
-                (b.y() + b.height() * .5f) / layoutHeight, unit * .8f / layoutHeight, b.height() * .85f / layoutHeight);
+        return layout.playbackBounds(index, layoutWidth, layoutHeight);
+    }
+
+    private Button speedButton(JSONArray controls, String code, int index) {
+        for (int i = 0; i < controls.size(); i++) {
+            var entry = controls.getJSONObject(i);
+            if (!code.equals(entry.getString("code"))) continue;
+            var configured = new ButtonConfigLoader(sketch).loadFromJson(entry, SPEED_BUTTONS_CONFIG).getStyle();
+            if (configured == null || configured.getRenderer() == null || !"svg".equals(configured.getRenderer().getType())) {
+                break;
+            }
+            var svg = new SvgButtonRenderer(sketch, configured.getRenderer().getPath());
+            var style = new ButtonStyleConfig();
+            style.baseColor = configured.getBaseColor();
+            style.strokeColor = configured.getStrokeColor();
+            style.strokeWeight = configured.getStrokeWeight() == null ? 0f : configured.getStrokeWeight();
+            style.strokeWeightHover = configured.getStrokeWeightHover() == null ? 0f : configured.getStrokeWeightHover();
+            style.disabledAlpha = configured.getDisabledAlpha();
+            style.hoverBlendWithWhite = configured.getHoverBlendWithWhite();
+            style.pressedBlendWithBlack = configured.getPressedBlendWithBlack();
+            var button = new Button(sketch, code, "", playbackBounds(index));
+            // Fit the graphic inside the existing centered hit area.
+            button.setStyle(new DefaultButtonStyle(style, (app, x, y, width, height, state) -> {
+                float side = Math.min(app.height * SPEED_ICON_SIZE, Math.min(width, height));
+                svg.render(app, x, y, side, side, state);
+            }));
+            return button;
+        }
+        throw new IllegalArgumentException("Missing SVG button " + code + " in " + SPEED_BUTTONS_CONFIG);
     }
 
     private void updateStatus() {
-        playback.get(0).setText(clock.running() ? "Pause" : "Play");
+        displayedRunning = clock.running();
+        displayedFactor = clock.factor();
+        footerValueLabel.setText((displayedRunning ? "Running " : "Stopped ")
+                + formatFooterSpeed(displayedFactor));
         playback.get(1).setEnabled(clock.canDecrease()); playback.get(2).setEnabled(clock.canIncrease());
         long minutes = (long) (session.snapshot().elapsedSeconds() / 60);
-        statusLabel.setText(String.format(java.util.Locale.ROOT, "%s  x%s  %02dd %02d:%02d", clock.running() ? "Running" : "Paused", clock.factor(), minutes / 1440, minutes / 60 % 24, minutes % 60));
+        statusLabel.setText(String.format(java.util.Locale.ROOT, "%s  x%s  %02dd %02d:%02d", displayedRunning ? "Running" : "Paused", clock.factor(), minutes / 1440, minutes / 60 % 24, minutes % 60));
+    }
+
+    // Same integer/fractional representation as SimulationManager.formatSimulationSpeedFactor().
+    static String formatFooterSpeed(double factor) {
+        return factor == Math.rint(factor) ? "x" + (int) factor : "x" + factor;
     }
 
     private int rackColor(RackOperationalSnapshot rack) {
@@ -339,6 +392,7 @@ public final class RuntimeView implements AutoCloseable {
             layout = new RuntimeLayout(layoutWidth, layoutHeight);
             int index = 0;
             for (var area : RuntimeLayout.Area.values()) {
+                if (area == FOOTER) { index++; continue; }
                 labels.get(index++).setBounds(layout.titleBounds(area));
                 if (area == HEADER) labels.get(index++).setBounds(layout.contentBounds(area));
             }
@@ -372,6 +426,8 @@ public final class RuntimeView implements AutoCloseable {
             rackPanel.refresh();
             rackCoolingPanel.refresh();
             summaryPanel.refresh(session.snapshot().operationalSnapshot());
+        } else if (displayedRunning != clock.running() || displayedFactor != clock.factor()) {
+            updateStatus();
         }
         sketch.background(COLOR_BACKGROUND);
         sketch.pushStyle();
@@ -379,6 +435,9 @@ public final class RuntimeView implements AutoCloseable {
         sketch.strokeWeight(1);
         for (var area : RuntimeLayout.Area.values()) {
             var b = layout.resolve(area, sketch.width, sketch.height);
+            if (area == FOOTER) {
+                continue;
+            }
             sketch.fill(COLOR_EMPTY_RACK);
             sketch.stroke(COLOR_SLOT_OFF);
             sketch.rect(b.x(), b.y(), b.width(), b.height(), layout.spacing(sketch.height) * .4f);
@@ -388,7 +447,13 @@ public final class RuntimeView implements AutoCloseable {
             }
         }
         sketch.popStyle();
+        sketch.pushStyle();
+        sketch.imageMode(PApplet.CORNER);
+        sketch.noTint();
+        sketch.image(footerBackground, 0, 0, sketch.width, sketch.height);
+        sketch.popStyle();
         labels.forEach(Label::draw);
+        footerValueLabel.draw();
         if (!coolingPanel.showing()) { columnLabels.values().forEach(Label::draw); buttons.values().forEach(Button::draw); selectionLabel.draw(); }
         coolingPanel.draw();
         aisleNavigation.forEach(Button::draw);

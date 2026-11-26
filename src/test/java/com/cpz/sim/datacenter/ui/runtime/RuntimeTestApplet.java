@@ -2,6 +2,8 @@ package com.cpz.sim.datacenter.ui.runtime;
 
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.core.PShape;
+import processing.core.PShapeSVG;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,5 +28,9 @@ final class RuntimeTestApplet extends PApplet {
 
     @Override public PFont createFont(String name, float size) {
         return new PFont();
+    }
+
+    @Override public PShape loadShape(String filename) {
+        return new PShapeSVG(loadXML(filename));
     }
 }

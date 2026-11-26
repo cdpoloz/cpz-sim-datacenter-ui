@@ -23,7 +23,7 @@ public final class RuntimeLayout {
         float headerLeft = (aspect - headerWidth) / 2;
         float available = 1 - 5 * GAP;
         float hh = available * .09f, mh = available * .59f;
-        float lh = available * .26f, fh = available * .06f;
+        float lh = available * .26f;
         float mainY = 2 * GAP + hh, lowerY = mainY + mh + GAP;
         put(Area.HEADER, headerLeft, GAP, headerWidth, hh, aspect);
         put(Area.ROOM, left, mainY, row * .48f, mh, aspect);
@@ -32,7 +32,9 @@ public final class RuntimeLayout {
         put(Area.SUMMARY, left, lowerY, row * .32f, lh, aspect);
         put(Area.TRENDS, left + row * .32f + GAP, lowerY, row * .42f, lh, aspect);
         put(Area.ALERTS, left + row * .74f + 2 * GAP, lowerY, row * .26f, lh, aspect);
-        put(Area.FOOTER, headerLeft, lowerY + lh + GAP, headerWidth, fh, aspect);
+        // Full-canvas footer artwork: normalized bounds from ui.svg/footerFondo.
+        put(Area.FOOTER, .032f * aspect, .913f, .936f * aspect, .070f, aspect);
+        contents.put(Area.FOOTER, ControlBounds.relative(.853f, .921f, .110f * aspect, .052f));
     }
 
     private void put(Area area, float x, float y, float w, float h, float aspect) {
@@ -47,6 +49,17 @@ public final class RuntimeLayout {
     private static ControlBounds relative(float xHeight, float y, float w, float h, float aspect) {
         return ControlBounds.relative(xHeight / aspect, y, w, h);
     }
+    /** CLASSIC anchors from toggles.json/buttonsPlay.json, scaled with the PNG.
+     * Keep icons square even when the design canvas is scaled non-uniformly.
+     * These bounds drive both drawing and pointer hit testing.
+     */
+    public ControlBounds playbackBounds(int index, float width, float height) {
+        float[] x = {.8666768229f, .9356007813f, .9527882813f};
+        float y = index == 0 ? .9471873112f : .9461797583f;
+        float size = (index == 0 ? 50f : 46f) * Math.min(width / 3840f, height / 1986f);
+        return ControlBounds.relative(x[index], y, size / height, size / height);
+    }
+
     public float spacing(float height) { return GAP * height; }
     public ControlBounds bounds(Area area) { return areas.get(area); }
     public ControlBounds titleBounds(Area area) { return titles.get(area); }
