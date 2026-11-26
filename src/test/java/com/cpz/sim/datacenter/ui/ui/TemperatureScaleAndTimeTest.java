@@ -13,6 +13,7 @@ import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.ui.panel.HeaderUpdater;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,6 +91,20 @@ class TemperatureScaleAndTimeTest {
         assertEquals("01d 01:02", labels.get("lblSimulationTime").getText());
         assertEquals("00d 23:59", SimulationTimeFormat.daysHoursMinutes(86399));
         assertEquals("01d 00:00", SimulationTimeFormat.daysHoursMinutes(86400));
+    }
+
+    @Test
+    void wallClockUpdatesBothLabelsAcrossMidnight() {
+        var sketch = new Sketch();
+        var date = new Label(sketch, "lblDate", "", 0, 0, 10, 10);
+        var time = new Label(sketch, "lblTime", "", 0, 0, 10, 10);
+        var clock = new WallClockLabels(date, time);
+        clock.update(LocalDateTime.of(2026, 12, 31, 23, 59, 59));
+        assertEquals("31/12/2026", date.getText());
+        assertEquals("23:59:59", time.getText());
+        clock.update(LocalDateTime.of(2027, 1, 1, 0, 0, 0));
+        assertEquals("01/01/2027", date.getText());
+        assertEquals("00:00:00", time.getText());
     }
 
     private static TemperatureSnapshot temperatures(long tick, double temperature) {

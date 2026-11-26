@@ -5,7 +5,7 @@ import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.simulation.SimulationContainer;
 import com.cpz.sim.datacenter.ui.ui.UiComponentContainer;
 import com.cpz.sim.datacenter.ui.ui.SimulationTimeFormat;
-import processing.core.PApplet;
+import com.cpz.sim.datacenter.ui.ui.WallClockLabels;
 
 /**
  * Updates the room title and wall-clock labels independently of simulation time.
@@ -16,13 +16,12 @@ public class HeaderUpdater extends ApplicationComponent {
 
     private final SimulationContainer simulationContainer;
     private final UiComponentContainer uiComponentContainer;
-    private int previousSecond;
-    private int previousDay;
+    private final WallClockLabels wallClock;
 
     /**
-     * Creates a header updater for the active room and Processing wall clock.
+     * Creates a header updater for the active room and system clock.
      *
-     * @param context source of Processing wall-clock values
+     * @param context application drawing context
      * @param simulationContainer source of the configured room name
      * @param uiComponentContainer header Labels to update
      */
@@ -30,12 +29,14 @@ public class HeaderUpdater extends ApplicationComponent {
         super(context);
         this.simulationContainer = simulationContainer;
         this.uiComponentContainer = uiComponentContainer;
+        wallClock = new WallClockLabels(uiComponentContainer.labels().get("lblDate"),
+                uiComponentContainer.labels().get("lblTime"));
     }
 
     /** Updates the room label each frame and date/time only when their values change. */
     public void update() {
         updateRoomLabel();
-        updateDateTime();
+        wallClock.update();
         updateSimulationTimeAndStatus();
         updateServerCounts();
     }
@@ -58,31 +59,6 @@ public class HeaderUpdater extends ApplicationComponent {
         if (simulationContainer.roomName() != null && !simulationContainer.roomName().isEmpty())
             text += " - " + simulationContainer.roomName();
         uiComponentContainer.labels().get("lblRoom").setText(text);
-    }
-
-    private void updateDateTime() {
-        if (PApplet.second() == previousSecond) return;
-        previousSecond = PApplet.second();
-        uiComponentContainer.labels().get("lblTime").setText(getCurrentTime());
-        if (PApplet.day() == previousDay) return;
-        previousDay = PApplet.day();
-        uiComponentContainer.labels().get("lblDate").setText(getCurrentDate());
-    }
-
-    private String getCurrentTime() {
-        return String.format("%02d", PApplet.hour())
-                + ":"
-                + String.format("%02d", PApplet.minute())
-                + ":"
-                + String.format("%02d", PApplet.second());
-    }
-
-    private String getCurrentDate() {
-        return String.format("%02d", PApplet.day())
-                + "/"
-                + String.format("%02d", PApplet.month())
-                + "/"
-                + PApplet.year();
     }
 
     private void updateSimulationTimeAndStatus() {

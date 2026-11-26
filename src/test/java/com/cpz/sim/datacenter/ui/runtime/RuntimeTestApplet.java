@@ -27,6 +27,10 @@ final class RuntimeTestApplet extends PApplet {
     }
 
     @Override public PFont createFont(String name, float size) {
+        return createFont(name, size, true);
+    }
+
+    @Override public PFont createFont(String name, float size, boolean smooth) {
         return new PFont();
     }
 

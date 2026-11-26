@@ -6,6 +6,7 @@ import com.cpz.processing.controls.controls.button.config.ButtonConfigLoader;
 import com.cpz.processing.controls.controls.button.config.ButtonStyleConfig;
 import com.cpz.processing.controls.controls.button.style.DefaultButtonStyle;
 import com.cpz.processing.controls.controls.button.style.render.SvgButtonRenderer;
+import com.cpz.processing.controls.controls.geometry.ControlBounds;
 import com.cpz.processing.controls.controls.geometry.ControlMeasure;
 import com.cpz.processing.controls.core.input.DefaultInputLayer;
 import com.cpz.processing.controls.core.input.InputManager;
@@ -21,7 +22,10 @@ import com.cpz.processing.controls.controls.label.config.LabelStyleConfig;
 import com.cpz.processing.controls.controls.label.style.DefaultLabelStyle;
 import com.cpz.processing.controls.controls.label.style.VerticalAlign;
 import com.cpz.sim.datacenter.ui.input.MouseInputDispatcher;
+import com.cpz.sim.datacenter.ui.resources.ResourceManager;
+import com.cpz.sim.datacenter.ui.ui.HeaderText;
 import com.cpz.sim.datacenter.ui.ui.SimulationAlertNotifier;
+import com.cpz.sim.datacenter.ui.ui.WallClockLabels;
 import com.cpz.sim.datacenter.ui.ui.panel.AlertsPanelUpdater;
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -31,9 +35,11 @@ import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.EnumMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.cpz.sim.datacenter.ui.runtime.RuntimeLayout.Area.*;
 import static com.cpz.sim.datacenter.ui.util.Constants.*;
@@ -44,10 +50,11 @@ public final class RuntimeView implements AutoCloseable {
     private static final float SPEED_ICON_SIZE = .02316213494f;
 
     private final PApplet sketch;
+    private final PImage headerBackground;
     private final PImage footerBackground;
     private RuntimeLayout layout;
     private int layoutWidth, layoutHeight;
-    private final List<Label> labels = new ArrayList<>();
+    private final Map<RuntimeLayout.Area, Label> panelTitles = new EnumMap<>(RuntimeLayout.Area.class);
     private final Map<String, Label> columnLabels = new LinkedHashMap<>();
     private final Map<RackLocation, Button> buttons = new LinkedHashMap<>();
     private final Map<RackLocation, Button> aisleButtons = new LinkedHashMap<>();
@@ -75,13 +82,24 @@ public final class RuntimeView implements AutoCloseable {
     private final SimulationAlertNotifier alertNotifier;
     private final AlertsPanelUpdater alertsPanel;
     private final List<Button> playback = new ArrayList<>();
-    private Label statusLabel;
+    private final Label headerTitle;
+    private final PFont headerFont;
+    private final Label dataInputModeLabel;
+    private final Label dateLabel;
+    private final Label timeLabel;
+    private final ControlBounds wideInputModeBounds;
+    private final ControlBounds configuredDateBounds;
+    private final ControlBounds configuredTimeBounds;
+    private final WallClockLabels wallClock;
+    private final Label statusLabel;
     private boolean displayedRunning;
     private double displayedFactor;
+    private final Label footerLabel;
     private final Label footerValueLabel;
 
     public RuntimeView(PApplet sketch, RuntimeLayout layout, PFont font, RoomMap room, RuntimeSession session, RuntimeClock clock) {
         this.sketch = sketch;
+        this.headerBackground = sketch.loadImage("data/img/ui_backgroundHeader.png");
         this.footerBackground = sketch.loadImage("data/img/ui_backgroundFooter.png");
         this.room = room;
         this.aisle = new AisleSelection(room);
@@ -91,42 +109,50 @@ public final class RuntimeView implements AutoCloseable {
         this.layout = layout;
         this.layoutWidth = sketch.width;
         this.layoutHeight = sketch.height;
-        var footerLabels = FooterLabels.load(sketch, "data/config/labels.json");
+        var sharedLabels = SharedLabels.load(sketch, "data/config/labels.json",
+                Set.of("lblTitle", "lblDataInputMode", "lblDate", "lblTime", "lblSimulation", "lblSimulationValue"));
+        headerTitle = sharedLabels.get("lblTitle");
+        headerFont = ResourceManager.createDefaultFont(sketch);
+        dataInputModeLabel = sharedLabels.get("lblDataInputMode");
+        dataInputModeLabel.setText(HeaderText.dataInputMode(session.definition()));
+        var inputModeBounds = relativeHeaderBounds(dataInputModeLabel);
+        wideInputModeBounds = inputModeBounds.withPosition(ControlMeasure.relative(.50f), inputModeBounds.y());
+        dateLabel = sharedLabels.get("lblDate");
+        timeLabel = sharedLabels.get("lblTime");
+        configuredDateBounds = relativeHeaderBounds(dateLabel);
+        configuredTimeBounds = relativeHeaderBounds(timeLabel);
+        wallClock = new WallClockLabels(dateLabel, timeLabel);
+        footerLabel = sharedLabels.get("lblSimulation");
+        footerValueLabel = sharedLabels.get("lblSimulationValue");
         float textSize = sketch.height * .018f;
+        statusLabel = createLabel("HEADERPending", "", layout.contentBounds(HEADER), font, textSize, COLOR_WHITE_LABEL);
+        layoutHeaderReadings();
         for (var area : RuntimeLayout.Area.values()) {
-            if (area == FOOTER) {
-                labels.add(footerLabels.get("lblSimulation"));
-                continue;
-            }
+            if (area == HEADER || area == FOOTER) continue;
             String title = switch (area) {
-                case HEADER -> "DATACENTER SIMULATOR";
                 case ROOM -> "DATACENTER MAP";
                 case SELECTED_AISLE -> "SELECTED AISLE";
                 case SELECTED_RACK -> "SELECTED RACK";
                 case SUMMARY -> "GLOBAL OVERVIEW";
                 case TRENDS -> "TRENDS";
                 case ALERTS -> "ALERTS";
-                case FOOTER -> throw new IllegalStateException("Footer labels come from configuration");
+                case HEADER, FOOTER -> throw new IllegalStateException("Header and footer titles come from configuration");
             };
-            addLabel(area.name() + "Title", title, layout.titleBounds(area), font,
+            panelTitles.put(area, createLabel(area.name() + "Title", title, layout.titleBounds(area), font,
                     area == ALERTS ? sketch.height * .0141f : textSize * 1.12f,
-                    area == ALERTS ? COLOR_WHITE_LABEL : COLOR_BLUE_LABEL);
-            if (area == HEADER) addLabel("HEADERPending", "", layout.contentBounds(area), font, textSize, COLOR_WHITE_LABEL);
+                    area == ALERTS ? COLOR_WHITE_LABEL : COLOR_BLUE_LABEL));
         }
-        statusLabel = labels.get(1);
-        footerValueLabel = footerLabels.get("lblSimulationValue");
         notifications = new NotificationManager(sketch, overlays);
         NotificationConfigLoader.apply(sketch, "data/config/notifications.json", notifications);
         alertNotifier = new SimulationAlertNotifier(notifications, session.definition().alertPolicy());
         alertsPanel = AlertsPanelUpdater.create(sketch, overlays, input, alertNotifier, notifications,
-                labels.get(ALERTS.ordinal() + 1));
+                panelTitles.get(ALERTS));
         layoutAlerts();
         updateAlerts();
         var geometry = room.geometry(layout, layoutWidth, layoutHeight);
         for (var entry : geometry.columns().entrySet()) {
-            int before = labels.size();
-            addLabel("Column" + entry.getKey(), entry.getKey(), entry.getValue(), font, textSize * .75f, COLOR_WHITE_LABEL);
-            columnLabels.put(entry.getKey(), labels.remove(before));
+            columnLabels.put(entry.getKey(), createLabel("Column" + entry.getKey(), entry.getKey(),
+                    entry.getValue(), font, textSize * .75f, COLOR_WHITE_LABEL));
         }
         for (var placement : geometry.racks()) {
             var rack = placement.rack();
@@ -137,15 +163,12 @@ public final class RuntimeView implements AutoCloseable {
             buttons.put(rack.location(), button);
         }
         var content = layout.contentBounds(ROOM).resolve(layoutWidth, layoutHeight);
-        addLabel("Selection", "No rack selected", selectionBounds(content), font, textSize * .72f, COLOR_WHITE_LABEL);
-        selectionLabel = labels.remove(labels.size() - 1);
-        addLabel("AisleName", "", aisleTextBounds(.12f, .12f), font, textSize * .8f, COLOR_WHITE_LABEL);
-        aisleTitle = labels.remove(labels.size() - 1);
-        addLabel("AisleMetrics", "", aisleTextBounds(.18f, .17f), font, textSize * .72f, COLOR_WHITE_LABEL);
-        aisleMetrics = labels.remove(labels.size() - 1);
+        selectionLabel = createLabel("Selection", "No rack selected", selectionBounds(content), font, textSize * .72f, COLOR_WHITE_LABEL);
+        aisleTitle = createLabel("AisleName", "", aisleTextBounds(.12f, .12f), font, textSize * .8f, COLOR_WHITE_LABEL);
+        aisleMetrics = createLabel("AisleMetrics", "", aisleTextBounds(.18f, .17f), font, textSize * .72f, COLOR_WHITE_LABEL);
         for (String column : room.hotAisles().stream().flatMap(a -> a.columns().stream()).distinct().toList()) {
-            addLabel("AisleColumn" + column, column, layout.contentBounds(SELECTED_AISLE), font, textSize * .72f, COLOR_WHITE_LABEL);
-            aisleColumns.put(column, labels.remove(labels.size() - 1));
+            aisleColumns.put(column, createLabel("AisleColumn" + column, column, layout.contentBounds(SELECTED_AISLE),
+                    font, textSize * .72f, COLOR_WHITE_LABEL));
         }
         for (var rack : room.racks()) {
             var button = new Button(sketch, rack.location().rackCode().value(), layout.contentBounds(SELECTED_AISLE));
@@ -371,7 +394,7 @@ public final class RuntimeView implements AutoCloseable {
         alertsPanel.update();
     }
 
-    private void addLabel(String code, String text, com.cpz.processing.controls.controls.geometry.ControlBounds bounds,
+    private Label createLabel(String code, String text, com.cpz.processing.controls.controls.geometry.ControlBounds bounds,
                           PFont font, float size, int color) {
         Label label = new Label(sketch, "runtime" + code, text, bounds);
         LabelStyleConfig style = new LabelStyleConfig();
@@ -382,7 +405,34 @@ public final class RuntimeView implements AutoCloseable {
         style.lineSpacingMultiplier = 1.3f;
         label.setStyle(new DefaultLabelStyle(style));
         label.setTextSize(com.cpz.processing.controls.controls.geometry.ControlMeasure.relative(size / sketch.height));
-        labels.add(label);
+        return label;
+    }
+
+    private ControlBounds relativeHeaderBounds(Label label) {
+        var bounds = label.getTooltipBounds();
+        return ControlBounds.relative(bounds.x() / layoutWidth, bounds.y() / layoutHeight,
+                bounds.width() / layoutHeight, bounds.height() / layoutHeight);
+    }
+
+    private void layoutHeaderReadings() {
+        float aspect = (float) layoutWidth / layoutHeight;
+        var statusBounds = layout.contentBounds(HEADER);
+        if (aspect >= 1.7f) {
+            statusLabel.setBounds(statusBounds);
+            dataInputModeLabel.setBounds(wideInputModeBounds);
+            dateLabel.setBounds(configuredDateBounds);
+            timeLabel.setBounds(configuredTimeBounds);
+            return;
+        }
+        // On narrow canvases, put the secondary readings on their own row and
+        // reserve the date's width in height-relative units before the clock.
+        // Keep the playback text clear of the artwork's time frame.
+        statusLabel.setBounds(statusBounds.withPosition(ControlMeasure.relative(.49f), statusBounds.y()));
+        var compactY = ControlMeasure.relative(.079f);
+        dataInputModeLabel.setBounds(wideInputModeBounds.withPosition(ControlMeasure.relative(.60f), compactY));
+        float dateX = Math.min(configuredDateBounds.x().value(), configuredTimeBounds.x().value() - .083f / aspect);
+        dateLabel.setBounds(configuredDateBounds.withPosition(ControlMeasure.relative(dateX), compactY));
+        timeLabel.setBounds(configuredTimeBounds.withPosition(configuredTimeBounds.x(), compactY));
     }
 
     private void updateLayoutIfNeeded() {
@@ -390,12 +440,8 @@ public final class RuntimeView implements AutoCloseable {
             layoutWidth = sketch.width;
             layoutHeight = sketch.height;
             layout = new RuntimeLayout(layoutWidth, layoutHeight);
-            int index = 0;
-            for (var area : RuntimeLayout.Area.values()) {
-                if (area == FOOTER) { index++; continue; }
-                labels.get(index++).setBounds(layout.titleBounds(area));
-                if (area == HEADER) labels.get(index++).setBounds(layout.contentBounds(area));
-            }
+            panelTitles.forEach((area, title) -> title.setBounds(layout.titleBounds(area)));
+            layoutHeaderReadings();
             layoutAlerts();
             var geometry = room.geometry(layout, layoutWidth, layoutHeight);
             geometry.columns().forEach((column, bounds) -> columnLabels.get(column).setBounds(bounds));
@@ -417,6 +463,7 @@ public final class RuntimeView implements AutoCloseable {
 
     public void draw() {
         updateLayoutIfNeeded();
+        wallClock.update();
         if (clock.poll()) {
             session.step();
             updateAlerts();
@@ -434,25 +481,33 @@ public final class RuntimeView implements AutoCloseable {
         sketch.rectMode(PApplet.CORNER);
         sketch.strokeWeight(1);
         for (var area : RuntimeLayout.Area.values()) {
-            var b = layout.resolve(area, sketch.width, sketch.height);
-            if (area == FOOTER) {
+            if (area == HEADER || area == FOOTER) {
                 continue;
             }
+            var b = layout.resolve(area, sketch.width, sketch.height);
             sketch.fill(COLOR_EMPTY_RACK);
             sketch.stroke(COLOR_SLOT_OFF);
             sketch.rect(b.x(), b.y(), b.width(), b.height(), layout.spacing(sketch.height) * .4f);
-            if (area != HEADER && area != FOOTER) {
-                float y = b.y() + layout.spacing(sketch.height) * 2.8f;
-                sketch.line(b.x() + layout.spacing(sketch.height), y, b.x() + b.width() - layout.spacing(sketch.height), y);
-            }
+            float y = b.y() + layout.spacing(sketch.height) * 2.8f;
+            sketch.line(b.x() + layout.spacing(sketch.height), y, b.x() + b.width() - layout.spacing(sketch.height), y);
         }
         sketch.popStyle();
         sketch.pushStyle();
         sketch.imageMode(PApplet.CORNER);
         sketch.noTint();
+        sketch.image(headerBackground, 0, 0, sketch.width, sketch.height);
         sketch.image(footerBackground, 0, 0, sketch.width, sketch.height);
         sketch.popStyle();
-        labels.forEach(Label::draw);
+        sketch.pushStyle();
+        sketch.textFont(headerFont);
+        headerTitle.draw();
+        dataInputModeLabel.draw();
+        dateLabel.draw();
+        timeLabel.draw();
+        sketch.popStyle();
+        statusLabel.draw();
+        panelTitles.values().forEach(Label::draw);
+        footerLabel.draw();
         footerValueLabel.draw();
         if (!coolingPanel.showing()) { columnLabels.values().forEach(Label::draw); buttons.values().forEach(Button::draw); selectionLabel.draw(); }
         coolingPanel.draw();

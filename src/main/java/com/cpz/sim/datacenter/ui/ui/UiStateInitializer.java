@@ -44,36 +44,32 @@ public class UiStateInitializer extends ApplicationComponent {
         initializeTemperatureTrendLabels(maxServerTemperatureCelsius, simpleTemperatureFormat);
         initializeRoomServerTotals();
         initializeDataInputMode();
-        initializeDateTime();
+        new WallClockLabels(uiComponentContainer.labels().get("lblDate"),
+                uiComponentContainer.labels().get("lblTime")).update();
     }
 
     private void initializeDataInputMode() {
-        String dataInputMode = "DATA INPUT MODE: ";
         String selectedRackTemperature = "TEMP";
         String selectedRackLoad = "LOAD";
         String selectedRackPower = "POWER";
         String inferred = " (i)";
-        DatacenterDataInputMode datacenterDataInputMode = simulationContainer.datacenterDefinition().dataInputMode();
-        PowerInputGranularity powerGranularity = simulationContainer.datacenterDefinition().powerInputGranularity();
-        TemperatureInputGranularity temperatureGranularity = simulationContainer.datacenterDefinition().temperatureInputGranularity();
+        var definition = simulationContainer.datacenterDefinition();
+        DatacenterDataInputMode datacenterDataInputMode = definition.dataInputMode();
+        PowerInputGranularity powerGranularity = definition.powerInputGranularity();
+        TemperatureInputGranularity temperatureGranularity = definition.temperatureInputGranularity();
         switch (datacenterDataInputMode) {
-            case UTILIZATION_DRIVEN -> {
-                dataInputMode += "UTILIZATION DRIVEN";
-                selectedRackPower += inferred;
-            }
+            case UTILIZATION_DRIVEN -> selectedRackPower += inferred;
             case POWER_DRIVEN -> {
-                dataInputMode += "POWER DRIVEN - " + powerGranularity;
                 selectedRackLoad += inferred;
                 if (powerGranularity == PowerInputGranularity.RACK) selectedRackPower += inferred;
             }
             case TEMPERATURE_DRIVEN -> {
-                dataInputMode += "TEMPERATURE DRIVEN - " + temperatureGranularity;
                 selectedRackPower += inferred;
                 selectedRackLoad += inferred;
                 if (temperatureGranularity == TemperatureInputGranularity.RACK) selectedRackTemperature += inferred;
             }
         }
-        uiComponentContainer.labels().get("lblDataInputMode").setText(dataInputMode);
+        uiComponentContainer.labels().get("lblDataInputMode").setText(HeaderText.dataInputMode(definition));
         uiComponentContainer.labels().get("lblSelectedRackTemperature").setText(selectedRackTemperature);
         uiComponentContainer.labels().get("lblSelectedRackLoad").setText(selectedRackLoad);
         uiComponentContainer.labels().get("lblSelectedRackPower").setText(selectedRackPower);
@@ -116,28 +112,5 @@ public class UiStateInitializer extends ApplicationComponent {
                         .sum();
         uiComponentContainer.labels().get("lblRoomTotalServersValue").setText(String.valueOf(totalInstalledServers));
         uiComponentContainer.labels().get("lblRoomOnlineServersValue").setText(String.valueOf(totalOnlineServers));
-    }
-
-    private void initializeDateTime() {
-        uiComponentContainer
-                .labels()
-                .get("lblDate")
-                .setText(
-                        String.format("%02d", PApplet.day())
-                                + "/"
-                                + String.format("%02d", PApplet.month())
-                                + "/"
-                                + PApplet.year()
-                );
-        uiComponentContainer
-                .labels()
-                .get("lblTime")
-                .setText(
-                        String.format("%02d", PApplet.hour())
-                                + ":"
-                                + String.format("%02d", PApplet.minute())
-                                + ":"
-                                + String.format("%02d", PApplet.second())
-                );
     }
 }

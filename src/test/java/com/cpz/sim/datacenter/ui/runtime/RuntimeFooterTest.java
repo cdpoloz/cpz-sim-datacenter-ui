@@ -21,12 +21,13 @@ class RuntimeFooterTest {
     }
     @org.junit.jupiter.api.io.TempDir Path temporary;
 
-    @Test void sharedLoaderResolvesEditedFooterConfiguration() throws Exception {
+    @Test void sharedLoaderResolvesEditedHeaderAndFooterConfiguration() throws Exception {
+        var codes = java.util.Set.of("lblTitle", "lblSimulation", "lblSimulationValue");
         var root = processing.data.JSONObject.parse(Files.readString(Path.of("data/config/labels.json")));
         var entries = root.getJSONArray("controls");
         for (int i=0; i<entries.size(); i++) {
             var entry=entries.getJSONObject(i);
-            if (entry.getString("code").equals("lblSimulation") || entry.getString("code").equals("lblSimulationValue")) {
+            if (codes.contains(entry.getString("code"))) {
                 entry.getJSONObject("bounds").setFloat("x", .875f);
                 entry.getJSONObject("style").setString("textColor", "#ffcc66");
             }
@@ -35,11 +36,12 @@ class RuntimeFooterTest {
         for (int[] size : new int[][]{{1600,828},{1920,1014}}) {
             var sketch=new RuntimeTestApplet(size[0],size[1]);
             var classic=new com.cpz.processing.controls.controls.config.ControlConfigLoader(sketch).load(copy.toString());
-            var runtime=FooterLabels.load(sketch,copy.toString());
-            assertEquals(java.util.Set.of("lblSimulation","lblSimulationValue"),runtime.keySet());
+            var runtime=SharedLabels.load(sketch,copy.toString(),codes);
+            assertEquals(codes,runtime.keySet());
             for (String code:runtime.keySet()) {
                 var expected=(com.cpz.processing.controls.controls.label.Label)classic.get(code);
                 var actual=runtime.get(code);
+                assertEquals(expected.getText(),actual.getText());
                 assertEquals(expected.getTooltipBounds(),actual.getTooltipBounds());
                 assertEquals(.875f*size[0],actual.getTooltipBounds().x(),.001f);
                 assertEquals(0xffffcc66,actual.getTextColor());

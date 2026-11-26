@@ -3,6 +3,8 @@ package com.cpz.sim.datacenter.ui.resources;
 import com.cpz.sim.datacenter.ui.app.ApplicationComponent;
 import com.cpz.sim.datacenter.ui.app.ApplicationContext;
 import com.cpz.sim.datacenter.ui.app.Initializable;
+import processing.core.PApplet;
+import processing.core.PFont;
 import processing.core.PImage;
 
 import java.util.ArrayList;
@@ -37,14 +39,13 @@ public class ResourceManager extends ApplicationComponent implements Initializab
     }
 
     private void loadFont() {
-        container.setDefaultFont(
-                sketch().createFont(
-                        "data/font/JetBrainsMono.ttf",
-                        96,
-                        true
-                )
-        );
+        container.setDefaultFont(createDefaultFont(sketch()));
         sketch().textFont(container.defaultFont());
+    }
+
+    /** Creates the font that CLASSIC labels inherit when no font is configured. */
+    public static PFont createDefaultFont(PApplet sketch) {
+        return sketch.createFont("data/font/JetBrainsMono.ttf", 96, true);
     }
 
     private void loadBackgroundImages() {
