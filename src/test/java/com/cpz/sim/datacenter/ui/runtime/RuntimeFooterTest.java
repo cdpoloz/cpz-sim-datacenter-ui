@@ -22,7 +22,8 @@ class RuntimeFooterTest {
     @org.junit.jupiter.api.io.TempDir Path temporary;
 
     @Test void sharedLoaderResolvesEditedHeaderAndFooterConfiguration() throws Exception {
-        var codes = java.util.Set.of("lblTitle", "lblSimulation", "lblSimulationValue");
+        var codes = java.util.Set.of("lblTitle", "lblDataInputMode", "lblDate", "lblTime",
+                "lblSimulationTime", "lblSimulation", "lblSimulationValue");
         var root = processing.data.JSONObject.parse(Files.readString(Path.of("data/config/labels.json")));
         var entries = root.getJSONArray("controls");
         for (int i=0; i<entries.size(); i++) {

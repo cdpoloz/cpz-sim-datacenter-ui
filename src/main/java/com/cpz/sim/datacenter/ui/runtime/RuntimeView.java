@@ -24,6 +24,11 @@ import com.cpz.processing.controls.controls.label.style.VerticalAlign;
 import com.cpz.sim.datacenter.ui.input.MouseInputDispatcher;
 import com.cpz.sim.datacenter.ui.resources.ResourceManager;
 import com.cpz.sim.datacenter.ui.ui.HeaderText;
+import com.cpz.sim.datacenter.ui.ui.HeaderBackground;
+import com.cpz.sim.datacenter.ui.ui.SimulationTimeFormat;
+import com.cpz.processing.controls.controls.indicator.Indicator;
+import com.cpz.processing.controls.controls.indicator.IndicatorFactory;
+import com.cpz.processing.controls.controls.indicator.config.IndicatorConfigLoader;
 import com.cpz.sim.datacenter.ui.ui.SimulationAlertNotifier;
 import com.cpz.sim.datacenter.ui.ui.WallClockLabels;
 import com.cpz.sim.datacenter.ui.ui.panel.AlertsPanelUpdater;
@@ -50,7 +55,7 @@ public final class RuntimeView implements AutoCloseable {
     private static final float SPEED_ICON_SIZE = .02316213494f;
 
     private final PApplet sketch;
-    private final PImage headerBackground;
+    private final HeaderBackground headerBackground;
     private final PImage footerBackground;
     private RuntimeLayout layout;
     private int layoutWidth, layoutHeight;
@@ -87,11 +92,10 @@ public final class RuntimeView implements AutoCloseable {
     private final Label dataInputModeLabel;
     private final Label dateLabel;
     private final Label timeLabel;
-    private final ControlBounds wideInputModeBounds;
-    private final ControlBounds configuredDateBounds;
-    private final ControlBounds configuredTimeBounds;
+    private final Label simulationTimeLabel;
+    private final Indicator runningIndicator;
+    private final Map<Label, Float> headerTextSizes = new LinkedHashMap<>();
     private final WallClockLabels wallClock;
-    private final Label statusLabel;
     private boolean displayedRunning;
     private double displayedFactor;
     private final Label footerLabel;
@@ -99,7 +103,7 @@ public final class RuntimeView implements AutoCloseable {
 
     public RuntimeView(PApplet sketch, RuntimeLayout layout, PFont font, RoomMap room, RuntimeSession session, RuntimeClock clock) {
         this.sketch = sketch;
-        this.headerBackground = sketch.loadImage("data/img/ui_backgroundHeader.png");
+        this.headerBackground = new HeaderBackground(sketch);
         this.footerBackground = sketch.loadImage("data/img/ui_backgroundFooter.png");
         this.room = room;
         this.aisle = new AisleSelection(room);
@@ -110,23 +114,23 @@ public final class RuntimeView implements AutoCloseable {
         this.layoutWidth = sketch.width;
         this.layoutHeight = sketch.height;
         var sharedLabels = SharedLabels.load(sketch, "data/config/labels.json",
-                Set.of("lblTitle", "lblDataInputMode", "lblDate", "lblTime", "lblSimulation", "lblSimulationValue"));
+                Set.of("lblTitle", "lblDataInputMode", "lblDate", "lblTime", "lblSimulationTime", "lblSimulation", "lblSimulationValue"));
         headerTitle = sharedLabels.get("lblTitle");
         headerFont = ResourceManager.createDefaultFont(sketch);
         dataInputModeLabel = sharedLabels.get("lblDataInputMode");
         dataInputModeLabel.setText(HeaderText.dataInputMode(session.definition()));
-        var inputModeBounds = relativeHeaderBounds(dataInputModeLabel);
-        wideInputModeBounds = inputModeBounds.withPosition(ControlMeasure.relative(.50f), inputModeBounds.y());
         dateLabel = sharedLabels.get("lblDate");
         timeLabel = sharedLabels.get("lblTime");
-        configuredDateBounds = relativeHeaderBounds(dateLabel);
-        configuredTimeBounds = relativeHeaderBounds(timeLabel);
+        simulationTimeLabel = sharedLabels.get("lblSimulationTime");
+        runningIndicator = loadRunningIndicator(sketch, "data/config/indicators.json");
+        for (var label : List.of(headerTitle, dataInputModeLabel, dateLabel, timeLabel, simulationTimeLabel)) {
+            headerTextSizes.put(label, label.getStyleConfig().textSize / sketch.height);
+        }
+        layoutHeaderText();
         wallClock = new WallClockLabels(dateLabel, timeLabel);
         footerLabel = sharedLabels.get("lblSimulation");
         footerValueLabel = sharedLabels.get("lblSimulationValue");
         float textSize = sketch.height * .018f;
-        statusLabel = createLabel("HEADERPending", "", layout.contentBounds(HEADER), font, textSize, COLOR_WHITE_LABEL);
-        layoutHeaderReadings();
         for (var area : RuntimeLayout.Area.values()) {
             if (area == HEADER || area == FOOTER) continue;
             String title = switch (area) {
@@ -301,8 +305,8 @@ public final class RuntimeView implements AutoCloseable {
         footerValueLabel.setText((displayedRunning ? "Running " : "Stopped ")
                 + formatFooterSpeed(displayedFactor));
         playback.get(1).setEnabled(clock.canDecrease()); playback.get(2).setEnabled(clock.canIncrease());
-        long minutes = (long) (session.snapshot().elapsedSeconds() / 60);
-        statusLabel.setText(String.format(java.util.Locale.ROOT, "%s  x%s  %02dd %02d:%02d", displayedRunning ? "Running" : "Paused", clock.factor(), minutes / 1440, minutes / 60 % 24, minutes % 60));
+        runningIndicator.setOn(displayedRunning);
+        simulationTimeLabel.setText(SimulationTimeFormat.daysHoursMinutes(session.snapshot().elapsedSeconds()));
     }
 
     // Same integer/fractional representation as SimulationManager.formatSimulationSpeedFactor().
@@ -408,31 +412,26 @@ public final class RuntimeView implements AutoCloseable {
         return label;
     }
 
-    private ControlBounds relativeHeaderBounds(Label label) {
-        var bounds = label.getTooltipBounds();
-        return ControlBounds.relative(bounds.x() / layoutWidth, bounds.y() / layoutHeight,
-                bounds.width() / layoutHeight, bounds.height() / layoutHeight);
+    static Indicator loadRunningIndicator(PApplet sketch, String path) {
+        var root = JsonConfigSupport.loadRequiredObject(sketch, path, "shared indicators");
+        var entries = JsonConfigSupport.getRequiredArray(root, "controls", path);
+        var loader = new IndicatorConfigLoader(sketch);
+        Indicator result = null;
+        for (int i = 0; i < entries.size(); i++) {
+            var entry = entries.getJSONObject(i);
+            if (!"indSimulationRunning".equals(entry.getString("code", ""))) continue;
+            if (result != null) throw new IllegalArgumentException("Duplicate indSimulationRunning in " + path);
+            result = IndicatorFactory.create(sketch, loader.loadFromJson(entry, path));
+        }
+        if (result == null) throw new IllegalArgumentException("Missing indSimulationRunning in " + path);
+        return result;
     }
 
-    private void layoutHeaderReadings() {
-        float aspect = (float) layoutWidth / layoutHeight;
-        var statusBounds = layout.contentBounds(HEADER);
-        if (aspect >= 1.7f) {
-            statusLabel.setBounds(statusBounds);
-            dataInputModeLabel.setBounds(wideInputModeBounds);
-            dateLabel.setBounds(configuredDateBounds);
-            timeLabel.setBounds(configuredTimeBounds);
-            return;
-        }
-        // On narrow canvases, put the secondary readings on their own row and
-        // reserve the date's width in height-relative units before the clock.
-        // Keep the playback text clear of the artwork's time frame.
-        statusLabel.setBounds(statusBounds.withPosition(ControlMeasure.relative(.49f), statusBounds.y()));
-        var compactY = ControlMeasure.relative(.079f);
-        dataInputModeLabel.setBounds(wideInputModeBounds.withPosition(ControlMeasure.relative(.60f), compactY));
-        float dateX = Math.min(configuredDateBounds.x().value(), configuredTimeBounds.x().value() - .083f / aspect);
-        dateLabel.setBounds(configuredDateBounds.withPosition(ControlMeasure.relative(dateX), compactY));
-        timeLabel.setBounds(configuredTimeBounds.withPosition(configuredTimeBounds.x(), compactY));
+    private void layoutHeaderText() {
+        // Preserve the configured anchors and exact CLASSIC sizes at both reference canvases.
+        // Below the narrower reference aspect, fit the text to the shrinking horizontal gaps.
+        float scale = Math.min(1f, ((float) layoutWidth / layoutHeight) / (1920f / 1014f));
+        headerTextSizes.forEach((label, size) -> label.setTextSize(ControlMeasure.relative(size * scale)));
     }
 
     private void updateLayoutIfNeeded() {
@@ -441,7 +440,7 @@ public final class RuntimeView implements AutoCloseable {
             layoutHeight = sketch.height;
             layout = new RuntimeLayout(layoutWidth, layoutHeight);
             panelTitles.forEach((area, title) -> title.setBounds(layout.titleBounds(area)));
-            layoutHeaderReadings();
+            layoutHeaderText();
             layoutAlerts();
             var geometry = room.geometry(layout, layoutWidth, layoutHeight);
             geometry.columns().forEach((column, bounds) -> columnLabels.get(column).setBounds(bounds));
@@ -495,7 +494,7 @@ public final class RuntimeView implements AutoCloseable {
         sketch.pushStyle();
         sketch.imageMode(PApplet.CORNER);
         sketch.noTint();
-        sketch.image(headerBackground, 0, 0, sketch.width, sketch.height);
+        headerBackground.draw();
         sketch.image(footerBackground, 0, 0, sketch.width, sketch.height);
         sketch.popStyle();
         sketch.pushStyle();
@@ -504,8 +503,9 @@ public final class RuntimeView implements AutoCloseable {
         dataInputModeLabel.draw();
         dateLabel.draw();
         timeLabel.draw();
+        simulationTimeLabel.draw();
+        runningIndicator.draw();
         sketch.popStyle();
-        statusLabel.draw();
         panelTitles.values().forEach(Label::draw);
         footerLabel.draw();
         footerValueLabel.draw();
