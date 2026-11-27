@@ -11,7 +11,7 @@ import java.util.*;
 public final class RoomMap {
     public record Rack(RackLocation location, String row, List<String> slots) { }
     public record Placement(Rack rack, ControlBounds bounds) { }
-    public record Geometry(Map<String, ControlBounds> columns, List<Placement> racks) { }
+    public record Geometry(Map<String, ControlBounds> columns, Map<String, ControlBounds> rows, List<Placement> racks) { }
     private final List<String> columns, rows;
     private final List<Rack> racks;
     private final List<HotAisleDefinition> hotAisles;
@@ -58,19 +58,23 @@ public final class RoomMap {
     public Geometry geometry(RuntimeLayout layout, int width, int height) {
         var content = layout.contentBounds(RuntimeLayout.Area.ROOM).resolve(width, height);
         float colWidth = content.width() / columns.size();
-        float header = content.height() * .08f, footer = content.height() * .09f;
-        float rowHeight = (content.height() - header - footer) / rows.size();
+        float header = content.height() * .066f;
+        float rowHeight = (content.height() - header) / rows.size();
         var colBounds = new LinkedHashMap<String, ControlBounds>();
         for (int i = 0; i < columns.size(); i++)
             colBounds.put(columns.get(i), relative(content.x() + i * colWidth, content.y(), colWidth, header, width, height));
+        var rowBounds = new LinkedHashMap<String, ControlBounds>();
+        for (int i = 0; i < rows.size(); i++)
+            rowBounds.put(rows.get(i), relative(content.x(), content.y() + header + (i + .5f) * rowHeight,
+                    0, rowHeight, width, height));
         var placements = new ArrayList<Placement>();
         for (var rack : racks) {
             float x = content.x() + (columns.indexOf(rack.location().column()) + .5f) * colWidth;
             float y = content.y() + header + (rows.indexOf(rack.row()) + .5f) * rowHeight;
             // Button coordinates are centres; Label coordinates are top left.
-            placements.add(new Placement(rack, relative(x, y, colWidth * .82f, rowHeight * .82f, width, height)));
+            placements.add(new Placement(rack, relative(x, y, colWidth * .46f, rowHeight * .82f, width, height)));
         }
-        return new Geometry(Collections.unmodifiableMap(colBounds), List.copyOf(placements));
+        return new Geometry(Collections.unmodifiableMap(colBounds), Collections.unmodifiableMap(rowBounds), List.copyOf(placements));
     }
     private static ControlBounds relative(float x, float y, float w, float h, int width, int height) {
         return ControlBounds.relative(x / width, y / height, w / height, h / height);

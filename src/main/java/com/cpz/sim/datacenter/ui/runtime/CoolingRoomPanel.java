@@ -35,20 +35,20 @@ final class CoolingRoomPanel {
     CoolingRoomPanel(PApplet sketch, PFont font, RuntimeSession session, RuntimeLayout layout) {
         this.sketch = sketch; this.font = font; this.session = session; this.layout = layout;
         width = sketch.width; height = sketch.height; units = session.coolingUnits();
-        tab = button("Cooling", rect(.8f, .0f, .35f, .06f, true));
+        tab = button("Cooling", tabBounds());
         tab.setClickListener(() -> { visible = !visible; refresh(); });
         for (var type : List.of(CoolingUnitType.SUPPLY, CoolingUnitType.EXHAUST)) {
-            var button = button("", rect(.5f, .1f, .3f, .07f, false));
+            var button = button("", rect(.5f, .1f, .3f, .07f));
             button.setClickListener(() -> { session.setCoolingGroup(type, session.coolingActive(type) == 0); refresh(); });
             masters.add(button);
         }
         for (var unit : units) {
-            var button = button("", rect(.5f, .3f, .8f, .07f, false));
+            var button = button("", rect(.5f, .3f, .8f, .07f));
             button.setClickListener(() -> { session.setCoolingEnabled(unit.code(), !session.coolingEnabled(unit.code())); refresh(); });
             unitButtons.add(button);
         }
         for (int direction : new int[]{-1, 1}) {
-            var button = button(direction < 0 ? "‹" : "›", rect(.5f, .9f, .2f, .06f, false));
+            var button = button(direction < 0 ? "‹" : "›", rect(.5f, .9f, .2f, .06f));
             button.setClickListener(() -> { page = Math.clamp(page + direction, 0, maxPage()); refresh(); });
             navigation.add(button);
         }
@@ -64,17 +64,22 @@ final class CoolingRoomPanel {
         button.setTextSize(ControlMeasure.relative(.014f)); return button;
     }
     // Buttons use centre coordinates. All dimensions are relative to surface height.
-    private ControlBounds rect(float x, float y, float w, float h, boolean title) {
-        var b = (title ? layout.titleBounds(ROOM) : layout.contentBounds(ROOM)).resolve(width, height);
+    private ControlBounds tabBounds() {
+        return RoomMapArtwork.bounds((float) width / height, 1510, 302, 1670, 349);
+    }
+
+    private ControlBounds rect(float x, float y, float w, float h) {
+        var b = layout.contentBounds(ROOM).resolve(width, height);
         return ControlBounds.relative((b.x()+b.width()*x)/width, (b.y()+b.height()*y)/height, b.width()*w/height, b.height()*h/height);
     }
     void resize(RuntimeLayout layout, int width, int height) {
         this.layout = layout; this.width = width; this.height = height;
-        tab.setBounds(rect(.80f, .45f, .35f, .75f, true));
-        for (int i=0;i<2;i++) masters.get(i).setBounds(rect(i == 0 ? .25f : .75f, .13f, .46f, .085f, false));
-        for (int i=0;i<unitButtons.size();i++) unitButtons.get(i).setBounds(rect(.5f, .28f+(i%PAGE_SIZE)*.072f, .9f, .064f, false));
-        navigation.get(0).setBounds(rect(.25f,.94f,.35f,.075f,false));
-        navigation.get(1).setBounds(rect(.75f,.94f,.35f,.075f,false));
+        tab.setBounds(tabBounds());
+        tab.setTextSize(ControlMeasure.relative(Math.min(.014f, width / (float) height * .008f)));
+        for (int i=0;i<2;i++) masters.get(i).setBounds(rect(i == 0 ? .25f : .75f, .13f, .46f, .085f));
+        for (int i=0;i<unitButtons.size();i++) unitButtons.get(i).setBounds(rect(.5f, .28f+(i%PAGE_SIZE)*.072f, .9f, .064f));
+        navigation.get(0).setBounds(rect(.25f,.94f,.35f,.075f));
+        navigation.get(1).setBounds(rect(.75f,.94f,.35f,.075f));
         var b = layout.contentBounds(ROOM).resolve(width, height);
         help.setBounds(ControlBounds.relative(b.x()/width, (b.y()+b.height()*.015f)/height, b.width()/height, b.height()*.065f/height));
     }

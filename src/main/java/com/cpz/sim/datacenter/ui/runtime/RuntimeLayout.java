@@ -9,26 +9,31 @@ import java.util.Map;
 public final class RuntimeLayout {
     public enum Area { HEADER, ROOM, SELECTED_AISLE, SELECTED_RACK, SUMMARY, TRENDS, ALERTS, FOOTER }
     private static final float GAP = .016f;
+    // CLASSIC's room inset leaves clearance inside the outer frame (x ≈ 87 and 3754).
+    private static final float BODY_INSET = 108f / 3840;
+    private static final float BODY_BOTTOM = .900f;
     private final Map<Area, ControlBounds> areas = new EnumMap<>(Area.class);
     private final Map<Area, ControlBounds> titles = new EnumMap<>(Area.class);
     private final Map<Area, ControlBounds> contents = new EnumMap<>(Area.class);
 
     public RuntimeLayout(float width, float height) {
         float aspect = width / height;
-        // Keep every relative measure in [0,1], even on a wide desktop.
-        float usable = Math.min(aspect - 2 * GAP, 1.98f);
+        // Keep body panels inside the full-canvas frame, including on a wide desktop.
+        float usable = Math.min(aspect * (1 - 2 * BODY_INSET), 1.98f);
         float left = (aspect - usable) / 2;
         float row = usable - 2 * GAP;
         float headerWidth = Math.min(usable, 1f);
         float headerLeft = (aspect - headerWidth) / 2;
         float available = 1 - 5 * GAP;
         float hh = available * .09f, mh = available * .59f;
-        float lh = available * .26f;
         float mainY = 2 * GAP + hh, lowerY = mainY + mh + GAP;
-        put(Area.HEADER, headerLeft, GAP, headerWidth, hh, aspect);
-        put(Area.ROOM, left, mainY, row * .48f, mh, aspect);
+        put(Area.HEADER, headerLeft, GAP, headerWidth, 130f / 1986 - GAP, aspect);
+        areas.put(Area.ROOM, RoomMapArtwork.panelBounds(aspect));
+        titles.put(Area.ROOM, RoomMapArtwork.bounds(aspect, 137, 173, 1675, 226));
+        contents.put(Area.ROOM, RoomMapArtwork.bounds(aspect, 206, 399, 1664, 1076));
         put(Area.SELECTED_AISLE, left + row * .48f + GAP, mainY, row * .25f, mh, aspect);
         put(Area.SELECTED_RACK, left + row * .73f + 2 * GAP, mainY, row * .27f, mh, aspect);
+        float lh = BODY_BOTTOM - lowerY;
         put(Area.SUMMARY, left, lowerY, row * .32f, lh, aspect);
         put(Area.TRENDS, left + row * .32f + GAP, lowerY, row * .42f, lh, aspect);
         put(Area.ALERTS, left + row * .74f + 2 * GAP, lowerY, row * .26f, lh, aspect);

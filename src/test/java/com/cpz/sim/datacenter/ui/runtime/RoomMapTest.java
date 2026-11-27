@@ -43,6 +43,30 @@ class RoomMapTest {
             var smaller = RoomMap.load();
             assertEquals(3, smaller.racks().size());
             assertEquals(2, smaller.columns().size());
+            for (int[] size : new int[][]{{1920, 1014}, {1200, 828}}) {
+                int width = size[0], height = size[1];
+                var geometry = smaller.geometry(new RuntimeLayout(width, height), width, height);
+                assertEquals(Set.of("C01", "C02"), geometry.columns().keySet());
+                assertEquals(Set.of("R01", "R02"), geometry.rows().keySet());
+                assertEquals(List.of(new RackLocation("C01", "R01"), new RackLocation("C01", "R02"),
+                                new RackLocation("C02", "R01")),
+                        geometry.racks().stream().map(placement -> placement.rack().location()).toList());
+                for (var placement : geometry.racks()) {
+                    var hit = placement.bounds().resolve(width, height);
+                    var body = RoomRackIndicators.bounds(RoomRackIndicators.Part.BODY, hit).resolve(width, height);
+                    assertEquals(hit.x(), body.x() + body.width() / 2, .001f);
+                    assertEquals(hit.y(), body.y() + body.height() / 2, .001f);
+                    assertEquals(hit.width(), body.width());
+                    assertEquals(hit.height(), body.height());
+                    assertEquals(geometry.rows().get(placement.rack().row()).resolve(width, height).y(), hit.y(), .001f);
+                    for (var part : RoomRackIndicators.Part.values()) {
+                        var icon = RoomRackIndicators.bounds(part, hit).resolve(width, height);
+                        assertTrue(icon.x() >= body.x() && icon.y() >= body.y());
+                        assertTrue(icon.x() + icon.width() <= body.x() + body.width() + .001f);
+                        assertTrue(icon.y() + icon.height() <= body.y() + body.height() + .001f);
+                    }
+                }
+            }
             System.setProperty("simulation.datacenter.config", tmp.resolve("missing.json").toString());
             assertTrue(assertThrows(IllegalStateException.class, RoomMap::load).getMessage().contains("missing.json"));
         } finally {

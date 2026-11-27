@@ -55,13 +55,13 @@ public final class RuntimeView implements AutoCloseable {
     private static final float SPEED_ICON_SIZE = .02316213494f;
 
     private final PApplet sketch;
+    private final PImage canvasBackground;
     private final HeaderBackground headerBackground;
     private final PImage footerBackground;
     private RuntimeLayout layout;
     private int layoutWidth, layoutHeight;
     private final Map<RuntimeLayout.Area, Label> panelTitles = new EnumMap<>(RuntimeLayout.Area.class);
-    private final Map<String, Label> columnLabels = new LinkedHashMap<>();
-    private final Map<RackLocation, Button> buttons = new LinkedHashMap<>();
+    private final RoomMapPanel mapPanel;
     private final Map<RackLocation, Button> aisleButtons = new LinkedHashMap<>();
     private final Map<String, Label> aisleColumns = new LinkedHashMap<>();
     private final List<Button> aisleNavigation = new ArrayList<>();
@@ -72,7 +72,6 @@ public final class RuntimeView implements AutoCloseable {
     private AisleSelection.Geometry aisleGeometry;
     private final RoomMap room;
     private final PFont font;
-    private Label selectionLabel;
     private final RuntimeSession session;
     private final RuntimeClock clock;
     private final RackPanel rackPanel;
@@ -103,6 +102,7 @@ public final class RuntimeView implements AutoCloseable {
 
     public RuntimeView(PApplet sketch, RuntimeLayout layout, PFont font, RoomMap room, RuntimeSession session, RuntimeClock clock) {
         this.sketch = sketch;
+        this.canvasBackground = sketch.loadImage("data/img/ui_background.png");
         this.headerBackground = new HeaderBackground(sketch);
         this.footerBackground = sketch.loadImage("data/img/ui_backgroundFooter.png");
         this.room = room;
@@ -132,15 +132,14 @@ public final class RuntimeView implements AutoCloseable {
         footerValueLabel = sharedLabels.get("lblSimulationValue");
         float textSize = sketch.height * .018f;
         for (var area : RuntimeLayout.Area.values()) {
-            if (area == HEADER || area == FOOTER) continue;
+            if (area == HEADER || area == FOOTER || area == ROOM) continue;
             String title = switch (area) {
-                case ROOM -> "DATACENTER MAP";
                 case SELECTED_AISLE -> "SELECTED AISLE";
                 case SELECTED_RACK -> "SELECTED RACK";
                 case SUMMARY -> "GLOBAL OVERVIEW";
                 case TRENDS -> "TRENDS";
                 case ALERTS -> "ALERTS";
-                case HEADER, FOOTER -> throw new IllegalStateException("Header and footer titles come from configuration");
+                case HEADER, FOOTER, ROOM -> throw new IllegalStateException("Shared titles come from configuration");
             };
             panelTitles.put(area, createLabel(area.name() + "Title", title, layout.titleBounds(area), font,
                     area == ALERTS ? sketch.height * .0141f : textSize * 1.12f,
@@ -153,21 +152,7 @@ public final class RuntimeView implements AutoCloseable {
                 panelTitles.get(ALERTS));
         layoutAlerts();
         updateAlerts();
-        var geometry = room.geometry(layout, layoutWidth, layoutHeight);
-        for (var entry : geometry.columns().entrySet()) {
-            columnLabels.put(entry.getKey(), createLabel("Column" + entry.getKey(), entry.getKey(),
-                    entry.getValue(), font, textSize * .75f, COLOR_WHITE_LABEL));
-        }
-        for (var placement : geometry.racks()) {
-            var rack = placement.rack();
-            Button button = new Button(sketch, rack.location().rackCode().value(), placement.bounds());
-            button.setStyle(buttonStyle(false, COLOR_EMPTY_RACK));
-            button.setTextSize(ControlMeasure.relative(.012f));
-            button.setClickListener(() -> select(rack.location()));
-            buttons.put(rack.location(), button);
-        }
-        var content = layout.contentBounds(ROOM).resolve(layoutWidth, layoutHeight);
-        selectionLabel = createLabel("Selection", "No rack selected", selectionBounds(content), font, textSize * .72f, COLOR_WHITE_LABEL);
+        mapPanel = new RoomMapPanel(sketch, headerFont, room, session, layout, this::select);
         aisleTitle = createLabel("AisleName", "", aisleTextBounds(.12f, .12f), font, textSize * .8f, COLOR_WHITE_LABEL);
         aisleMetrics = createLabel("AisleMetrics", "", aisleTextBounds(.18f, .17f), font, textSize * .72f, COLOR_WHITE_LABEL);
         for (String column : room.hotAisles().stream().flatMap(a -> a.columns().stream()).distinct().toList()) {
@@ -217,7 +202,7 @@ public final class RuntimeView implements AutoCloseable {
             }
         });
         updateStatus();
-        updateRacks();
+        mapPanel.refresh();
         updateAisle();
     }
 
@@ -235,7 +220,7 @@ public final class RuntimeView implements AutoCloseable {
         return com.cpz.processing.controls.controls.geometry.ControlBounds.relative((b.x()+b.width()*.5f)/layoutWidth,
                 (b.y()+b.height()*.05f)/layoutHeight, b.width()*.43f/layoutHeight, b.height()*.085f/layoutHeight);
     }
-    private void changeAisle(int direction) { aisle.change(direction); updateRacks(); updateAisle(); rackPanel.refresh(); rackCoolingPanel.refresh(); }
+    private void changeAisle(int direction) { aisle.change(direction); mapPanel.updateSelection(); updateAisle(); rackPanel.refresh(); rackCoolingPanel.refresh(); }
     private void updateAisle() {
         var selected = aisle.selected();
         trendsPanel.refresh(selected == null ? null : selected.code());
@@ -317,28 +302,6 @@ public final class RuntimeView implements AutoCloseable {
     private int rackColor(RackOperationalSnapshot rack) {
         return RackDisplay.color(rack, session.range());
     }
-    private void updateRacks() {
-        var racks = session.snapshot().operationalSnapshot().racks();
-        buttons.forEach((location, button) -> button.setStyle(buttonStyle(location.equals(room.selected()), rackColor(racks.get(location)))));
-        updateSelection();
-    }
-    private void updateSelection() {
-        var location = room.selected();
-        String selected = "No rack selected";
-        if (location != null) {
-            var rack = session.snapshot().operationalSnapshot().racks().get(location);
-            double temp = RackDisplay.temperature(rack);
-            selected = location.column() + " / " + location.rackCode().value() + " " + (Double.isFinite(temp) ? session.formatTemperature(temp) : "--");
-        }
-        selectionLabel.setText(selected + "\nGray: empty · dark blue: offline · purple: -- · blue–red: "
-                + session.formatTemperature(session.range().minServerTemperatureCelsius()) + "–" + session.formatTemperature(session.range().maxServerTemperatureCelsius()));
-    }
-
-    private com.cpz.processing.controls.controls.geometry.ControlBounds selectionBounds(com.cpz.processing.controls.controls.geometry.ResolvedBounds b) {
-        return com.cpz.processing.controls.controls.geometry.ControlBounds.relative(b.x() / layoutWidth,
-                (b.y() + b.height() * .92f) / layoutHeight, b.width() / layoutHeight, b.height() * .08f / layoutHeight);
-    }
-
     private DefaultButtonStyle buttonStyle(boolean selected, int fill) {
         var style = new ButtonStyleConfig();
         style.font = font;
@@ -352,7 +315,7 @@ public final class RuntimeView implements AutoCloseable {
 
     private void select(RackLocation location) {
         aisle.selectRack(location);
-        updateRacks(); updateAisle(); rackPanel.refresh(); rackCoolingPanel.refresh();
+        mapPanel.updateSelection(); updateAisle(); rackPanel.refresh(); rackCoolingPanel.refresh();
     }
 
     public void mouseEvent(MouseEvent event) {
@@ -370,7 +333,7 @@ public final class RuntimeView implements AutoCloseable {
     private void routeDashboardPointer(PointerEvent pointer) {
         boolean wasCooling = coolingPanel.showing();
         coolingPanel.pointer(pointer);
-        if (!wasCooling && !coolingPanel.showing()) buttons.values().forEach(button -> button.handlePointerEvent(pointer));
+        if (!wasCooling && !coolingPanel.showing()) mapPanel.pointer(pointer);
         rackCoolingPanel.pointer(pointer);
         playback.forEach(button -> button.handlePointerEvent(pointer));
         aisleButtons.values().forEach(button -> button.handlePointerEvent(pointer));
@@ -442,10 +405,7 @@ public final class RuntimeView implements AutoCloseable {
             panelTitles.forEach((area, title) -> title.setBounds(layout.titleBounds(area)));
             layoutHeaderText();
             layoutAlerts();
-            var geometry = room.geometry(layout, layoutWidth, layoutHeight);
-            geometry.columns().forEach((column, bounds) -> columnLabels.get(column).setBounds(bounds));
-            geometry.racks().forEach(p -> buttons.get(p.rack().location()).setBounds(p.bounds()));
-            selectionLabel.setBounds(selectionBounds(layout.contentBounds(ROOM).resolve(layoutWidth, layoutHeight)));
+            mapPanel.resize(layout);
             for (int i = 0; i < playback.size(); i++) playback.get(i).setBounds(playbackBounds(i));
             aisleTitle.setBounds(aisleTextBounds(.12f, .12f));
             aisleMetrics.setBounds(aisleTextBounds(.18f, .17f));
@@ -466,7 +426,7 @@ public final class RuntimeView implements AutoCloseable {
         if (clock.poll()) {
             session.step();
             updateAlerts();
-            updateRacks();
+            mapPanel.refresh();
             updateStatus();
             updateAisle();
             rackPanel.refresh();
@@ -477,10 +437,15 @@ public final class RuntimeView implements AutoCloseable {
         }
         sketch.background(COLOR_BACKGROUND);
         sketch.pushStyle();
+        sketch.imageMode(PApplet.CORNER);
+        sketch.noTint();
+        sketch.image(canvasBackground, 0, 0, sketch.width, sketch.height);
+        sketch.popStyle();
+        sketch.pushStyle();
         sketch.rectMode(PApplet.CORNER);
         sketch.strokeWeight(1);
         for (var area : RuntimeLayout.Area.values()) {
-            if (area == HEADER || area == FOOTER) {
+            if (area == HEADER || area == FOOTER || area == ROOM) {
                 continue;
             }
             var b = layout.resolve(area, sketch.width, sketch.height);
@@ -509,7 +474,7 @@ public final class RuntimeView implements AutoCloseable {
         panelTitles.values().forEach(Label::draw);
         footerLabel.draw();
         footerValueLabel.draw();
-        if (!coolingPanel.showing()) { columnLabels.values().forEach(Label::draw); buttons.values().forEach(Button::draw); selectionLabel.draw(); }
+        mapPanel.draw(layout, coolingPanel.showing());
         coolingPanel.draw();
         aisleNavigation.forEach(Button::draw);
         aisleMode.draw();

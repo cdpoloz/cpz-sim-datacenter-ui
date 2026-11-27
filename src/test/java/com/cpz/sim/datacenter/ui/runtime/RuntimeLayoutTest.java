@@ -26,6 +26,21 @@ class RuntimeLayoutTest {
             }
         }
     }
+    @Test void bodyPanelsLeaveTheOuterFrameAndFooterClear() {
+        for (int[] size : new int[][]{{1920, 1014}, {1600, 828}, {1200, 828}, {3000, 993}}) {
+            int width = size[0], height = size[1];
+            var layout = new RuntimeLayout(width, height);
+            var footer = layout.resolve(RuntimeLayout.Area.FOOTER, width, height);
+            for (var area : java.util.List.of(RuntimeLayout.Area.SELECTED_AISLE, RuntimeLayout.Area.SELECTED_RACK,
+                    RuntimeLayout.Area.SUMMARY, RuntimeLayout.Area.TRENDS, RuntimeLayout.Area.ALERTS)) {
+                var bounds = layout.resolve(area, width, height);
+                // The 3 px artwork stroke is centred on the outer path in the design canvas.
+                assertTrue(bounds.x() > width * 89f / 3840, area.name());
+                assertTrue(bounds.x() + bounds.width() < width * 3752f / 3840, area.name());
+                assertTrue(bounds.y() + bounds.height() < footer.y() - height * .01f, area.name());
+            }
+        }
+    }
     @Test void relativeDimensionsResolveAgainstHeight() {
         var bounds = new RuntimeLayout(1920, 993).bounds(RuntimeLayout.Area.ROOM);
         var a = bounds.resolve(1920, 993);
